@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Enrichment Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <style>
+    .admin-users-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--accent);
+    }
+    .admin-users-section h3 {
+      margin: 0 0 15px;
+      color: var(--primary);
+      font-size: 16px;
+    }
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .user-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+    }
+    .user-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .user-item .info { flex: 1; }
+    .user-item .name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .user-item .meta {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .badge-admin { background: var(--primary); color: white; }
+    .badge-online { background: #2ecc71; color: white; }
+    .badge-offline { background: #95a5a6; color: white; }
+    .badge-banned { background: #e74c3c; color: white; }
+    .badge-warn { background: #f39c12; color: white; }
+    .user-count {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body class="profile-page">
+  <div class="app-container">
+    <nav class="navbar">
+      <div class="nav-left">
+        <h1>Profile</h1>
+      </div>
+      <div class="nav-right">
+        <a href="/private/dashboard.html" class="logout-btn">← Dashboard</a>
+      </div>
+    </nav>
+
+    <main class="profile-page">
+      <div class="profile-card">
+        <div class="profile-header">
+          <img id="profilePic" src="" alt="Profile" class="profile-pic">
+          <div class="profile-info">
+            <h2 id="profileName">User</h2>
+            <p id="profileStatus">Online</p>
+          </div>
+        </div>
+
+        <div class="profile-section">
+          <h3>Profile Picture</h3>
+          <input type="file" id="avatarInput" accept=".png,.jpg,.jpeg,.gif">
+          <button id="uploadBtn" class="btn-primary">Upload Avatar</button>
+          <button id="removeBtn" class="btn-secondary">Remove Avatar</button>
+        </div>
+
+        <div class="profile-section">
+          <h3>Account Info</h3>
+          <div class="info-row">
+            <label>Username:</label>
+            <span id="usernameInfo">-</span>
+          </div>
+          <div class="info-row">
+            <label>Member Since:</label>
+            <span id="joinedInfo">-</span>
+          </div>
+        </div>
+
+        <div class="profile-section">
+          <h3>Change Username</h3>
+          <input type="text" id="newUsernameInput" placeholder="Enter new username (3-20 characters)" maxlength="20">
+          <button id="changeUsernameBtn" class="btn-primary">Update Username</button>
+          <p id="usernameMessage" style="margin-top: 10px; font-size: 13px; display: none;"></p>
+        </div>
+
+        <div class="profile-section">
+          <h3>Theme Preference</h3>
+          <select id="themeSelector" class="theme-selector">
+            <option value="ocean">Deep Ocean</option>
+            <option value="arcade">Neon Arcade</option>
+            <option value="candy">Cotton Candy</option>
+            <option value="eclipse">Solar Eclipse</option>
+            <option value="matrix">Cyber Matrix</option>
+            <option value="notebook">School Notebook</option>
+            <option value="gaming">Midnight Gaming</option>
+            <option value="pixel">Retro Pixel</option>
+            <option value="cloudy">Cloudy Day</option>
+            <option value="academia">Royal Academia</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Admin Only: All Users Section -->
+      <div class="admin-users-section" id="adminUsersSection" style="display: none;">
+        <h3>All Registered Users (Admin Only)</h3>
+        <p class="user-count" id="userCount">Loading...</p>
+        <div class="user-list" id="allUsersList"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script>
+    function checkAuth() {
+      const token = localStorage.getItem('authToken');
+      const userStr = localStorage.getItem('user');
+      
+      if (!token || !userStr) {
+        window.location.href = '/private/auth.html';
+        return null;
+      }
+      
+      try {
+        return JSON.parse(userStr);
+      } catch {
+        window.location.href = '/private/auth.html';
+        return null;
+      }
+    }
+
+    function getAuthToken() {
+      return localStorage.getItem('authToken');
+    }
+
+    function getCurrentUser() {
+      const user = localStorage.getItem('user');
+      return user ? JSON.parse(user) : null;
+    }
+  </script>
+  <script src="/js/profile.js"></script>
+</body>
+</html>

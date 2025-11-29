@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - Enrichment Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/chat.css">
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <style>
+    .admin-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+    .admin-panel.active { display: block; }
+    .admin-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 999;
+      display: none;
+    }
+    .admin-overlay.active { display: block; }
+    .admin-panel h2 {
+      margin: 0 0 15px;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-close {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .admin-tab {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .admin-tab.active {
+      background: var(--primary);
+      color: var(--bg);
+    }
+    .admin-content { display: none; }
+    .admin-content.active { display: block; }
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .user-row img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .user-row .info { flex: 1; }
+    .user-row .name { font-weight: 600; color: var(--text); }
+    .user-row .status { font-size: 11px; color: var(--text-light); }
+    .user-row .actions { display: flex; gap: 6px; }
+    .user-row .actions button {
+      padding: 4px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .btn-warn { background: #f39c12; color: white; }
+    .btn-ban { background: #e74c3c; color: white; }
+    .btn-unban { background: #2ecc71; color: white; }
+    .btn-approve { background: #2ecc71; color: white; }
+    .btn-deny { background: #e74c3c; color: white; }
+    .badge-warn {
+      display: inline-block;
+      background: #f39c12;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      margin-left: 5px;
+    }
+    .badge-banned {
+      display: inline-block;
+      background: #e74c3c;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      margin-left: 5px;
+    }
+    .badge-admin {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      margin-left: 5px;
+    }
+    .request-row {
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .request-row h4 { margin: 0 0 5px; color: var(--text); }
+    .request-row p { margin: 0 0 10px; font-size: 12px; color: var(--text-light); }
+    .admin-btn {
+      padding: 8px 16px;
+      background: var(--primary);
+      color: var(--bg);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .group-chats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .global-chat-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--primary), #9b59b6);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .global-chat-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .global-chat-btn.active {
+      box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.5);
+    }
+    .global-icon {
+      font-size: 18px;
+    }
+    /* Typing Indicator */
+    .typing-indicator {
+      padding: 8px 16px;
+      color: var(--text-light);
+      font-size: 12px;
+      font-style: italic;
+      display: none;
+    }
+    .typing-indicator.active { display: block; }
+    /* Reply Bar */
+    .reply-bar {
+      display: none;
+      padding: 8px 16px;
+      background: var(--accent);
+      border-radius: 8px 8px 0 0;
+      margin: 0 10px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+    .reply-bar.active { display: flex; align-items: center; gap: 10px; }
+    .reply-bar .reply-content { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .reply-bar .cancel-reply { background: none; border: none; color: var(--text); cursor: pointer; font-size: 16px; }
+    /* Message enhancements */
+    .msg-reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .msg-reaction { display: flex; align-items: center; gap: 3px; padding: 2px 6px; background: var(--accent); border-radius: 12px; font-size: 12px; cursor: pointer; border: 1px solid transparent; }
+    .msg-reaction:hover { border-color: var(--primary); }
+    .msg-reaction.user-reacted { background: var(--primary); color: white; }
+    .msg-reply-preview { font-size: 11px; color: var(--text-light); background: var(--bg); padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; border-left: 2px solid var(--primary); }
+    .msg-attachment { margin-top: 8px; }
+    .msg-attachment img { max-width: 300px; max-height: 200px; border-radius: 8px; cursor: pointer; }
+    .msg-attachment a { color: var(--primary); text-decoration: none; }
+    .msg-edited { font-size: 10px; color: var(--text-light); margin-left: 5px; }
+    .msg-actions { position: absolute; right: 8px; top: 4px; display: none; gap: 4px; }
+    .message:hover .msg-actions { display: flex; }
+    .msg-action-btn { background: var(--bg); border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .msg-action-btn:hover { background: var(--accent); }
+    /* Emoji Picker */
+    .emoji-picker { position: absolute; bottom: 60px; right: 20px; background: var(--card); border: 1px solid var(--accent); border-radius: 12px; padding: 10px; display: none; z-index: 100; max-width: 300px; }
+    .emoji-picker.active { display: block; }
+    .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; max-height: 200px; overflow-y: auto; }
+    .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: 4px; }
+    .emoji-btn:hover { background: var(--accent); }
+    /* File Upload */
+    .upload-btn { background: var(--accent); border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+    .upload-btn:hover { background: var(--primary); }
+    /* Search */
+    .search-btn { background: var(--accent); border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px; }
+    .search-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--card); padding: 20px; border-radius: 12px; z-index: 1001; width: 90%; max-width: 500px; max-height: 70vh; overflow-y: auto; }
+    .search-modal.active { display: block; }
+    .search-input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); margin-bottom: 15px; }
+    .search-results { max-height: 400px; overflow-y: auto; }
+    .search-result { padding: 10px; background: var(--bg); border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
+    .search-result:hover { background: var(--accent); }
+    /* Unread Badge */
+    .unread-badge { background: #e74c3c; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 6px; }
+    /* Invite Modal */
+    .invite-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--card); padding: 25px; border-radius: 12px; z-index: 1001; width: 90%; max-width: 400px; }
+    .invite-modal.active { display: block; }
+    .invite-code { font-family: monospace; font-size: 24px; text-align: center; padding: 15px; background: var(--bg); border-radius: 8px; margin: 15px 0; letter-spacing: 3px; color: var(--primary); }
+    /* Mention highlight */
+    .mention { color: var(--primary); background: rgba(var(--primary-rgb), 0.2); padding: 0 3px; border-radius: 3px; cursor: pointer; }
+    /* Pins button */
+    .pins-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-left: 10px; }
+  </style>
+</head>
+<body class="chat-page">
+  <div class="chat-app">
+    <!-- Sidebar - Servers -->
+    <aside class="sidebar servers-sidebar">
+      <!-- Global Chat - Always at top -->
+      <div class="sidebar-header">
+        <h3>Global Chat</h3>
+      </div>
+      <button class="global-chat-btn" id="globalChatBtn">
+        <span class="global-icon">🌐</span> Everyone's Hangout
+      </button>
+      
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-header">
+        <h3>Servers</h3>
+      </div>
+      <button class="add-btn" id="addServerBtn">+ Request Server</button>
+      <div id="serversList" class="servers-list"></div>
+      
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-header">
+        <h3>Group Chats</h3>
+        <button id="createGroupBtn" class="add-btn">+</button>
+      </div>
+      <div id="groupChatsList" class="group-chats-list"></div>
+      
+      <div id="adminSection" style="display: none;">
+        <div class="sidebar-divider"></div>
+        <button class="admin-btn" id="openAdminBtn">Admin Panel</button>
+      </div>
+    </aside>
+
+    <!-- Main - Channels/Messages -->
+    <main class="chat-main">
+      <div class="chat-header">
+        <h2 id="chatTitle">Welcome</h2>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="pins-btn" id="pinsBtn" title="Pinned Messages">📌</button>
+          <button class="search-btn" id="searchBtn" title="Search">🔍</button>
+          <button class="back-btn" onclick="window.location.href='/private/dashboard.html'">← Dashboard</button>
+        </div>
+      </div>
+      <div id="messagesContainer" class="messages-container">
+        <div class="welcome">Select a server, group chat, or friend to start chatting</div>
+      </div>
+      <div class="typing-indicator" id="typingIndicator"></div>
+      <div class="reply-bar" id="replyBar">
+        <span>Replying to <strong id="replyUsername"></strong>:</span>
+        <span class="reply-content" id="replyContent"></span>
+        <button class="cancel-reply" id="cancelReply">&times;</button>
+      </div>
+      <div class="message-input" style="display:flex;gap:8px;align-items:center;padding:10px;">
+        <button class="upload-btn" id="uploadBtn" title="Upload File">📎</button>
+        <input type="file" id="fileInput" style="display:none;" accept="image/*,.pdf,.doc,.docx,.txt">
+        <input type="text" id="messageInput" placeholder="Type a message... (use @ to mention)" style="flex:1;">
+        <button class="upload-btn" id="emojiBtn" title="Emoji">😀</button>
+        <button id="sendBtn">Send</button>
+      </div>
+      <!-- Emoji Picker -->
+      <div class="emoji-picker" id="emojiPicker">
+        <div class="emoji-grid" id="emojiGrid"></div>
+      </div>
+    </main>
+
+    <!-- Sidebar - Friends & Online Users -->
+    <aside class="sidebar users-sidebar">
+      <!-- User Status Section -->
+      <div class="user-status-section" style="padding:12px;background:var(--accent);border-radius:8px;margin-bottom:10px;">
+        <button id="statusBtn" style="width:100%;display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border:none;border-radius:6px;cursor:pointer;">
+          <span id="statusIndicator" style="width:12px;height:12px;border-radius:50%;background:#2ecc71;"></span>
+          <span id="statusText" style="flex:1;text-align:left;color:var(--text);font-size:13px;">Online</span>
+          <span style="color:var(--text-light);font-size:10px;">Change</span>
+        </button>
+      </div>
+      
+      <div class="sidebar-header">
+        <h3>Friend Requests</h3>
+      </div>
+      <div id="pendingRequestsList" class="pending-requests-list"></div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-header">
+        <h3>Friends</h3>
+        <button id="addFriendBtn" class="add-btn">+</button>
+      </div>
+      <div id="friendsList" class="friends-list"></div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-header">
+        <h3>Online</h3>
+      </div>
+      <div id="onlineUsersList" class="users-list"></div>
+      <div class="sidebar-divider"></div>
+      <button onclick="showBlockedUsersList()" style="width:100%;padding:10px;background:var(--accent);color:var(--text);border:none;border-radius:6px;cursor:pointer;font-size:12px;">
+        Blocked Users
+      </button>
+    </aside>
+  </div>
+
+  <!-- Admin Panel Modal -->
+  <div class="admin-overlay" id="adminOverlay"></div>
+  <div class="admin-panel" id="adminPanel">
+    <h2>
+      Admin Panel
+      <button class="admin-close" id="closeAdminBtn">&times;</button>
+    </h2>
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="users">Users</button>
+      <button class="admin-tab" data-tab="requests">Server Requests</button>
+    </div>
+    <div class="admin-content active" id="usersTab">
+      <div id="adminUsersList"></div>
+    </div>
+    <div class="admin-content" id="requestsTab">
+      <div id="serverRequestsList"></div>
+    </div>
+  </div>
+
+  <!-- Server Setup Modal -->
+  <div class="modal-overlay" id="serverSetupOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;"></div>
+  <div class="server-setup-modal" id="serverSetupModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);padding:30px;border-radius:12px;z-index:1001;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;">
+    <h2 style="margin-bottom:20px;color:var(--text);">Setup Your Server</h2>
+    <p style="color:var(--text-light);margin-bottom:20px;">Your server "<span id="setupServerName"></span>" has been approved! Name your first channel to get started.</p>
+    
+    <div id="channelSetupList" style="margin-bottom:20px;"></div>
+    
+    <button id="addMoreChannelsBtn" style="width:100%;padding:10px;background:transparent;border:2px dashed var(--accent);color:var(--accent);border-radius:8px;cursor:pointer;margin-bottom:20px;">+ Add Another Channel</button>
+    
+    <button id="completeSetupBtn" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--primary),var(--accent));color:var(--bg);border:none;border-radius:8px;font-weight:600;cursor:pointer;">Complete Setup</button>
+  </div>
+
+  <!-- Server Management Modal -->
+  <div class="modal-overlay" id="serverManageOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;"></div>
+  <div class="server-manage-modal" id="serverManageModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);padding:30px;border-radius:12px;z-index:1001;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;">
+    <h2 style="margin-bottom:5px;color:var(--text);">
+      <span id="manageServerTitle">Server Settings</span>
+      <button onclick="closeServerManageModal()" style="float:right;background:none;border:none;color:var(--text-light);font-size:24px;cursor:pointer;">&times;</button>
+    </h2>
+    <p style="color:var(--text-light);margin-bottom:20px;font-size:13px;">Manage your server and channels</p>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;">Server Name</label>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="manageServerNameInput" style="flex:1;padding:10px;background:var(--bg);border:1px solid var(--accent);border-radius:6px;color:var(--text);">
+        <button onclick="renameServer()" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;">Rename</button>
+      </div>
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;">Channels</label>
+      <div id="manageChannelsList" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:10px;">
+        <input type="text" id="newChannelNameInput" placeholder="New channel name..." style="flex:1;padding:10px;background:var(--bg);border:1px solid var(--accent);border-radius:6px;color:var(--text);">
+        <button onclick="addNewChannel()" style="padding:10px 20px;background:var(--accent);color:var(--bg);border:none;border-radius:6px;cursor:pointer;">Add</button>
+      </div>
+    </div>
+    
+    <button onclick="closeServerManageModal()" style="width:100%;padding:12px;background:var(--bg);color:var(--text);border:1px solid var(--accent);border-radius:8px;cursor:pointer;">Close</button>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal-overlay" id="searchOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;" onclick="closeSearchModal()"></div>
+  <div class="search-modal" id="searchModal">
+    <h3 style="margin:0 0 15px;color:var(--text);">Search Messages</h3>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search for messages...">
+    <div class="search-results" id="searchResults">
+      <p style="color:var(--text-light);text-align:center;">Enter at least 2 characters to search</p>
+    </div>
+    <button onclick="closeSearchModal()" style="width:100%;padding:10px;background:var(--accent);color:var(--text);border:none;border-radius:6px;cursor:pointer;margin-top:10px;">Close</button>
+  </div>
+
+  <!-- Pins Modal -->
+  <div class="modal-overlay" id="pinsOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;" onclick="closePinsModal()"></div>
+  <div class="search-modal" id="pinsModal">
+    <h3 style="margin:0 0 15px;color:var(--text);">📌 Pinned Messages</h3>
+    <div id="pinnedMessagesList" style="max-height:400px;overflow-y:auto;">
+      <p style="color:var(--text-light);text-align:center;">No pinned messages</p>
+    </div>
+    <button onclick="closePinsModal()" style="width:100%;padding:10px;background:var(--accent);color:var(--text);border:none;border-radius:6px;cursor:pointer;margin-top:10px;">Close</button>
+  </div>
+
+  <!-- Invite Modal -->
+  <div class="modal-overlay" id="inviteOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;" onclick="closeInviteModal()"></div>
+  <div class="invite-modal" id="inviteModal">
+    <h3 style="margin:0 0 10px;color:var(--text);">Server Invite</h3>
+    <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Share this code with friends to invite them:</p>
+    <div class="invite-code" id="inviteCode">XXXXXXXX</div>
+    <button onclick="copyInviteCode()" style="width:100%;padding:10px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;margin-bottom:8px;">Copy Code</button>
+    <button onclick="closeInviteModal()" style="width:100%;padding:10px;background:var(--accent);color:var(--text);border:none;border-radius:6px;cursor:pointer;">Close</button>
+  </div>
+
+  <!-- Join Server Modal -->
+  <div class="modal-overlay" id="joinServerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;" onclick="closeJoinServerModal()"></div>
+  <div class="invite-modal" id="joinServerModal">
+    <h3 style="margin:0 0 15px;color:var(--text);">Join Server</h3>
+    <input type="text" id="joinCodeInput" placeholder="Enter invite code..." style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--accent);border-radius:6px;color:var(--text);margin-bottom:15px;text-transform:uppercase;letter-spacing:2px;text-align:center;">
+    <button onclick="joinServerByCode()" style="width:100%;padding:10px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;margin-bottom:8px;">Join Server</button>
+    <button onclick="closeJoinServerModal()" style="width:100%;padding:10px;background:var(--accent);color:var(--text);border:none;border-radius:6px;cursor:pointer;">Cancel</button>
+  </div>
+
+  <!-- Server Settings Modal (Roles & Permissions) -->
+  <div class="modal-overlay" id="serverSettingsOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;"></div>
+  <div class="server-settings-modal" id="serverSettingsModal">
+    <div class="settings-header">
+      <h2>Server Settings</h2>
+      <button class="close-btn" onclick="closeServerSettings()">&times;</button>
+    </div>
+    <div class="settings-tabs">
+      <button class="settings-tab active" data-tab="roles">Roles</button>
+      <button class="settings-tab" data-tab="categories">Categories</button>
+      <button class="settings-tab" data-tab="members">Members</button>
+      <button class="settings-tab" data-tab="audit">Audit Log</button>
+    </div>
+    <div class="settings-content">
+      <!-- Roles Tab -->
+      <div class="settings-panel active" id="rolesPanel">
+        <div class="roles-sidebar">
+          <button class="create-role-btn" onclick="createNewRole()">+ Create Role</button>
+          <div id="rolesList" class="roles-list"></div>
+        </div>
+        <div class="role-editor" id="roleEditor">
+          <p class="no-role-selected">Select a role to edit</p>
+        </div>
+      </div>
+      <!-- Categories Tab -->
+      <div class="settings-panel" id="categoriesPanel">
+        <button class="create-role-btn" onclick="createNewCategory()">+ Create Category</button>
+        <div id="categoriesList" class="categories-list"></div>
+      </div>
+      <!-- Members Tab -->
+      <div class="settings-panel" id="membersPanel">
+        <div class="members-search">
+          <input type="text" id="memberSearch" placeholder="Search members..." oninput="filterMembers(this.value)">
+        </div>
+        <div id="membersList" class="members-list"></div>
+      </div>
+      <!-- Audit Log Tab -->
+      <div class="settings-panel" id="auditPanel">
+        <div id="auditLogList" class="audit-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script>
+    function getAuthToken() {
+      return localStorage.getItem('authToken');
+    }
+
+    function getCurrentUser() {
+      const user = localStorage.getItem('user');
+      return user ? JSON.parse(user) : null;
+    }
+
+    function checkAuth() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        window.location.href = '/private/auth.html';
+        return null;
+      }
+      return getCurrentUser();
+    }
+  </script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>
