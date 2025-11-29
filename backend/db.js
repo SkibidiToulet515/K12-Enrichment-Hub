@@ -461,6 +461,11 @@ try {
   sqliteDb.prepare(`INSERT OR IGNORE INTO users (id, username, password, role) VALUES (1, 'admin', ?, 'admin')`).run(adminPassword);
 } catch(e) {}
 
+const yusoffPassword = bcrypt.hashSync('1124', 10);
+try {
+  sqliteDb.prepare(`INSERT OR IGNORE INTO users (id, username, password, role) VALUES (2, 'Yusoff(ADMIN)', ?, 'admin')`).run(yusoffPassword);
+} catch(e) {}
+
 try {
   sqliteDb.exec(`INSERT OR IGNORE INTO servers (id, name, owner_id, description) 
           VALUES (1, 'Welcome', 1, 'Official Welcome server - Admin only messaging')`);
