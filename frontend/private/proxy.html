@@ -11,8 +11,12 @@
     * { box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: #1a1a2e;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: #fff;
       min-height: 100vh;
       margin: 0;
       padding: 0;
@@ -21,133 +25,205 @@
     .app-container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      min-height: 100vh;
     }
 
-    .navbar {
-      background: var(--card);
-      border-bottom: 2px solid var(--accent);
-      padding: 12px 20px;
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 15px;
-      flex-shrink: 0;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .navbar h1 {
-      font-size: 20px;
-      margin: 0;
-      white-space: nowrap;
+      padding: 15px 25px;
     }
 
     .back-btn {
       padding: 8px 16px;
-      background: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 13px;
       text-decoration: none;
       transition: all 0.2s;
-      white-space: nowrap;
     }
 
     .back-btn:hover {
-      background: var(--primary);
-      color: var(--bg);
+      background: rgba(255,255,255,0.2);
     }
 
-    .url-bar {
-      flex: 1;
+    .proxy-switcher {
       display: flex;
-      gap: 10px;
-      max-width: 800px;
+      gap: 8px;
     }
 
-    .url-input {
-      flex: 1;
-      padding: 10px 15px;
-      border: 2px solid var(--accent);
+    .proxy-btn {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 8px;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .url-input:focus {
-      border-color: var(--primary);
-    }
-
-    .go-btn {
-      padding: 10px 20px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-
-    .go-btn:hover {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
-
-    .proxy-tabs {
-      display: flex;
-      gap: 5px;
-    }
-
-    .proxy-tab {
-      padding: 8px 14px;
-      background: var(--bg);
-      color: var(--text);
-      border: 2px solid var(--accent);
-      border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       transition: all 0.2s;
     }
 
-    .proxy-tab.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
+    .proxy-btn.active {
+      background: #6366f1;
+      border-color: #6366f1;
     }
 
-    .proxy-tab:hover:not(.active) {
-      border-color: var(--primary);
+    .proxy-btn:hover:not(.active) {
+      background: rgba(255,255,255,0.2);
     }
 
-    .browser-container {
+    .main-content {
       flex: 1;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 40px;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 50px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 0 20px;
+      transition: all 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: #6366f1;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .search-icon {
+      color: rgba(255,255,255,0.5);
+      font-size: 18px;
+      margin-right: 12px;
+    }
+
+    .search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      padding: 16px 0;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .bookmarks-section {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .bookmarks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .bookmarks-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .edit-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .edit-btn:hover {
+      color: #fff;
+    }
+
+    .bookmarks-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .bookmark-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .bookmark-item:hover {
+      transform: translateY(-3px);
+    }
+
+    .bookmark-icon {
+      width: 70px;
+      height: 70px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      transition: all 0.2s;
+    }
+
+    .bookmark-item:hover .bookmark-icon {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .bookmark-icon img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+
+    .bookmark-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      max-width: 80px;
       overflow: hidden;
-      padding: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .browser-frame {
-      flex: 1;
-      border: 2px solid var(--accent);
-      border-radius: 12px;
-      overflow: hidden;
-      background: white;
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fff;
+      z-index: 100;
+      display: none;
+    }
+
+    .browser-frame.active {
+      display: block;
     }
 
     .browser-frame iframe {
@@ -156,155 +232,191 @@
       border: none;
     }
 
-    .loading-overlay {
-      position: absolute;
+    .browser-navbar {
+      position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: var(--card);
+      background: #1a1a2e;
+      padding: 10px 15px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 20px;
-      z-index: 10;
-    }
-
-    .loading-overlay.hidden {
+      gap: 10px;
+      z-index: 101;
       display: none;
     }
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid var(--accent);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .quick-links {
+    .browser-navbar.active {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
     }
 
-    .quick-link {
-      padding: 8px 16px;
-      background: var(--accent);
-      border-radius: 20px;
+    .nav-btn {
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
       cursor: pointer;
+      font-size: 14px;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .nav-url-bar {
+      flex: 1;
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
       font-size: 13px;
-      transition: all 0.2s;
     }
 
-    .quick-link:hover {
-      background: var(--primary);
-      color: white;
-    }
-
-    .status-bar {
-      background: var(--card);
-      border-top: 1px solid var(--accent);
-      padding: 8px 20px;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .status-text {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
     }
 
     .warning-banner {
-      background: #ff980020;
-      border: 1px solid #ff9800;
-      color: #ff9800;
-      padding: 10px 15px;
-      margin: 10px;
-      border-radius: 8px;
+      background: rgba(255, 152, 0, 0.15);
+      border: 1px solid rgba(255, 152, 0, 0.3);
+      color: #ffb74d;
+      padding: 12px 20px;
+      border-radius: 10px;
       font-size: 13px;
-      display: none;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 500px;
     }
 
-    .warning-banner.show {
-      display: block;
-    }
-
-    .open-new-tab-btn {
-      padding: 10px 20px;
-      background: #4CAF50;
-      color: white;
+    .warning-banner button {
+      background: #ff9800;
+      color: #000;
       border: none;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      margin-top: 10px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 14px;
-      margin-top: 15px;
-    }
-
-    .open-new-tab-btn:hover {
-      background: #45a049;
-    }
-
-    .info-text {
-      color: var(--text-dim);
-      font-size: 13px;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <div class="app-container">
-    <nav class="navbar">
-      <div class="nav-left">
-        <a href="/private/dashboard.html" class="back-btn">Back</a>
-        <h1>Web Browser</h1>
+    <div class="top-bar">
+      <a href="/private/dashboard.html" class="back-btn">← Back to Dashboard</a>
+      <div class="proxy-switcher">
+        <button class="proxy-btn active" data-proxy="uv" onclick="switchProxy('uv')">Ultraviolet</button>
+        <button class="proxy-btn" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</button>
       </div>
-      <div class="url-bar">
-        <input type="text" class="url-input" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off">
-        <button class="go-btn" onclick="navigate()">Go</button>
-      </div>
-      <div class="proxy-tabs">
-        <button class="proxy-tab active" data-proxy="uv" onclick="switchProxy('uv')">Ultraviolet</button>
-        <button class="proxy-tab" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</button>
-      </div>
-    </nav>
-
-    <div class="warning-banner" id="warningBanner">
-      Service workers require opening in a new tab. Click the button below to open the full proxy.
     </div>
 
-    <main class="browser-container">
-      <div class="browser-frame" id="browserFrame">
-        <div class="loading-overlay" id="loadingOverlay">
-          <div class="spinner"></div>
-          <div id="loadingText">Initializing proxy...</div>
-          <div class="quick-links">
-            <span class="quick-link" onclick="goTo('https://google.com')">Google</span>
-            <span class="quick-link" onclick="goTo('https://youtube.com')">YouTube</span>
-            <span class="quick-link" onclick="goTo('https://discord.com')">Discord</span>
-            <span class="quick-link" onclick="goTo('https://github.com')">GitHub</span>
-            <span class="quick-link" onclick="goTo('https://reddit.com')">Reddit</span>
-            <span class="quick-link" onclick="goTo('https://twitch.tv')">Twitch</span>
-          </div>
-          <button class="open-new-tab-btn" id="openNewTabBtn" onclick="openInNewTab()" style="display:none;">
-            Open Proxy in New Tab
-          </button>
-          <div class="info-text" id="infoText"></div>
+    <div class="main-content">
+      <div class="warning-banner" id="warningBanner" style="display:none;">
+        Service workers need to run in a new tab for full functionality.
+        <br>
+        <button onclick="openInNewTab()">Open in New Tab</button>
+      </div>
+
+      <div class="search-container">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="urlInput" placeholder="Search or enter URL..." autocomplete="off">
         </div>
-        <iframe id="proxyFrame" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
       </div>
-    </main>
 
-    <div class="status-bar">
-      <span id="statusText">Ready</span>
-      <span id="proxyType">Proxy: Ultraviolet</span>
+      <div class="bookmarks-section">
+        <div class="bookmarks-header">
+          <span class="bookmarks-title">Bookmarks</span>
+          <button class="edit-btn">Edit</button>
+        </div>
+        <div class="bookmarks-grid">
+          <div class="bookmark-item" onclick="goTo('https://www.google.com')">
+            <div class="bookmark-icon">
+              <img src="https://www.google.com/favicon.ico" alt="Google">
+            </div>
+            <span class="bookmark-label">Google</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://www.youtube.com')">
+            <div class="bookmark-icon" style="background: #ff0000;">
+              <span style="color:#fff;">▶</span>
+            </div>
+            <span class="bookmark-label">YouTube</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://soundcloud.com')">
+            <div class="bookmark-icon" style="background: #ff5500;">
+              <span style="color:#fff;">☁</span>
+            </div>
+            <span class="bookmark-label">SoundCloud</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://discord.com')">
+            <div class="bookmark-icon" style="background: #5865f2;">
+              <span style="color:#fff;">💬</span>
+            </div>
+            <span class="bookmark-label">Discord</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://github.com')">
+            <div class="bookmark-icon">
+              <img src="https://github.com/favicon.ico" alt="GitHub">
+            </div>
+            <span class="bookmark-label">GitHub</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://reddit.com')">
+            <div class="bookmark-icon" style="background: #ff4500;">
+              <span style="color:#fff;">👽</span>
+            </div>
+            <span class="bookmark-label">Reddit</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://twitch.tv')">
+            <div class="bookmark-icon" style="background: #9146ff;">
+              <span style="color:#fff;">📺</span>
+            </div>
+            <span class="bookmark-label">Twitch</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://twitter.com')">
+            <div class="bookmark-icon" style="background: #1da1f2;">
+              <span style="color:#fff;">🐦</span>
+            </div>
+            <span class="bookmark-label">Twitter</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://spotify.com')">
+            <div class="bookmark-icon" style="background: #1db954;">
+              <span style="color:#fff;">🎵</span>
+            </div>
+            <span class="bookmark-label">Spotify</span>
+          </div>
+          <div class="bookmark-item" onclick="goTo('https://netflix.com')">
+            <div class="bookmark-icon" style="background: #e50914;">
+              <span style="color:#fff;">🎬</span>
+            </div>
+            <span class="bookmark-label">Netflix</span>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="status-text" id="statusText">Ready</div>
+  </div>
+
+  <div class="browser-navbar" id="browserNavbar">
+    <button class="nav-btn" onclick="goHome()">✕</button>
+    <button class="nav-btn" onclick="goBack()">←</button>
+    <button class="nav-btn" onclick="goForward()">→</button>
+    <input type="text" class="nav-url-bar" id="navUrlBar" readonly>
+    <button class="nav-btn" onclick="refreshPage()">↻</button>
+  </div>
+
+  <div class="browser-frame" id="browserFrame">
+    <iframe id="proxyFrame" style="margin-top: 50px; height: calc(100% - 50px);" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
   </div>
 
   <script src="/js/themes.js"></script>
@@ -314,6 +426,7 @@
     let currentProxy = 'uv';
     let swReady = false;
     let isInIframe = window !== window.top;
+    let currentUrl = '';
 
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -342,11 +455,10 @@
         await navigator.serviceWorker.ready;
         swReady = true;
         document.getElementById('statusText').textContent = currentProxy === 'uv' ? 'Ultraviolet ready' : 'Scramjet ready';
-        document.getElementById('loadingText').textContent = 'Proxy ready! Click a link or enter a URL.';
         return true;
       } catch (e) {
         console.error('SW registration failed:', e);
-        document.getElementById('statusText').textContent = 'Registration failed - open in new tab';
+        document.getElementById('statusText').textContent = 'Open in new tab for proxy';
         return false;
       }
     }
@@ -375,14 +487,14 @@
     }
 
     async function goTo(url) {
+      currentUrl = url;
       document.getElementById('urlInput').value = url;
+      document.getElementById('navUrlBar').value = url;
       
       if (!swReady) {
         const success = await registerServiceWorker();
         if (!success) {
-          document.getElementById('warningBanner').classList.add('show');
-          document.getElementById('openNewTabBtn').style.display = 'block';
-          document.getElementById('infoText').textContent = 'Service workers require a new tab to work properly.';
+          document.getElementById('warningBanner').style.display = 'block';
           return;
         }
       }
@@ -390,18 +502,38 @@
       document.getElementById('statusText').textContent = 'Loading...';
       
       const frame = document.getElementById('proxyFrame');
-      const loading = document.getElementById('loadingOverlay');
+      const browserFrame = document.getElementById('browserFrame');
+      const browserNavbar = document.getElementById('browserNavbar');
       
       const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
       const encodedUrl = prefix + encodeUrl(url);
       
-      frame.style.display = 'block';
-      loading.classList.add('hidden');
+      browserFrame.classList.add('active');
+      browserNavbar.classList.add('active');
       frame.src = encodedUrl;
       
       frame.onload = () => {
-        document.getElementById('statusText').textContent = 'Loaded via ' + (currentProxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
+        document.getElementById('statusText').textContent = 'Loaded';
       };
+    }
+
+    function goHome() {
+      document.getElementById('browserFrame').classList.remove('active');
+      document.getElementById('browserNavbar').classList.remove('active');
+      document.getElementById('proxyFrame').src = 'about:blank';
+      document.getElementById('urlInput').value = '';
+    }
+
+    function goBack() {
+      try { document.getElementById('proxyFrame').contentWindow.history.back(); } catch(e) {}
+    }
+
+    function goForward() {
+      try { document.getElementById('proxyFrame').contentWindow.history.forward(); } catch(e) {}
+    }
+
+    function refreshPage() {
+      if (currentUrl) goTo(currentUrl);
     }
 
     async function switchProxy(proxy) {
@@ -410,19 +542,11 @@
       currentProxy = proxy;
       swReady = false;
       
-      document.querySelectorAll('.proxy-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.proxy === proxy);
+      document.querySelectorAll('.proxy-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.proxy === proxy);
       });
-      document.getElementById('proxyType').textContent = 'Proxy: ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
       
-      const frame = document.getElementById('proxyFrame');
-      const loading = document.getElementById('loadingOverlay');
-      
-      frame.style.display = 'none';
-      frame.src = 'about:blank';
-      loading.classList.remove('hidden');
-      
-      document.getElementById('loadingText').textContent = 'Switching to ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet') + '...';
+      document.getElementById('statusText').textContent = 'Switching to ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet') + '...';
       
       await registerServiceWorker();
     }
@@ -435,11 +559,8 @@
       if (!checkAuth()) return;
       
       if (isInIframe) {
-        document.getElementById('warningBanner').classList.add('show');
-        document.getElementById('openNewTabBtn').style.display = 'block';
-        document.getElementById('loadingText').textContent = 'Running in iframe - open in new tab for best results';
-        document.getElementById('infoText').textContent = 'UV/Scramjet work best when opened in a new browser tab.';
-        document.getElementById('statusText').textContent = 'Open in new tab for full proxy support';
+        document.getElementById('warningBanner').style.display = 'block';
+        document.getElementById('statusText').textContent = 'Open in new tab for best experience';
       } else {
         await registerServiceWorker();
       }
