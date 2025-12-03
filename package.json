@@ -14,6 +14,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@mercuryworkshop/bare-mux": "^2.1.8",
+    "@mercuryworkshop/scramjet": "^1.0.2",
     "@nebula-services/bare-server-node": "^2.0.4",
     "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
     "bcryptjs": "^3.0.3",

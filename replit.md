@@ -6,15 +6,19 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
-- **2025-12-03**: Added Ultraviolet Web Proxy
+- **2025-12-03**: Added Ultraviolet & Scramjet Web Proxies
   - Integrated @nebula-services/bare-server-node for proxy backend
-  - Added @titaniumnetwork-dev/ultraviolet for web proxy functionality
+  - Added @titaniumnetwork-dev/ultraviolet for Ultraviolet proxy
+  - Added @mercuryworkshop/scramjet for Scramjet proxy
+  - Added @mercuryworkshop/bare-mux for transport handling
   - Created dedicated proxy page at `/private/proxy.html`
   - URL bar with search support (auto-detects URLs vs search terms)
   - Quick links to popular sites (Google, YouTube, Discord, etc.)
-  - Ultraviolet/Scramjet proxy switcher (Scramjet coming soon)
-  - Service worker-based proxy for better compatibility
-  - Files in `frontend/uv/` directory
+  - Dual proxy support - switch between Ultraviolet and Scramjet
+  - Service worker-based proxies for better compatibility
+  - Ultraviolet files in `frontend/uv/` directory
+  - Scramjet files in `frontend/scram/` directory
+  - BareMux files in `frontend/baremux/` directory
 
 - **2025-12-03**: Database Migration to PostgreSQL
   - Converted from SQLite to PostgreSQL for persistent data across deployments

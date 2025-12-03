@@ -281,7 +281,8 @@
   <script src="/js/stealth-mode.js"></script>
   <script>
     let currentProxy = 'uv';
-    let swRegistered = false;
+    let uvRegistered = false;
+    let scramjetRegistered = false;
 
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -292,27 +293,60 @@
       return true;
     }
 
-    async function registerServiceWorker() {
-      if (!('serviceWorker' in navigator)) {
-        document.getElementById('statusText').textContent = 'Service Workers not supported';
-        return false;
-      }
-
+    async function registerUV() {
+      if (uvRegistered) return true;
       try {
         const reg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
         await navigator.serviceWorker.ready;
-        swRegistered = true;
-        document.getElementById('statusText').textContent = 'Proxy ready';
+        uvRegistered = true;
         return true;
       } catch (e) {
-        console.error('SW registration failed:', e);
-        document.getElementById('statusText').textContent = 'Proxy initialization failed';
+        console.error('UV registration failed:', e);
         return false;
       }
     }
 
-    function encodeUrl(url) {
+    async function registerScramjet() {
+      if (scramjetRegistered) return true;
+      try {
+        const reg = await navigator.serviceWorker.register('/scram/sw.js', { scope: '/scramjet/' });
+        await navigator.serviceWorker.ready;
+        scramjetRegistered = true;
+        return true;
+      } catch (e) {
+        console.error('Scramjet registration failed:', e);
+        return false;
+      }
+    }
+
+    async function initProxy() {
+      if (!('serviceWorker' in navigator)) {
+        document.getElementById('statusText').textContent = 'Service Workers not supported';
+        return;
+      }
+      
+      document.getElementById('statusText').textContent = 'Initializing proxies...';
+      
+      const uvOk = await registerUV();
+      const sjOk = await registerScramjet();
+      
+      if (uvOk && sjOk) {
+        document.getElementById('statusText').textContent = 'Both proxies ready';
+      } else if (uvOk) {
+        document.getElementById('statusText').textContent = 'UV ready (Scramjet failed)';
+      } else if (sjOk) {
+        document.getElementById('statusText').textContent = 'Scramjet ready (UV failed)';
+      } else {
+        document.getElementById('statusText').textContent = 'Proxy initialization failed';
+      }
+    }
+
+    function encodeUrlUV(url) {
       return encodeURIComponent(url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join(''));
+    }
+
+    function encodeUrlScramjet(url) {
+      return encodeURIComponent(url);
     }
 
     function navigate() {
@@ -334,34 +368,62 @@
       document.getElementById('urlInput').value = url;
       document.getElementById('statusText').textContent = 'Loading...';
       
-      if (!swRegistered) {
-        const success = await registerServiceWorker();
-        if (!success) return;
-      }
-
       const frame = document.getElementById('proxyFrame');
       const loading = document.getElementById('loadingOverlay');
       
+      let encodedUrl;
+      
+      if (currentProxy === 'uv') {
+        if (!uvRegistered) {
+          const success = await registerUV();
+          if (!success) {
+            document.getElementById('statusText').textContent = 'UV failed - try Scramjet';
+            return;
+          }
+        }
+        encodedUrl = '/service/' + encodeUrlUV(url);
+      } else {
+        if (!scramjetRegistered) {
+          const success = await registerScramjet();
+          if (!success) {
+            document.getElementById('statusText').textContent = 'Scramjet failed - try UV';
+            return;
+          }
+        }
+        encodedUrl = '/scramjet/' + encodeUrlScramjet(url);
+      }
+      
       frame.style.display = 'block';
       loading.classList.add('hidden');
-      
-      const encodedUrl = '/service/' + encodeUrl(url);
       frame.src = encodedUrl;
       
       frame.onload = () => {
-        document.getElementById('statusText').textContent = 'Loaded';
+        document.getElementById('statusText').textContent = 'Loaded via ' + (currentProxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
       };
     }
 
-    function switchProxy(proxy) {
+    async function switchProxy(proxy) {
+      if (currentProxy === proxy) return;
+      
       currentProxy = proxy;
       document.querySelectorAll('.proxy-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.proxy === proxy);
       });
       document.getElementById('proxyType').textContent = 'Proxy: ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
       
-      if (proxy === 'scramjet') {
-        document.getElementById('statusText').textContent = 'Scramjet coming soon...';
+      const frame = document.getElementById('proxyFrame');
+      const loading = document.getElementById('loadingOverlay');
+      
+      frame.style.display = 'none';
+      frame.src = 'about:blank';
+      loading.classList.remove('hidden');
+      
+      if (proxy === 'uv') {
+        if (!uvRegistered) await registerUV();
+        document.getElementById('statusText').textContent = uvRegistered ? 'Ultraviolet ready' : 'UV failed';
+      } else {
+        if (!scramjetRegistered) await registerScramjet();
+        document.getElementById('statusText').textContent = scramjetRegistered ? 'Scramjet ready' : 'Scramjet failed';
       }
     }
 
@@ -371,7 +433,7 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuth()) return;
-      await registerServiceWorker();
+      await initProxy();
     });
   </script>
 </body>
