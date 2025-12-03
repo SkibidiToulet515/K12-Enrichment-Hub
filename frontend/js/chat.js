@@ -3820,10 +3820,13 @@ function initKeyboardShortcuts() {
   })
     .then(r => r.json())
     .then(shortcuts => {
-      shortcuts.forEach(s => {
-        userShortcuts[s.action] = { shortcut: s.shortcut, enabled: s.is_enabled };
-      });
-    });
+      if (Array.isArray(shortcuts)) {
+        shortcuts.forEach(s => {
+          userShortcuts[s.action] = { shortcut: s.shortcut, enabled: s.is_enabled };
+        });
+      }
+    })
+    .catch(err => console.log('Failed to load shortcuts'));
 }
 
 document.addEventListener('keydown', (e) => {

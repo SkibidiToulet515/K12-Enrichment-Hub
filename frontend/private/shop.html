@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmetic Shop - Enrichment Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <script src="/js/private-auth.js"></script>
+  <style>
+    .shop-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .shop-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .coin-display {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: 2px solid var(--accent);
+    }
+    .coin-icon {
+      font-size: 24px;
+    }
+    .coin-amount {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .daily-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .daily-btn:hover {
+      transform: scale(1.05);
+    }
+    .daily-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .shop-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .shop-tab {
+      padding: 10px 20px;
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: 25px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .shop-tab:hover, .shop-tab.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+    .inventory-toggle {
+      margin-left: auto;
+      padding: 10px 20px;
+      background: var(--accent);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .shop-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .shop-item {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .shop-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .item-preview {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin-bottom: 15px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+    .item-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    .item-desc {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .item-rarity {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .rarity-common { background: #95a5a6; color: white; }
+    .rarity-uncommon { background: #27ae60; color: white; }
+    .rarity-rare { background: #3498db; color: white; }
+    .rarity-epic { background: #9b59b6; color: white; }
+    .rarity-legendary { background: linear-gradient(135deg, #f39c12, #e74c3c); color: white; }
+    .item-price {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .buy-btn, .equip-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .buy-btn {
+      background: var(--primary);
+      color: white;
+    }
+    .buy-btn:hover {
+      filter: brightness(1.1);
+    }
+    .buy-btn:disabled {
+      background: var(--text-light);
+      cursor: not-allowed;
+    }
+    .equip-btn {
+      background: var(--accent);
+      color: white;
+    }
+    .equip-btn.equipped {
+      background: #27ae60;
+    }
+    .owned-badge {
+      background: #27ae60;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-light);
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    .back-link:hover {
+      color: var(--primary);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+    .empty-state .icon {
+      font-size: 64px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body class="private-page">
+  <div class="app-container">
+    <nav class="navbar">
+      <div class="nav-left">
+        <h1>Enrichment Hub</h1>
+      </div>
+      <div class="nav-right">
+        <select id="themeSelector" class="theme-selector">
+          <option value="ocean">Deep Ocean</option>
+          <option value="arcade">Neon Arcade</option>
+          <option value="candy">Cotton Candy</option>
+          <option value="eclipse">Solar Eclipse</option>
+          <option value="matrix">Cyber Matrix</option>
+          <option value="notebook">School Notebook</option>
+          <option value="gaming">Midnight Gaming</option>
+          <option value="pixel">Retro Pixel</option>
+          <option value="cloudy">Cloudy Day</option>
+          <option value="academia">Royal Academia</option>
+        </select>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <main class="shop-page">
+      <a href="/private/dashboard.html" class="back-link">← Back to Dashboard</a>
+      
+      <div class="shop-header">
+        <h2 class="shop-title">Cosmetic Shop</h2>
+        <div class="coin-display">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-amount" id="coinBalance">0</span>
+          <button class="daily-btn" id="dailyRewardBtn" onclick="claimDailyReward()">Claim Daily</button>
+        </div>
+      </div>
+
+      <div class="shop-tabs" id="shopTabs">
+        <button class="shop-tab active" data-category="all">All Items</button>
+        <button class="inventory-toggle" onclick="toggleInventory()">My Inventory</button>
+      </div>
+
+      <div class="shop-items" id="shopItems">
+        <div class="empty-state">
+          <div class="icon">🛒</div>
+          <p>Loading shop items...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script>
+    if (!localStorage.getItem('userToken')) {
+      window.location.href = '/private/auth.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userId');
+      window.location.href = '/private/auth.html';
+    }
+
+    function getAuthToken() {
+      return localStorage.getItem('authToken') || localStorage.getItem('userToken');
+    }
+
+    let allItems = [];
+    let userInventory = [];
+    let userEquipped = [];
+    let categories = [];
+    let showingInventory = false;
+    let currentCategory = 'all';
+
+    async function initShop() {
+      await loadBalance();
+      await loadCategories();
+      await loadItems();
+      await loadInventory();
+      checkDailyReward();
+    }
+
+    async function loadBalance() {
+      try {
+        const res = await fetch('/api/shop/balance', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        document.getElementById('coinBalance').textContent = data.coins || 0;
+      } catch (e) {
+        console.error('Failed to load balance:', e);
+      }
+    }
+
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/shop/categories', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        categories = await res.json();
+        renderTabs();
+      } catch (e) {
+        console.error('Failed to load categories:', e);
+      }
+    }
+
+    function renderTabs() {
+      const container = document.getElementById('shopTabs');
+      container.innerHTML = `
+        <button class="shop-tab ${currentCategory === 'all' ? 'active' : ''}" data-category="all">All Items</button>
+        ${categories.map(c => `
+          <button class="shop-tab ${currentCategory === c.id.toString() ? 'active' : ''}" data-category="${c.id}">${c.icon} ${c.name}</button>
+        `).join('')}
+        <button class="inventory-toggle" onclick="toggleInventory()">${showingInventory ? 'Shop' : 'My Inventory'}</button>
+      `;
+      
+      container.querySelectorAll('.shop-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          currentCategory = tab.dataset.category;
+          showingInventory = false;
+          renderTabs();
+          renderItems();
+        });
+      });
+    }
+
+    async function loadItems() {
+      try {
+        const res = await fetch('/api/shop/items', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        allItems = await res.json();
+        renderItems();
+      } catch (e) {
+        console.error('Failed to load items:', e);
+      }
+    }
+
+    async function loadInventory() {
+      try {
+        const res = await fetch('/api/shop/inventory', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        userInventory = data.items || [];
+        userEquipped = data.equipped || [];
+      } catch (e) {
+        console.error('Failed to load inventory:', e);
+      }
+    }
+
+    function toggleInventory() {
+      showingInventory = !showingInventory;
+      renderTabs();
+      renderItems();
+    }
+
+    function renderItems() {
+      const container = document.getElementById('shopItems');
+      let items = showingInventory 
+        ? allItems.filter(i => userInventory.includes(i.id))
+        : allItems;
+      
+      if (currentCategory !== 'all' && !showingInventory) {
+        items = items.filter(i => i.category_id.toString() === currentCategory);
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">${showingInventory ? '📦' : '🛒'}</div>
+            <p>${showingInventory ? 'Your inventory is empty' : 'No items in this category'}</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const owned = userInventory.includes(item.id);
+        const equipped = userEquipped.includes(item.id);
+        
+        return `
+          <div class="shop-item">
+            <div class="item-preview">${item.preview || item.name.charAt(0)}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.description || ''}</div>
+            <span class="item-rarity rarity-${item.rarity}">${item.rarity}</span>
+            ${owned ? '<span class="owned-badge">Owned</span>' : `
+              <div class="item-price">
+                <span>🪙</span>
+                <span>${item.price}</span>
+              </div>
+            `}
+            ${owned ? `
+              <button class="equip-btn ${equipped ? 'equipped' : ''}" onclick="toggleEquip(${item.id}, ${equipped})">
+                ${equipped ? 'Unequip' : 'Equip'}
+              </button>
+            ` : `
+              <button class="buy-btn" onclick="buyItem(${item.id}, ${item.price})">Buy</button>
+            `}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function buyItem(itemId, price) {
+      const balance = parseInt(document.getElementById('coinBalance').textContent);
+      if (balance < price) {
+        alert('Not enough coins!');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/shop/purchase/${itemId}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          userInventory.push(itemId);
+          document.getElementById('coinBalance').textContent = data.newBalance;
+          renderItems();
+        } else {
+          alert(data.error || 'Purchase failed');
+        }
+      } catch (e) {
+        alert('Purchase failed');
+      }
+    }
+
+    async function toggleEquip(itemId, isEquipped) {
+      const endpoint = isEquipped ? 'unequip' : 'equip';
+      try {
+        const res = await fetch(`/api/shop/${endpoint}/${itemId}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (isEquipped) {
+            userEquipped = userEquipped.filter(id => id !== itemId);
+          } else {
+            userEquipped.push(itemId);
+          }
+          renderItems();
+          
+          const item = allItems.find(i => i.id === itemId);
+          if (item && item.category_id === 1) {
+            applyTheme(item);
+          }
+        }
+      } catch (e) {
+        console.error('Equip failed:', e);
+      }
+    }
+
+    function applyTheme(item) {
+      if (item.effect_data) {
+        try {
+          const theme = JSON.parse(item.effect_data);
+          Object.entries(theme).forEach(([key, val]) => {
+            document.documentElement.style.setProperty(key, val);
+          });
+        } catch (e) {}
+      }
+    }
+
+    async function checkDailyReward() {
+      try {
+        const res = await fetch('/api/shop/daily-status', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        const btn = document.getElementById('dailyRewardBtn');
+        if (data.canClaim) {
+          btn.disabled = false;
+          btn.textContent = `Claim Daily (${data.nextReward} coins)`;
+        } else {
+          btn.disabled = true;
+          const hours = Math.ceil((data.nextClaimTime - Date.now()) / 3600000);
+          btn.textContent = `Next in ${hours}h`;
+        }
+      } catch (e) {
+        console.error('Failed to check daily status:', e);
+      }
+    }
+
+    async function claimDailyReward() {
+      try {
+        const res = await fetch('/api/shop/daily-reward', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('coinBalance').textContent = data.newBalance;
+          alert(`Claimed ${data.amount} coins! Streak: ${data.streak} days`);
+          checkDailyReward();
+        }
+      } catch (e) {
+        console.error('Failed to claim reward:', e);
+      }
+    }
+
+    initShop();
+  </script>
+</body>
+</html>

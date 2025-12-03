@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyboard Shortcuts - Enrichment Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <script src="/js/private-auth.js"></script>
+  <style>
+    .shortcuts-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .reset-btn {
+      padding: 10px 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover {
+      filter: brightness(1.1);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-light);
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    .back-link:hover {
+      color: var(--primary);
+    }
+    .shortcuts-section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .shortcut-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--bg);
+    }
+    .shortcut-row:last-child {
+      border-bottom: none;
+    }
+    .shortcut-info {
+      flex: 1;
+    }
+    .shortcut-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .shortcut-desc {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+    .shortcut-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .key-display {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 80px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .key-display:hover {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+    .key-display.recording {
+      border-color: #e74c3c;
+      background: #e74c3c;
+      color: white;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background: var(--text-light);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .toggle-switch.enabled {
+      background: var(--primary);
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: all 0.2s;
+    }
+    .toggle-switch.enabled::after {
+      left: 26px;
+    }
+    .info-box {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+    .info-box strong {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body class="private-page">
+  <div class="app-container">
+    <nav class="navbar">
+      <div class="nav-left">
+        <h1>Enrichment Hub</h1>
+      </div>
+      <div class="nav-right">
+        <select id="themeSelector" class="theme-selector">
+          <option value="ocean">Deep Ocean</option>
+          <option value="arcade">Neon Arcade</option>
+          <option value="candy">Cotton Candy</option>
+          <option value="eclipse">Solar Eclipse</option>
+          <option value="matrix">Cyber Matrix</option>
+          <option value="notebook">School Notebook</option>
+          <option value="gaming">Midnight Gaming</option>
+          <option value="pixel">Retro Pixel</option>
+          <option value="cloudy">Cloudy Day</option>
+          <option value="academia">Royal Academia</option>
+        </select>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <main class="shortcuts-page">
+      <a href="/private/dashboard.html" class="back-link">← Back to Dashboard</a>
+      
+      <div class="page-header">
+        <h2 class="page-title">Keyboard Shortcuts</h2>
+        <button class="reset-btn" onclick="resetAllShortcuts()">Reset to Defaults</button>
+      </div>
+
+      <div id="shortcutsContainer">
+        <div class="shortcuts-section">
+          <div class="section-title">Loading shortcuts...</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>How to use:</strong> Click on any key to record a new shortcut. 
+        Press the key combination you want to use, then press Enter to save or Escape to cancel.
+        Use the toggle to enable or disable individual shortcuts.
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script>
+    if (!localStorage.getItem('userToken')) {
+      window.location.href = '/private/auth.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userId');
+      window.location.href = '/private/auth.html';
+    }
+
+    function getAuthToken() {
+      return localStorage.getItem('authToken') || localStorage.getItem('userToken');
+    }
+
+    let shortcuts = [];
+    let recordingElement = null;
+
+    const shortcutCategories = {
+      'Navigation': ['open_chat', 'open_games', 'open_profile', 'return_dashboard'],
+      'Chat': ['focus_search', 'new_message', 'mark_read'],
+      'UI': ['toggle_sidebar', 'open_shop'],
+      'Advanced': ['quick_switcher', 'next_channel', 'prev_channel']
+    };
+
+    const shortcutDescriptions = {
+      'open_chat': 'Open chat and community',
+      'open_games': 'Go to games page',
+      'open_profile': 'View your profile',
+      'return_dashboard': 'Return to dashboard',
+      'focus_search': 'Focus message search',
+      'new_message': 'Start typing a message',
+      'mark_read': 'Mark messages as read',
+      'toggle_sidebar': 'Show/hide sidebar',
+      'open_shop': 'Open cosmetic shop',
+      'quick_switcher': 'Quick channel switcher',
+      'next_channel': 'Next channel',
+      'prev_channel': 'Previous channel'
+    };
+
+    async function loadShortcuts() {
+      try {
+        const res = await fetch('/api/shortcuts', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        shortcuts = await res.json();
+        if (!Array.isArray(shortcuts)) shortcuts = [];
+        renderShortcuts();
+      } catch (e) {
+        console.error('Failed to load shortcuts:', e);
+      }
+    }
+
+    function renderShortcuts() {
+      const container = document.getElementById('shortcutsContainer');
+      
+      container.innerHTML = Object.entries(shortcutCategories).map(([category, actions]) => {
+        const categoryShortcuts = actions.map(action => {
+          const s = shortcuts.find(sc => sc.action === action);
+          return s ? { ...s, action } : { action, shortcut: '—', is_enabled: 1 };
+        });
+
+        return `
+          <div class="shortcuts-section">
+            <div class="section-title">${getCategoryIcon(category)} ${category}</div>
+            ${categoryShortcuts.map(s => `
+              <div class="shortcut-row">
+                <div class="shortcut-info">
+                  <div class="shortcut-name">${formatActionName(s.action)}</div>
+                  <div class="shortcut-desc">${shortcutDescriptions[s.action] || ''}</div>
+                </div>
+                <div class="shortcut-controls">
+                  <div class="key-display" data-action="${s.action}" onclick="startRecording(this)">
+                    ${formatShortcut(s.shortcut)}
+                  </div>
+                  <div class="toggle-switch ${s.is_enabled ? 'enabled' : ''}" 
+                       data-action="${s.action}" 
+                       onclick="toggleEnabled(this, ${s.is_enabled})"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getCategoryIcon(category) {
+      const icons = {
+        'Navigation': '🧭',
+        'Chat': '💬',
+        'UI': '🖥️',
+        'Advanced': '⚡'
+      };
+      return icons[category] || '⌨️';
+    }
+
+    function formatActionName(action) {
+      return action.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    function formatShortcut(shortcut) {
+      if (!shortcut || shortcut === '—') return '—';
+      return shortcut.split('+').map(k => {
+        if (k === 'ctrl') return 'Ctrl';
+        if (k === 'alt') return 'Alt';
+        if (k === 'shift') return 'Shift';
+        if (k === 'escape') return 'Esc';
+        if (k === ' ') return 'Space';
+        return k.toUpperCase();
+      }).join(' + ');
+    }
+
+    function startRecording(element) {
+      if (recordingElement) {
+        recordingElement.classList.remove('recording');
+        recordingElement.textContent = recordingElement.dataset.original;
+      }
+      
+      element.dataset.original = element.textContent;
+      element.classList.add('recording');
+      element.textContent = 'Press key...';
+      recordingElement = element;
+    }
+
+    document.addEventListener('keydown', async (e) => {
+      if (!recordingElement) return;
+      
+      if (e.key === 'Escape') {
+        recordingElement.classList.remove('recording');
+        recordingElement.textContent = recordingElement.dataset.original;
+        recordingElement = null;
+        return;
+      }
+
+      e.preventDefault();
+      
+      let key = e.key.toLowerCase();
+      if (key === ' ') key = 'space';
+      
+      let shortcut = '';
+      if (e.ctrlKey) shortcut += 'ctrl+';
+      if (e.altKey) shortcut += 'alt+';
+      if (e.shiftKey && key !== 'shift') shortcut += 'shift+';
+      
+      if (!['control', 'alt', 'shift', 'meta'].includes(key)) {
+        shortcut += key;
+        
+        const action = recordingElement.dataset.action;
+        
+        try {
+          const res = await fetch(`/api/shortcuts/${action}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${getAuthToken()}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ shortcut, is_enabled: true })
+          });
+          
+          const data = await res.json();
+          
+          if (data.success) {
+            recordingElement.textContent = formatShortcut(shortcut);
+            const idx = shortcuts.findIndex(s => s.action === action);
+            if (idx >= 0) {
+              shortcuts[idx].shortcut = shortcut;
+            } else {
+              shortcuts.push({ action, shortcut, is_enabled: 1 });
+            }
+          } else {
+            alert(data.error || 'Failed to save shortcut');
+            recordingElement.textContent = recordingElement.dataset.original;
+          }
+        } catch (err) {
+          alert('Failed to save shortcut');
+          recordingElement.textContent = recordingElement.dataset.original;
+        }
+        
+        recordingElement.classList.remove('recording');
+        recordingElement = null;
+      }
+    });
+
+    async function toggleEnabled(element, currentState) {
+      const action = element.dataset.action;
+      const newState = !currentState;
+      const shortcutData = shortcuts.find(s => s.action === action);
+      if (!shortcutData || !shortcutData.shortcut || shortcutData.shortcut === '—') {
+        alert('Please set a shortcut key first');
+        return;
+      }
+      const shortcut = shortcutData.shortcut;
+      
+      try {
+        const res = await fetch(`/api/shortcuts/${action}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ shortcut, is_enabled: newState })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          element.classList.toggle('enabled');
+          element.onclick = () => toggleEnabled(element, newState);
+          const idx = shortcuts.findIndex(s => s.action === action);
+          if (idx >= 0) shortcuts[idx].is_enabled = newState ? 1 : 0;
+        }
+      } catch (err) {
+        console.error('Failed to toggle shortcut:', err);
+      }
+    }
+
+    async function resetAllShortcuts() {
+      if (!confirm('Reset all shortcuts to their default values?')) return;
+      
+      try {
+        const res = await fetch('/api/shortcuts/reset', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          loadShortcuts();
+        }
+      } catch (err) {
+        console.error('Failed to reset shortcuts:', err);
+      }
+    }
+
+    loadShortcuts();
+  </script>
+</body>
+</html>
