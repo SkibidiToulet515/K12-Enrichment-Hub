@@ -8,12 +8,12 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 ## Recent Changes
 - **2025-12-03**: Added comprehensive cosmetic shop system
   - 10 item categories: Themes, Profile Frames, Badges, Chat Bubbles, Sound Packs, Animated Avatars, Server Cosmetics, Status Effects, Bio Upgrades, Boosts
-  - Virtual currency system with 100 starting coins for new users
-  - Daily rewards with streak bonuses (+10% per day up to 7 days)
-  - Purchase, equip/unequip functionality
+  - Virtual currency system with 1000 starting coins for new users
+  - Daily rewards with streak bonuses (50, 100, 150, 200, 250 coins based on streak)
+  - Purchase, equip/unequip functionality with inventory tracking
   - Theme application changes CSS variables site-wide
   - Rarity system: Common, Uncommon, Rare, Epic, Legendary
-  - Admin coin grant feature for rewards
+  - Server cosmetics restricted to server owners only
   - Database tables: shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, daily_rewards
 
 - **2025-12-03**: Enhanced server invite system UX
