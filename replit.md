@@ -6,6 +6,15 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Imported from GitHub and configured for Replit environment (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-03**: Enhanced server invite system UX
+  - Added "Create Invite" and "View Invites" options to server context menus
+  - Added "Join" button in the servers sidebar for quick access
+  - Created invite creation modal with expiry options (1h, 6h, 24h, 7d, never) and max uses (no limit, 1, 5, 10, 25, 50, 100)
+  - Added invite preview feature showing server name, member count, and inviter when entering codes
+  - Implemented proper debouncing and state management for invite previews
+  - Added comprehensive error handling across all invite operations
+  - View invites modal shows all active invites with copy/delete functionality
+  
 - **2025-12-03**: Initial Replit setup
   - Changed server port from 8080 to 5000 (required for Replit webview)
   - Created uploads directory structure
