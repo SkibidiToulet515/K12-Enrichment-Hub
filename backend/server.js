@@ -4,7 +4,6 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
-const { createBareServer } = require('@nebula-services/bare-server-node');
 const db = require('./db');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
@@ -37,22 +36,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 const app = express();
-const bareServer = createBareServer('/bare/');
-const server = http.createServer((req, res) => {
-  if (bareServer.shouldRoute(req)) {
-    bareServer.routeRequest(req, res);
-  } else {
-    app(req, res);
-  }
-});
-
-server.on('upgrade', (req, socket, head) => {
-  if (bareServer.shouldRoute(req)) {
-    bareServer.routeUpgrade(req, socket, head);
-  } else {
-    socket.end();
-  }
-});
+const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] },
@@ -67,18 +51,6 @@ adminRoutes.setIo(io);
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
-// Service Worker headers for proxy
-app.use('/uv/sw.js', (req, res, next) => {
-  res.setHeader('Service-Worker-Allowed', '/');
-  res.setHeader('Content-Type', 'application/javascript');
-  next();
-});
-app.use('/scram/sw.js', (req, res, next) => {
-  res.setHeader('Service-Worker-Allowed', '/');
-  res.setHeader('Content-Type', 'application/javascript');
-  next();
-});
 
 // Serve all frontend files (CSS, JS, uploads)
 app.use(express.static(path.join(__dirname, '../frontend')));
