@@ -20,6 +20,7 @@ const searchRoutes = require('./routes/search');
 const rolesRoutes = require('./routes/roles');
 const categoriesRoutes = require('./routes/categories');
 const auditRoutes = require('./routes/audit');
+const shopRoutes = require('./routes/shop');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../frontend/uploads')),
@@ -71,6 +72,7 @@ app.use('/api/search', authMiddleware, searchRoutes);
 app.use('/api/roles', authMiddleware, rolesRoutes);
 app.use('/api/categories', authMiddleware, categoriesRoutes);
 app.use('/api/audit', authMiddleware, auditRoutes);
+app.use('/api/shop', shopRoutes);
 
 // File upload endpoint
 app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {

@@ -277,6 +277,13 @@
         <div class="sidebar-divider"></div>
         <button class="admin-btn" id="openAdminBtn">Admin Panel</button>
       </div>
+      
+      <!-- Shop Button - Always visible at bottom -->
+      <div class="sidebar-divider"></div>
+      <button class="shop-btn" id="openShopBtn" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span>🛍️</span> Shop
+        <span id="coinDisplay" style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:12px;font-size:12px;">0 🪙</span>
+      </button>
     </aside>
 
     <!-- Main - Channels/Messages -->
@@ -531,6 +538,60 @@
         <div id="auditLogList" class="audit-list"></div>
       </div>
     </div>
+  </div>
+
+  <!-- Shop Modal -->
+  <div class="modal-overlay" id="shopOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;" onclick="closeShop()"></div>
+  <div class="shop-modal" id="shopModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border-radius:16px;z-index:1001;width:95%;max-width:900px;max-height:85vh;overflow:hidden;">
+    <div class="shop-header" style="padding:20px;border-bottom:1px solid var(--accent);display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;align-items:center;gap:15px;">
+        <h2 style="margin:0;color:var(--text);">🛍️ Shop</h2>
+        <div class="shop-tabs" style="display:flex;gap:8px;">
+          <button class="shop-tab active" data-tab="browse" onclick="switchShopTab('browse')" style="padding:8px 16px;border:none;border-radius:8px;cursor:pointer;background:var(--primary);color:white;">Browse</button>
+          <button class="shop-tab" data-tab="inventory" onclick="switchShopTab('inventory')" style="padding:8px 16px;border:none;border-radius:8px;cursor:pointer;background:var(--bg);color:var(--text);">Inventory</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:15px;">
+        <button onclick="claimDailyReward()" id="dailyRewardBtn" style="padding:8px 16px;background:linear-gradient(135deg,#f7931e,#ff6b35);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">🎁 Daily</button>
+        <div style="background:var(--bg);padding:8px 16px;border-radius:8px;font-weight:600;color:var(--primary);">
+          <span id="shopCoinBalance">0</span> 🪙
+        </div>
+        <button onclick="closeShop()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text);">&times;</button>
+      </div>
+    </div>
+    
+    <!-- Browse Tab -->
+    <div class="shop-content" id="browseTab" style="display:flex;height:calc(85vh - 80px);">
+      <div class="shop-categories" style="width:200px;background:var(--bg);padding:15px;border-right:1px solid var(--accent);overflow-y:auto;">
+        <div id="shopCategoriesList"></div>
+      </div>
+      <div class="shop-items" style="flex:1;padding:20px;overflow-y:auto;">
+        <div class="shop-items-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3 id="shopCategoryTitle" style="margin:0;color:var(--text);">All Items</h3>
+          <select id="shopRarityFilter" onchange="filterShopItems()" style="padding:8px 12px;background:var(--bg);border:1px solid var(--accent);border-radius:6px;color:var(--text);">
+            <option value="">All Rarities</option>
+            <option value="common">Common</option>
+            <option value="uncommon">Uncommon</option>
+            <option value="rare">Rare</option>
+            <option value="epic">Epic</option>
+            <option value="legendary">Legendary</option>
+          </select>
+        </div>
+        <div id="shopItemsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;"></div>
+      </div>
+    </div>
+    
+    <!-- Inventory Tab -->
+    <div class="shop-content" id="inventoryTab" style="display:none;padding:20px;height:calc(85vh - 80px);overflow-y:auto;">
+      <h3 style="margin:0 0 20px;color:var(--text);">Your Items</h3>
+      <div id="inventoryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;"></div>
+    </div>
+  </div>
+  
+  <!-- Item Preview Modal -->
+  <div class="modal-overlay" id="itemPreviewOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1100;" onclick="closeItemPreview()"></div>
+  <div id="itemPreviewModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border-radius:16px;z-index:1101;width:90%;max-width:400px;padding:25px;text-align:center;">
+    <div id="itemPreviewContent"></div>
   </div>
 
   <script src="/js/themes.js"></script>

@@ -3159,3 +3159,437 @@ function formatAuditAction(log) {
   };
   return actions[log.actionType] || log.actionType.toLowerCase().replace(/_/g, ' ');
 }
+
+// ============== SHOP SYSTEM ==============
+let shopCategories = [];
+let shopItems = [];
+let userInventory = [];
+let userEquipped = {};
+let currentShopCategory = null;
+let userCoins = 0;
+
+function initShop() {
+  document.getElementById('openShopBtn').addEventListener('click', openShop);
+  loadUserCoins();
+  loadUserEquipped();
+}
+
+function loadUserCoins() {
+  fetch('/api/shop/wallet', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      userCoins = data.coins || 0;
+      updateCoinDisplays();
+    })
+    .catch(() => {});
+}
+
+function updateCoinDisplays() {
+  const coinDisplay = document.getElementById('coinDisplay');
+  const shopBalance = document.getElementById('shopCoinBalance');
+  if (coinDisplay) coinDisplay.textContent = `${userCoins} 🪙`;
+  if (shopBalance) shopBalance.textContent = userCoins;
+}
+
+function openShop() {
+  document.getElementById('shopOverlay').style.display = 'block';
+  document.getElementById('shopModal').style.display = 'block';
+  loadShopCategories();
+  loadUserCoins();
+  checkDailyRewardStatus();
+  
+  fetch('/api/shop/inventory', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(items => {
+      userInventory = items || [];
+      loadShopItems();
+    })
+    .catch(() => {
+      userInventory = [];
+      loadShopItems();
+    });
+}
+
+function closeShop() {
+  document.getElementById('shopOverlay').style.display = 'none';
+  document.getElementById('shopModal').style.display = 'none';
+}
+
+function switchShopTab(tab) {
+  document.querySelectorAll('.shop-tab').forEach(btn => {
+    btn.style.background = btn.dataset.tab === tab ? 'var(--primary)' : 'var(--bg)';
+    btn.style.color = btn.dataset.tab === tab ? 'white' : 'var(--text)';
+  });
+  
+  document.getElementById('browseTab').style.display = tab === 'browse' ? 'flex' : 'none';
+  document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
+  
+  if (tab === 'inventory') {
+    loadUserInventory();
+  }
+}
+
+function loadShopCategories() {
+  fetch('/api/shop/categories', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(categories => {
+      shopCategories = categories;
+      const list = document.getElementById('shopCategoriesList');
+      list.innerHTML = `
+        <button class="shop-category-btn active" onclick="selectCategory(null)" style="width:100%;padding:12px;margin-bottom:8px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;text-align:left;font-weight:600;">
+          All Items
+        </button>
+      ` + categories.map(cat => `
+        <button class="shop-category-btn" onclick="selectCategory('${cat.slug}')" data-category="${cat.slug}" style="width:100%;padding:12px;margin-bottom:8px;background:var(--card);color:var(--text);border:1px solid var(--accent);border-radius:8px;cursor:pointer;text-align:left;">
+          ${cat.icon} ${cat.name}
+        </button>
+      `).join('');
+    });
+}
+
+function selectCategory(categorySlug) {
+  currentShopCategory = categorySlug;
+  
+  document.querySelectorAll('.shop-category-btn').forEach(btn => {
+    const isSelected = btn.dataset.category === categorySlug || (!categorySlug && !btn.dataset.category);
+    btn.style.background = isSelected ? 'var(--primary)' : 'var(--card)';
+    btn.style.color = isSelected ? 'white' : 'var(--text)';
+  });
+  
+  const category = shopCategories.find(c => c.slug === categorySlug);
+  document.getElementById('shopCategoryTitle').textContent = category ? `${category.icon} ${category.name}` : 'All Items';
+  
+  loadShopItems(categorySlug);
+}
+
+function loadShopItems(category = null) {
+  const rarity = document.getElementById('shopRarityFilter')?.value || '';
+  let url = '/api/shop/items?';
+  if (category) url += `category=${category}&`;
+  if (rarity) url += `rarity=${rarity}&`;
+  
+  fetch(url, {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(items => {
+      shopItems = items;
+      renderShopItems(items);
+    });
+}
+
+function filterShopItems() {
+  loadShopItems(currentShopCategory);
+}
+
+function renderShopItems(items) {
+  const grid = document.getElementById('shopItemsGrid');
+  
+  if (items.length === 0) {
+    grid.innerHTML = '<p style="color:var(--text-light);text-align:center;grid-column:1/-1;">No items found</p>';
+    return;
+  }
+  
+  grid.innerHTML = items.map(item => {
+    const rarityColors = {
+      common: '#9e9e9e',
+      uncommon: '#4caf50',
+      rare: '#2196f3',
+      epic: '#9c27b0',
+      legendary: '#ff9800'
+    };
+    const rarityColor = rarityColors[item.rarity] || '#9e9e9e';
+    const isOwned = userInventory.some(i => i.id === item.id);
+    
+    return `
+      <div class="shop-item-card" onclick="showItemPreview(${item.id})" style="background:var(--bg);border-radius:12px;padding:15px;cursor:pointer;border:2px solid ${rarityColor}30;transition:transform 0.2s;">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+          <span style="font-size:24px;">${getCategoryIcon(item.item_type)}</span>
+          <span style="background:${rarityColor};color:white;padding:2px 8px;border-radius:12px;font-size:10px;text-transform:uppercase;">${item.rarity}</span>
+        </div>
+        <h4 style="margin:0 0 5px;color:var(--text);font-size:14px;">${escapeHtml(item.name)}</h4>
+        <p style="margin:0 0 10px;color:var(--text-light);font-size:11px;line-height:1.4;">${escapeHtml(item.description || '')}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:var(--primary);font-weight:600;">${item.price} 🪙</span>
+          ${item.is_animated ? '<span style="font-size:10px;color:var(--secondary);">✨ Animated</span>' : ''}
+        </div>
+        ${isOwned ? '<div style="margin-top:8px;text-align:center;background:var(--accent);color:var(--text);padding:4px;border-radius:6px;font-size:11px;">Owned</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function getCategoryIcon(itemType) {
+  const icons = {
+    theme: '🎨',
+    frame: '🖼️',
+    badge: '🏅',
+    bubble: '💬',
+    sound: '🔊',
+    avatar: '✨',
+    server_icon: '🏠',
+    server_banner: '🏠',
+    status: '🔴',
+    bio_upgrade: '📝',
+    boost: '🚀'
+  };
+  return icons[itemType] || '📦';
+}
+
+function showItemPreview(itemId) {
+  const item = shopItems.find(i => i.id === itemId);
+  if (!item) return;
+  
+  const isOwned = userInventory.some(i => i.id === itemId);
+  const isEquipped = Object.values(userEquipped).some(e => e.item_id === itemId);
+  const canAfford = userCoins >= item.price;
+  
+  const rarityColors = {
+    common: '#9e9e9e',
+    uncommon: '#4caf50',
+    rare: '#2196f3',
+    epic: '#9c27b0',
+    legendary: '#ff9800'
+  };
+  const rarityColor = rarityColors[item.rarity] || '#9e9e9e';
+  
+  let previewContent = '';
+  if (item.item_type === 'theme' && item.css_vars) {
+    try {
+      const vars = JSON.parse(item.css_vars);
+      previewContent = `
+        <div style="display:flex;gap:5px;justify-content:center;margin:15px 0;">
+          ${Object.entries(vars).map(([key, val]) => `
+            <div style="width:30px;height:30px;background:${val};border-radius:50%;border:2px solid white;"></div>
+          `).join('')}
+        </div>
+      `;
+    } catch(e) {}
+  } else if (item.item_type === 'badge' && item.metadata) {
+    try {
+      const meta = JSON.parse(item.metadata);
+      previewContent = `<div style="font-size:48px;margin:15px 0;">${meta.emoji || '🏅'}</div>`;
+    } catch(e) {}
+  }
+  
+  document.getElementById('itemPreviewContent').innerHTML = `
+    <div style="font-size:48px;margin-bottom:15px;">${getCategoryIcon(item.item_type)}</div>
+    <h2 style="margin:0 0 10px;color:var(--text);">${escapeHtml(item.name)}</h2>
+    <span style="display:inline-block;background:${rarityColor};color:white;padding:4px 12px;border-radius:12px;font-size:12px;text-transform:uppercase;margin-bottom:15px;">${item.rarity}</span>
+    <p style="color:var(--text-light);margin:0 0 15px;">${escapeHtml(item.description || '')}</p>
+    ${previewContent}
+    <div style="font-size:24px;color:var(--primary);font-weight:700;margin:15px 0;">${item.price} 🪙</div>
+    ${item.is_animated ? '<p style="color:var(--secondary);font-size:12px;margin-bottom:15px;">✨ This item is animated!</p>' : ''}
+    ${isOwned ? `
+      <button onclick="equipItem(${item.id}, '${item.item_type}')" style="width:100%;padding:12px;background:${isEquipped ? 'var(--accent)' : 'var(--primary)'};color:${isEquipped ? 'var(--text)' : 'white'};border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-bottom:10px;">
+        ${isEquipped ? 'Unequip' : 'Equip'}
+      </button>
+    ` : `
+      <button onclick="purchaseItem(${item.id})" style="width:100%;padding:12px;background:${canAfford ? 'var(--primary)' : '#666'};color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-bottom:10px;" ${canAfford ? '' : 'disabled'}>
+        ${canAfford ? 'Purchase' : 'Not Enough Coins'}
+      </button>
+    `}
+    <button onclick="closeItemPreview()" style="width:100%;padding:10px;background:var(--accent);color:var(--text);border:none;border-radius:8px;cursor:pointer;">Close</button>
+  `;
+  
+  document.getElementById('itemPreviewOverlay').style.display = 'block';
+  document.getElementById('itemPreviewModal').style.display = 'block';
+}
+
+function closeItemPreview() {
+  document.getElementById('itemPreviewOverlay').style.display = 'none';
+  document.getElementById('itemPreviewModal').style.display = 'none';
+}
+
+function purchaseItem(itemId) {
+  fetch(`/api/shop/purchase/${itemId}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        userCoins = data.newBalance;
+        updateCoinDisplays();
+        userInventory.push(data.item);
+        closeItemPreview();
+        loadShopItems(currentShopCategory);
+        alert(data.message);
+      } else {
+        alert(data.error || 'Purchase failed');
+      }
+    })
+    .catch(() => alert('Purchase failed'));
+}
+
+function loadUserInventory() {
+  fetch('/api/shop/inventory', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(items => {
+      userInventory = items;
+      renderInventory(items);
+    });
+}
+
+function renderInventory(items) {
+  const grid = document.getElementById('inventoryGrid');
+  
+  if (items.length === 0) {
+    grid.innerHTML = '<p style="color:var(--text-light);text-align:center;grid-column:1/-1;">You don\'t own any items yet. Browse the shop to get started!</p>';
+    return;
+  }
+  
+  const rarityColors = {
+    common: '#9e9e9e',
+    uncommon: '#4caf50',
+    rare: '#2196f3',
+    epic: '#9c27b0',
+    legendary: '#ff9800'
+  };
+  
+  grid.innerHTML = items.map(item => {
+    const rarityColor = rarityColors[item.rarity] || '#9e9e9e';
+    const isEquipped = Object.values(userEquipped).some(e => e.item_id === item.id);
+    
+    return `
+      <div class="inventory-item-card" style="background:var(--bg);border-radius:12px;padding:15px;border:2px solid ${isEquipped ? 'var(--primary)' : rarityColor + '30'};">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+          <span style="font-size:24px;">${getCategoryIcon(item.item_type)}</span>
+          ${isEquipped ? '<span style="background:var(--primary);color:white;padding:2px 8px;border-radius:12px;font-size:10px;">EQUIPPED</span>' : ''}
+        </div>
+        <h4 style="margin:0 0 5px;color:var(--text);font-size:14px;">${escapeHtml(item.name)}</h4>
+        <p style="margin:0 0 10px;color:var(--text-light);font-size:11px;">${item.category_name}</p>
+        <button onclick="equipItem(${item.id}, '${item.item_type}')" style="width:100%;padding:8px;background:${isEquipped ? 'var(--accent)' : 'var(--primary)'};color:${isEquipped ? 'var(--text)' : 'white'};border:none;border-radius:6px;cursor:pointer;font-size:12px;">
+          ${isEquipped ? 'Unequip' : 'Equip'}
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function loadUserEquipped() {
+  fetch('/api/shop/equipped', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(equipped => {
+      userEquipped = equipped;
+      applyEquippedCosmetics();
+    });
+}
+
+function equipItem(itemId, itemType) {
+  const isCurrentlyEquipped = Object.values(userEquipped).some(e => e.item_id === itemId);
+  
+  if (isCurrentlyEquipped) {
+    fetch('/api/shop/unequip', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      body: JSON.stringify({ slot: itemType })
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          delete userEquipped[itemType];
+          applyEquippedCosmetics();
+          closeItemPreview();
+          if (document.getElementById('inventoryTab').style.display !== 'none') {
+            loadUserInventory();
+          }
+          loadShopItems(currentShopCategory);
+        } else {
+          alert(data.error || 'Failed to unequip');
+        }
+      });
+  } else {
+    fetch('/api/shop/equip', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      body: JSON.stringify({ itemId, slot: itemType })
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          userEquipped[itemType] = { item_id: itemId, ...data.item };
+          applyEquippedCosmetics();
+          closeItemPreview();
+          if (document.getElementById('inventoryTab').style.display !== 'none') {
+            loadUserInventory();
+          }
+          loadShopItems(currentShopCategory);
+        } else {
+          alert(data.error || 'Failed to equip');
+        }
+      });
+  }
+}
+
+function applyEquippedCosmetics() {
+  if (userEquipped.theme && userEquipped.theme.css_vars) {
+    try {
+      const vars = JSON.parse(userEquipped.theme.css_vars);
+      Object.entries(vars).forEach(([key, value]) => {
+        document.documentElement.style.setProperty(key, value);
+      });
+    } catch(e) {}
+  }
+  
+  localStorage.setItem('equippedCosmetics', JSON.stringify(userEquipped));
+}
+
+function checkDailyRewardStatus() {
+  fetch('/api/shop/daily/status', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      const btn = document.getElementById('dailyRewardBtn');
+      if (data.claimed) {
+        btn.style.background = 'var(--accent)';
+        btn.style.color = 'var(--text)';
+        btn.textContent = '✓ Claimed';
+        btn.disabled = true;
+      } else {
+        btn.style.background = 'linear-gradient(135deg,#f7931e,#ff6b35)';
+        btn.style.color = 'white';
+        btn.textContent = '🎁 Daily';
+        btn.disabled = false;
+      }
+    });
+}
+
+function claimDailyReward() {
+  fetch('/api/shop/daily', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        userCoins = data.newBalance;
+        updateCoinDisplays();
+        checkDailyRewardStatus();
+        alert(data.message);
+      } else {
+        alert(data.error || 'Could not claim daily reward');
+      }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initShop, 500);
+});

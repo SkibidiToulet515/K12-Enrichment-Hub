@@ -569,4 +569,219 @@ try {
   });
 } catch(e) {}
 
+// ============== SHOP SYSTEM ==============
+
+// Add coins to users
+try {
+  sqliteDb.exec('ALTER TABLE users ADD COLUMN coins INTEGER DEFAULT 100');
+} catch(e) {}
+
+// Shop categories
+db.exec(`CREATE TABLE IF NOT EXISTS shop_categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  icon TEXT,
+  description TEXT,
+  position INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
+
+// Shop items
+db.exec(`CREATE TABLE IF NOT EXISTS shop_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  price INTEGER NOT NULL DEFAULT 100,
+  rarity TEXT DEFAULT 'common',
+  item_type TEXT NOT NULL,
+  css_class TEXT,
+  css_vars TEXT,
+  asset_url TEXT,
+  metadata TEXT DEFAULT '{}',
+  is_animated BOOLEAN DEFAULT 0,
+  is_available BOOLEAN DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(category_id) REFERENCES shop_categories(id)
+)`);
+
+// User purchases (what they own)
+db.exec(`CREATE TABLE IF NOT EXISTS user_purchases (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  item_id INTEGER NOT NULL,
+  price_paid INTEGER NOT NULL,
+  purchased_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, item_id),
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY(item_id) REFERENCES shop_items(id)
+)`);
+
+// User equipped items (what they're currently using)
+db.exec(`CREATE TABLE IF NOT EXISTS user_equipped (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  slot TEXT NOT NULL,
+  item_id INTEGER NOT NULL,
+  server_id INTEGER,
+  equipped_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, slot, server_id),
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY(item_id) REFERENCES shop_items(id),
+  FOREIGN KEY(server_id) REFERENCES servers(id)
+)`);
+
+// Coin transactions (history)
+db.exec(`CREATE TABLE IF NOT EXISTS coin_transactions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  amount INTEGER NOT NULL,
+  balance_after INTEGER NOT NULL,
+  transaction_type TEXT NOT NULL,
+  description TEXT,
+  reference_id INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
+// Daily rewards tracking
+db.exec(`CREATE TABLE IF NOT EXISTS daily_rewards (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  reward_date DATE NOT NULL,
+  amount INTEGER NOT NULL,
+  streak INTEGER DEFAULT 1,
+  claimed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, reward_date),
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
+// Seed shop categories
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_categories (name, slug, icon, description, position) VALUES
+    ('Themes', 'themes', '🎨', 'Custom color themes for your chat', 1),
+    ('Profile Frames', 'frames', '🖼️', 'Stylish borders for your avatar', 2),
+    ('Badges', 'badges', '🏅', 'Flair badges next to your name', 3),
+    ('Chat Bubbles', 'bubbles', '💬', 'Customize how your messages look', 4),
+    ('Sound Packs', 'sounds', '🔊', 'Custom notification sounds', 5),
+    ('Animated Avatars', 'avatars', '✨', 'Pre-made animated profile pictures', 6),
+    ('Server Cosmetics', 'server', '🏠', 'Icons and banners for your servers', 7),
+    ('Status Effects', 'status', '🔴', 'Custom status indicators', 8),
+    ('Bio Upgrades', 'bio', '📝', 'Enhance your profile bio', 9),
+    ('Boosts', 'boosts', '🚀', 'Cosmetic boosts and effects', 10)`);
+} catch(e) {}
+
+// Seed shop items - Themes
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, css_vars, is_animated) VALUES
+    (1, 'Neon Galaxy', 'theme-neon-galaxy', 'A vibrant neon space theme', 500, 'rare', 'theme', 'theme-neon-galaxy', '{"--bg":"#0a0a1a","--bg-light":"#1a1a3a","--primary":"#00ffff","--secondary":"#ff00ff","--text":"#ffffff","--text-light":"#aaaaff"}', 0),
+    (1, 'Sakura Pink', 'theme-sakura-pink', 'Soft cherry blossom colors', 400, 'uncommon', 'theme', 'theme-sakura-pink', '{"--bg":"#fff0f5","--bg-light":"#ffe4ec","--primary":"#ff69b4","--secondary":"#ff1493","--text":"#4a0025","--text-light":"#8b4563"}', 0),
+    (1, 'Midnight Chrome', 'theme-midnight-chrome', 'Sleek dark chrome aesthetic', 600, 'rare', 'theme', 'theme-midnight-chrome', '{"--bg":"#0f0f0f","--bg-light":"#1f1f1f","--primary":"#c0c0c0","--secondary":"#808080","--text":"#e0e0e0","--text-light":"#a0a0a0"}', 0),
+    (1, 'Glitch Hacker', 'theme-glitch-hacker', 'Matrix-style hacker theme', 800, 'epic', 'theme', 'theme-glitch-hacker', '{"--bg":"#000000","--bg-light":"#001100","--primary":"#00ff00","--secondary":"#00aa00","--text":"#00ff00","--text-light":"#00cc00"}', 1),
+    (1, 'Sunset Pulse', 'theme-sunset-pulse', 'Warm sunset gradient vibes', 450, 'uncommon', 'theme', 'theme-sunset-pulse', '{"--bg":"#1a0a0a","--bg-light":"#2a1515","--primary":"#ff6b35","--secondary":"#f7931e","--text":"#fff5f0","--text-light":"#ffccbb"}', 0),
+    (1, 'Blueprint Tech', 'theme-blueprint-tech', 'Technical blueprint style', 550, 'rare', 'theme', 'theme-blueprint-tech', '{"--bg":"#0a1628","--bg-light":"#152238","--primary":"#4fc3f7","--secondary":"#29b6f6","--text":"#e3f2fd","--text-light":"#90caf9"}', 0)`);
+} catch(e) {}
+
+// Seed shop items - Profile Frames
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, is_animated) VALUES
+    (2, 'Gold Trim', 'frame-gold-trim', 'Luxurious golden border', 300, 'uncommon', 'frame', 'frame-gold-trim', 0),
+    (2, 'Pixel Frame', 'frame-pixel', 'Retro pixel art border', 250, 'common', 'frame', 'frame-pixel', 0),
+    (2, 'Rainbow Wave', 'frame-rainbow-wave', 'Animated rainbow gradient', 700, 'epic', 'frame', 'frame-rainbow-wave', 1),
+    (2, 'Carbon Fiber', 'frame-carbon-fiber', 'Sleek carbon fiber pattern', 350, 'uncommon', 'frame', 'frame-carbon-fiber', 0),
+    (2, 'Fire Aura', 'frame-fire-aura', 'Blazing animated flames', 900, 'legendary', 'frame', 'frame-fire-aura', 1),
+    (2, 'Frost Glow', 'frame-frost-glow', 'Icy crystalline glow', 650, 'rare', 'frame', 'frame-frost-glow', 1)`);
+} catch(e) {}
+
+// Seed shop items - Badges
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, metadata) VALUES
+    (3, 'Verified Star', 'badge-verified', '⭐ Verified badge', 1000, 'legendary', 'badge', 'badge-verified', '{"emoji":"⭐","label":"Verified"}'),
+    (3, 'Dragon Rank', 'badge-dragon', '🐉 Dragon rank badge', 800, 'epic', 'badge', 'badge-dragon', '{"emoji":"🐉","label":"Dragon"}'),
+    (3, 'VIP Crown', 'badge-vip', '👑 VIP member badge', 1200, 'legendary', 'badge', 'badge-vip', '{"emoji":"👑","label":"VIP"}'),
+    (3, 'Speedrunner', 'badge-speedrunner', '⚡ Speedrunner badge', 400, 'rare', 'badge', 'badge-speedrunner', '{"emoji":"⚡","label":"Speed"}'),
+    (3, 'OG Member', 'badge-og', '🔥 Original member badge', 600, 'epic', 'badge', 'badge-og', '{"emoji":"🔥","label":"OG"}'),
+    (3, 'Prestige', 'badge-prestige', '💎 Prestige badge', 1500, 'legendary', 'badge', 'badge-prestige', '{"emoji":"💎","label":"Prestige"}'),
+    (3, 'Brainiac', 'badge-brainiac', '🧠 Brainiac badge', 500, 'rare', 'badge', 'badge-brainiac', '{"emoji":"🧠","label":"Brainiac"}')`);
+} catch(e) {}
+
+// Seed shop items - Chat Bubbles
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, is_animated) VALUES
+    (4, 'Rounded Neon', 'bubble-neon', 'Glowing neon chat bubbles', 350, 'uncommon', 'bubble', 'bubble-neon', 1),
+    (4, 'Pixel Chat', 'bubble-pixel', 'Retro pixel-style bubbles', 300, 'common', 'bubble', 'bubble-pixel', 0),
+    (4, 'Gradient Wave', 'bubble-gradient', 'Smooth gradient messages', 400, 'uncommon', 'bubble', 'bubble-gradient', 0),
+    (4, 'iMessage Style', 'bubble-imessage', 'Clean iMessage look', 450, 'rare', 'bubble', 'bubble-imessage', 0),
+    (4, 'Terminal Hacker', 'bubble-terminal', 'Matrix terminal style', 550, 'rare', 'bubble', 'bubble-terminal', 0)`);
+} catch(e) {}
+
+// Seed shop items - Sound Packs
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, asset_url, metadata) VALUES
+    (5, 'Pop Pack', 'sound-pop', 'Satisfying pop sounds', 200, 'common', 'sound', '/sounds/pop.mp3', '{"sounds":{"message":"pop","mention":"pop-loud"}}'),
+    (5, 'Laser Pack', 'sound-laser', 'Sci-fi laser effects', 300, 'uncommon', 'sound', '/sounds/laser.mp3', '{"sounds":{"message":"laser","mention":"laser-loud"}}'),
+    (5, 'Arcade Chime', 'sound-arcade', 'Classic arcade sounds', 350, 'uncommon', 'sound', '/sounds/arcade.mp3', '{"sounds":{"message":"arcade","mention":"arcade-win"}}'),
+    (5, 'Retro 8-bit', 'sound-8bit', 'Nostalgic 8-bit tones', 400, 'rare', 'sound', '/sounds/8bit.mp3', '{"sounds":{"message":"8bit","mention":"8bit-fanfare"}}'),
+    (5, 'Power-up', 'sound-powerup', 'Game power-up sounds', 350, 'uncommon', 'sound', '/sounds/powerup.mp3', '{"sounds":{"message":"powerup","mention":"powerup-mega"}}')`);
+} catch(e) {}
+
+// Seed shop items - Animated Avatars
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, asset_url, is_animated) VALUES
+    (6, 'Glitch Avatar', 'avatar-glitch', 'Glitchy animated avatar', 600, 'rare', 'avatar', '/avatars/glitch.gif', 1),
+    (6, 'Fire Swirl', 'avatar-fire', 'Fiery spinning avatar', 750, 'epic', 'avatar', '/avatars/fire.gif', 1),
+    (6, 'Anime Sparkle', 'avatar-anime', 'Sparkling anime style', 500, 'rare', 'avatar', '/avatars/anime.gif', 1),
+    (6, 'Pixel Spin', 'avatar-pixel', 'Rotating pixel art', 450, 'uncommon', 'avatar', '/avatars/pixel.gif', 1),
+    (6, 'Rotating Planet', 'avatar-planet', 'Spinning planet avatar', 550, 'rare', 'avatar', '/avatars/planet.gif', 1)`);
+} catch(e) {}
+
+// Seed shop items - Server Cosmetics
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, asset_url, metadata) VALUES
+    (7, 'Gaming Icon Pack', 'server-icon-gaming', '10 gaming-themed icons', 400, 'uncommon', 'server_icon', '/icons/gaming/', '{"count":10}'),
+    (7, 'Nature Icon Pack', 'server-icon-nature', '10 nature-themed icons', 350, 'common', 'server_icon', '/icons/nature/', '{"count":10}'),
+    (7, 'Neon Banner', 'server-banner-neon', 'Animated neon banner', 800, 'epic', 'server_banner', '/banners/neon.gif', '{"animated":true}'),
+    (7, 'Galaxy Banner', 'server-banner-galaxy', 'Space galaxy banner', 600, 'rare', 'server_banner', '/banners/galaxy.png', '{"animated":false}'),
+    (7, 'Gradient Banner', 'server-banner-gradient', 'Smooth gradient banner', 450, 'uncommon', 'server_banner', '/banners/gradient.png', '{"animated":false}')`);
+} catch(e) {}
+
+// Seed shop items - Status Effects
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, metadata, is_animated) VALUES
+    (8, 'Animated DND', 'status-dnd-animated', '🔴 Pulsing Do Not Disturb', 400, 'rare', 'status', 'status-dnd-pulse', '{"emoji":"🔴","text":"Do Not Disturb"}', 1),
+    (8, 'Studying Mode', 'status-studying', '✏️ Studying status', 200, 'common', 'status', 'status-studying', '{"emoji":"✏️","text":"Studying"}', 0),
+    (8, 'Gaming Mode', 'status-gaming', '🎮 Gaming status', 200, 'common', 'status', 'status-gaming', '{"emoji":"🎮","text":"Gaming"}', 0),
+    (8, 'Funny Offline', 'status-offline-funny', '💀 Funny offline status', 300, 'uncommon', 'status', 'status-dead', '{"emoji":"💀","text":"Dead Inside"}', 0),
+    (8, 'Stealth Mode', 'status-stealth', '👤 Stealth mode status', 500, 'rare', 'status', 'status-stealth', '{"emoji":"👤","text":"Stealth Mode"}', 0)`);
+} catch(e) {}
+
+// Seed shop items - Bio Upgrades
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, metadata) VALUES
+    (9, 'Extended Bio', 'bio-extended', 'Increase bio to 500 characters', 300, 'uncommon', 'bio_upgrade', '{"maxLength":500}'),
+    (9, 'Custom Fonts', 'bio-fonts', 'Use custom fonts in bio', 450, 'rare', 'bio_upgrade', '{"fonts":["Comic Sans","Courier","Impact"]}'),
+    (9, 'Emoji Bio Line', 'bio-emoji', 'Add emoji-only bio line', 250, 'common', 'bio_upgrade', '{"emojiLine":true}'),
+    (9, 'Multi-Section Bio', 'bio-sections', 'Multiple bio sections', 400, 'rare', 'bio_upgrade', '{"sections":3}')`);
+} catch(e) {}
+
+// Seed shop items - Boosts
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, metadata, is_animated) VALUES
+    (10, 'Rainbow Name', 'boost-rainbow-name', 'Animated rainbow username', 1000, 'legendary', 'boost', 'boost-rainbow-name', '{"effect":"rainbow"}', 1),
+    (10, 'Name Underline', 'boost-underline', 'Animated underline effect', 600, 'epic', 'boost', 'boost-underline', '{"effect":"underline"}', 1),
+    (10, 'Profile Glow', 'boost-glow', 'Glowing profile shadow', 700, 'epic', 'boost', 'boost-glow', '{"effect":"glow"}', 1),
+    (10, 'Daily Bonus', 'boost-daily', '+50% daily coin bonus', 800, 'epic', 'boost', 'boost-daily', '{"coinBonus":1.5}', 0),
+    (10, 'Message Highlight', 'boost-highlight', 'Highlighted messages every 20', 500, 'rare', 'boost', 'boost-highlight', '{"highlightEvery":20}', 0)`);
+} catch(e) {}
+
+// Create indices for shop tables
+try {
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_shop_items_category ON shop_items(category_id)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_user_purchases_user ON user_purchases(user_id)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_user_equipped_user ON user_equipped(user_id)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_coin_transactions_user ON coin_transactions(user_id)');
+} catch(e) {}
+
 module.exports = db;
