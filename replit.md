@@ -8,9 +8,10 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 ## Recent Changes
 - **2025-12-03**: Added Quick Win Features
   - **Site Changelogs**: Professional changelog panel showing updates with version tags, change types (feature/bugfix/improvement/security/removed/ui), author attribution, and styled UI. Admin-only creation via API.
-  - **Custom Keyboard Shortcuts**: Customizable shortcuts with categories (navigation/chat/ui/advanced). Users can edit, enable/disable, and reset shortcuts. Conflict detection prevents duplicate bindings.
+  - **Custom Keyboard Shortcuts**: Dedicated page at `/private/shortcuts.html` with categories (navigation/chat/ui/advanced). Users can edit, enable/disable, and reset shortcuts. Conflict detection prevents duplicate bindings.
   - **Archive Mode**: Users can archive DMs, group chats, and channels to hide from main view. Server owners can archive/unarchive entire channels. All archived items viewable in dedicated modal.
-  - New sidebar buttons: "Updates" (changelog), "Keys" (shortcuts), and archive icon
+  - **Shop Page**: Dedicated page at `/private/shop.html` with full cosmetic shop interface, category browsing, inventory view, purchase and equip functionality.
+  - New dashboard cards: "Cosmetic Shop" and "Keyboard Shortcuts"
   - Database tables: changelogs, user_shortcuts, default_shortcuts, archived_chats
 
 - **2025-12-03**: Added comprehensive cosmetic shop system
