@@ -1,0 +1,200 @@
+⭐ **TOP MUST-ADD FEATURES
+
+(these will LEVEL UP your site instantly)**
+
+1️⃣ Search Bar (Global Search)
+
+Search for:
+
+games
+
+users
+
+servers
+
+group chats
+
+proxy tools
+
+media
+
+This makes your site feel big and professional.
+
+2️⃣ Game Categories + Thumbnails Page
+
+Instead of scrolling through 1000+ HTML files:
+
+add a page with categories
+
+grid cards
+
+thumbnails for each game
+
+search + filters
+
+Feels like a real unblocked game site.
+
+3️⃣ Movie & TV Directory (Google Slides Embed Hub)
+
+You already embed Hulu/Netflix slides — now make:
+
+➡️ Media Hub page
+with:
+
+categories (Movies, TV, Anime, Cartoon)
+
+clickable cards linking to your Slides embeds
+
+thumbnails (movie posters)
+
+Looks INSANE when done right.
+
+4️⃣ Bookmarks / Favorites System
+
+Let users save:
+
+favorite games
+
+favorite proxy links
+
+favorite servers
+
+favorite movies
+
+Stored in DB → saved forever.
+
+5️⃣ Settings Page
+
+Options like:
+
+theme
+
+animations on/off
+
+font size
+
+compact mode
+
+profile privacy
+
+notification toggle
+
+6️⃣ Built-in AI Helper
+
+A small chatbot box in the bottom-right:
+
+Uses:
+
+basic explanation
+
+help navigation
+
+site features
+
+gaming suggestions
+
+troubleshooting
+
+Not real AI, just scripted — OR embed API.
+
+🔥 **ADVANCED FEATURES
+
+(These will make your site elite)**
+
+7️⃣ Customizable Dashboard
+
+Let users rearrange tiles:
+
+Add/remove modules
+
+Pin favorite items
+
+Drag tiles around
+
+Super fun and personal.
+
+8️⃣ Mini Apps
+
+Add lightweight tools:
+
+Calculator
+
+Notes app
+
+To-do lists
+
+Timer
+
+Pomodoro
+
+Weather
+
+Looks like a Chromebook OS but secret.
+
+9️⃣ Change Login Background
+
+User selects background for login page:
+
+gradients
+
+images
+
+themes
+
+blurred wallpapers
+
+Saved in DB.
+
+🔟 Public Servers Directory
+
+Show:
+
+featured servers
+
+trending servers
+
+new servers
+
+friend-owned servers
+
+Like Discord’s server discovery.
+
+🔥🔥 **GOD-TIER HIDDEN FEATURES
+
+(You’ll be unstoppable)**
+
+1. Built-in file uploader to bypass school blocks
+
+An upload page that:
+
+uploads ZIP/HTML → plays games
+
+stores files temporarily
+
+embeds user files
+
+Like a private unblocked-file player.
+
+2. Portable Mode
+
+A button that turns the whole site into:
+
+a small floating window
+
+minimal UI
+
+looks like a calculator or assignment
+
+Great for hiding.
+
+3. Quick-Panic Button
+
+Instantly switches to:
+
+Sora reading app
+
+LWSD classlink
+
+Canvas 
+
+At ANY time.

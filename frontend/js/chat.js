@@ -702,6 +702,7 @@ function setupEventListeners() {
     if (e.key === 'Enter') sendMessage();
   });
   document.getElementById('addServerBtn').addEventListener('click', createServerRequest);
+  document.getElementById('joinServerBtn').addEventListener('click', openJoinServerModal);
   document.getElementById('addFriendBtn').addEventListener('click', addFriend);
   document.getElementById('createGroupBtn').addEventListener('click', createGroupChat);
 }
@@ -783,7 +784,7 @@ function loadServers() {
 
 function showServerOptions(server, isOwner) {
   if (isOwner) {
-    const action = prompt(`Manage "${server.name}":\n\n1 - Edit Server/Channels\n2 - View/Kick Members\n3 - Roles & Permissions\n4 - Delete Server\n\nEnter 1, 2, 3, or 4:`);
+    const action = prompt(`Manage "${server.name}":\n\n1 - Edit Server/Channels\n2 - View/Kick Members\n3 - Roles & Permissions\n4 - Create Invite Link\n5 - View Invites\n6 - Delete Server\n\nEnter 1-6:`);
     if (action === '1') {
       openServerManageModal(server.id, server.name);
     } else if (action === '2') {
@@ -791,13 +792,22 @@ function showServerOptions(server, isOwner) {
     } else if (action === '3') {
       openServerSettings(server.id);
     } else if (action === '4') {
+      showCreateInviteModal(server.id);
+    } else if (action === '5') {
+      showServerInvites(server.id, server.name);
+    } else if (action === '6') {
       if (confirm(`Are you sure you want to DELETE "${server.name}"? This will delete all channels and messages. This cannot be undone.`)) {
         deleteServer(server.id);
       }
     }
   } else {
-    if (confirm(`Leave "${server.name}"?`)) {
-      leaveServer(server.id);
+    const action = prompt(`"${server.name}" Options:\n\n1 - Create Invite Link\n2 - Leave Server\n\nEnter 1 or 2:`);
+    if (action === '1') {
+      showCreateInviteModal(server.id);
+    } else if (action === '2') {
+      if (confirm(`Leave "${server.name}"?`)) {
+        leaveServer(server.id);
+      }
     }
   }
 }
@@ -2279,25 +2289,75 @@ function unpinMessage(messageId) {
 }
 
 // Invite System
-function createServerInvite(serverId) {
-  fetch(`/api/invites/server/${serverId}`, {
+let currentInviteServerId = null;
+let previewTimeout = null;
+
+function showCreateInviteModal(serverId) {
+  currentInviteServerId = serverId;
+  document.getElementById('inviteExpiry').value = '24';
+  document.getElementById('inviteMaxUses').value = '0';
+  document.getElementById('createInviteOverlay').style.display = 'block';
+  document.getElementById('createInviteModal').classList.add('active');
+}
+
+function closeCreateInviteModal() {
+  document.getElementById('createInviteOverlay').style.display = 'none';
+  document.getElementById('createInviteModal').classList.remove('active');
+  currentInviteServerId = null;
+}
+
+function generateInvite() {
+  if (!currentInviteServerId) return;
+  
+  const expiresIn = document.getElementById('inviteExpiry').value;
+  const maxUses = document.getElementById('inviteMaxUses').value;
+  
+  fetch(`/api/invites/server/${currentInviteServerId}`, {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${getAuthToken()}` 
     },
-    body: JSON.stringify({ maxUses: 0, expiresIn: 24 })
+    body: JSON.stringify({ maxUses: parseInt(maxUses), expiresIn: parseInt(expiresIn) })
   })
     .then(r => r.json())
     .then(data => {
       if (data.success) {
+        closeCreateInviteModal();
         document.getElementById('inviteCode').textContent = data.code;
+        
+        let details = [];
+        if (expiresIn === '0') {
+          details.push('Never expires');
+        } else if (expiresIn === '1') {
+          details.push('Expires in 1 hour');
+        } else if (expiresIn === '24') {
+          details.push('Expires in 24 hours');
+        } else if (expiresIn === '168') {
+          details.push('Expires in 7 days');
+        } else {
+          details.push(`Expires in ${expiresIn} hours`);
+        }
+        if (maxUses === '0') {
+          details.push('Unlimited uses');
+        } else {
+          details.push(`${maxUses} use${maxUses === '1' ? '' : 's'} max`);
+        }
+        document.getElementById('inviteDetails').textContent = details.join(' • ');
+        
         document.getElementById('inviteOverlay').style.display = 'block';
         document.getElementById('inviteModal').classList.add('active');
       } else {
-        alert(data.error || 'Failed to create invite');
+        alert(data.error || 'Failed to create invite. Please try again.');
       }
+    })
+    .catch(() => {
+      alert('Network error. Please try again.');
     });
+}
+
+function createServerInvite(serverId) {
+  showCreateInviteModal(serverId);
 }
 
 function closeInviteModal() {
@@ -2308,20 +2368,167 @@ function closeInviteModal() {
 function copyInviteCode() {
   const code = document.getElementById('inviteCode').textContent;
   navigator.clipboard.writeText(code).then(() => {
-    alert('Invite code copied!');
+    alert('Invite code copied to clipboard!');
   });
 }
 
+function showServerInvites(serverId, serverName) {
+  const list = document.getElementById('invitesList');
+  list.innerHTML = '<p style="color:var(--text-light);text-align:center;">Loading invites...</p>';
+  document.getElementById('viewInvitesOverlay').style.display = 'block';
+  document.getElementById('viewInvitesModal').classList.add('active');
+  
+  fetch(`/api/invites/server/${serverId}`, {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(invites => {
+      if (!invites || invites.length === 0) {
+        list.innerHTML = `
+          <div style="text-align:center;padding:20px;">
+            <p style="color:var(--text-light);margin-bottom:15px;">No active invites for this server</p>
+            <button onclick="closeViewInvitesModal();showCreateInviteModal(${serverId})" 
+                    style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;">
+              Create New Invite
+            </button>
+          </div>
+        `;
+      } else {
+        list.innerHTML = invites.map(inv => {
+          if (!inv || !inv.code) return '';
+          const expiresText = inv.expires_at ? 
+            `Expires: ${new Date(inv.expires_at).toLocaleString()}` : 
+            'Never expires';
+          const usesText = inv.max_uses > 0 ? 
+            `${inv.uses || 0}/${inv.max_uses} uses` : 
+            `${inv.uses || 0} uses`;
+          const createdBy = inv.created_by_username ? escapeHtml(inv.created_by_username) : 'Unknown';
+          return `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
+              <div>
+                <div style="font-family:monospace;font-size:16px;color:var(--primary);letter-spacing:2px;">${inv.code}</div>
+                <div style="font-size:11px;color:var(--text-light);margin-top:4px;">
+                  Created by ${createdBy} • ${usesText}
+                </div>
+                <div style="font-size:10px;color:var(--text-light);">${expiresText}</div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button onclick="navigator.clipboard.writeText('${inv.code}').then(()=>alert('Copied!'))" 
+                        style="padding:6px 12px;background:var(--primary);color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;">
+                  Copy
+                </button>
+                <button onclick="deleteInvite(${inv.id})" 
+                        style="padding:6px 12px;background:#e74c3c;color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;">
+                  Delete
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    })
+    .catch(() => {
+      list.innerHTML = '<p style="color:#e74c3c;text-align:center;">Failed to load invites. Please try again.</p>';
+    });
+}
+
+function closeViewInvitesModal() {
+  document.getElementById('viewInvitesOverlay').style.display = 'none';
+  document.getElementById('viewInvitesModal').classList.remove('active');
+}
+
+function deleteInvite(inviteId) {
+  if (!confirm('Delete this invite?')) return;
+  
+  fetch(`/api/invites/${inviteId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        closeViewInvitesModal();
+      } else {
+        alert(data.error || 'Failed to delete invite');
+      }
+    });
+}
+
+function resetJoinPreview() {
+  if (previewTimeout) {
+    clearTimeout(previewTimeout);
+    previewTimeout = null;
+  }
+  const preview = document.getElementById('invitePreview');
+  const error = document.getElementById('inviteError');
+  if (preview) {
+    preview.style.display = 'none';
+    document.getElementById('previewServerName').textContent = '';
+    document.getElementById('previewMemberCount').textContent = '';
+    document.getElementById('previewCreatedBy').textContent = '';
+  }
+  if (error) {
+    error.style.display = 'none';
+    error.textContent = '';
+  }
+}
+
 function openJoinServerModal() {
+  resetJoinPreview();
+  document.getElementById('joinCodeInput').value = '';
   document.getElementById('joinServerOverlay').style.display = 'block';
   document.getElementById('joinServerModal').classList.add('active');
   document.getElementById('joinCodeInput').focus();
 }
 
 function closeJoinServerModal() {
+  resetJoinPreview();
   document.getElementById('joinServerOverlay').style.display = 'none';
   document.getElementById('joinServerModal').classList.remove('active');
   document.getElementById('joinCodeInput').value = '';
+}
+
+function previewInvite(code) {
+  if (previewTimeout) {
+    clearTimeout(previewTimeout);
+    previewTimeout = null;
+  }
+  
+  const preview = document.getElementById('invitePreview');
+  const error = document.getElementById('inviteError');
+  
+  const trimmedCode = code.trim();
+  if (trimmedCode.length < 8) {
+    preview.style.display = 'none';
+    error.style.display = 'none';
+    document.getElementById('previewServerName').textContent = '';
+    document.getElementById('previewMemberCount').textContent = '';
+    document.getElementById('previewCreatedBy').textContent = '';
+    return;
+  }
+  
+  previewTimeout = setTimeout(() => {
+    fetch(`/api/invites/code/${trimmedCode.toUpperCase()}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) {
+          preview.style.display = 'none';
+          error.style.display = 'block';
+          error.textContent = data.error;
+        } else {
+          error.style.display = 'none';
+          preview.style.display = 'block';
+          document.getElementById('previewServerName').textContent = data.server_name || 'Unknown Server';
+          document.getElementById('previewMemberCount').textContent = `${data.member_count || 0} member${data.member_count !== 1 ? 's' : ''}`;
+          document.getElementById('previewCreatedBy').textContent = `Invited by ${data.created_by_username || 'Unknown'}`;
+        }
+      })
+      .catch(() => {
+        preview.style.display = 'none';
+        error.style.display = 'block';
+        error.textContent = 'Unable to verify invite code';
+      });
+  }, 300);
 }
 
 function joinServerByCode() {
@@ -2338,11 +2545,12 @@ function joinServerByCode() {
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        alert(data.message);
+        alert(data.message || 'Successfully joined the server!');
         closeJoinServerModal();
         loadServers();
       } else {
-        alert(data.error || 'Failed to join server');
+        document.getElementById('inviteError').style.display = 'block';
+        document.getElementById('inviteError').textContent = data.error || 'Failed to join server';
       }
     });
 }
