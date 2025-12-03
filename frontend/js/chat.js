@@ -3551,18 +3551,21 @@ function applyEquippedCosmetics() {
   localStorage.setItem('equippedCosmetics', JSON.stringify(userEquipped));
 }
 
+let dailyRewardData = null;
+
 function checkDailyRewardStatus() {
   fetch('/api/shop/daily/status', {
     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
   })
     .then(r => r.json())
     .then(data => {
+      dailyRewardData = data;
       const btn = document.getElementById('dailyRewardBtn');
       if (data.claimed) {
         btn.style.background = 'var(--accent)';
         btn.style.color = 'var(--text)';
         btn.textContent = '✓ Claimed';
-        btn.disabled = true;
+        btn.disabled = false;
       } else {
         btn.style.background = 'linear-gradient(135deg,#f7931e,#ff6b35)';
         btn.style.color = 'white';
@@ -3570,6 +3573,98 @@ function checkDailyRewardStatus() {
         btn.disabled = false;
       }
     });
+}
+
+function openDailyRewardsModal() {
+  if (!dailyRewardData) {
+    checkDailyRewardStatus();
+    setTimeout(openDailyRewardsModal, 300);
+    return;
+  }
+  
+  const rewards = dailyRewardData.rewards || [
+    { day: 1, coins: 50 }, { day: 2, coins: 150 }, { day: 3, coins: 200 }, { day: 4, coins: 250 },
+    { day: 5, coins: 300 }, { day: 6, coins: 350 }, { day: 7, coins: 400 }, { day: 8, coins: 0, item: 'daily-special-badge' }
+  ];
+  
+  const currentDay = dailyRewardData.currentDay || 1;
+  const claimed = dailyRewardData.claimed;
+  
+  let existingModal = document.getElementById('dailyRewardsModal');
+  if (existingModal) existingModal.remove();
+  
+  const modal = document.createElement('div');
+  modal.id = 'dailyRewardsModal';
+  modal.innerHTML = `
+    <div class="daily-modal-overlay" onclick="closeDailyRewardsModal()"></div>
+    <div class="daily-modal-content">
+      <div class="daily-modal-header">
+        <h2>🎁 Daily Reward</h2>
+        <span class="daily-modal-close" onclick="closeDailyRewardsModal()">&times;</span>
+      </div>
+      <p class="daily-subtitle">${claimed ? 'Come back tomorrow for your next reward!' : 'You can claim your reward!'}</p>
+      <div class="daily-rewards-grid">
+        ${rewards.map((r, i) => {
+          const dayNum = i + 1;
+          const isPast = currentDay > dayNum || (currentDay === dayNum && claimed);
+          const isCurrent = currentDay === dayNum && !claimed;
+          const isLocked = currentDay < dayNum;
+          const isSpecial = r.item !== null && r.item !== undefined;
+          
+          return `
+            <div class="daily-reward-day ${isPast ? 'claimed' : ''} ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''} ${isSpecial ? 'special' : ''}">
+              <div class="day-label">Day ${dayNum}</div>
+              <div class="reward-icon">
+                ${isSpecial ? '🏆' : '🪙'}
+              </div>
+              <div class="reward-amount">${isSpecial ? 'Badge' : r.coins}</div>
+              ${isPast ? '<div class="claimed-check">✓</div>' : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+      <button class="daily-claim-btn ${claimed ? 'disabled' : ''}" onclick="${claimed ? '' : 'claimDailyReward()'}" ${claimed ? 'disabled' : ''}>
+        ${claimed ? 'Already Claimed' : 'Claim'}
+      </button>
+    </div>
+  `;
+  
+  const style = document.createElement('style');
+  style.id = 'dailyRewardsStyle';
+  if (!document.getElementById('dailyRewardsStyle')) {
+    style.textContent = `
+      #dailyRewardsModal { position:fixed; top:0; left:0; width:100%; height:100%; z-index:10000; display:flex; align-items:center; justify-content:center; }
+      .daily-modal-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); }
+      .daily-modal-content { position:relative; background:linear-gradient(135deg, #4a7c59 0%, #6b9b4e 50%, #8fbc8f 100%); border-radius:20px; padding:25px; max-width:420px; width:90%; box-shadow:0 10px 40px rgba(0,0,0,0.4); border:4px solid #3d5c40; }
+      .daily-modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+      .daily-modal-header h2 { color:#fff; margin:0; font-size:24px; text-shadow:2px 2px 4px rgba(0,0,0,0.3); }
+      .daily-modal-close { color:#fff; font-size:28px; cursor:pointer; opacity:0.8; }
+      .daily-modal-close:hover { opacity:1; }
+      .daily-subtitle { color:#fff; text-align:center; margin:0 0 20px; font-size:14px; opacity:0.9; }
+      .daily-rewards-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:20px; }
+      .daily-reward-day { background:linear-gradient(180deg, #8fbc8f 0%, #6b9b4e 100%); border-radius:12px; padding:12px 8px; text-align:center; border:3px solid #5a8055; position:relative; transition:all 0.2s; }
+      .daily-reward-day.current { border-color:#ffd700; box-shadow:0 0 15px rgba(255,215,0,0.5); animation:pulse 1.5s infinite; }
+      .daily-reward-day.claimed { opacity:0.7; }
+      .daily-reward-day.locked { opacity:0.5; filter:grayscale(50%); }
+      .daily-reward-day.special { background:linear-gradient(180deg, #87ceeb 0%, #4169e1 100%); border-color:#1e90ff; }
+      .day-label { font-size:11px; font-weight:bold; color:#fff; text-shadow:1px 1px 2px rgba(0,0,0,0.3); margin-bottom:6px; }
+      .reward-icon { font-size:28px; margin:5px 0; }
+      .reward-amount { font-size:13px; font-weight:bold; color:#fff; text-shadow:1px 1px 2px rgba(0,0,0,0.3); }
+      .claimed-check { position:absolute; top:5px; right:5px; color:#fff; font-size:14px; background:#27ae60; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+      .daily-claim-btn { width:100%; padding:15px; font-size:18px; font-weight:bold; color:#fff; background:linear-gradient(180deg, #f7931e 0%, #e67e22 100%); border:3px solid #d35400; border-radius:12px; cursor:pointer; text-shadow:1px 1px 2px rgba(0,0,0,0.3); transition:all 0.2s; }
+      .daily-claim-btn:hover:not(.disabled) { transform:scale(1.02); box-shadow:0 5px 15px rgba(0,0,0,0.3); }
+      .daily-claim-btn.disabled { background:#95a5a6; border-color:#7f8c8d; cursor:not-allowed; opacity:0.8; }
+      @keyframes pulse { 0%, 100% { box-shadow:0 0 15px rgba(255,215,0,0.5); } 50% { box-shadow:0 0 25px rgba(255,215,0,0.8); } }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(modal);
+}
+
+function closeDailyRewardsModal() {
+  const modal = document.getElementById('dailyRewardsModal');
+  if (modal) modal.remove();
 }
 
 function claimDailyReward() {
@@ -3582,8 +3677,17 @@ function claimDailyReward() {
       if (data.success) {
         userCoins = data.newBalance;
         updateCoinDisplays();
+        dailyRewardData = null;
         checkDailyRewardStatus();
-        alert(data.message);
+        closeDailyRewardsModal();
+        
+        setTimeout(() => {
+          if (data.itemAwarded) {
+            alert(`🏆 Day ${data.day} reward!\n\nYou earned the Daily Champion badge!`);
+          } else {
+            alert(`🪙 Day ${data.day} reward!\n\n+${data.amount} coins`);
+          }
+        }, 200);
       } else {
         alert(data.error || 'Could not claim daily reward');
       }

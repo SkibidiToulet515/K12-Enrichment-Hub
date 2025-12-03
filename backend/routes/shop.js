@@ -280,6 +280,17 @@ router.post('/unequip', authenticateToken, (req, res) => {
   });
 });
 
+const DAILY_REWARDS = [
+  { day: 1, coins: 50, item: null },
+  { day: 2, coins: 150, item: null },
+  { day: 3, coins: 200, item: null },
+  { day: 4, coins: 250, item: null },
+  { day: 5, coins: 300, item: null },
+  { day: 6, coins: 350, item: null },
+  { day: 7, coins: 400, item: null },
+  { day: 8, coins: 0, item: 'daily-special-badge' }
+];
+
 router.post('/daily', authenticateToken, (req, res) => {
   const userId = req.user.userId;
   const today = new Date().toISOString().split('T')[0];
@@ -306,55 +317,78 @@ router.post('/daily', authenticateToken, (req, res) => {
         yesterday.setDate(yesterday.getDate() - 1);
         
         if (lastDate.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
-          streak = lastReward.streak + 1;
+          streak = (lastReward.streak % 8) + 1;
         }
       }
       
-      let baseAmount = 25;
-      let bonusMultiplier = 1 + (Math.min(streak, 7) - 1) * 0.1;
+      const dayIndex = ((streak - 1) % 8);
+      const reward = DAILY_REWARDS[dayIndex];
+      let amount = reward.coins;
       
       db.get(`
         SELECT si.metadata FROM user_equipped ue
         JOIN shop_items si ON ue.item_id = si.id
         WHERE ue.user_id = ? AND ue.slot = 'boost' AND si.slug = 'boost-daily'
       `, [userId], (err, boost) => {
+        let bonusMultiplier = 1;
         if (!err && boost) {
           try {
             const meta = JSON.parse(boost.metadata);
-            if (meta.coinBonus) bonusMultiplier *= meta.coinBonus;
+            if (meta.coinBonus) bonusMultiplier = meta.coinBonus;
           } catch(e) {}
         }
         
-        const amount = Math.floor(baseAmount * bonusMultiplier);
+        amount = Math.floor(amount * bonusMultiplier);
         
         db.get('SELECT coins FROM users WHERE id = ?', [userId], (err, user) => {
           if (err) return res.status(500).json({ error: 'Database error' });
           
           const newBalance = (user?.coins || 0) + amount;
           
-          db.run('UPDATE users SET coins = ? WHERE id = ?', [newBalance, userId], function(err) {
-            if (err) return res.status(500).json({ error: 'Failed to add coins' });
-            
-            db.run(`
-              INSERT INTO daily_rewards (user_id, reward_date, amount, streak)
-              VALUES (?, ?, ?, ?)
-            `, [userId, today, amount, streak], function(err) {
-              if (err) return res.status(500).json({ error: 'Failed to record daily reward' });
+          const processReward = () => {
+            db.run('UPDATE users SET coins = ? WHERE id = ?', [newBalance, userId], function(err) {
+              if (err) return res.status(500).json({ error: 'Failed to add coins' });
               
               db.run(`
-                INSERT INTO coin_transactions (user_id, amount, balance_after, transaction_type, description)
-                VALUES (?, ?, ?, 'daily_reward', ?)
-              `, [userId, amount, newBalance, `Daily reward (${streak} day streak)`], () => {});
-              
-              res.json({
-                success: true,
-                amount: amount,
-                streak: streak,
-                newBalance: newBalance,
-                message: streak > 1 ? `${streak} day streak! +${amount} coins` : `+${amount} coins`
+                INSERT INTO daily_rewards (user_id, reward_date, amount, streak)
+                VALUES (?, ?, ?, ?)
+              `, [userId, today, amount, streak], function(err) {
+                if (err) return res.status(500).json({ error: 'Failed to record daily reward' });
+                
+                if (amount > 0) {
+                  db.run(`
+                    INSERT INTO coin_transactions (user_id, amount, balance_after, transaction_type, description)
+                    VALUES (?, ?, ?, 'daily_reward', ?)
+                  `, [userId, amount, newBalance, `Day ${streak} daily reward`], () => {});
+                }
+                
+                res.json({
+                  success: true,
+                  day: streak,
+                  amount: amount,
+                  itemAwarded: reward.item,
+                  streak: streak,
+                  newBalance: newBalance,
+                  message: reward.item ? `Day ${streak} reward! You earned a special item!` : `Day ${streak} reward! +${amount} coins`
+                });
               });
             });
-          });
+          };
+          
+          if (reward.item) {
+            db.get('SELECT id FROM shop_items WHERE slug = ?', [reward.item], (err, item) => {
+              if (item) {
+                db.run(`
+                  INSERT INTO user_purchases (user_id, item_id, purchased_at)
+                  VALUES (?, ?, CURRENT_TIMESTAMP)
+                  ON CONFLICT DO NOTHING
+                `, [userId, item.id], () => {});
+              }
+              processReward();
+            });
+          } else {
+            processReward();
+          }
         });
       });
     });
@@ -379,11 +413,31 @@ router.get('/daily/status', authenticateToken, (req, res) => {
     `, [userId], (err, lastReward) => {
       if (err) return res.status(500).json({ error: 'Database error' });
       
+      let currentDay = 1;
+      let streakActive = false;
+      
+      if (lastReward) {
+        const lastDate = new Date(lastReward.reward_date);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        if (lastDate.toISOString().split('T')[0] === yesterday.toISOString().split('T')[0]) {
+          currentDay = (lastReward.streak % 8) + 1;
+          streakActive = true;
+        } else if (lastDate.toISOString().split('T')[0] === today) {
+          currentDay = lastReward.streak;
+          streakActive = true;
+        }
+      }
+      
       res.json({
         claimed: !!todayReward,
         lastClaim: lastReward?.reward_date,
         currentStreak: lastReward?.streak || 0,
-        todayAmount: todayReward?.amount
+        currentDay: currentDay,
+        streakActive: streakActive,
+        todayAmount: todayReward?.amount,
+        rewards: DAILY_REWARDS
       });
     });
   });

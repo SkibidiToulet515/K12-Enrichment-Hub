@@ -616,7 +616,8 @@ async function initDatabase() {
       (3, 'Speedrunner', 'badge-speedrunner', '⚡ Speedrunner badge', 400, 'rare', 'badge', 'badge-speedrunner', '{"emoji":"⚡","label":"Speed"}'),
       (3, 'OG Member', 'badge-og', '🔥 Original member badge', 600, 'epic', 'badge', 'badge-og', '{"emoji":"🔥","label":"OG"}'),
       (3, 'Prestige', 'badge-prestige', '💎 Prestige badge', 1500, 'legendary', 'badge', 'badge-prestige', '{"emoji":"💎","label":"Prestige"}'),
-      (3, 'Brainiac', 'badge-brainiac', '🧠 Brainiac badge', 500, 'rare', 'badge', 'badge-brainiac', '{"emoji":"🧠","label":"Brainiac"}')
+      (3, 'Brainiac', 'badge-brainiac', '🧠 Brainiac badge', 500, 'rare', 'badge', 'badge-brainiac', '{"emoji":"🧠","label":"Brainiac"}'),
+      (3, 'Daily Champion', 'daily-special-badge', '🏆 8-day streak reward badge', 0, 'legendary', 'badge', 'badge-daily-champion', '{"emoji":"🏆","label":"Champion"}')
       ON CONFLICT (slug) DO NOTHING`);
 
     await client.query(`INSERT INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, is_animated) VALUES
