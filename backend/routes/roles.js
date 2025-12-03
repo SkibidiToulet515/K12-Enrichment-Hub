@@ -242,8 +242,8 @@ router.post('/server/:serverId/member/:userId', (req, res) => {
       if (!role) return res.status(404).json({ error: 'Role not found' });
       
       db.run(`
-        INSERT OR IGNORE INTO server_member_roles (server_id, user_id, role_id)
-        VALUES (?, ?, ?)
+        INSERT INTO server_member_roles (server_id, user_id, role_id)
+        VALUES (?, ?, ?) ON CONFLICT DO NOTHING
       `, [serverId, userId, roleId], function(err) {
         if (err) return res.status(500).json({ error: 'Failed to assign role' });
         

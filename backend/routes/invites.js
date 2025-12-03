@@ -34,7 +34,7 @@ router.get('/server/:serverId', (req, res) => {
         SELECT si.*, u.username as created_by_username
         FROM server_invites si
         JOIN users u ON si.created_by = u.id
-        WHERE si.server_id = ? AND (si.expires_at IS NULL OR si.expires_at > datetime('now'))
+        WHERE si.server_id = ? AND (si.expires_at IS NULL OR si.expires_at > CURRENT_TIMESTAMP)
         ORDER BY si.created_at DESC
       `, [serverId], (err, invites) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -83,7 +83,7 @@ router.get('/code/:code', (req, res) => {
     FROM server_invites si
     JOIN servers s ON si.server_id = s.id
     JOIN users u ON si.created_by = u.id
-    WHERE si.code = ? AND (si.expires_at IS NULL OR si.expires_at > datetime('now'))
+    WHERE si.code = ? AND (si.expires_at IS NULL OR si.expires_at > CURRENT_TIMESTAMP)
   `, [code.toUpperCase()], (err, invite) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!invite) return res.status(404).json({ error: 'Invalid or expired invite' });
@@ -102,7 +102,7 @@ router.post('/join/:code', (req, res) => {
   
   db.get(`
     SELECT * FROM server_invites 
-    WHERE code = ? AND (expires_at IS NULL OR expires_at > datetime('now'))
+    WHERE code = ? AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
   `, [code.toUpperCase()], (err, invite) => {
     if (!invite) return res.status(404).json({ error: 'Invalid or expired invite' });
     if (invite.max_uses > 0 && invite.uses >= invite.max_uses) {

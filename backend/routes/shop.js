@@ -207,8 +207,11 @@ router.post('/equip', authenticateToken, (req, res) => {
     
     const doEquip = () => {
       db.run(`
-        INSERT OR REPLACE INTO user_equipped (user_id, slot, item_id, server_id, equipped_at)
-        VALUES (?, ?, ?, ?, datetime('now'))
+        INSERT INTO user_equipped (user_id, slot, item_id, server_id, equipped_at)
+        VALUES (?, ?, ?, COALESCE(?, 0), CURRENT_TIMESTAMP)
+        ON CONFLICT (user_id, slot, server_id) DO UPDATE SET 
+          item_id = excluded.item_id,
+          equipped_at = CURRENT_TIMESTAMP
       `, [userId, slot, itemId, serverIdValue], function(err) {
         if (err) return res.status(500).json({ error: 'Failed to equip item' });
         

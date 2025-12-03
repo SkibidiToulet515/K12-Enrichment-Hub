@@ -76,8 +76,11 @@ router.put('/:action', authenticateToken, (req, res) => {
         }
         
         db.run(`
-          INSERT OR REPLACE INTO user_shortcuts (user_id, action, shortcut, is_enabled)
+          INSERT INTO user_shortcuts (user_id, action, shortcut, is_enabled)
           VALUES (?, ?, ?, ?)
+          ON CONFLICT (user_id, action) DO UPDATE SET
+            shortcut = excluded.shortcut,
+            is_enabled = excluded.is_enabled
         `, [userId, action, normalizedShortcut, is_enabled !== false ? 1 : 0], function(err) {
           if (err) return res.status(500).json({ error: 'Failed to update shortcut' });
           
@@ -116,8 +119,11 @@ router.put('/:action/toggle', authenticateToken, (req, res) => {
     const shortcut = data.shortcut || data.default_shortcut;
     
     db.run(`
-      INSERT OR REPLACE INTO user_shortcuts (user_id, action, shortcut, is_enabled)
+      INSERT INTO user_shortcuts (user_id, action, shortcut, is_enabled)
       VALUES (?, ?, ?, ?)
+      ON CONFLICT (user_id, action) DO UPDATE SET
+        shortcut = excluded.shortcut,
+        is_enabled = excluded.is_enabled
     `, [userId, action, shortcut, newEnabled], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to toggle shortcut' });
       

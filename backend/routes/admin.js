@@ -125,7 +125,7 @@ router.post('/approve-server/:requestId', isAdmin, (req, res) => {
       const serverId = this.lastID;
       
       // Add owner as member
-      db.run('INSERT OR IGNORE INTO server_members (server_id, user_id) VALUES (?, ?)', 
+      db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?) ON CONFLICT DO NOTHING', 
         [serverId, request.user_id], () => {});
       
       // Update request status

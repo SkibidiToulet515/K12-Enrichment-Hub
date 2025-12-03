@@ -123,8 +123,8 @@ router.post('/:friendId/accept', (req, res) => {
 
       // Create reverse friendship
       db.run(
-        `INSERT OR IGNORE INTO friends (user_id, friend_id, status)
-         VALUES (?, ?, ?)`,
+        `INSERT INTO friends (user_id, friend_id, status)
+         VALUES (?, ?, ?) ON CONFLICT DO NOTHING`,
         [userId, friendId, 'accepted'],
         (err) => {
           res.json({ success: true, message: 'Friend request accepted' });

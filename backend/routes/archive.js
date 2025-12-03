@@ -77,8 +77,10 @@ router.post('/archive', authenticateToken, (req, res) => {
     if (!valid) return res.status(404).json({ error: 'Chat not found or access denied' });
     
     db.run(`
-      INSERT OR REPLACE INTO archived_chats (user_id, chat_type, chat_id, archived_at)
-      VALUES (?, ?, ?, datetime('now'))
+      INSERT INTO archived_chats (user_id, chat_type, chat_id, archived_at)
+      VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT (user_id, chat_type, chat_id) DO UPDATE SET
+        archived_at = CURRENT_TIMESTAMP
     `, [userId, chat_type, chat_id], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to archive chat' });
       
@@ -148,7 +150,7 @@ router.post('/channel/:channelId/archive', authenticateToken, (req, res) => {
     
     function archiveChannel() {
       db.run(`
-        UPDATE channels SET is_archived = 1, archived_at = datetime('now')
+        UPDATE channels SET is_archived = true, archived_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `, [channelId], function(err) {
         if (err) return res.status(500).json({ error: 'Failed to archive channel' });

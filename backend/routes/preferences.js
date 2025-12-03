@@ -51,15 +51,15 @@ router.put('/', authenticateToken, (req, res) => {
   
   db.run(`
     INSERT INTO user_preferences (user_id, theme_mode, auto_theme_schedule, tab_cloak_enabled, tab_cloak_title, tab_cloak_favicon, panic_key, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     ON CONFLICT(user_id) DO UPDATE SET
-      theme_mode = COALESCE(excluded.theme_mode, theme_mode),
-      auto_theme_schedule = COALESCE(excluded.auto_theme_schedule, auto_theme_schedule),
-      tab_cloak_enabled = COALESCE(excluded.tab_cloak_enabled, tab_cloak_enabled),
-      tab_cloak_title = COALESCE(excluded.tab_cloak_title, tab_cloak_title),
-      tab_cloak_favicon = COALESCE(excluded.tab_cloak_favicon, tab_cloak_favicon),
-      panic_key = COALESCE(excluded.panic_key, panic_key),
-      updated_at = datetime('now')
+      theme_mode = COALESCE(excluded.theme_mode, user_preferences.theme_mode),
+      auto_theme_schedule = COALESCE(excluded.auto_theme_schedule, user_preferences.auto_theme_schedule),
+      tab_cloak_enabled = COALESCE(excluded.tab_cloak_enabled, user_preferences.tab_cloak_enabled),
+      tab_cloak_title = COALESCE(excluded.tab_cloak_title, user_preferences.tab_cloak_title),
+      tab_cloak_favicon = COALESCE(excluded.tab_cloak_favicon, user_preferences.tab_cloak_favicon),
+      panic_key = COALESCE(excluded.panic_key, user_preferences.panic_key),
+      updated_at = CURRENT_TIMESTAMP
   `, [
     userId,
     theme_mode || 'manual',

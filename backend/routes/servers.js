@@ -46,8 +46,8 @@ router.post('/:id/join', (req, res) => {
   const { userId } = req.body;
   
   db.run(`
-    INSERT OR IGNORE INTO server_members (server_id, user_id) 
-    VALUES (?, ?)
+    INSERT INTO server_members (server_id, user_id) 
+    VALUES (?, ?) ON CONFLICT DO NOTHING
   `, [req.params.id, userId], (err) => {
     if (err) {
       return res.status(400).json({ error: 'Failed to join server' });

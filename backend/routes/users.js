@@ -45,7 +45,7 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
       const token = jwt.sign({ userId, username }, SECRET_KEY);
       
       // Auto-add to Welcome server (ID: 1) with Rules and Moderation Logs channels
-      db.run('INSERT OR IGNORE INTO server_members (server_id, user_id) VALUES (?, ?)', [1, userId], () => {});
+      db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?) ON CONFLICT DO NOTHING', [1, userId], () => {});
       
       res.json({
         success: true,

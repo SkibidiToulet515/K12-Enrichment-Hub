@@ -42,10 +42,10 @@ router.put('/:friendId', authenticateToken, (req, res) => {
     
     db.run(`
       INSERT INTO friend_notes (user_id, friend_id, note, updated_at)
-      VALUES (?, ?, ?, datetime('now'))
+      VALUES (?, ?, ?, CURRENT_TIMESTAMP)
       ON CONFLICT(user_id, friend_id) DO UPDATE SET
         note = excluded.note,
-        updated_at = datetime('now')
+        updated_at = CURRENT_TIMESTAMP
     `, [userId, friendId, note || ''], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to save note' });
       res.json({ success: true, message: 'Note saved' });

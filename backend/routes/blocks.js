@@ -71,7 +71,7 @@ router.post('/:targetId', (req, res) => {
   db.get('SELECT id, username FROM users WHERE id = ?', [targetId], (err, user) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     
-    db.run('INSERT OR IGNORE INTO user_blocks (blocker_id, blocked_id) VALUES (?, ?)', 
+    db.run('INSERT INTO user_blocks (blocker_id, blocked_id) VALUES (?, ?) ON CONFLICT DO NOTHING', 
       [userId, targetId], function(err) {
         if (err) return res.status(500).json({ error: 'Database error' });
         
