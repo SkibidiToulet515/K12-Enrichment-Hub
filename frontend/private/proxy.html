@@ -247,8 +247,8 @@
         <button class="go-btn" onclick="navigate()">Go</button>
       </div>
       <div class="proxy-tabs">
-        <button class="proxy-tab active" data-proxy="uv" onclick="switchProxy('uv')">Ultraviolet</button>
-        <button class="proxy-tab" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</button>
+        <button class="proxy-tab active" data-proxy="server" onclick="switchProxy('server')">Server Proxy</button>
+        <button class="proxy-tab" data-proxy="direct" onclick="switchProxy('direct')">Direct Link</button>
       </div>
     </nav>
 
@@ -272,7 +272,7 @@
 
     <div class="status-bar">
       <span id="statusText">Ready</span>
-      <span id="proxyType">Proxy: Ultraviolet</span>
+      <span id="proxyType">Mode: Server Proxy</span>
     </div>
   </div>
 
@@ -280,9 +280,7 @@
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
   <script>
-    let currentProxy = 'uv';
-    let uvRegistered = false;
-    let scramjetRegistered = false;
+    let currentProxy = 'server';
 
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -291,62 +289,6 @@
         return false;
       }
       return true;
-    }
-
-    async function registerUV() {
-      if (uvRegistered) return true;
-      try {
-        const reg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
-        await navigator.serviceWorker.ready;
-        uvRegistered = true;
-        return true;
-      } catch (e) {
-        console.error('UV registration failed:', e);
-        return false;
-      }
-    }
-
-    async function registerScramjet() {
-      if (scramjetRegistered) return true;
-      try {
-        const reg = await navigator.serviceWorker.register('/scram/sw.js', { scope: '/scramjet/' });
-        await navigator.serviceWorker.ready;
-        scramjetRegistered = true;
-        return true;
-      } catch (e) {
-        console.error('Scramjet registration failed:', e);
-        return false;
-      }
-    }
-
-    async function initProxy() {
-      if (!('serviceWorker' in navigator)) {
-        document.getElementById('statusText').textContent = 'Service Workers not supported';
-        return;
-      }
-      
-      document.getElementById('statusText').textContent = 'Initializing proxies...';
-      
-      const uvOk = await registerUV();
-      const sjOk = await registerScramjet();
-      
-      if (uvOk && sjOk) {
-        document.getElementById('statusText').textContent = 'Both proxies ready';
-      } else if (uvOk) {
-        document.getElementById('statusText').textContent = 'UV ready (Scramjet failed)';
-      } else if (sjOk) {
-        document.getElementById('statusText').textContent = 'Scramjet ready (UV failed)';
-      } else {
-        document.getElementById('statusText').textContent = 'Proxy initialization failed';
-      }
-    }
-
-    function encodeUrlUV(url) {
-      return encodeURIComponent(url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join(''));
-    }
-
-    function encodeUrlScramjet(url) {
-      return encodeURIComponent(url);
     }
 
     function navigate() {
@@ -371,45 +313,32 @@
       const frame = document.getElementById('proxyFrame');
       const loading = document.getElementById('loadingOverlay');
       
-      let encodedUrl;
-      
-      if (currentProxy === 'uv') {
-        if (!uvRegistered) {
-          const success = await registerUV();
-          if (!success) {
-            document.getElementById('statusText').textContent = 'UV failed - try Scramjet';
-            return;
-          }
-        }
-        encodedUrl = '/service/' + encodeUrlUV(url);
-      } else {
-        if (!scramjetRegistered) {
-          const success = await registerScramjet();
-          if (!success) {
-            document.getElementById('statusText').textContent = 'Scramjet failed - try UV';
-            return;
-          }
-        }
-        encodedUrl = '/scramjet/' + encodeUrlScramjet(url);
-      }
-      
       frame.style.display = 'block';
       loading.classList.add('hidden');
-      frame.src = encodedUrl;
+      
+      if (currentProxy === 'server') {
+        frame.src = '/api/proxy/fetch?url=' + encodeURIComponent(url);
+      } else {
+        frame.src = url;
+      }
       
       frame.onload = () => {
-        document.getElementById('statusText').textContent = 'Loaded via ' + (currentProxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
+        document.getElementById('statusText').textContent = 'Loaded via ' + (currentProxy === 'server' ? 'Server Proxy' : 'Direct');
+      };
+      
+      frame.onerror = () => {
+        document.getElementById('statusText').textContent = 'Failed to load - try different mode';
       };
     }
 
-    async function switchProxy(proxy) {
+    function switchProxy(proxy) {
       if (currentProxy === proxy) return;
       
       currentProxy = proxy;
       document.querySelectorAll('.proxy-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.proxy === proxy);
       });
-      document.getElementById('proxyType').textContent = 'Proxy: ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
+      document.getElementById('proxyType').textContent = 'Mode: ' + (proxy === 'server' ? 'Server Proxy' : 'Direct Link');
       
       const frame = document.getElementById('proxyFrame');
       const loading = document.getElementById('loadingOverlay');
@@ -418,22 +347,16 @@
       frame.src = 'about:blank';
       loading.classList.remove('hidden');
       
-      if (proxy === 'uv') {
-        if (!uvRegistered) await registerUV();
-        document.getElementById('statusText').textContent = uvRegistered ? 'Ultraviolet ready' : 'UV failed';
-      } else {
-        if (!scramjetRegistered) await registerScramjet();
-        document.getElementById('statusText').textContent = scramjetRegistered ? 'Scramjet ready' : 'Scramjet failed';
-      }
+      document.getElementById('statusText').textContent = proxy === 'server' ? 'Server Proxy ready' : 'Direct mode ready';
     }
 
     document.getElementById('urlInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') navigate();
     });
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    document.addEventListener('DOMContentLoaded', () => {
       if (!checkAuth()) return;
-      await initProxy();
+      document.getElementById('statusText').textContent = 'Ready - Enter a URL to browse';
     });
   </script>
 </body>
