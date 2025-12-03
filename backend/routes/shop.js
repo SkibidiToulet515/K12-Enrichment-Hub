@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   
   const jwt = require('jsonwebtoken');
-  const JWT_SECRET = process.env.JWT_SECRET || 'k12-learning-portal-secret-key-2024';
+  const JWT_SECRET = 'real_user_auth_secret_2025';
   
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid token' });
