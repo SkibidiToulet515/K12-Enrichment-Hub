@@ -404,7 +404,7 @@
       </div>
     </div>
 
-    <div class="status-text" id="statusText">Ready</div>
+    <div class="status-text" id="statusText">Initializing...</div>
   </div>
 
   <div class="browser-navbar" id="browserNavbar">
@@ -422,6 +422,31 @@
   <script src="/js/themes.js"></script>
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
+  
+  <script type="module">
+    import { BareMuxConnection } from '/baremux/index.mjs';
+
+    window.bareMuxReady = false;
+    window.bareMux = null;
+
+    async function initBareMux() {
+      try {
+        const connection = new BareMuxConnection('/baremux/worker.js');
+        await connection.setTransport('/bare/', []);
+        window.bareMux = connection;
+        window.bareMuxReady = true;
+        console.log('BareMux initialized successfully');
+        document.getElementById('statusText').textContent = 'Transport ready';
+        window.dispatchEvent(new Event('baremux-ready'));
+      } catch (e) {
+        console.error('BareMux initialization failed:', e);
+        document.getElementById('statusText').textContent = 'Transport failed: ' + e.message;
+      }
+    }
+
+    initBareMux();
+  </script>
+
   <script>
     let currentProxy = 'uv';
     let swReady = false;
@@ -441,9 +466,23 @@
       window.open(window.location.href, '_blank');
     }
 
+    async function waitForBareMux() {
+      if (window.bareMuxReady) return true;
+      return new Promise((resolve) => {
+        window.addEventListener('baremux-ready', () => resolve(true), { once: true });
+        setTimeout(() => resolve(false), 5000);
+      });
+    }
+
     async function registerServiceWorker() {
       if (!('serviceWorker' in navigator)) {
         document.getElementById('statusText').textContent = 'Service Workers not supported';
+        return false;
+      }
+
+      const bareMuxOk = await waitForBareMux();
+      if (!bareMuxOk) {
+        document.getElementById('statusText').textContent = 'Transport not ready';
         return false;
       }
 
@@ -458,7 +497,7 @@
         return true;
       } catch (e) {
         console.error('SW registration failed:', e);
-        document.getElementById('statusText').textContent = 'Open in new tab for proxy';
+        document.getElementById('statusText').textContent = 'Registration failed: ' + e.message;
         return false;
       }
     }
@@ -494,7 +533,9 @@
       if (!swReady) {
         const success = await registerServiceWorker();
         if (!success) {
-          document.getElementById('warningBanner').style.display = 'block';
+          if (isInIframe) {
+            document.getElementById('warningBanner').style.display = 'block';
+          }
           return;
         }
       }
@@ -561,8 +602,6 @@
       if (isInIframe) {
         document.getElementById('warningBanner').style.display = 'block';
         document.getElementById('statusText').textContent = 'Open in new tab for best experience';
-      } else {
-        await registerServiceWorker();
       }
     });
   </script>
