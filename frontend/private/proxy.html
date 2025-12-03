@@ -176,9 +176,9 @@
     }
 
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid var(--accent);
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--accent);
       border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
@@ -192,16 +192,16 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 15px;
+      justify-content: center;
+      margin-top: 20px;
     }
 
     .quick-link {
-      padding: 8px 14px;
+      padding: 8px 16px;
       background: var(--accent);
-      color: var(--text);
       border-radius: 20px;
-      font-size: 12px;
       cursor: pointer;
+      font-size: 13px;
       transition: all 0.2s;
     }
 
@@ -211,35 +211,58 @@
     }
 
     .status-bar {
-      padding: 8px 15px;
       background: var(--card);
       border-top: 1px solid var(--accent);
+      padding: 8px 20px;
       font-size: 12px;
-      color: var(--muted);
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
-    @media (max-width: 768px) {
-      .navbar {
-        flex-wrap: wrap;
-      }
-      .url-bar {
-        width: 100%;
-        max-width: none;
-        order: 3;
-      }
-      .proxy-tabs {
-        display: none;
-      }
+    .warning-banner {
+      background: #ff980020;
+      border: 1px solid #ff9800;
+      color: #ff9800;
+      padding: 10px 15px;
+      margin: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .warning-banner.show {
+      display: block;
+    }
+
+    .open-new-tab-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+
+    .open-new-tab-btn:hover {
+      background: #45a049;
+    }
+
+    .info-text {
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-top: 10px;
     }
   </style>
 </head>
-<body class="proxy-page">
+<body>
   <div class="app-container">
     <nav class="navbar">
       <div class="nav-left">
-        <a href="/private/dashboard.html" class="back-btn">← Back</a>
+        <a href="/private/dashboard.html" class="back-btn">Back</a>
         <h1>Web Browser</h1>
       </div>
       <div class="url-bar">
@@ -247,16 +270,20 @@
         <button class="go-btn" onclick="navigate()">Go</button>
       </div>
       <div class="proxy-tabs">
-        <button class="proxy-tab active" data-proxy="server" onclick="switchProxy('server')">Server Proxy</button>
-        <button class="proxy-tab" data-proxy="direct" onclick="switchProxy('direct')">Direct Link</button>
+        <button class="proxy-tab active" data-proxy="uv" onclick="switchProxy('uv')">Ultraviolet</button>
+        <button class="proxy-tab" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</button>
       </div>
     </nav>
+
+    <div class="warning-banner" id="warningBanner">
+      Service workers require opening in a new tab. Click the button below to open the full proxy.
+    </div>
 
     <main class="browser-container">
       <div class="browser-frame" id="browserFrame">
         <div class="loading-overlay" id="loadingOverlay">
           <div class="spinner"></div>
-          <div>Initializing proxy...</div>
+          <div id="loadingText">Initializing proxy...</div>
           <div class="quick-links">
             <span class="quick-link" onclick="goTo('https://google.com')">Google</span>
             <span class="quick-link" onclick="goTo('https://youtube.com')">YouTube</span>
@@ -265,14 +292,18 @@
             <span class="quick-link" onclick="goTo('https://reddit.com')">Reddit</span>
             <span class="quick-link" onclick="goTo('https://twitch.tv')">Twitch</span>
           </div>
+          <button class="open-new-tab-btn" id="openNewTabBtn" onclick="openInNewTab()" style="display:none;">
+            Open Proxy in New Tab
+          </button>
+          <div class="info-text" id="infoText"></div>
         </div>
-        <iframe id="proxyFrame" style="display:none;"></iframe>
+        <iframe id="proxyFrame" style="display:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
       </div>
     </main>
 
     <div class="status-bar">
       <span id="statusText">Ready</span>
-      <span id="proxyType">Mode: Server Proxy</span>
+      <span id="proxyType">Proxy: Ultraviolet</span>
     </div>
   </div>
 
@@ -280,7 +311,9 @@
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
   <script>
-    let currentProxy = 'server';
+    let currentProxy = 'uv';
+    let swReady = false;
+    let isInIframe = window !== window.top;
 
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -289,6 +322,41 @@
         return false;
       }
       return true;
+    }
+
+    function openInNewTab() {
+      window.open(window.location.href, '_blank');
+    }
+
+    async function registerServiceWorker() {
+      if (!('serviceWorker' in navigator)) {
+        document.getElementById('statusText').textContent = 'Service Workers not supported';
+        return false;
+      }
+
+      try {
+        const swPath = currentProxy === 'uv' ? '/uv/sw.js' : '/scram/sw.js';
+        const scope = currentProxy === 'uv' ? '/service/' : '/scramjet/';
+        
+        const reg = await navigator.serviceWorker.register(swPath, { scope });
+        await navigator.serviceWorker.ready;
+        swReady = true;
+        document.getElementById('statusText').textContent = currentProxy === 'uv' ? 'Ultraviolet ready' : 'Scramjet ready';
+        document.getElementById('loadingText').textContent = 'Proxy ready! Click a link or enter a URL.';
+        return true;
+      } catch (e) {
+        console.error('SW registration failed:', e);
+        document.getElementById('statusText').textContent = 'Registration failed - open in new tab';
+        return false;
+      }
+    }
+
+    function encodeUrl(url) {
+      if (currentProxy === 'uv') {
+        return encodeURIComponent(url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join(''));
+      } else {
+        return encodeURIComponent(url);
+      }
     }
 
     function navigate() {
@@ -308,37 +376,44 @@
 
     async function goTo(url) {
       document.getElementById('urlInput').value = url;
+      
+      if (!swReady) {
+        const success = await registerServiceWorker();
+        if (!success) {
+          document.getElementById('warningBanner').classList.add('show');
+          document.getElementById('openNewTabBtn').style.display = 'block';
+          document.getElementById('infoText').textContent = 'Service workers require a new tab to work properly.';
+          return;
+        }
+      }
+
       document.getElementById('statusText').textContent = 'Loading...';
       
       const frame = document.getElementById('proxyFrame');
       const loading = document.getElementById('loadingOverlay');
       
+      const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
+      const encodedUrl = prefix + encodeUrl(url);
+      
       frame.style.display = 'block';
       loading.classList.add('hidden');
-      
-      if (currentProxy === 'server') {
-        frame.src = '/api/proxy/fetch?url=' + encodeURIComponent(url);
-      } else {
-        frame.src = url;
-      }
+      frame.src = encodedUrl;
       
       frame.onload = () => {
-        document.getElementById('statusText').textContent = 'Loaded via ' + (currentProxy === 'server' ? 'Server Proxy' : 'Direct');
-      };
-      
-      frame.onerror = () => {
-        document.getElementById('statusText').textContent = 'Failed to load - try different mode';
+        document.getElementById('statusText').textContent = 'Loaded via ' + (currentProxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
       };
     }
 
-    function switchProxy(proxy) {
+    async function switchProxy(proxy) {
       if (currentProxy === proxy) return;
       
       currentProxy = proxy;
+      swReady = false;
+      
       document.querySelectorAll('.proxy-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.proxy === proxy);
       });
-      document.getElementById('proxyType').textContent = 'Mode: ' + (proxy === 'server' ? 'Server Proxy' : 'Direct Link');
+      document.getElementById('proxyType').textContent = 'Proxy: ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
       
       const frame = document.getElementById('proxyFrame');
       const loading = document.getElementById('loadingOverlay');
@@ -347,16 +422,27 @@
       frame.src = 'about:blank';
       loading.classList.remove('hidden');
       
-      document.getElementById('statusText').textContent = proxy === 'server' ? 'Server Proxy ready' : 'Direct mode ready';
+      document.getElementById('loadingText').textContent = 'Switching to ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet') + '...';
+      
+      await registerServiceWorker();
     }
 
     document.getElementById('urlInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') navigate();
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuth()) return;
-      document.getElementById('statusText').textContent = 'Ready - Enter a URL to browse';
+      
+      if (isInIframe) {
+        document.getElementById('warningBanner').classList.add('show');
+        document.getElementById('openNewTabBtn').style.display = 'block';
+        document.getElementById('loadingText').textContent = 'Running in iframe - open in new tab for best results';
+        document.getElementById('infoText').textContent = 'UV/Scramjet work best when opened in a new browser tab.';
+        document.getElementById('statusText').textContent = 'Open in new tab for full proxy support';
+      } else {
+        await registerServiceWorker();
+      }
     });
   </script>
 </body>
