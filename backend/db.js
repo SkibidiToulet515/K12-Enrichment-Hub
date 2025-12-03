@@ -784,4 +784,94 @@ try {
   sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_coin_transactions_user ON coin_transactions(user_id)');
 } catch(e) {}
 
+// ============== SITE CHANGELOGS ==============
+
+db.exec(`CREATE TABLE IF NOT EXISTS changelogs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  version TEXT,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  change_type TEXT DEFAULT 'feature',
+  author_id INTEGER,
+  is_published BOOLEAN DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(author_id) REFERENCES users(id)
+)`);
+
+// Seed initial changelog entries
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO changelogs (id, version, title, content, change_type, author_id) VALUES
+    (1, '1.0.0', 'Welcome to Enrichment Hub!', 'Initial release of our K-12 learning portal featuring chat system, educational games, and social features.', 'feature', 1),
+    (2, '1.1.0', 'Cosmetic Shop Added', 'New shop system with themes, profile frames, badges, chat bubbles, and more! Earn coins daily.', 'feature', 1),
+    (3, '1.1.1', 'Server Invite System', 'Create custom invite links with expiry options and usage limits. Preview servers before joining.', 'feature', 1)`);
+} catch(e) {}
+
+// ============== CUSTOM KEYBOARD SHORTCUTS ==============
+
+db.exec(`CREATE TABLE IF NOT EXISTS user_shortcuts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  action TEXT NOT NULL,
+  shortcut TEXT NOT NULL,
+  is_enabled BOOLEAN DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, action),
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
+// Default shortcuts config (stored per user, but this is the template)
+db.exec(`CREATE TABLE IF NOT EXISTS default_shortcuts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  action TEXT UNIQUE NOT NULL,
+  shortcut TEXT NOT NULL,
+  description TEXT,
+  category TEXT DEFAULT 'general'
+)`);
+
+// Seed default shortcuts
+try {
+  sqliteDb.exec(`INSERT OR IGNORE INTO default_shortcuts (action, shortcut, description, category) VALUES
+    ('open_chat', 'c', 'Open chat panel', 'navigation'),
+    ('open_games', 'g', 'Open games library', 'navigation'),
+    ('open_profile', 'p', 'Open your profile', 'navigation'),
+    ('focus_search', '/', 'Focus search bar', 'navigation'),
+    ('return_dashboard', 'Escape', 'Return to dashboard', 'navigation'),
+    ('open_shop', 's', 'Open the shop', 'navigation'),
+    ('toggle_sidebar', 'b', 'Toggle sidebar', 'ui'),
+    ('quick_switcher', 'ctrl+k', 'Open quick switcher', 'advanced'),
+    ('command_palette', 'ctrl+shift+p', 'Open command palette', 'advanced'),
+    ('new_message', 'n', 'Start new message', 'chat'),
+    ('mark_read', 'm', 'Mark all as read', 'chat'),
+    ('next_channel', 'alt+down', 'Next channel', 'chat'),
+    ('prev_channel', 'alt+up', 'Previous channel', 'chat')`);
+} catch(e) {}
+
+// ============== ARCHIVE MODE ==============
+
+db.exec(`CREATE TABLE IF NOT EXISTS archived_chats (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  chat_type TEXT NOT NULL,
+  chat_id INTEGER NOT NULL,
+  archived_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, chat_type, chat_id),
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
+// Add archived column to channels (for server-wide archiving by admins)
+try {
+  sqliteDb.exec('ALTER TABLE channels ADD COLUMN is_archived BOOLEAN DEFAULT 0');
+} catch(e) {}
+
+try {
+  sqliteDb.exec('ALTER TABLE channels ADD COLUMN archived_at DATETIME');
+} catch(e) {}
+
+// Create indices for new tables
+try {
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_changelogs_published ON changelogs(is_published)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_user_shortcuts_user ON user_shortcuts(user_id)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_archived_chats_user ON archived_chats(user_id)');
+} catch(e) {}
+
 module.exports = db;

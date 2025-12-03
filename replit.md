@@ -6,6 +6,13 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Imported from GitHub and configured for Replit environment (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-03**: Added Quick Win Features
+  - **Site Changelogs**: Professional changelog panel showing updates with version tags, change types (feature/bugfix/improvement/security/removed/ui), author attribution, and styled UI. Admin-only creation via API.
+  - **Custom Keyboard Shortcuts**: Customizable shortcuts with categories (navigation/chat/ui/advanced). Users can edit, enable/disable, and reset shortcuts. Conflict detection prevents duplicate bindings.
+  - **Archive Mode**: Users can archive DMs, group chats, and channels to hide from main view. Server owners can archive/unarchive entire channels. All archived items viewable in dedicated modal.
+  - New sidebar buttons: "Updates" (changelog), "Keys" (shortcuts), and archive icon
+  - Database tables: changelogs, user_shortcuts, default_shortcuts, archived_chats
+
 - **2025-12-03**: Added comprehensive cosmetic shop system
   - 10 item categories: Themes, Profile Frames, Badges, Chat Bubbles, Sound Packs, Animated Avatars, Server Cosmetics, Status Effects, Bio Upgrades, Boosts
   - Virtual currency system with 1000 starting coins for new users
@@ -44,6 +51,10 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
   - `/api/features`, `/api/friends`, `/api/blocks` - Social features
   - `/api/reactions`, `/api/pins`, `/api/invites` - Message features
   - `/api/search`, `/api/roles`, `/api/categories`, `/api/audit` - Additional features
+  - `/api/shop` - Cosmetic shop system
+  - `/api/changelogs` - Site changelog (public read, admin write)
+  - `/api/shortcuts` - Keyboard shortcuts management
+  - `/api/archive` - Chat archiving
 
 ### Frontend (Static HTML/CSS/JS)
 - **Public Pages**: `frontend/public/index.html` - Landing page

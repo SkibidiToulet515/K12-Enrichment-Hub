@@ -3593,3 +3593,369 @@ function claimDailyReward() {
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(initShop, 500);
 });
+
+let userShortcuts = {};
+let shortcutsEnabled = true;
+
+function openChangelog() {
+  document.getElementById('changelogOverlay').style.display = 'block';
+  document.getElementById('changelogModal').style.display = 'block';
+  loadChangelogs();
+}
+
+function closeChangelog() {
+  document.getElementById('changelogOverlay').style.display = 'none';
+  document.getElementById('changelogModal').style.display = 'none';
+}
+
+function loadChangelogs() {
+  fetch('/api/changelogs')
+    .then(r => r.json())
+    .then(changelogs => {
+      const container = document.getElementById('changelogContent');
+      if (!changelogs.length) {
+        container.innerHTML = '<p style="color:var(--text-light);text-align:center;">No changelog entries yet.</p>';
+        return;
+      }
+      
+      container.innerHTML = changelogs.map(log => {
+        const typeColors = {
+          feature: '#2ecc71',
+          bugfix: '#e74c3c',
+          improvement: '#3498db',
+          security: '#f39c12',
+          removed: '#95a5a6',
+          ui: '#9b59b6'
+        };
+        const typeLabels = {
+          feature: '✨ New Feature',
+          bugfix: '🐛 Bug Fix',
+          improvement: '📈 Improvement',
+          security: '🔒 Security',
+          removed: '🗑️ Removed',
+          ui: '🎨 UI Update'
+        };
+        const date = new Date(log.created_at).toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'short', day: 'numeric' 
+        });
+        
+        return `
+          <div style="margin-bottom:20px;padding:20px;background:var(--bg);border-radius:12px;border-left:4px solid ${typeColors[log.change_type] || '#3498db'};">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                ${log.version ? `<span style="background:var(--primary);color:white;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;">v${log.version}</span>` : ''}
+                <span style="background:${typeColors[log.change_type] || '#3498db'}20;color:${typeColors[log.change_type] || '#3498db'};padding:4px 10px;border-radius:20px;font-size:12px;">${typeLabels[log.change_type] || log.change_type}</span>
+              </div>
+              <span style="color:var(--text-light);font-size:12px;">${date}</span>
+            </div>
+            <h3 style="margin:0 0 10px;color:var(--text);font-size:18px;">${log.title}</h3>
+            <p style="margin:0;color:var(--text-light);line-height:1.6;">${log.content}</p>
+            ${log.author_name ? `<p style="margin:10px 0 0;color:var(--text-light);font-size:12px;">— ${log.author_name}</p>` : ''}
+          </div>
+        `;
+      }).join('');
+    })
+    .catch(() => {
+      document.getElementById('changelogContent').innerHTML = '<p style="color:var(--text-light);text-align:center;">Failed to load changelogs.</p>';
+    });
+}
+
+function openShortcuts() {
+  document.getElementById('shortcutsOverlay').style.display = 'block';
+  document.getElementById('shortcutsModal').style.display = 'block';
+  loadShortcuts();
+}
+
+function closeShortcuts() {
+  document.getElementById('shortcutsOverlay').style.display = 'none';
+  document.getElementById('shortcutsModal').style.display = 'none';
+}
+
+function loadShortcuts() {
+  fetch('/api/shortcuts', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(shortcuts => {
+      const container = document.getElementById('shortcutsContent');
+      const categories = {};
+      
+      shortcuts.forEach(s => {
+        if (!categories[s.category]) categories[s.category] = [];
+        categories[s.category].push(s);
+        userShortcuts[s.action] = { shortcut: s.shortcut, enabled: s.is_enabled };
+      });
+      
+      const categoryLabels = {
+        navigation: '🧭 Navigation',
+        ui: '🖥️ User Interface',
+        chat: '💬 Chat',
+        advanced: '⚡ Advanced'
+      };
+      
+      container.innerHTML = Object.entries(categories).map(([cat, items]) => `
+        <div style="margin-bottom:25px;">
+          <h3 style="margin:0 0 15px;color:var(--text);font-size:14px;text-transform:uppercase;letter-spacing:1px;">${categoryLabels[cat] || cat}</h3>
+          ${items.map(s => `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <label style="display:flex;align-items:center;cursor:pointer;">
+                  <input type="checkbox" ${s.is_enabled ? 'checked' : ''} onchange="toggleShortcut('${s.action}')" 
+                    style="width:18px;height:18px;cursor:pointer;">
+                </label>
+                <span style="color:var(--text);${!s.is_enabled ? 'opacity:0.5;' : ''}">${s.description}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <kbd onclick="editShortcut('${s.action}', this)" style="background:var(--card);padding:6px 12px;border-radius:6px;font-family:monospace;font-size:13px;color:var(--primary);border:1px solid var(--accent);cursor:pointer;${!s.is_enabled ? 'opacity:0.5;' : ''}">${formatShortcut(s.shortcut)}</kbd>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    })
+    .catch(() => {
+      document.getElementById('shortcutsContent').innerHTML = '<p style="color:var(--text-light);text-align:center;">Failed to load shortcuts.</p>';
+    });
+}
+
+function formatShortcut(shortcut) {
+  return shortcut
+    .replace('ctrl+', 'Ctrl + ')
+    .replace('alt+', 'Alt + ')
+    .replace('shift+', 'Shift + ')
+    .toUpperCase();
+}
+
+function toggleShortcut(action) {
+  fetch(`/api/shortcuts/${action}/toggle`, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        userShortcuts[action].enabled = data.is_enabled;
+        loadShortcuts();
+      }
+    });
+}
+
+function editShortcut(action, element) {
+  const originalText = element.textContent;
+  element.textContent = 'Press key...';
+  element.style.background = 'var(--primary)';
+  element.style.color = 'white';
+  
+  const handler = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    let key = e.key.toLowerCase();
+    if (key === 'escape') {
+      element.textContent = originalText;
+      element.style.background = 'var(--card)';
+      element.style.color = 'var(--primary)';
+      document.removeEventListener('keydown', handler);
+      return;
+    }
+    
+    let shortcut = '';
+    if (e.ctrlKey) shortcut += 'ctrl+';
+    if (e.altKey) shortcut += 'alt+';
+    if (e.shiftKey && key !== 'shift') shortcut += 'shift+';
+    if (!['control', 'alt', 'shift', 'meta'].includes(key)) {
+      shortcut += key;
+    }
+    
+    if (!shortcut || shortcut.endsWith('+')) {
+      return;
+    }
+    
+    document.removeEventListener('keydown', handler);
+    
+    fetch(`/api/shortcuts/${action}`, {
+      method: 'PUT',
+      headers: { 
+        'Authorization': `Bearer ${getAuthToken()}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ shortcut })
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          userShortcuts[action].shortcut = shortcut;
+          element.textContent = formatShortcut(shortcut);
+        } else {
+          alert(data.error || 'Failed to update shortcut');
+          element.textContent = originalText;
+        }
+        element.style.background = 'var(--card)';
+        element.style.color = 'var(--primary)';
+      });
+  };
+  
+  document.addEventListener('keydown', handler);
+}
+
+function resetShortcuts() {
+  if (!confirm('Reset all shortcuts to defaults?')) return;
+  
+  fetch('/api/shortcuts/reset', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        loadShortcuts();
+        initKeyboardShortcuts();
+      }
+    });
+}
+
+function initKeyboardShortcuts() {
+  fetch('/api/shortcuts', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(shortcuts => {
+      shortcuts.forEach(s => {
+        userShortcuts[s.action] = { shortcut: s.shortcut, enabled: s.is_enabled };
+      });
+    });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!shortcutsEnabled) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+  
+  const key = e.key.toLowerCase();
+  let pressed = '';
+  if (e.ctrlKey) pressed += 'ctrl+';
+  if (e.altKey) pressed += 'alt+';
+  if (e.shiftKey && key !== 'shift') pressed += 'shift+';
+  pressed += key;
+  
+  for (const [action, config] of Object.entries(userShortcuts)) {
+    if (!config.enabled) continue;
+    if (config.shortcut === pressed) {
+      e.preventDefault();
+      executeShortcutAction(action);
+      return;
+    }
+  }
+});
+
+function executeShortcutAction(action) {
+  const actions = {
+    'open_chat': () => document.querySelector('.dm-header')?.click(),
+    'open_games': () => window.location.href = '/private/games.html',
+    'open_profile': () => window.location.href = '/private/settings.html',
+    'focus_search': () => document.getElementById('messageSearchInput')?.focus(),
+    'return_dashboard': () => window.location.href = '/private/dashboard.html',
+    'open_shop': () => openShop(),
+    'toggle_sidebar': () => {
+      const sidebar = document.querySelector('.servers-sidebar');
+      if (sidebar) sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
+    },
+    'quick_switcher': () => document.getElementById('messageSearchInput')?.focus(),
+    'new_message': () => document.getElementById('messageInput')?.focus(),
+    'mark_read': () => {},
+    'next_channel': () => {},
+    'prev_channel': () => {}
+  };
+  
+  if (actions[action]) actions[action]();
+}
+
+function openArchiveModal() {
+  document.getElementById('archiveOverlay').style.display = 'block';
+  document.getElementById('archiveModal').style.display = 'block';
+  loadArchivedChats();
+}
+
+function closeArchiveModal() {
+  document.getElementById('archiveOverlay').style.display = 'none';
+  document.getElementById('archiveModal').style.display = 'none';
+}
+
+function loadArchivedChats() {
+  fetch('/api/archive', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(archived => {
+      const container = document.getElementById('archiveContent');
+      
+      if (!archived.length) {
+        container.innerHTML = '<p style="color:var(--text-light);text-align:center;">No archived chats. Right-click on a DM or channel to archive it.</p>';
+        return;
+      }
+      
+      container.innerHTML = archived.map(chat => {
+        const typeIcons = { dm: '👤', group: '👥', channel: '#' };
+        const date = new Date(chat.archived_at).toLocaleDateString();
+        
+        return `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:20px;">${typeIcons[chat.chat_type] || '💬'}</span>
+              <div>
+                <div style="color:var(--text);font-weight:500;">${chat.chat_name || 'Unknown'}</div>
+                <div style="color:var(--text-light);font-size:12px;">Archived ${date}</div>
+              </div>
+            </div>
+            <button onclick="unarchiveChat('${chat.chat_type}', ${chat.chat_id})" 
+              style="padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;">
+              Unarchive
+            </button>
+          </div>
+        `;
+      }).join('');
+    })
+    .catch(() => {
+      document.getElementById('archiveContent').innerHTML = '<p style="color:var(--text-light);text-align:center;">Failed to load archived chats.</p>';
+    });
+}
+
+function archiveChat(chatType, chatId) {
+  fetch('/api/archive/archive', {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${getAuthToken()}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ chat_type: chatType, chat_id: chatId })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        loadConversations();
+      } else {
+        alert(data.error || 'Failed to archive chat');
+      }
+    });
+}
+
+function unarchiveChat(chatType, chatId) {
+  fetch('/api/archive/unarchive', {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${getAuthToken()}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ chat_type: chatType, chat_id: chatId })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        loadArchivedChats();
+        loadConversations();
+      } else {
+        alert(data.error || 'Failed to unarchive chat');
+      }
+    });
+}
+
+setTimeout(initKeyboardShortcuts, 1000);
