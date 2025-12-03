@@ -68,6 +68,18 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Service Worker headers - must come before static serving
+app.get('/uv/sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.sendFile(path.join(__dirname, '../frontend/uv/sw.js'));
+});
+app.get('/scram/sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.sendFile(path.join(__dirname, '../frontend/scram/sw.js'));
+});
+
 // Serve all frontend files (CSS, JS, uploads)
 app.use(express.static(path.join(__dirname, '../frontend')));
 
