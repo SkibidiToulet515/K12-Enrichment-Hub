@@ -24,6 +24,9 @@ const shopRoutes = require('./routes/shop');
 const changelogsRoutes = require('./routes/changelogs');
 const shortcutsRoutes = require('./routes/shortcuts');
 const archiveRoutes = require('./routes/archive');
+const notesRoutes = require('./routes/notes');
+const pollsRoutes = require('./routes/polls');
+const preferencesRoutes = require('./routes/preferences');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../frontend/uploads')),
@@ -79,6 +82,9 @@ app.use('/api/shop', shopRoutes);
 app.use('/api/changelogs', changelogsRoutes);
 app.use('/api/shortcuts', shortcutsRoutes);
 app.use('/api/archive', archiveRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/polls', pollsRoutes);
+app.use('/api/preferences', preferencesRoutes);
 
 // File upload endpoint
 app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {

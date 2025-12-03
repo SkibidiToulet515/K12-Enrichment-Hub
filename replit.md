@@ -6,7 +6,18 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Imported from GitHub and configured for Replit environment (December 3, 2025)
 
 ## Recent Changes
-- **2025-12-03**: Added Quick Win Features
+- **2025-12-03**: Added Quick Win Power Features
+  - **Panic Button**: Shield button in bottom-right activates stealth mode. Disguise as Google Docs, Classroom, Khan Academy, Drive, Wikipedia, or Quizlet. Activate with \` key or double-ESC.
+  - **Browser Cloaking**: Tab title and favicon change to match selected disguise when panic mode is active.
+  - **Quick Switcher**: Press Ctrl+K or / to search pages, commands, users, and servers. Keyboard navigation with arrow keys.
+  - **Friend Notes**: Private notes on any user's profile (only you can see them).
+  - **Polls System**: Create polls in channels with single/multiple choice, anonymous voting, expiration times.
+  - **Auto Theme**: Automatic theme switching based on system preference or time of day.
+  - New JS files: stealth-mode.js, quick-switcher.js, auto-theme.js
+  - New routes: /api/notes, /api/polls, /api/preferences
+  - Database tables: friend_notes, polls, poll_options, poll_votes, user_preferences
+
+- **2025-12-03**: Added Quick Win Features (Phase 1)
   - **Site Changelogs**: Professional changelog panel showing updates with version tags, change types (feature/bugfix/improvement/security/removed/ui), author attribution, and styled UI. Admin-only creation via API.
   - **Custom Keyboard Shortcuts**: Dedicated page at `/private/shortcuts.html` with categories (navigation/chat/ui/advanced). Users can edit, enable/disable, and reset shortcuts. Conflict detection prevents duplicate bindings.
   - **Archive Mode**: Users can archive DMs, group chats, and channels to hide from main view. Server owners can archive/unarchive entire channels. All archived items viewable in dedicated modal.

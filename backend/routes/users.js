@@ -104,6 +104,36 @@ router.get('/search', (req, res) => {
   });
 });
 
+// Search all users by partial username match (for quick switcher) - requires auth
+router.get('/search-all', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  try {
+    jwt.verify(token, SECRET_KEY);
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+  
+  const { q } = req.query;
+  if (!q || q.length < 2) {
+    return res.json([]);
+  }
+  
+  db.all(`
+    SELECT id, username, profile_picture, is_online 
+    FROM users 
+    WHERE username LIKE ? 
+    ORDER BY is_online DESC, username ASC
+    LIMIT 10
+  `, [`%${q}%`], (err, users) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(users || []);
+  });
+});
+
 // Get user profile (returns camelCase to match frontend)
 router.get('/:userId', (req, res) => {
   db.get('SELECT id, username, profile_picture, created_at FROM users WHERE id = ?', [req.params.userId], (err, user) => {

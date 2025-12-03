@@ -874,4 +874,78 @@ try {
   sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_archived_chats_user ON archived_chats(user_id)');
 } catch(e) {}
 
+// ============== FRIEND NOTES ==============
+
+db.exec(`CREATE TABLE IF NOT EXISTS friend_notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  friend_id INTEGER NOT NULL,
+  note TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, friend_id),
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY(friend_id) REFERENCES users(id)
+)`);
+
+// ============== POLLS ==============
+
+db.exec(`CREATE TABLE IF NOT EXISTS polls (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  channel_id INTEGER,
+  server_id INTEGER,
+  creator_id INTEGER NOT NULL,
+  question TEXT NOT NULL,
+  poll_type TEXT DEFAULT 'single',
+  is_anonymous BOOLEAN DEFAULT 0,
+  expires_at DATETIME,
+  is_closed BOOLEAN DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(channel_id) REFERENCES channels(id),
+  FOREIGN KEY(server_id) REFERENCES servers(id),
+  FOREIGN KEY(creator_id) REFERENCES users(id)
+)`);
+
+db.exec(`CREATE TABLE IF NOT EXISTS poll_options (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  poll_id INTEGER NOT NULL,
+  option_text TEXT NOT NULL,
+  position INTEGER DEFAULT 0,
+  FOREIGN KEY(poll_id) REFERENCES polls(id) ON DELETE CASCADE
+)`);
+
+db.exec(`CREATE TABLE IF NOT EXISTS poll_votes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  poll_id INTEGER NOT NULL,
+  option_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  voted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(poll_id, user_id, option_id),
+  FOREIGN KEY(poll_id) REFERENCES polls(id) ON DELETE CASCADE,
+  FOREIGN KEY(option_id) REFERENCES poll_options(id) ON DELETE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
+// ============== USER PREFERENCES ==============
+
+db.exec(`CREATE TABLE IF NOT EXISTS user_preferences (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL UNIQUE,
+  theme_mode TEXT DEFAULT 'manual',
+  auto_theme_schedule TEXT,
+  tab_cloak_enabled BOOLEAN DEFAULT 0,
+  tab_cloak_title TEXT,
+  tab_cloak_favicon TEXT,
+  panic_key TEXT DEFAULT '\`',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)`);
+
+try {
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_friend_notes_user ON friend_notes(user_id)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_polls_channel ON polls(channel_id)');
+  sqliteDb.exec('CREATE INDEX IF NOT EXISTS idx_poll_votes_poll ON poll_votes(poll_id)');
+} catch(e) {}
+
 module.exports = db;
