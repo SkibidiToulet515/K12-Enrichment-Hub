@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
+const { createBareServer } = require('@nebula-services/bare-server-node');
 const db = require('./db');
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
@@ -35,7 +36,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 const app = express();
-const server = http.createServer(app);
+const bareServer = createBareServer('/bare/');
+const server = http.createServer((req, res) => {
+  if (bareServer.shouldRoute(req)) {
+    bareServer.routeRequest(req, res);
+  } else {
+    app(req, res);
+  }
+});
+
+server.on('upgrade', (req, socket, head) => {
+  if (bareServer.shouldRoute(req)) {
+    bareServer.routeUpgrade(req, socket, head);
+  } else {
+    socket.end();
+  }
+});
+
 const io = socketIo(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] },
   pingInterval: 25000,

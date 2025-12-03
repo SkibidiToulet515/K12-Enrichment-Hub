@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy & Utility Tools - Enrichment Hub</title>
+  <title>Web Browser - Enrichment Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/transitions.css">
   <link rel="stylesheet" href="/css/private-theme.css">
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      margin: 0;
       padding: 0;
     }
 
@@ -25,15 +27,24 @@
     .navbar {
       background: var(--card);
       border-bottom: 2px solid var(--accent);
-      padding: 15px 20px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
+      flex-shrink: 0;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
     .navbar h1 {
-      font-size: 24px;
+      font-size: 20px;
       margin: 0;
+      white-space: nowrap;
     }
 
     .back-btn {
@@ -47,6 +58,7 @@
       font-size: 13px;
       text-decoration: none;
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .back-btn:hover {
@@ -54,37 +66,171 @@
       color: var(--bg);
     }
 
-    .proxy-container {
+    .url-bar {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      max-width: 800px;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .url-input:focus {
+      border-color: var(--primary);
+    }
+
+    .go-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .go-btn:hover {
+      opacity: 0.9;
+      transform: scale(1.02);
+    }
+
+    .proxy-tabs {
+      display: flex;
+      gap: 5px;
+    }
+
+    .proxy-tab {
+      padding: 8px 14px;
+      background: var(--bg);
+      color: var(--text);
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .proxy-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .proxy-tab:hover:not(.active) {
+      border-color: var(--primary);
+    }
+
+    .browser-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      padding: 20px;
+      padding: 15px;
     }
 
-    .proxy-frame {
+    .browser-frame {
       flex: 1;
       border: 2px solid var(--accent);
       border-radius: 12px;
       overflow: hidden;
-      background: var(--card);
+      background: white;
+      position: relative;
     }
 
-    .proxy-frame iframe {
+    .browser-frame iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
 
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .loading-overlay.hidden {
+      display: none;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--accent);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .quick-link {
+      padding: 8px 14px;
+      background: var(--accent);
+      color: var(--text);
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-link:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .status-bar {
+      padding: 8px 15px;
+      background: var(--card);
+      border-top: 1px solid var(--accent);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
     @media (max-width: 768px) {
       .navbar {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
+        flex-wrap: wrap;
       }
-
-      .proxy-container {
-        padding: 10px;
+      .url-bar {
+        width: 100%;
+        max-width: none;
+        order: 3;
+      }
+      .proxy-tabs {
+        display: none;
       }
     }
   </style>
@@ -92,22 +238,51 @@
 <body class="proxy-page">
   <div class="app-container">
     <nav class="navbar">
-      <div>
-        <h1>🌐 Proxy & Utility Tools</h1>
+      <div class="nav-left">
+        <a href="/private/dashboard.html" class="back-btn">← Back</a>
+        <h1>Web Browser</h1>
       </div>
-      <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+      <div class="url-bar">
+        <input type="text" class="url-input" id="urlInput" placeholder="Enter URL or search term..." autocomplete="off">
+        <button class="go-btn" onclick="navigate()">Go</button>
+      </div>
+      <div class="proxy-tabs">
+        <button class="proxy-tab active" data-proxy="uv" onclick="switchProxy('uv')">Ultraviolet</button>
+        <button class="proxy-tab" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</button>
+      </div>
     </nav>
 
-    <main class="proxy-container">
-      <div class="proxy-frame">
-        <iframe src="https://api.bcsdny.com.de/p.html" title="Web Proxy"></iframe>
+    <main class="browser-container">
+      <div class="browser-frame" id="browserFrame">
+        <div class="loading-overlay" id="loadingOverlay">
+          <div class="spinner"></div>
+          <div>Initializing proxy...</div>
+          <div class="quick-links">
+            <span class="quick-link" onclick="goTo('https://google.com')">Google</span>
+            <span class="quick-link" onclick="goTo('https://youtube.com')">YouTube</span>
+            <span class="quick-link" onclick="goTo('https://discord.com')">Discord</span>
+            <span class="quick-link" onclick="goTo('https://github.com')">GitHub</span>
+            <span class="quick-link" onclick="goTo('https://reddit.com')">Reddit</span>
+            <span class="quick-link" onclick="goTo('https://twitch.tv')">Twitch</span>
+          </div>
+        </div>
+        <iframe id="proxyFrame" style="display:none;"></iframe>
       </div>
     </main>
+
+    <div class="status-bar">
+      <span id="statusText">Ready</span>
+      <span id="proxyType">Proxy: Ultraviolet</span>
+    </div>
   </div>
 
   <script src="/js/themes.js"></script>
   <script src="/js/transitions.js"></script>
+  <script src="/js/stealth-mode.js"></script>
   <script>
+    let currentProxy = 'uv';
+    let swRegistered = false;
+
     function checkAuth() {
       const token = localStorage.getItem('authToken');
       if (!token) {
@@ -117,8 +292,86 @@
       return true;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
+    async function registerServiceWorker() {
+      if (!('serviceWorker' in navigator)) {
+        document.getElementById('statusText').textContent = 'Service Workers not supported';
+        return false;
+      }
+
+      try {
+        const reg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
+        await navigator.serviceWorker.ready;
+        swRegistered = true;
+        document.getElementById('statusText').textContent = 'Proxy ready';
+        return true;
+      } catch (e) {
+        console.error('SW registration failed:', e);
+        document.getElementById('statusText').textContent = 'Proxy initialization failed';
+        return false;
+      }
+    }
+
+    function encodeUrl(url) {
+      return encodeURIComponent(url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join(''));
+    }
+
+    function navigate() {
+      let url = document.getElementById('urlInput').value.trim();
+      if (!url) return;
+      
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        if (url.includes('.') && !url.includes(' ')) {
+          url = 'https://' + url;
+        } else {
+          url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+        }
+      }
+      
+      goTo(url);
+    }
+
+    async function goTo(url) {
+      document.getElementById('urlInput').value = url;
+      document.getElementById('statusText').textContent = 'Loading...';
+      
+      if (!swRegistered) {
+        const success = await registerServiceWorker();
+        if (!success) return;
+      }
+
+      const frame = document.getElementById('proxyFrame');
+      const loading = document.getElementById('loadingOverlay');
+      
+      frame.style.display = 'block';
+      loading.classList.add('hidden');
+      
+      const encodedUrl = '/service/' + encodeUrl(url);
+      frame.src = encodedUrl;
+      
+      frame.onload = () => {
+        document.getElementById('statusText').textContent = 'Loaded';
+      };
+    }
+
+    function switchProxy(proxy) {
+      currentProxy = proxy;
+      document.querySelectorAll('.proxy-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.proxy === proxy);
+      });
+      document.getElementById('proxyType').textContent = 'Proxy: ' + (proxy === 'uv' ? 'Ultraviolet' : 'Scramjet');
+      
+      if (proxy === 'scramjet') {
+        document.getElementById('statusText').textContent = 'Scramjet coming soon...';
+      }
+    }
+
+    document.getElementById('urlInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') navigate();
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuth()) return;
+      await registerServiceWorker();
     });
   </script>
 </body>
