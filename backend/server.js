@@ -192,10 +192,13 @@ io.on('connection', (socket) => {
   socket.on('mark_read', (data) => {
     const { userId, channelId, groupChatId, dmPartnerId, isGlobal, lastMessageId } = data;
     db.run(`
-      INSERT OR REPLACE INTO message_read_status 
+      INSERT INTO message_read_status 
       (user_id, channel_id, group_chat_id, dm_partner_id, is_global, last_read_message_id, last_read_at)
-      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    `, [userId, channelId || null, groupChatId || null, dmPartnerId || null, isGlobal ? 1 : 0, lastMessageId]);
+      VALUES (?, COALESCE(?, 0), COALESCE(?, 0), COALESCE(?, 0), ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT (user_id, channel_id, group_chat_id, dm_partner_id, is_global) DO UPDATE SET
+        last_read_message_id = excluded.last_read_message_id,
+        last_read_at = CURRENT_TIMESTAMP
+    `, [userId, channelId || 0, groupChatId || 0, dmPartnerId || 0, isGlobal ? 1 : 0, lastMessageId]);
   });
 
   // Join channel room

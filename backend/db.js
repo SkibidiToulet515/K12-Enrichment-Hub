@@ -19,7 +19,11 @@ const db = {
       callback = params;
       params = [];
     }
-    const pgSql = convertParams(sql, params);
+    let pgSql = convertParams(sql, params);
+    const isInsert = pgSql.trim().toUpperCase().startsWith('INSERT');
+    if (isInsert && !pgSql.toUpperCase().includes('RETURNING')) {
+      pgSql = pgSql.replace(/;?\s*$/, '') + ' RETURNING id';
+    }
     pool.query(pgSql, Array.isArray(params) ? params : [params])
       .then(result => {
         if (callback) callback.call({ lastID: result.rows[0]?.id, changes: result.rowCount }, null);

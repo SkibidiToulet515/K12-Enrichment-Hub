@@ -1,11 +1,18 @@
 # K-12 Learning Portal
 
 ## Overview
-A comprehensive K-12 learning portal featuring a chat system, game library, and educational resources. Built with Node.js, Express, Socket.io, and SQLite.
+A comprehensive K-12 learning portal featuring a chat system, game library, and educational resources. Built with Node.js, Express, Socket.io, and PostgreSQL.
 
-**Current State**: Imported from GitHub and configured for Replit environment (December 3, 2025)
+**Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-03**: Database Migration to PostgreSQL
+  - Converted from SQLite to PostgreSQL for persistent data across deployments
+  - Updated all route files to use PostgreSQL-compatible SQL syntax
+  - Fixed JWT authentication across all routes (unified secret key)
+  - Converted INSERT OR IGNORE/REPLACE to ON CONFLICT syntax
+  - Changed datetime('now') to CURRENT_TIMESTAMP
+
 - **2025-12-03**: Added Quick Win Power Features
   - **Panic Button**: Shield button in bottom-right activates stealth mode. Disguise as Google Docs, Classroom, Khan Academy, Drive, Wikipedia, or Quizlet. Activate with \` key or double-ESC.
   - **Browser Cloaking**: Tab title and favicon change to match selected disguise when panic mode is active.
@@ -54,7 +61,7 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 
 ### Backend (Node.js + Express)
 - **Main Server**: `backend/server.js` - Express server with Socket.io for real-time chat
-- **Database**: SQLite using `better-sqlite3` (`chat.db`)
+- **Database**: PostgreSQL (via DATABASE_URL environment variable) - Persistent across deployments
 - **Port**: 5000 (binds to 0.0.0.0 for Replit compatibility)
 - **Routes**:
   - `/api/users` - User authentication (signup/login)
