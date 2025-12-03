@@ -29,6 +29,7 @@ const notesRoutes = require('./routes/notes');
 const pollsRoutes = require('./routes/polls');
 const preferencesRoutes = require('./routes/preferences');
 const proxyRoutes = require('./routes/proxy');
+const bookmarksRoutes = require('./routes/bookmarks');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../frontend/uploads')),
@@ -116,6 +117,7 @@ app.use('/api/notes', notesRoutes);
 app.use('/api/polls', pollsRoutes);
 app.use('/api/preferences', preferencesRoutes);
 app.use('/api/proxy', proxyRoutes);
+app.use('/api/bookmarks', bookmarksRoutes);
 
 // File upload endpoint
 app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {
