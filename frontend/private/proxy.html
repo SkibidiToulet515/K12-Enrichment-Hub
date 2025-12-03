@@ -432,7 +432,7 @@
     async function initBareMux() {
       try {
         const connection = new BareMuxConnection('/baremux/worker.js');
-        await connection.setTransport('/bare/', []);
+        await connection.setTransport('/baremod/index.mjs', [location.origin + '/bare/']);
         window.bareMux = connection;
         window.bareMuxReady = true;
         console.log('BareMux initialized successfully');
