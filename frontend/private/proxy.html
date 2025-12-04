@@ -10,121 +10,160 @@
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #1a1a2e;
-      color: #fff;
+      background: #0f0f0f;
+      color: #e4e4e4;
       height: 100vh;
       overflow: hidden;
     }
 
-    .browser-container {
+    .browser-view {
       display: flex;
       height: 100vh;
+      width: 100vw;
     }
 
     .sidebar {
-      width: 200px;
-      background: #0d0d1a;
-      border-right: 1px solid rgba(255,255,255,0.1);
+      width: 48px;
+      background: #1a1a1a;
+      border-right: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      flex-shrink: 0;
+    }
+
+    .sidebar-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: #888;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 4px;
+      transition: all 0.15s;
+    }
+
+    .sidebar-btn:hover {
+      background: #2a2a2a;
+      color: #fff;
+    }
+
+    .sidebar-btn.active {
+      background: #333;
+      color: #fff;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .nav {
+      width: 220px;
+      background: #141414;
+      border-right: 1px solid #2a2a2a;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
     }
 
-    .sidebar-header {
-      padding: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .nav.collapsed {
+      display: none;
     }
 
-    .sidebar-title {
+    .nav-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-title {
       font-size: 14px;
       font-weight: 600;
       color: #fff;
     }
 
-    .tabs-section {
+    .tabs-container {
+      flex: 1;
+      overflow-y: auto;
       padding: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .tabs-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-      padding: 4px 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .tab-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 6px;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
-      color: rgba(255,255,255,0.8);
+      color: #aaa;
       transition: all 0.15s;
-      position: relative;
+      margin-bottom: 2px;
     }
 
     .tab-item:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .tab-item.active {
-      background: rgba(99, 102, 241, 0.2);
+      background: #222;
       color: #fff;
     }
 
-    .tab-item .tab-icon {
-      width: 16px;
-      height: 16px;
+    .tab-item.active {
+      background: #2a2a2a;
+      color: #fff;
+    }
+
+    .tab-icon {
+      width: 20px;
+      height: 20px;
       border-radius: 4px;
-      background: rgba(255,255,255,0.1);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 12px;
       flex-shrink: 0;
     }
 
-    .tab-item .tab-title {
+    .tab-title {
       flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .tab-item .tab-close {
+    .tab-close {
       opacity: 0;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      transition: all 0.15s;
+      font-size: 14px;
+      color: #888;
     }
 
     .tab-item:hover .tab-close {
-      opacity: 0.6;
+      opacity: 1;
     }
 
-    .tab-item .tab-close:hover {
-      opacity: 1;
-      background: rgba(255,255,255,0.1);
+    .tab-close:hover {
+      background: #333;
+      color: #fff;
     }
 
     .new-tab-btn {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      color: rgba(255,255,255,0.6);
+      gap: 10px;
+      padding: 10px 12px;
+      color: #666;
       font-size: 13px;
       cursor: pointer;
       transition: all 0.15s;
@@ -134,49 +173,20 @@
       color: #fff;
     }
 
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 12px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .back-to-hub {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      color: rgba(255,255,255,0.6);
-      font-size: 13px;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-
-    .back-to-hub:hover {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-    }
-
-    .main-area {
+    .main-wrapper {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #16162a;
       min-width: 0;
     }
 
-    .browser-toolbar {
+    .main-nav {
       display: flex;
       align-items: center;
       gap: 8px;
       padding: 8px 12px;
-      background: #1a1a30;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 4px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
     }
 
     .nav-btn {
@@ -184,7 +194,7 @@
       height: 32px;
       border: none;
       background: transparent;
-      color: rgba(255,255,255,0.6);
+      color: #888;
       border-radius: 6px;
       cursor: pointer;
       display: flex;
@@ -195,7 +205,7 @@
     }
 
     .nav-btn:hover {
-      background: rgba(255,255,255,0.1);
+      background: #2a2a2a;
       color: #fff;
     }
 
@@ -204,97 +214,154 @@
       cursor: not-allowed;
     }
 
-    .url-bar {
+    .url-container {
       flex: 1;
       display: flex;
       align-items: center;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 0 12px;
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      border-radius: 20px;
+      padding: 0 14px;
       height: 36px;
       transition: all 0.2s;
     }
 
-    .url-bar:focus-within {
-      border-color: #6366f1;
-      background: rgba(0,0,0,0.4);
+    .url-container:focus-within {
+      border-color: #444;
+      background: #141414;
     }
 
-    .url-bar .lock-icon {
-      color: #22c55e;
+    .url-icon {
+      color: #4ade80;
       margin-right: 8px;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .url-input {
       flex: 1;
       background: transparent;
       border: none;
-      color: #fff;
+      color: #e4e4e4;
       font-size: 13px;
       outline: none;
     }
 
     .url-input::placeholder {
-      color: rgba(255,255,255,0.4);
+      color: #555;
     }
 
-    .toolbar-actions {
+    .bookmarks-container {
       display: flex;
-      gap: 4px;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #141414;
+      border-bottom: 1px solid #2a2a2a;
+      overflow-x: auto;
     }
 
-    .browser-content {
+    .bookmark-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #aaa;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .bookmark-chip:hover {
+      background: #222;
+      color: #fff;
+      border-color: #333;
+    }
+
+    .bookmark-chip img {
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+    }
+
+    .main-container {
       flex: 1;
       position: relative;
-      background: #0f0f1a;
+      background: #0a0a0a;
     }
 
-    .start-page {
+    .iframe-container {
+      position: absolute;
+      inset: 0;
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+    }
+
+    .iframe-container.hidden {
+      display: none;
+    }
+
+    .start-screen {
       position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 15vh;
-      background: linear-gradient(180deg, #1a1a30 0%, #0f0f1a 100%);
+      justify-content: center;
+      padding: 40px;
     }
 
-    .start-page.hidden {
+    .start-screen.hidden {
       display: none;
     }
 
     .search-logo {
-      font-size: 48px;
+      width: 120px;
+      height: 120px;
       margin-bottom: 24px;
     }
 
+    .search-logo img {
+      width: 100%;
+      height: 100%;
+    }
+
     .search-title {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 700;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .search-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 32px;
     }
 
     .search-box {
       width: 100%;
-      max-width: 580px;
+      max-width: 600px;
       display: flex;
       align-items: center;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 24px;
-      padding: 0 8px 0 20px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 0 6px 0 18px;
       transition: all 0.2s;
     }
 
     .search-box:focus-within {
-      border-color: #6366f1;
-      background: rgba(255,255,255,0.12);
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+      border-color: #de5833;
+      box-shadow: 0 0 0 3px rgba(222, 88, 51, 0.15);
     }
 
     .search-input {
@@ -303,40 +370,39 @@
       border: none;
       color: #fff;
       font-size: 15px;
-      padding: 14px 0;
+      padding: 16px 0;
       outline: none;
     }
 
     .search-input::placeholder {
-      color: rgba(255,255,255,0.4);
+      color: #555;
     }
 
     .search-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border: none;
-      background: #6366f1;
+      background: #de5833;
       color: #fff;
-      border-radius: 50%;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 20px;
       transition: all 0.2s;
     }
 
     .search-btn:hover {
-      background: #5558e3;
-      transform: scale(1.05);
+      background: #c44d2c;
     }
 
     .quick-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 32px;
-      max-width: 580px;
+      gap: 10px;
+      margin-top: 40px;
+      max-width: 700px;
       justify-content: center;
     }
 
@@ -345,61 +411,49 @@
       align-items: center;
       gap: 8px;
       padding: 10px 16px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      color: rgba(255,255,255,0.8);
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      color: #aaa;
       font-size: 13px;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .quick-link:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.2);
+      background: #222;
+      border-color: #333;
       color: #fff;
       transform: translateY(-2px);
     }
 
     .quick-link img {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 4px;
     }
 
-    .browser-frame {
+    .loading-screen {
       position: absolute;
       inset: 0;
-      border: none;
-      width: 100%;
-      height: 100%;
-      background: #fff;
-    }
-
-    .browser-frame.hidden {
-      display: none;
-    }
-
-    .loading-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(15, 15, 26, 0.9);
+      background: rgba(10, 10, 10, 0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 16px;
+      z-index: 100;
     }
 
-    .loading-overlay.hidden {
+    .loading-screen.hidden {
       display: none;
     }
 
     .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(99, 102, 241, 0.3);
-      border-top-color: #6366f1;
+      width: 48px;
+      height: 48px;
+      border: 3px solid #2a2a2a;
+      border-top-color: #de5833;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -409,36 +463,36 @@
     }
 
     .loading-text {
-      color: rgba(255,255,255,0.7);
+      color: #888;
       font-size: 14px;
     }
 
     .status-bar {
-      padding: 6px 12px;
-      background: #0d0d1a;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: #141414;
+      border-top: 1px solid #2a2a2a;
+      font-size: 12px;
+      color: #666;
     }
 
-    .status-indicator {
+    .status-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #22c55e;
+      background: #4ade80;
     }
 
     .status-dot.loading {
-      background: #f59e0b;
+      background: #fbbf24;
       animation: pulse 1s ease-in-out infinite;
     }
 
@@ -452,122 +506,238 @@
     }
 
     .proxy-toggle {
-      margin-left: auto;
       display: flex;
       gap: 4px;
     }
 
-    .proxy-option {
+    .proxy-opt {
       padding: 4px 10px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
       border-radius: 4px;
-      color: rgba(255,255,255,0.6);
+      color: #666;
       font-size: 11px;
       cursor: pointer;
       transition: all 0.15s;
     }
 
-    .proxy-option:hover {
-      background: rgba(255,255,255,0.1);
+    .proxy-opt:hover {
+      background: #222;
+      color: #888;
     }
 
-    .proxy-option.active {
-      background: rgba(99, 102, 241, 0.3);
-      border-color: #6366f1;
+    .proxy-opt.active {
+      background: rgba(222, 88, 51, 0.2);
+      border-color: #de5833;
+      color: #de5833;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .overlay.hidden {
+      display: none;
+    }
+
+    .settings-menu {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      min-width: 320px;
+    }
+
+    .settings-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .settings-group {
+      margin-bottom: 16px;
+    }
+
+    .settings-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .settings-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .settings-btn {
+      flex: 1;
+      padding: 10px;
+      background: #222;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #aaa;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .settings-btn:hover {
+      background: #2a2a2a;
       color: #fff;
     }
 
-    .iframe-note {
+    .settings-btn.active {
+      background: rgba(222, 88, 51, 0.2);
+      border-color: #de5833;
+      color: #de5833;
+    }
+
+    .close-settings {
+      margin-top: 16px;
+      width: 100%;
+      padding: 10px;
+      background: #de5833;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .iframe-warning {
       position: fixed;
-      bottom: 60px;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(239, 68, 68, 0.9);
+      background: #de5833;
       color: #fff;
-      padding: 10px 20px;
+      padding: 12px 20px;
       border-radius: 8px;
       font-size: 13px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
-    .iframe-note.hidden {
+    .iframe-warning.hidden {
       display: none;
     }
 
-    .iframe-note button {
+    .iframe-warning button {
       background: #fff;
-      color: #ef4444;
+      color: #de5833;
       border: none;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
     }
+
+    .disclaimer {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      font-size: 11px;
+      color: #444;
+    }
   </style>
 </head>
 <body>
-  <div class="browser-container">
+  <div id="browser-view" class="browser-view">
     <div class="sidebar">
-      <div class="sidebar-header">
-        <span class="sidebar-title">Web Browser</span>
+      <button class="sidebar-btn active" onclick="toggleNav()" title="Toggle Sidebar">☰</button>
+      <button class="sidebar-btn" onclick="goHome()" title="Home">⌂</button>
+      <button class="sidebar-btn" onclick="newTab()" title="New Tab">+</button>
+      <div class="sidebar-spacer"></div>
+      <button class="sidebar-btn" onclick="showSettings()" title="Settings">⚙</button>
+      <a href="/private/dashboard.html" class="sidebar-btn" title="Back to Hub">←</a>
+    </div>
+
+    <div class="nav" id="navPanel">
+      <div class="nav-header">
+        <span class="nav-title">Tabs</span>
       </div>
-      
-      <div class="tabs-section">
-        <div class="tabs-label">Tabs</div>
-        <div id="tabsList">
-          <div class="tab-item active" data-tab="0">
-            <div class="tab-icon">🔍</div>
-            <span class="tab-title">New Tab</span>
-            <span class="tab-close" onclick="closeTab(0, event)">×</span>
-          </div>
-        </div>
-        <div class="new-tab-btn" onclick="newTab()">
-          <span>+</span>
-          <span>New Tab</span>
+      <div class="tabs-container" id="tabsList">
+        <div class="tab-item active" data-tab="0">
+          <div class="tab-icon">🔍</div>
+          <span class="tab-title">New Tab</span>
+          <span class="tab-close" onclick="closeTab(0, event)">×</span>
         </div>
       </div>
-      
-      <div class="sidebar-footer">
-        <a href="/private/dashboard.html" class="back-to-hub">
-          <span>←</span>
-          <span>Back to Hub</span>
-        </a>
+      <div class="new-tab-btn" onclick="newTab()">
+        <span>+</span>
+        <span>New Tab</span>
       </div>
     </div>
 
-    <div class="main-area">
-      <div class="browser-toolbar">
-        <div class="nav-buttons">
-          <button class="nav-btn" onclick="goBack()" title="Back">←</button>
-          <button class="nav-btn" onclick="goForward()" title="Forward">→</button>
-          <button class="nav-btn" onclick="refresh()" title="Refresh">↻</button>
-          <button class="nav-btn" onclick="goHome()" title="Home">⌂</button>
-        </div>
+    <div class="main-wrapper">
+      <div class="main-nav">
+        <button class="nav-btn" onclick="goBack()" title="Back">←</button>
+        <button class="nav-btn" onclick="goForward()" title="Forward">→</button>
+        <button class="nav-btn" onclick="refresh()" title="Refresh">↻</button>
         
-        <div class="url-bar">
-          <span class="lock-icon" id="lockIcon">🔒</span>
-          <input type="text" class="url-input" id="urlInput" placeholder="Search with DuckDuckGo or enter URL" 
+        <div class="url-container">
+          <span class="url-icon" id="urlIcon">🔒</span>
+          <input type="text" class="url-input" id="urlInput" 
+                 placeholder="Search DuckDuckGo or enter URL"
                  onkeydown="if(event.key==='Enter')navigate()">
         </div>
         
-        <div class="toolbar-actions">
-          <button class="nav-btn" onclick="addBookmark()" title="Bookmark">☆</button>
+        <button class="nav-btn" onclick="addBookmark()" title="Bookmark">☆</button>
+      </div>
+
+      <div class="bookmarks-container" id="bookmarksBar">
+        <div class="bookmark-chip" onclick="goTo('https://www.google.com')">
+          <img src="https://www.google.com/favicon.ico" alt="">
+          Google
+        </div>
+        <div class="bookmark-chip" onclick="goTo('https://www.youtube.com')">
+          <img src="https://www.youtube.com/favicon.ico" alt="">
+          YouTube
+        </div>
+        <div class="bookmark-chip" onclick="goTo('https://discord.com/app')">
+          <img src="https://discord.com/favicon.ico" alt="">
+          Discord
+        </div>
+        <div class="bookmark-chip" onclick="goTo('https://www.reddit.com')">
+          <img src="https://www.reddit.com/favicon.ico" alt="">
+          Reddit
+        </div>
+        <div class="bookmark-chip" onclick="goTo('https://www.twitch.tv')">
+          <img src="https://www.twitch.tv/favicon.ico" alt="">
+          Twitch
+        </div>
+        <div class="bookmark-chip" onclick="goTo('https://www.tiktok.com')">
+          <img src="https://www.tiktok.com/favicon.ico" alt="">
+          TikTok
         </div>
       </div>
 
-      <div class="browser-content">
-        <div class="start-page" id="startPage">
-          <div class="search-logo">🦆</div>
-          <div class="search-title">Search with DuckDuckGo</div>
+      <div class="main-container">
+        <div class="start-screen" id="startScreen">
+          <div class="search-logo">
+            <svg viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="45" fill="#de5833"/>
+              <path d="M35 45 L50 60 L75 35" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="search-title">Search the Web</div>
+          <div class="search-subtitle">Private browsing with DuckDuckGo</div>
           
           <div class="search-box">
             <input type="text" class="search-input" id="searchInput" 
-                   placeholder="Search the web privately..." 
+                   placeholder="Search DuckDuckGo..." 
                    onkeydown="if(event.key==='Enter')doSearch()">
             <button class="search-btn" onclick="doSearch()">→</button>
           </div>
@@ -608,31 +778,59 @@
           </div>
         </div>
 
-        <iframe class="browser-frame hidden" id="browserFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
-        
-        <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="iframe-container hidden" id="iframeContainer">
+          <iframe id="browserFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+        </div>
+
+        <div class="loading-screen hidden" id="loadingScreen">
           <div class="loading-spinner"></div>
           <div class="loading-text" id="loadingText">Loading...</div>
         </div>
       </div>
 
       <div class="status-bar">
-        <div class="status-indicator">
+        <div class="status-left">
           <div class="status-dot" id="statusDot"></div>
           <span id="statusText">Ready</span>
         </div>
         <div class="proxy-toggle">
-          <div class="proxy-option active" data-proxy="uv" onclick="switchProxy('uv')">Ultraviolet</div>
-          <div class="proxy-option" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</div>
+          <div class="proxy-opt active" data-proxy="uv" onclick="switchProxy('uv')">UV</div>
+          <div class="proxy-opt" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="iframe-note hidden" id="iframeNote">
-    Service workers don't work in iframes.
+  <div class="overlay hidden" id="settingsOverlay" onclick="hideSettings(event)">
+    <div class="settings-menu" onclick="event.stopPropagation()">
+      <div class="settings-title">Settings</div>
+      
+      <div class="settings-group">
+        <div class="settings-label">Proxy Engine</div>
+        <div class="settings-btns">
+          <button class="settings-btn active" id="settingsUV" onclick="switchProxy('uv')">Ultraviolet</button>
+          <button class="settings-btn" id="settingsScramjet" onclick="switchProxy('scramjet')">Scramjet</button>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-label">Search Engine</div>
+        <div class="settings-btns">
+          <button class="settings-btn active">DuckDuckGo</button>
+          <button class="settings-btn" onclick="alert('Coming soon!')">Google</button>
+        </div>
+      </div>
+
+      <button class="close-settings" onclick="hideSettings()">Close</button>
+    </div>
+  </div>
+
+  <div class="iframe-warning hidden" id="iframeWarning">
+    Service workers require a new tab to work
     <button onclick="openInNewTab()">Open in New Tab</button>
   </div>
+
+  <div class="disclaimer">Enrichment Hub Browser</div>
 
   <script type="module">
     import { BareMuxConnection } from '/baremux/index.mjs';
@@ -644,13 +842,11 @@
       if (window.bareMuxReady) return true;
       
       try {
-        console.log('Initializing BareMux...');
         const connection = new BareMuxConnection('/baremux/worker.js');
         const bareUrl = location.origin + '/bare/';
         
         await connection.setTransport('/baremod/index.mjs', [bareUrl]);
-        const transportName = await connection.getTransport();
-        console.log('Transport set:', transportName);
+        await connection.getTransport();
         
         window.bareMux = connection;
         window.bareMuxReady = true;
@@ -673,6 +869,7 @@
     let tabs = [{ id: 0, title: 'New Tab', url: '', icon: '🔍' }];
     let activeTabId = 0;
     let nextTabId = 1;
+    let navCollapsed = false;
 
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -681,6 +878,21 @@
         return false;
       }
       return true;
+    }
+
+    function toggleNav() {
+      navCollapsed = !navCollapsed;
+      document.getElementById('navPanel').classList.toggle('collapsed', navCollapsed);
+    }
+
+    function showSettings() {
+      document.getElementById('settingsOverlay').classList.remove('hidden');
+    }
+
+    function hideSettings(event) {
+      if (!event || event.target === document.getElementById('settingsOverlay')) {
+        document.getElementById('settingsOverlay').classList.add('hidden');
+      }
     }
 
     function openInNewTab() {
@@ -699,19 +911,13 @@
     }
 
     async function registerServiceWorker() {
-      if (!('serviceWorker' in navigator)) {
-        console.error('Service Workers not supported');
-        return false;
-      }
+      if (!('serviceWorker' in navigator)) return false;
 
       let bareMuxOk = await waitForBareMux(3000);
       if (!bareMuxOk && window.initBareMux) {
         bareMuxOk = await window.initBareMux();
       }
-      if (!bareMuxOk) {
-        console.error('BareMux not ready');
-        return false;
-      }
+      if (!bareMuxOk) return false;
 
       try {
         const existingReg = await navigator.serviceWorker.getRegistration('/service/');
@@ -747,9 +953,7 @@
     function doSearch() {
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
-      
-      const searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
-      goTo(searchUrl);
+      goTo('https://duckduckgo.com/?q=' + encodeURIComponent(query));
     }
 
     function navigate() {
@@ -769,7 +973,7 @@
 
     async function goTo(url) {
       if (isInIframe) {
-        document.getElementById('iframeNote').classList.remove('hidden');
+        document.getElementById('iframeWarning').classList.remove('hidden');
         return;
       }
 
@@ -777,29 +981,28 @@
       document.getElementById('urlInput').value = url;
       
       setStatus('loading', 'Loading...');
-      document.getElementById('loadingOverlay').classList.remove('hidden');
-      document.getElementById('loadingText').textContent = 'Connecting...';
+      showLoading('Connecting...');
 
       if (!swReady) {
-        document.getElementById('loadingText').textContent = 'Initializing proxy...';
+        showLoading('Initializing proxy...');
         const ok = await registerServiceWorker();
         if (!ok) {
-          setStatus('error', 'Proxy initialization failed');
-          document.getElementById('loadingOverlay').classList.add('hidden');
+          setStatus('error', 'Proxy failed');
+          hideLoading();
           return;
         }
       }
 
       const encodedUrl = '/service/' + encodeUrl(url);
       
-      document.getElementById('startPage').classList.add('hidden');
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('iframeContainer').classList.remove('hidden');
+      
+      showLoading('Loading page...');
+      
       const frame = document.getElementById('browserFrame');
-      frame.classList.remove('hidden');
-      
-      document.getElementById('loadingText').textContent = 'Loading page...';
-      
       frame.onload = () => {
-        document.getElementById('loadingOverlay').classList.add('hidden');
+        hideLoading();
         setStatus('ready', 'Ready');
         updateActiveTab(url);
       };
@@ -807,10 +1010,19 @@
       frame.src = encodedUrl;
     }
 
+    function showLoading(text) {
+      document.getElementById('loadingScreen').classList.remove('hidden');
+      document.getElementById('loadingText').textContent = text;
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingScreen').classList.add('hidden');
+    }
+
     function goHome() {
-      document.getElementById('browserFrame').classList.add('hidden');
+      document.getElementById('iframeContainer').classList.add('hidden');
       document.getElementById('browserFrame').src = 'about:blank';
-      document.getElementById('startPage').classList.remove('hidden');
+      document.getElementById('startScreen').classList.remove('hidden');
       document.getElementById('urlInput').value = '';
       document.getElementById('searchInput').value = '';
       currentUrl = '';
@@ -818,47 +1030,36 @@
     }
 
     function goBack() {
-      try {
-        document.getElementById('browserFrame').contentWindow.history.back();
-      } catch(e) {
-        console.log('Cannot go back');
-      }
+      try { document.getElementById('browserFrame').contentWindow.history.back(); } catch(e) {}
     }
 
     function goForward() {
-      try {
-        document.getElementById('browserFrame').contentWindow.history.forward();
-      } catch(e) {
-        console.log('Cannot go forward');
-      }
+      try { document.getElementById('browserFrame').contentWindow.history.forward(); } catch(e) {}
     }
 
     function refresh() {
-      if (currentUrl) {
-        goTo(currentUrl);
-      }
+      if (currentUrl) goTo(currentUrl);
     }
 
     function setStatus(type, text) {
       const dot = document.getElementById('statusDot');
-      const textEl = document.getElementById('statusText');
-      
       dot.className = 'status-dot';
       if (type === 'loading') dot.classList.add('loading');
       if (type === 'error') dot.classList.add('error');
-      
-      textEl.textContent = text;
+      document.getElementById('statusText').textContent = text;
     }
 
     function switchProxy(proxy) {
       if (currentProxy === proxy) return;
-      
       currentProxy = proxy;
       swReady = false;
       
-      document.querySelectorAll('.proxy-option').forEach(opt => {
+      document.querySelectorAll('.proxy-opt').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.proxy === proxy);
       });
+      
+      document.getElementById('settingsUV').classList.toggle('active', proxy === 'uv');
+      document.getElementById('settingsScramjet').classList.toggle('active', proxy === 'scramjet');
       
       setStatus('loading', 'Switching proxy...');
     }
@@ -868,8 +1069,7 @@
       if (tab) {
         if (url) {
           try {
-            const hostname = new URL(url).hostname;
-            tab.title = hostname;
+            tab.title = new URL(url).hostname;
             tab.url = url;
             tab.icon = '🌐';
           } catch(e) {
@@ -895,9 +1095,7 @@
     function switchTab(id) {
       activeTabId = id;
       const tab = tabs.find(t => t.id === id);
-      
       renderTabs();
-      
       if (tab && tab.url) {
         goTo(tab.url);
       } else {
@@ -922,20 +1120,16 @@
       if (activeTabId === id) {
         activeTabId = tabs[Math.max(0, index - 1)].id;
         const tab = tabs.find(t => t.id === activeTabId);
-        if (tab && tab.url) {
-          goTo(tab.url);
-        } else {
-          goHome();
-        }
+        if (tab && tab.url) goTo(tab.url);
+        else goHome();
       }
       
       renderTabs();
     }
 
     function renderTabs() {
-      const list = document.getElementById('tabsList');
-      list.innerHTML = tabs.map(tab => `
-        <div class="tab-item ${tab.id === activeTabId ? 'active' : ''}" data-tab="${tab.id}" onclick="switchTab(${tab.id})">
+      document.getElementById('tabsList').innerHTML = tabs.map(tab => `
+        <div class="tab-item ${tab.id === activeTabId ? 'active' : ''}" onclick="switchTab(${tab.id})">
           <div class="tab-icon">${tab.icon}</div>
           <span class="tab-title">${tab.title}</span>
           <span class="tab-close" onclick="closeTab(${tab.id}, event)">×</span>
@@ -944,26 +1138,20 @@
     }
 
     function addBookmark() {
-      if (currentUrl) {
-        alert('Bookmark added: ' + currentUrl);
-      }
+      if (currentUrl) alert('Bookmark added: ' + currentUrl);
     }
 
     async function init() {
       if (!checkAuth()) return;
       
       if (isInIframe) {
-        document.getElementById('iframeNote').classList.remove('hidden');
+        document.getElementById('iframeWarning').classList.remove('hidden');
       }
       
       setStatus('loading', 'Initializing...');
       
       const ok = await registerServiceWorker();
-      if (ok) {
-        setStatus('ready', 'Ready');
-      } else {
-        setStatus('error', 'Proxy not available in iframe');
-      }
+      setStatus(ok ? 'ready' : 'error', ok ? 'Ready' : 'Open in new tab');
       
       const params = new URLSearchParams(window.location.search);
       const goParam = params.get('go');
