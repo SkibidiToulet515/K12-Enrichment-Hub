@@ -4,364 +4,171 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Browser - Enrichment Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0f0f0f;
-      color: #e4e4e4;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .browser-view {
-      display: flex;
-      height: 100vh;
-      width: 100vw;
-    }
-
-    .sidebar {
-      width: 48px;
-      background: #1a1a1a;
-      border-right: 1px solid #2a2a2a;
+      background: #0C0C0C;
+      color: #ffffff;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 8px 0;
-      flex-shrink: 0;
-    }
-
-    .sidebar-btn {
-      width: 36px;
-      height: 36px;
-      border: none;
-      background: transparent;
-      color: #888;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 18px;
-      margin-bottom: 4px;
-      transition: all 0.15s;
-    }
-
-    .sidebar-btn:hover {
-      background: #2a2a2a;
-      color: #fff;
-    }
-
-    .sidebar-btn.active {
-      background: #333;
-      color: #fff;
-    }
-
-    .sidebar-spacer {
-      flex: 1;
-    }
-
-    .nav {
-      width: 220px;
-      background: #141414;
-      border-right: 1px solid #2a2a2a;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-    }
-
-    .nav.collapsed {
-      display: none;
-    }
-
-    .nav-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid #2a2a2a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .tabs-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px;
-    }
-
-    .tab-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      color: #aaa;
-      transition: all 0.15s;
-      margin-bottom: 2px;
-    }
-
-    .tab-item:hover {
-      background: #222;
-      color: #fff;
-    }
-
-    .tab-item.active {
-      background: #2a2a2a;
-      color: #fff;
-    }
-
-    .tab-icon {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    .tab-title {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .tab-close {
-      opacity: 0;
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: #888;
-    }
-
-    .tab-item:hover .tab-close {
-      opacity: 1;
-    }
-
-    .tab-close:hover {
-      background: #333;
-      color: #fff;
-    }
-
-    .new-tab-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      color: #666;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .new-tab-btn:hover {
-      color: #fff;
-    }
-
-    .main-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .main-nav {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: #1a1a1a;
-      border-bottom: 1px solid #2a2a2a;
-    }
-
-    .nav-btn {
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: transparent;
-      color: #888;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: all 0.15s;
-    }
-
-    .nav-btn:hover {
-      background: #2a2a2a;
-      color: #fff;
-    }
-
-    .nav-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    .url-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      background: #0f0f0f;
-      border: 1px solid #2a2a2a;
-      border-radius: 20px;
-      padding: 0 14px;
-      height: 36px;
-      transition: all 0.2s;
-    }
-
-    .url-container:focus-within {
-      border-color: #444;
-      background: #141414;
-    }
-
-    .url-icon {
-      color: #4ade80;
-      margin-right: 8px;
-      font-size: 12px;
-    }
-
-    .url-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #e4e4e4;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .url-input::placeholder {
-      color: #555;
-    }
-
-    .bookmarks-container {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: #141414;
-      border-bottom: 1px solid #2a2a2a;
-      overflow-x: auto;
-    }
-
-    .bookmark-chip {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 6px;
-      color: #aaa;
-      font-size: 12px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.15s;
-    }
-
-    .bookmark-chip:hover {
-      background: #222;
-      color: #fff;
-      border-color: #333;
-    }
-
-    .bookmark-chip img {
-      width: 14px;
-      height: 14px;
-      border-radius: 2px;
-    }
-
-    .main-container {
-      flex: 1;
+      padding: 40px 20px;
       position: relative;
-      background: #0a0a0a;
+      overflow-x: hidden;
     }
 
-    .iframe-container {
-      position: absolute;
+    body::before {
+      content: '';
+      position: fixed;
       inset: 0;
+      background: 
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
     }
 
-    .iframe-container iframe {
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .container {
       width: 100%;
-      height: 100%;
-      border: none;
-      background: #fff;
-    }
-
-    .iframe-container.hidden {
-      display: none;
-    }
-
-    .start-screen {
-      position: absolute;
-      inset: 0;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 40px;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.6s ease-out;
     }
 
-    .start-screen.hidden {
-      display: none;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .search-logo {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 24px;
+    .greeting {
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
     }
 
-    .search-logo img {
-      width: 100%;
-      height: 100%;
-    }
-
-    .search-title {
-      font-size: 32px;
-      font-weight: 700;
-      color: #fff;
+    .greeting h1 {
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
     }
 
-    .search-subtitle {
-      font-size: 14px;
+    .greeting p {
+      font-size: 16px;
       color: #666;
-      margin-bottom: 32px;
+      font-weight: 400;
     }
 
-    .search-box {
+    .search-section {
       width: 100%;
-      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .proxy-selector {
       display: flex;
       align-items: center;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+      gap: 12px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
-      padding: 0 6px 0 18px;
+    }
+
+    .proxy-selector label {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .proxy-selector select {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 32px 8px 12px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
       transition: all 0.2s;
     }
 
-    .search-box:focus-within {
-      border-color: #de5833;
-      box-shadow: 0 0 0 3px rgba(222, 88, 51, 0.15);
+    .proxy-selector select:hover {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .proxy-selector select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .search-bar {
+      width: 60%;
+      min-width: 320px;
+      max-width: 700px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 0 8px 0 24px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .search-bar:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .search-bar:focus-within {
+      background: rgba(255,255,255,0.08);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), 0 8px 32px rgba(0,0,0,0.3);
+      transform: scale(1.01);
+    }
+
+    .search-icon {
+      color: #666;
+      font-size: 20px;
+      margin-right: 16px;
+      transition: color 0.2s;
+    }
+
+    .search-bar:focus-within .search-icon {
+      color: #6366f1;
     }
 
     .search-input {
@@ -369,8 +176,8 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 15px;
-      padding: 16px 0;
+      font-size: 16px;
+      font-family: inherit;
       outline: none;
     }
 
@@ -382,494 +189,414 @@
       width: 44px;
       height: 44px;
       border: none;
-      background: #de5833;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
       color: #fff;
-      border-radius: 8px;
+      border-radius: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
       transition: all 0.2s;
     }
 
     .search-btn:hover {
-      background: #c44d2c;
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
     }
 
-    .quick-links {
+    .search-btn:active {
+      transform: scale(0.98);
+    }
+
+    .bookmarks-section {
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 40px;
-      max-width: 700px;
-      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 1.2s ease-out;
     }
 
-    .quick-link {
+    .bookmarks-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    .bookmarks-title {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .edit-btn {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
-      color: #aaa;
-      font-size: 13px;
+      color: #888;
+      font-size: 12px;
+      font-family: inherit;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .quick-link:hover {
-      background: #222;
-      border-color: #333;
+    .edit-btn:hover {
+      background: rgba(255,255,255,0.1);
       color: #fff;
-      transform: translateY(-2px);
     }
 
-    .quick-link img {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
+    .edit-btn.active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: #6366f1;
+      color: #6366f1;
     }
 
-    .loading-screen {
-      position: absolute;
-      inset: 0;
-      background: rgba(10, 10, 10, 0.95);
+    .bookmarks-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .bookmark {
+      width: 110px;
+      height: 110px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      z-index: 100;
+      gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
     }
 
-    .loading-screen.hidden {
-      display: none;
+    .bookmark:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
+      transform: scale(1.05) translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
     }
 
-    .loading-spinner {
+    .bookmark.editing {
+      animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-2deg); }
+      75% { transform: rotate(2deg); }
+    }
+
+    .bookmark-icon {
       width: 48px;
       height: 48px;
-      border: 3px solid #2a2a2a;
-      border-top-color: #de5833;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      color: #888;
-      font-size: 14px;
-    }
-
-    .status-bar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 6px 12px;
-      background: #141414;
-      border-top: 1px solid #2a2a2a;
+      justify-content: center;
+      font-size: 28px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 14px;
+      transition: all 0.2s;
+    }
+
+    .bookmark:hover .bookmark-icon {
+      background: rgba(99, 102, 241, 0.2);
+      transform: scale(1.1);
+    }
+
+    .bookmark-label {
       font-size: 12px;
+      color: #aaa;
+      font-weight: 500;
+      text-align: center;
+      max-width: 90px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bookmark:hover .bookmark-label {
+      color: #fff;
+    }
+
+    .add-bookmark {
+      border-style: dashed;
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .add-bookmark .bookmark-icon {
+      font-size: 24px;
       color: #666;
     }
 
-    .status-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .add-bookmark:hover .bookmark-icon {
+      color: #6366f1;
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #4ade80;
-    }
-
-    .status-dot.loading {
-      background: #fbbf24;
-      animation: pulse 1s ease-in-out infinite;
-    }
-
-    .status-dot.error {
-      background: #ef4444;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .proxy-toggle {
-      display: flex;
-      gap: 4px;
-    }
-
-    .proxy-opt {
-      padding: 4px 10px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 4px;
-      color: #666;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .proxy-opt:hover {
-      background: #222;
-      color: #888;
-    }
-
-    .proxy-opt.active {
-      background: rgba(222, 88, 51, 0.2);
-      border-color: #de5833;
-      color: #de5833;
-    }
-
-    .overlay {
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.8);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
     }
 
-    .overlay.hidden {
-      display: none;
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
     }
 
-    .settings-menu {
+    .modal {
       background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 20px;
-      min-width: 320px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px;
+      width: 90%;
+      max-width: 400px;
+      transform: scale(0.9);
+      transition: transform 0.3s;
     }
 
-    .settings-title {
-      font-size: 16px;
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      font-size: 18px;
       font-weight: 600;
-      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .modal-field {
       margin-bottom: 16px;
     }
 
-    .settings-group {
-      margin-bottom: 16px;
-    }
-
-    .settings-label {
-      font-size: 12px;
+    .modal-field label {
+      display: block;
+      font-size: 13px;
       color: #888;
       margin-bottom: 8px;
     }
 
-    .settings-btns {
-      display: flex;
-      gap: 8px;
-    }
-
-    .settings-btn {
-      flex: 1;
-      padding: 10px;
-      background: #222;
-      border: 1px solid #2a2a2a;
-      border-radius: 6px;
-      color: #aaa;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .settings-btn:hover {
-      background: #2a2a2a;
-      color: #fff;
-    }
-
-    .settings-btn.active {
-      background: rgba(222, 88, 51, 0.2);
-      border-color: #de5833;
-      color: #de5833;
-    }
-
-    .close-settings {
-      margin-top: 16px;
+    .modal-field input {
       width: 100%;
-      padding: 10px;
-      background: #de5833;
-      border: none;
-      border-radius: 6px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
       color: #fff;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
     }
 
-    .iframe-warning {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #de5833;
+    .modal-field input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-btn.secondary {
+      background: rgba(255,255,255,0.08);
+      color: #aaa;
+    }
+
+    .modal-btn.secondary:hover {
+      background: rgba(255,255,255,0.12);
       color: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 13px;
+    }
+
+    .modal-btn.primary {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #fff;
+    }
+
+    .modal-btn.primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .modal-btn.danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .modal-btn.danger:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    .back-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      z-index: 1000;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #888;
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s;
+      z-index: 100;
     }
 
-    .iframe-warning.hidden {
-      display: none;
+    .back-link:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
     }
 
-    .iframe-warning button {
-      background: #fff;
-      color: #de5833;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 4px;
+    .footer {
+      margin-top: 60px;
+      text-align: center;
       font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
+      color: #444;
     }
 
-    .disclaimer {
-      position: fixed;
-      bottom: 12px;
-      right: 12px;
-      font-size: 11px;
-      color: #444;
+    @media (max-width: 768px) {
+      .greeting h1 {
+        font-size: 36px;
+      }
+
+      .search-bar {
+        width: 90%;
+        min-width: 280px;
+        height: 54px;
+      }
+
+      .bookmark {
+        width: 90px;
+        height: 90px;
+      }
+
+      .bookmark-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+
+      .bookmark-label {
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="browser-view" class="browser-view">
-    <div class="sidebar">
-      <button class="sidebar-btn active" onclick="toggleNav()" title="Toggle Sidebar">☰</button>
-      <button class="sidebar-btn" onclick="goHome()" title="Home">⌂</button>
-      <button class="sidebar-btn" onclick="newTab()" title="New Tab">+</button>
-      <div class="sidebar-spacer"></div>
-      <button class="sidebar-btn" onclick="showSettings()" title="Settings">⚙</button>
-      <a href="/private/dashboard.html" class="sidebar-btn" title="Back to Hub">←</a>
+  <a href="/private/dashboard.html" class="back-link">
+    <span>←</span>
+    <span>Back to Hub</span>
+  </a>
+
+  <div class="container">
+    <div class="greeting">
+      <h1 id="greetingText">Welcome</h1>
+      <p>Search the web privately</p>
     </div>
 
-    <div class="nav" id="navPanel">
-      <div class="nav-header">
-        <span class="nav-title">Tabs</span>
+    <div class="search-section">
+      <div class="proxy-selector">
+        <label>Proxy Engine:</label>
+        <select id="proxyEngine">
+          <option value="uv">Ultraviolet</option>
+          <option value="scramjet">Scramjet</option>
+        </select>
       </div>
-      <div class="tabs-container" id="tabsList">
-        <div class="tab-item active" data-tab="0">
-          <div class="tab-icon">🔍</div>
-          <span class="tab-title">New Tab</span>
-          <span class="tab-close" onclick="closeTab(0, event)">×</span>
-        </div>
-      </div>
-      <div class="new-tab-btn" onclick="newTab()">
-        <span>+</span>
-        <span>New Tab</span>
+
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" 
+               placeholder="Search with DuckDuckGo..." 
+               autocomplete="off">
+        <button class="search-btn" onclick="doSearch()">→</button>
       </div>
     </div>
 
-    <div class="main-wrapper">
-      <div class="main-nav">
-        <button class="nav-btn" onclick="goBack()" title="Back">←</button>
-        <button class="nav-btn" onclick="goForward()" title="Forward">→</button>
-        <button class="nav-btn" onclick="refresh()" title="Refresh">↻</button>
-        
-        <div class="url-container">
-          <span class="url-icon" id="urlIcon">🔒</span>
-          <input type="text" class="url-input" id="urlInput" 
-                 placeholder="Search DuckDuckGo or enter URL"
-                 onkeydown="if(event.key==='Enter')navigate()">
-        </div>
-        
-        <button class="nav-btn" onclick="addBookmark()" title="Bookmark">☆</button>
+    <div class="bookmarks-section">
+      <div class="bookmarks-header">
+        <span class="bookmarks-title">Quick Links</span>
+        <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
       </div>
 
-      <div class="bookmarks-container" id="bookmarksBar">
-        <div class="bookmark-chip" onclick="goTo('https://www.google.com')">
-          <img src="https://www.google.com/favicon.ico" alt="">
-          Google
-        </div>
-        <div class="bookmark-chip" onclick="goTo('https://www.youtube.com')">
-          <img src="https://www.youtube.com/favicon.ico" alt="">
-          YouTube
-        </div>
-        <div class="bookmark-chip" onclick="goTo('https://discord.com/app')">
-          <img src="https://discord.com/favicon.ico" alt="">
-          Discord
-        </div>
-        <div class="bookmark-chip" onclick="goTo('https://www.reddit.com')">
-          <img src="https://www.reddit.com/favicon.ico" alt="">
-          Reddit
-        </div>
-        <div class="bookmark-chip" onclick="goTo('https://www.twitch.tv')">
-          <img src="https://www.twitch.tv/favicon.ico" alt="">
-          Twitch
-        </div>
-        <div class="bookmark-chip" onclick="goTo('https://www.tiktok.com')">
-          <img src="https://www.tiktok.com/favicon.ico" alt="">
-          TikTok
-        </div>
-      </div>
+      <div class="bookmarks-grid" id="bookmarksGrid"></div>
+    </div>
 
-      <div class="main-container">
-        <div class="start-screen" id="startScreen">
-          <div class="search-logo">
-            <svg viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="50" r="45" fill="#de5833"/>
-              <path d="M35 45 L50 60 L75 35" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="search-title">Search the Web</div>
-          <div class="search-subtitle">Private browsing with DuckDuckGo</div>
-          
-          <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" 
-                   placeholder="Search DuckDuckGo..." 
-                   onkeydown="if(event.key==='Enter')doSearch()">
-            <button class="search-btn" onclick="doSearch()">→</button>
-          </div>
-
-          <div class="quick-links">
-            <div class="quick-link" onclick="goTo('https://www.google.com')">
-              <img src="https://www.google.com/favicon.ico" alt="">
-              Google
-            </div>
-            <div class="quick-link" onclick="goTo('https://www.youtube.com')">
-              <img src="https://www.youtube.com/favicon.ico" alt="">
-              YouTube
-            </div>
-            <div class="quick-link" onclick="goTo('https://discord.com/app')">
-              <img src="https://discord.com/favicon.ico" alt="">
-              Discord
-            </div>
-            <div class="quick-link" onclick="goTo('https://www.reddit.com')">
-              <img src="https://www.reddit.com/favicon.ico" alt="">
-              Reddit
-            </div>
-            <div class="quick-link" onclick="goTo('https://www.twitch.tv')">
-              <img src="https://www.twitch.tv/favicon.ico" alt="">
-              Twitch
-            </div>
-            <div class="quick-link" onclick="goTo('https://www.spotify.com')">
-              <img src="https://www.spotify.com/favicon.ico" alt="">
-              Spotify
-            </div>
-            <div class="quick-link" onclick="goTo('https://www.netflix.com')">
-              <img src="https://www.netflix.com/favicon.ico" alt="">
-              Netflix
-            </div>
-            <div class="quick-link" onclick="goTo('https://www.tiktok.com')">
-              <img src="https://www.tiktok.com/favicon.ico" alt="">
-              TikTok
-            </div>
-          </div>
-        </div>
-
-        <div class="iframe-container hidden" id="iframeContainer">
-          <iframe id="browserFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
-        </div>
-
-        <div class="loading-screen hidden" id="loadingScreen">
-          <div class="loading-spinner"></div>
-          <div class="loading-text" id="loadingText">Loading...</div>
-        </div>
-      </div>
-
-      <div class="status-bar">
-        <div class="status-left">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusText">Ready</span>
-        </div>
-        <div class="proxy-toggle">
-          <div class="proxy-opt active" data-proxy="uv" onclick="switchProxy('uv')">UV</div>
-          <div class="proxy-opt" data-proxy="scramjet" onclick="switchProxy('scramjet')">Scramjet</div>
-        </div>
-      </div>
+    <div class="footer">
+      Enrichment Hub Browser
     </div>
   </div>
 
-  <div class="overlay hidden" id="settingsOverlay" onclick="hideSettings(event)">
-    <div class="settings-menu" onclick="event.stopPropagation()">
-      <div class="settings-title">Settings</div>
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title" id="modalTitle">Edit Bookmark</div>
       
-      <div class="settings-group">
-        <div class="settings-label">Proxy Engine</div>
-        <div class="settings-btns">
-          <button class="settings-btn active" id="settingsUV" onclick="switchProxy('uv')">Ultraviolet</button>
-          <button class="settings-btn" id="settingsScramjet" onclick="switchProxy('scramjet')">Scramjet</button>
-        </div>
+      <div class="modal-field">
+        <label>Title</label>
+        <input type="text" id="bookmarkTitle" placeholder="e.g. YouTube">
+      </div>
+      
+      <div class="modal-field">
+        <label>URL</label>
+        <input type="text" id="bookmarkUrl" placeholder="e.g. https://youtube.com">
+      </div>
+      
+      <div class="modal-field">
+        <label>Icon (emoji)</label>
+        <input type="text" id="bookmarkIcon" placeholder="e.g. 🎬">
       </div>
 
-      <div class="settings-group">
-        <div class="settings-label">Search Engine</div>
-        <div class="settings-btns">
-          <button class="settings-btn active">DuckDuckGo</button>
-          <button class="settings-btn" onclick="alert('Coming soon!')">Google</button>
-        </div>
+      <div class="modal-actions" id="modalActions">
+        <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+        <button class="modal-btn primary" onclick="saveBookmark()">Save</button>
       </div>
-
-      <button class="close-settings" onclick="hideSettings()">Close</button>
     </div>
   </div>
-
-  <div class="iframe-warning hidden" id="iframeWarning">
-    Service workers require a new tab to work
-    <button onclick="openInNewTab()">Open in New Tab</button>
-  </div>
-
-  <div class="disclaimer">Enrichment Hub Browser</div>
-
-  <script type="module">
-    import { BareMuxConnection } from '/baremux/index.mjs';
-
-    window.bareMuxReady = false;
-    window.bareMux = null;
-    
-    window.initBareMux = async function() {
-      if (window.bareMuxReady) return true;
-      
-      try {
-        const connection = new BareMuxConnection('/baremux/worker.js');
-        const bareUrl = location.origin + '/bare/';
-        
-        await connection.setTransport('/baremod/index.mjs', [bareUrl]);
-        await connection.getTransport();
-        
-        window.bareMux = connection;
-        window.bareMuxReady = true;
-        window.dispatchEvent(new Event('baremux-ready'));
-        return true;
-      } catch (e) {
-        console.error('BareMux init error:', e);
-        return false;
-      }
-    };
-
-    window.initBareMux();
-  </script>
 
   <script>
-    let currentProxy = 'uv';
-    let swReady = false;
-    let isInIframe = window !== window.top;
-    let currentUrl = '';
-    let tabs = [{ id: 0, title: 'New Tab', url: '', icon: '🔍' }];
-    let activeTabId = 0;
-    let nextTabId = 1;
-    let navCollapsed = false;
+    const defaultBookmarks = [
+      { title: 'CrazyGames', url: 'https://www.crazygames.com', icon: '🎮' },
+      { title: 'YouTube', url: 'https://www.youtube.com', icon: '🎬' },
+      { title: 'SoundCloud', url: 'https://soundcloud.com', icon: '🎵' },
+      { title: 'Cineby', url: 'https://www.cineby.app', icon: '🎥' },
+      { title: 'GitHub', url: 'https://github.com', icon: '💻' },
+      { title: 'Discord', url: 'https://discord.com/app', icon: '💬' },
+      { title: 'Reddit', url: 'https://www.reddit.com', icon: '📰' },
+      { title: 'Twitch', url: 'https://www.twitch.tv', icon: '🎮' }
+    ];
+
+    let bookmarks = [];
+    let isEditing = false;
+    let editingIndex = -1;
 
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -880,285 +607,198 @@
       return true;
     }
 
-    function toggleNav() {
-      navCollapsed = !navCollapsed;
-      document.getElementById('navPanel').classList.toggle('collapsed', navCollapsed);
+    function setGreeting() {
+      const hour = new Date().getHours();
+      const greetings = {
+        morning: ['Good morning', 'Rise and shine', 'Top of the morning'],
+        afternoon: ['Good afternoon', 'Hello there', 'Welcome back'],
+        evening: ['Good evening', 'Welcome', 'Hey there'],
+        night: ['Good night', 'Working late?', 'Welcome']
+      };
+      
+      let timeOfDay;
+      if (hour >= 5 && hour < 12) timeOfDay = 'morning';
+      else if (hour >= 12 && hour < 17) timeOfDay = 'afternoon';
+      else if (hour >= 17 && hour < 21) timeOfDay = 'evening';
+      else timeOfDay = 'night';
+      
+      const options = greetings[timeOfDay];
+      document.getElementById('greetingText').textContent = options[Math.floor(Math.random() * options.length)];
     }
 
-    function showSettings() {
-      document.getElementById('settingsOverlay').classList.remove('hidden');
-    }
-
-    function hideSettings(event) {
-      if (!event || event.target === document.getElementById('settingsOverlay')) {
-        document.getElementById('settingsOverlay').classList.add('hidden');
+    function loadProxyEngine() {
+      const saved = localStorage.getItem('proxyEngine');
+      if (saved) {
+        document.getElementById('proxyEngine').value = saved;
       }
     }
 
-    function openInNewTab() {
-      window.open(window.location.href, '_blank');
+    function saveProxyEngine() {
+      const engine = document.getElementById('proxyEngine').value;
+      localStorage.setItem('proxyEngine', engine);
     }
 
-    async function waitForBareMux(timeout = 3000) {
-      if (window.bareMuxReady) return true;
-      return new Promise((resolve) => {
-        const timer = setTimeout(() => resolve(false), timeout);
-        window.addEventListener('baremux-ready', () => {
-          clearTimeout(timer);
-          resolve(true);
-        }, { once: true });
-      });
+    function loadBookmarks() {
+      const saved = localStorage.getItem('proxyBookmarks');
+      if (saved) {
+        bookmarks = JSON.parse(saved);
+      } else {
+        bookmarks = [...defaultBookmarks];
+        saveBookmarksToStorage();
+      }
+      renderBookmarks();
     }
 
-    async function registerServiceWorker() {
-      if (!('serviceWorker' in navigator)) return false;
+    function saveBookmarksToStorage() {
+      localStorage.setItem('proxyBookmarks', JSON.stringify(bookmarks));
+    }
 
-      let bareMuxOk = await waitForBareMux(3000);
-      if (!bareMuxOk && window.initBareMux) {
-        bareMuxOk = await window.initBareMux();
-      }
-      if (!bareMuxOk) return false;
+    function renderBookmarks() {
+      const grid = document.getElementById('bookmarksGrid');
+      
+      let html = bookmarks.map((bm, i) => `
+        <div class="bookmark ${isEditing ? 'editing' : ''}" onclick="${isEditing ? `openEditModal(${i})` : `openBookmark(${i})`}">
+          <div class="bookmark-icon">${bm.icon}</div>
+          <div class="bookmark-label">${bm.title}</div>
+        </div>
+      `).join('');
 
-      try {
-        const existingReg = await navigator.serviceWorker.getRegistration('/service/');
-        if (existingReg) {
-          swReady = true;
-          return true;
-        }
-        
-        const reg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
-        
-        if (reg.installing) {
-          await new Promise(resolve => {
-            reg.installing.addEventListener('statechange', function() {
-              if (this.state === 'activated') resolve();
-            });
-          });
-        }
-        
-        await navigator.serviceWorker.ready;
-        swReady = true;
-        return true;
-      } catch (e) {
-        console.error('SW registration failed:', e);
-        return false;
+      if (isEditing) {
+        html += `
+          <div class="bookmark add-bookmark" onclick="openAddModal()">
+            <div class="bookmark-icon">+</div>
+            <div class="bookmark-label">Add New</div>
+          </div>
+        `;
       }
+
+      grid.innerHTML = html;
     }
 
     function encodeUrl(url) {
-      const encoded = url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
-      return encodeURIComponent(encoded);
+      return url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
     }
 
     function doSearch() {
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
-      goTo('https://duckduckgo.com/?q=' + encodeURIComponent(query));
-    }
 
-    function navigate() {
-      let url = document.getElementById('urlInput').value.trim();
-      if (!url) return;
+      const engine = document.getElementById('proxyEngine').value;
+      saveProxyEngine();
+
+      const searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
       
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        if (url.includes('.') && !url.includes(' ')) {
-          url = 'https://' + url;
-        } else {
-          url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
-        }
-      }
-      
-      goTo(url);
-    }
-
-    async function goTo(url) {
-      if (isInIframe) {
-        document.getElementById('iframeWarning').classList.remove('hidden');
-        return;
-      }
-
-      currentUrl = url;
-      document.getElementById('urlInput').value = url;
-      
-      setStatus('loading', 'Loading...');
-      showLoading('Connecting...');
-
-      if (!swReady) {
-        showLoading('Initializing proxy...');
-        const ok = await registerServiceWorker();
-        if (!ok) {
-          setStatus('error', 'Proxy failed');
-          hideLoading();
-          return;
-        }
-      }
-
-      const encodedUrl = '/service/' + encodeUrl(url);
-      
-      document.getElementById('startScreen').classList.add('hidden');
-      document.getElementById('iframeContainer').classList.remove('hidden');
-      
-      showLoading('Loading page...');
-      
-      const frame = document.getElementById('browserFrame');
-      frame.onload = () => {
-        hideLoading();
-        setStatus('ready', 'Ready');
-        updateActiveTab(url);
-      };
-      
-      frame.src = encodedUrl;
-    }
-
-    function showLoading(text) {
-      document.getElementById('loadingScreen').classList.remove('hidden');
-      document.getElementById('loadingText').textContent = text;
-    }
-
-    function hideLoading() {
-      document.getElementById('loadingScreen').classList.add('hidden');
-    }
-
-    function goHome() {
-      document.getElementById('iframeContainer').classList.add('hidden');
-      document.getElementById('browserFrame').src = 'about:blank';
-      document.getElementById('startScreen').classList.remove('hidden');
-      document.getElementById('urlInput').value = '';
-      document.getElementById('searchInput').value = '';
-      currentUrl = '';
-      updateActiveTab('');
-    }
-
-    function goBack() {
-      try { document.getElementById('browserFrame').contentWindow.history.back(); } catch(e) {}
-    }
-
-    function goForward() {
-      try { document.getElementById('browserFrame').contentWindow.history.forward(); } catch(e) {}
-    }
-
-    function refresh() {
-      if (currentUrl) goTo(currentUrl);
-    }
-
-    function setStatus(type, text) {
-      const dot = document.getElementById('statusDot');
-      dot.className = 'status-dot';
-      if (type === 'loading') dot.classList.add('loading');
-      if (type === 'error') dot.classList.add('error');
-      document.getElementById('statusText').textContent = text;
-    }
-
-    function switchProxy(proxy) {
-      if (currentProxy === proxy) return;
-      currentProxy = proxy;
-      swReady = false;
-      
-      document.querySelectorAll('.proxy-opt').forEach(opt => {
-        opt.classList.toggle('active', opt.dataset.proxy === proxy);
-      });
-      
-      document.getElementById('settingsUV').classList.toggle('active', proxy === 'uv');
-      document.getElementById('settingsScramjet').classList.toggle('active', proxy === 'scramjet');
-      
-      setStatus('loading', 'Switching proxy...');
-    }
-
-    function updateActiveTab(url) {
-      const tab = tabs.find(t => t.id === activeTabId);
-      if (tab) {
-        if (url) {
-          try {
-            tab.title = new URL(url).hostname;
-            tab.url = url;
-            tab.icon = '🌐';
-          } catch(e) {
-            tab.title = 'Loading...';
-          }
-        } else {
-          tab.title = 'New Tab';
-          tab.url = '';
-          tab.icon = '🔍';
-        }
-        renderTabs();
-      }
-    }
-
-    function newTab() {
-      const id = nextTabId++;
-      tabs.push({ id, title: 'New Tab', url: '', icon: '🔍' });
-      activeTabId = id;
-      renderTabs();
-      goHome();
-    }
-
-    function switchTab(id) {
-      activeTabId = id;
-      const tab = tabs.find(t => t.id === id);
-      renderTabs();
-      if (tab && tab.url) {
-        goTo(tab.url);
+      if (engine === 'uv') {
+        window.location.href = '/service/' + encodeURIComponent(encodeUrl(searchUrl));
       } else {
-        goHome();
+        window.location.href = '/sj/?q=' + encodeURIComponent(searchUrl);
       }
     }
 
-    function closeTab(id, event) {
-      event.stopPropagation();
+    function openBookmark(index) {
+      const bm = bookmarks[index];
+      const engine = document.getElementById('proxyEngine').value;
+      saveProxyEngine();
+
+      let url = bm.url;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+
+      if (engine === 'uv') {
+        window.location.href = '/service/' + encodeURIComponent(encodeUrl(url));
+      } else {
+        window.location.href = '/sj/?q=' + encodeURIComponent(url);
+      }
+    }
+
+    function toggleEdit() {
+      isEditing = !isEditing;
+      document.getElementById('editBtn').classList.toggle('active', isEditing);
+      document.getElementById('editBtn').textContent = isEditing ? 'Done' : 'Edit';
+      renderBookmarks();
+    }
+
+    function openAddModal() {
+      editingIndex = -1;
+      document.getElementById('modalTitle').textContent = 'Add Bookmark';
+      document.getElementById('bookmarkTitle').value = '';
+      document.getElementById('bookmarkUrl').value = '';
+      document.getElementById('bookmarkIcon').value = '';
       
-      if (tabs.length === 1) {
-        tabs[0] = { id: 0, title: 'New Tab', url: '', icon: '🔍' };
-        activeTabId = 0;
-        goHome();
-        renderTabs();
+      document.getElementById('modalActions').innerHTML = `
+        <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+        <button class="modal-btn primary" onclick="saveBookmark()">Add</button>
+      `;
+      
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function openEditModal(index) {
+      editingIndex = index;
+      const bm = bookmarks[index];
+      
+      document.getElementById('modalTitle').textContent = 'Edit Bookmark';
+      document.getElementById('bookmarkTitle').value = bm.title;
+      document.getElementById('bookmarkUrl').value = bm.url;
+      document.getElementById('bookmarkIcon').value = bm.icon;
+      
+      document.getElementById('modalActions').innerHTML = `
+        <button class="modal-btn danger" onclick="deleteBookmark()">Delete</button>
+        <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+        <button class="modal-btn primary" onclick="saveBookmark()">Save</button>
+      `;
+      
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal(event) {
+      if (!event || event.target === document.getElementById('modalOverlay')) {
+        document.getElementById('modalOverlay').classList.remove('active');
+      }
+    }
+
+    function saveBookmark() {
+      const title = document.getElementById('bookmarkTitle').value.trim();
+      const url = document.getElementById('bookmarkUrl').value.trim();
+      const icon = document.getElementById('bookmarkIcon').value.trim() || '🔗';
+
+      if (!title || !url) {
+        alert('Please fill in title and URL');
         return;
       }
-      
-      const index = tabs.findIndex(t => t.id === id);
-      tabs.splice(index, 1);
-      
-      if (activeTabId === id) {
-        activeTabId = tabs[Math.max(0, index - 1)].id;
-        const tab = tabs.find(t => t.id === activeTabId);
-        if (tab && tab.url) goTo(tab.url);
-        else goHome();
+
+      if (editingIndex === -1) {
+        bookmarks.push({ title, url, icon });
+      } else {
+        bookmarks[editingIndex] = { title, url, icon };
       }
-      
-      renderTabs();
+
+      saveBookmarksToStorage();
+      renderBookmarks();
+      closeModal();
     }
 
-    function renderTabs() {
-      document.getElementById('tabsList').innerHTML = tabs.map(tab => `
-        <div class="tab-item ${tab.id === activeTabId ? 'active' : ''}" onclick="switchTab(${tab.id})">
-          <div class="tab-icon">${tab.icon}</div>
-          <span class="tab-title">${tab.title}</span>
-          <span class="tab-close" onclick="closeTab(${tab.id}, event)">×</span>
-        </div>
-      `).join('');
+    function deleteBookmark() {
+      if (editingIndex >= 0) {
+        bookmarks.splice(editingIndex, 1);
+        saveBookmarksToStorage();
+        renderBookmarks();
+        closeModal();
+      }
     }
 
-    function addBookmark() {
-      if (currentUrl) alert('Bookmark added: ' + currentUrl);
-    }
+    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doSearch();
+    });
 
-    async function init() {
+    document.getElementById('proxyEngine').addEventListener('change', saveProxyEngine);
+
+    function init() {
       if (!checkAuth()) return;
-      
-      if (isInIframe) {
-        document.getElementById('iframeWarning').classList.remove('hidden');
-      }
-      
-      setStatus('loading', 'Initializing...');
-      
-      const ok = await registerServiceWorker();
-      setStatus(ok ? 'ready' : 'error', ok ? 'Ready' : 'Open in new tab');
-      
-      const params = new URLSearchParams(window.location.search);
-      const goParam = params.get('go');
-      if (goParam && !isInIframe) {
-        goTo(goParam);
-      }
-      
+      setGreeting();
+      loadProxyEngine();
+      loadBookmarks();
       document.getElementById('searchInput').focus();
     }
 

@@ -1,0 +1,164 @@
+I want you to build a modern homepage UI for my website that looks similar to a custom private browser homepage. The page must have a minimalistic dark theme, centered layout, smooth animations, and customizable bookmarks. This is the main "Proxy Launcher" page for my site, and users can switch between two proxy engines (Ultraviolet and Scramjet).
+
+PAGE LAYOUT + STYLE
+
+Background should be dark, almost black (#0C0C0C), with a very subtle grid pattern or gradient overlay.
+
+All UI elements should have soft rounded corners (18–24px radius).
+
+Use smooth transitions, shadows, and hover animations.
+
+Everything should be centered vertically and horizontally.
+
+TITLE / GREETING
+
+Centered at the top, large font (similar to the screenshot):
+
+Show a dynamic greeting text like: “Welcome” or “Xin chào!”
+
+Use a sleek, futuristic font.
+
+MAIN SEARCH BAR (CENTER OF PAGE)
+
+This is the most important part.
+
+The search bar should:
+
+Be horizontally centered
+
+Width around 55–65% of the screen
+
+Height ~60px
+
+Background: soft dark grey with slight transparency
+
+Rounded corners (20px)
+
+Contain a subtle search icon on the left
+
+Placeholder text: “Search with DuckDuckGo…”
+
+When the user types and presses Enter, or presses a search button:
+
+Detect the selected proxy engine
+
+If Ultraviolet is selected, open:
+/uv/#https://duckduckgo.com/?q=<query>
+
+If Scramjet is selected, open:
+/sj/?q=<query>
+
+The search bar should support:
+
+Focus glow effect
+
+Smooth input animation
+
+Pressing Enter triggers the search function
+
+PROXY ENGINE SWITCHER
+
+Place a small dropdown above or below the search bar to select the proxy engine.
+
+Label: “Proxy Engine:”
+
+Options:
+
+Ultraviolet
+
+Scramjet
+
+Store the choice in localStorage so the site remembers the previous selection.
+
+BOOKMARK SECTION
+
+Directly below the search bar, add a row of rounded bookmark buttons.
+These bookmarks should be editable by the user.
+
+Bookmarks:
+
+Display 5–8 bookmark icons
+
+Each bookmark should be a rounded square (~110px × 110px)
+
+The icon should be centered inside
+
+Text label under the icon (e.g., “YouTube”, “SoundCloud”, “GitHub”)
+
+Hover animation: slight scale-up + glow
+
+Editable Bookmarks Feature:
+
+Add an “Edit” button aligned to the right of the bookmark row
+
+When "Edit" is active:
+
+Clicking a bookmark allows the user to change:
+
+Bookmark title
+
+Bookmark link
+
+Bookmark icon (optional)
+
+Save bookmarks to localStorage so they persist
+
+Default bookmarks:
+
+CrazyGames
+
+YouTube
+
+SoundCloud
+
+Cineby
+
+GitHub
+
+WHAT HAPPENS WHEN BOOKMARKS ARE CLICKED
+
+When a user clicks a bookmark:
+
+If the proxy engine is Ultraviolet, open it inside UV:
+/uv/#<bookmark-url>
+
+If the engine is Scramjet, open inside SJ:
+/sj/?q=<bookmark-url>
+
+ANIMATION + SMOOTHNESS REQUIREMENTS
+
+All UI elements should fade in softly
+
+Buttons should scale slightly when hovered
+
+The search bar glow when focused
+
+Page uses smooth transitions, no harsh edges
+
+RESPONSIVE DESIGN
+
+Center layout should work on desktop, tablet, and mobile
+
+Bookmarks should wrap onto multiple rows on small screens
+
+Search bar shrinks smoothly on smaller devices
+
+DO NOT build the actual proxy.
+
+Only build the homepage UI with the search bar, proxy selector, and bookmark system that links to /uv/... or /sj/....
+
+END RESULT
+
+The final homepage should feel like:
+
+A premium browser start page
+
+Sleek and modern
+
+Minimalistic but highly functional
+
+With a centered search bar and customizable bookmarks
+
+With proxy engine switching built in
+
+Inspired by the style of the screenshot I provided
