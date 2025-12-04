@@ -33,141 +33,169 @@ const defaultBookmarks = [
   { name: 'Netflix', url: 'https://netflix.com', icon: '🎬', bg_color: '#e50914' }
 ];
 
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-    const result = await db.query(
-      'SELECT * FROM user_bookmarks WHERE user_id = $1 ORDER BY position, id',
-      [req.user.userId]
-    );
+router.get('/', authMiddleware, (req, res) => {
+  db.all('SELECT * FROM user_bookmarks WHERE user_id = ? ORDER BY position, id', [req.user.userId], (err, bookmarks) => {
+    if (err) {
+      console.error('Error fetching bookmarks:', err);
+      return res.status(500).json({ error: 'Failed to fetch bookmarks' });
+    }
     
-    if (result.rows.length === 0) {
-      for (let i = 0; i < defaultBookmarks.length; i++) {
-        const b = defaultBookmarks[i];
-        await db.query(
-          'INSERT INTO user_bookmarks (user_id, name, url, icon, bg_color, position) VALUES ($1, $2, $3, $4, $5, $6)',
-          [req.user.userId, b.name, b.url, b.icon, b.bg_color, i]
+    if (!bookmarks || bookmarks.length === 0) {
+      let inserted = 0;
+      defaultBookmarks.forEach((b, i) => {
+        db.run(
+          'INSERT INTO user_bookmarks (user_id, name, url, icon, bg_color, position) VALUES (?, ?, ?, ?, ?, ?)',
+          [req.user.userId, b.name, b.url, b.icon, b.bg_color, i],
+          (err) => {
+            inserted++;
+            if (inserted === defaultBookmarks.length) {
+              db.all('SELECT * FROM user_bookmarks WHERE user_id = ? ORDER BY position, id', [req.user.userId], (err, newBookmarks) => {
+                if (err) return res.status(500).json({ error: 'Failed to fetch bookmarks' });
+                res.json(newBookmarks || []);
+              });
+            }
+          }
         );
+      });
+    } else {
+      res.json(bookmarks);
+    }
+  });
+});
+
+router.post('/', authMiddleware, (req, res) => {
+  const { name, url, icon, bg_color } = req.body;
+  if (!name || !url) {
+    return res.status(400).json({ error: 'Name and URL are required' });
+  }
+  
+  db.get('SELECT COUNT(*) as count FROM user_bookmarks WHERE user_id = ?', [req.user.userId], (err, result) => {
+    if (err) {
+      console.error('Error counting bookmarks:', err);
+      return res.status(500).json({ error: 'Failed to create bookmark' });
+    }
+    
+    const position = result ? result.count : 0;
+    
+    db.run(
+      'INSERT INTO user_bookmarks (user_id, name, url, icon, bg_color, position) VALUES (?, ?, ?, ?, ?, ?)',
+      [req.user.userId, name, url, icon || '🔗', bg_color || null, position],
+      function(err) {
+        if (err) {
+          console.error('Error creating bookmark:', err);
+          return res.status(500).json({ error: 'Failed to create bookmark' });
+        }
+        
+        db.get('SELECT * FROM user_bookmarks WHERE id = ?', [this.lastID], (err, bookmark) => {
+          if (err) return res.status(500).json({ error: 'Failed to fetch created bookmark' });
+          res.json(bookmark);
+        });
       }
-      const newResult = await db.query(
-        'SELECT * FROM user_bookmarks WHERE user_id = $1 ORDER BY position, id',
-        [req.user.userId]
-      );
-      return res.json(newResult.rows);
-    }
-    
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error fetching bookmarks:', err);
-    res.status(500).json({ error: 'Failed to fetch bookmarks' });
-  }
+    );
+  });
 });
 
-router.post('/', authMiddleware, async (req, res) => {
-  try {
-    const { name, url, icon, bg_color } = req.body;
-    if (!name || !url) {
-      return res.status(400).json({ error: 'Name and URL are required' });
+router.put('/:id', authMiddleware, (req, res) => {
+  const { id } = req.params;
+  const { name, url, icon, bg_color } = req.body;
+  
+  db.get('SELECT * FROM user_bookmarks WHERE id = ? AND user_id = ?', [id, req.user.userId], (err, bookmark) => {
+    if (err) {
+      console.error('Error finding bookmark:', err);
+      return res.status(500).json({ error: 'Failed to update bookmark' });
     }
     
-    const countResult = await db.query(
-      'SELECT COUNT(*) as count FROM user_bookmarks WHERE user_id = $1',
-      [req.user.userId]
-    );
-    const position = parseInt(countResult.rows[0].count);
-    
-    const result = await db.query(
-      'INSERT INTO user_bookmarks (user_id, name, url, icon, bg_color, position) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [req.user.userId, name, url, icon || '🔗', bg_color || null, position]
-    );
-    
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Error creating bookmark:', err);
-    res.status(500).json({ error: 'Failed to create bookmark' });
-  }
-});
-
-router.put('/:id', authMiddleware, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, url, icon, bg_color } = req.body;
-    
-    const result = await db.query(
-      'UPDATE user_bookmarks SET name = COALESCE($1, name), url = COALESCE($2, url), icon = COALESCE($3, icon), bg_color = $4 WHERE id = $5 AND user_id = $6 RETURNING *',
-      [name, url, icon, bg_color, id, req.user.userId]
-    );
-    
-    if (result.rows.length === 0) {
+    if (!bookmark) {
       return res.status(404).json({ error: 'Bookmark not found' });
     }
     
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('Error updating bookmark:', err);
-    res.status(500).json({ error: 'Failed to update bookmark' });
-  }
+    db.run(
+      'UPDATE user_bookmarks SET name = ?, url = ?, icon = ?, bg_color = ? WHERE id = ? AND user_id = ?',
+      [name || bookmark.name, url || bookmark.url, icon || bookmark.icon, bg_color, id, req.user.userId],
+      function(err) {
+        if (err) {
+          console.error('Error updating bookmark:', err);
+          return res.status(500).json({ error: 'Failed to update bookmark' });
+        }
+        
+        db.get('SELECT * FROM user_bookmarks WHERE id = ?', [id], (err, updated) => {
+          if (err) return res.status(500).json({ error: 'Failed to fetch updated bookmark' });
+          res.json(updated);
+        });
+      }
+    );
+  });
 });
 
-router.delete('/:id', authMiddleware, async (req, res) => {
-  try {
-    const { id } = req.params;
+router.delete('/:id', authMiddleware, (req, res) => {
+  const { id } = req.params;
+  
+  db.get('SELECT * FROM user_bookmarks WHERE id = ? AND user_id = ?', [id, req.user.userId], (err, bookmark) => {
+    if (err) {
+      console.error('Error finding bookmark:', err);
+      return res.status(500).json({ error: 'Failed to delete bookmark' });
+    }
     
-    const result = await db.query(
-      'DELETE FROM user_bookmarks WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, req.user.userId]
-    );
-    
-    if (result.rows.length === 0) {
+    if (!bookmark) {
       return res.status(404).json({ error: 'Bookmark not found' });
     }
     
-    res.json({ success: true });
-  } catch (err) {
-    console.error('Error deleting bookmark:', err);
-    res.status(500).json({ error: 'Failed to delete bookmark' });
-  }
+    db.run('DELETE FROM user_bookmarks WHERE id = ? AND user_id = ?', [id, req.user.userId], function(err) {
+      if (err) {
+        console.error('Error deleting bookmark:', err);
+        return res.status(500).json({ error: 'Failed to delete bookmark' });
+      }
+      res.json({ success: true });
+    });
+  });
 });
 
-router.post('/reorder', authMiddleware, async (req, res) => {
-  try {
-    const { bookmarks } = req.body;
-    
-    for (let i = 0; i < bookmarks.length; i++) {
-      await db.query(
-        'UPDATE user_bookmarks SET position = $1 WHERE id = $2 AND user_id = $3',
-        [i, bookmarks[i].id, req.user.userId]
-      );
-    }
-    
-    res.json({ success: true });
-  } catch (err) {
-    console.error('Error reordering bookmarks:', err);
-    res.status(500).json({ error: 'Failed to reorder bookmarks' });
+router.post('/reorder', authMiddleware, (req, res) => {
+  const { bookmarks } = req.body;
+  
+  if (!bookmarks || !Array.isArray(bookmarks)) {
+    return res.status(400).json({ error: 'Invalid bookmarks array' });
   }
-});
-
-router.post('/reset', authMiddleware, async (req, res) => {
-  try {
-    await db.query('DELETE FROM user_bookmarks WHERE user_id = $1', [req.user.userId]);
-    
-    for (let i = 0; i < defaultBookmarks.length; i++) {
-      const b = defaultBookmarks[i];
-      await db.query(
-        'INSERT INTO user_bookmarks (user_id, name, url, icon, bg_color, position) VALUES ($1, $2, $3, $4, $5, $6)',
-        [req.user.userId, b.name, b.url, b.icon, b.bg_color, i]
-      );
-    }
-    
-    const result = await db.query(
-      'SELECT * FROM user_bookmarks WHERE user_id = $1 ORDER BY position, id',
-      [req.user.userId]
+  
+  let updated = 0;
+  bookmarks.forEach((bookmark, i) => {
+    db.run(
+      'UPDATE user_bookmarks SET position = ? WHERE id = ? AND user_id = ?',
+      [i, bookmark.id, req.user.userId],
+      (err) => {
+        updated++;
+        if (updated === bookmarks.length) {
+          res.json({ success: true });
+        }
+      }
     );
+  });
+});
+
+router.post('/reset', authMiddleware, (req, res) => {
+  db.run('DELETE FROM user_bookmarks WHERE user_id = ?', [req.user.userId], (err) => {
+    if (err) {
+      console.error('Error resetting bookmarks:', err);
+      return res.status(500).json({ error: 'Failed to reset bookmarks' });
+    }
     
-    res.json(result.rows);
-  } catch (err) {
-    console.error('Error resetting bookmarks:', err);
-    res.status(500).json({ error: 'Failed to reset bookmarks' });
-  }
+    let inserted = 0;
+    defaultBookmarks.forEach((b, i) => {
+      db.run(
+        'INSERT INTO user_bookmarks (user_id, name, url, icon, bg_color, position) VALUES (?, ?, ?, ?, ?, ?)',
+        [req.user.userId, b.name, b.url, b.icon, b.bg_color, i],
+        (err) => {
+          inserted++;
+          if (inserted === defaultBookmarks.length) {
+            db.all('SELECT * FROM user_bookmarks WHERE user_id = ? ORDER BY position, id', [req.user.userId], (err, bookmarks) => {
+              if (err) return res.status(500).json({ error: 'Failed to fetch bookmarks' });
+              res.json(bookmarks || []);
+            });
+          }
+        }
+      );
+    });
+  });
 });
 
 module.exports = router;
