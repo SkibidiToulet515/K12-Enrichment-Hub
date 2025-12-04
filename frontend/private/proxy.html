@@ -787,26 +787,28 @@
       currentUrl = url;
       document.getElementById('urlInput').value = url;
       
+      const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
+      const encodedUrl = prefix + encodeUrl(url);
+      
+      if (isInIframe) {
+        document.getElementById('statusText').textContent = 'Opening in new tab...';
+        const proxyTab = window.open(window.location.origin + '/private/proxy.html?go=' + encodeURIComponent(url), '_blank');
+        if (!proxyTab) {
+          alert('Please allow popups to use the proxy, then try again.');
+        }
+        return;
+      }
+      
       if (!swReady) {
-        document.getElementById('statusText').textContent = 'Registering service worker...';
+        document.getElementById('statusText').textContent = 'Starting proxy...';
         const success = await registerServiceWorker();
         if (!success) {
-          console.error('Service worker registration failed');
-          if (isInIframe) {
-            document.getElementById('warningBanner').style.display = 'block';
-            document.getElementById('statusText').textContent = 'Open in new tab for proxy to work';
-          }
+          document.getElementById('statusText').textContent = 'Proxy failed to start';
           return;
         }
       }
 
-      document.getElementById('statusText').textContent = 'Navigating...';
-      
-      const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
-      const encodedUrl = prefix + encodeUrl(url);
-      
-      console.log('Navigating to proxy URL:', encodedUrl);
-      
+      document.getElementById('statusText').textContent = 'Loading...';
       window.location.href = encodedUrl;
     }
 
@@ -1035,10 +1037,20 @@
       
       if (isInIframe) {
         document.getElementById('warningBanner').style.display = 'block';
-        document.getElementById('statusText').textContent = 'Open in new tab to use proxy';
+        document.getElementById('statusText').textContent = 'Search to open proxy in new tab';
       } else {
         document.getElementById('warningBanner').style.display = 'none';
-        document.getElementById('statusText').textContent = 'Ready to browse';
+        
+        const params = new URLSearchParams(window.location.search);
+        const goUrl = params.get('go');
+        
+        if (goUrl) {
+          history.replaceState({}, '', '/private/proxy.html');
+          document.getElementById('statusText').textContent = 'Starting proxy...';
+          goTo(goUrl);
+        } else {
+          document.getElementById('statusText').textContent = 'Ready to browse';
+        }
       }
     });
   </script>
