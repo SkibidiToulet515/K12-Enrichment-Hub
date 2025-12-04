@@ -786,7 +786,6 @@
     async function goTo(url) {
       currentUrl = url;
       document.getElementById('urlInput').value = url;
-      document.getElementById('navUrlBar').value = url;
       
       if (!swReady) {
         document.getElementById('statusText').textContent = 'Registering service worker...';
@@ -801,31 +800,14 @@
         }
       }
 
-      document.getElementById('statusText').textContent = 'Loading page...';
-      
-      const frame = document.getElementById('proxyFrame');
-      const browserFrame = document.getElementById('browserFrame');
-      const browserNavbar = document.getElementById('browserNavbar');
+      document.getElementById('statusText').textContent = 'Navigating...';
       
       const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
       const encodedUrl = prefix + encodeUrl(url);
       
-      console.log('Proxy URL:', encodedUrl);
+      console.log('Navigating to proxy URL:', encodedUrl);
       
-      browserFrame.classList.add('active');
-      browserNavbar.classList.add('active');
-      
-      frame.onerror = (e) => {
-        console.error('Frame error:', e);
-        document.getElementById('statusText').textContent = 'Error loading page';
-      };
-      
-      frame.onload = () => {
-        document.getElementById('statusText').textContent = 'Page loaded';
-        console.log('Frame loaded');
-      };
-      
-      frame.src = encodedUrl;
+      window.location.href = encodedUrl;
     }
 
     function goHome() {
