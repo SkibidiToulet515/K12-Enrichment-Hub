@@ -722,24 +722,26 @@
       window.open(window.location.href, '_blank');
     }
 
-    async function waitForBareMux() {
+    async function waitForBareMux(timeout = 3000) {
       if (window.bareMuxReady) return true;
       return new Promise((resolve) => {
-        window.addEventListener('baremux-ready', () => resolve(true), { once: true });
-        setTimeout(() => resolve(false), 5000);
+        const timer = setTimeout(() => resolve(false), timeout);
+        window.addEventListener('baremux-ready', () => {
+          clearTimeout(timer);
+          resolve(true);
+        }, { once: true });
       });
     }
 
     async function registerServiceWorker() {
       if (!('serviceWorker' in navigator)) {
-        document.getElementById('statusText').textContent = 'Service Workers not supported';
+        console.error('Service Workers not supported');
         return false;
       }
 
-      const bareMuxOk = await waitForBareMux();
+      const bareMuxOk = await waitForBareMux(3000);
       if (!bareMuxOk) {
-        document.getElementById('statusText').textContent = 'Transport not ready';
-        return false;
+        console.warn('BareMux timeout, trying anyway...');
       }
 
       try {
@@ -747,13 +749,20 @@
         const scope = currentProxy === 'uv' ? '/service/' : '/scramjet/';
         
         const reg = await navigator.serviceWorker.register(swPath, { scope });
-        await navigator.serviceWorker.ready;
+        
+        const readyPromise = new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error('SW ready timeout')), 5000);
+          navigator.serviceWorker.ready.then(() => {
+            clearTimeout(timer);
+            resolve();
+          });
+        });
+        
+        await readyPromise;
         swReady = true;
-        document.getElementById('statusText').textContent = currentProxy === 'uv' ? 'Ultraviolet ready' : 'Scramjet ready';
         return true;
       } catch (e) {
         console.error('SW registration failed:', e);
-        document.getElementById('statusText').textContent = 'Registration failed: ' + e.message;
         return false;
       }
     }
@@ -799,17 +808,18 @@
         return;
       }
       
-      if (!swReady) {
-        document.getElementById('statusText').textContent = 'Starting proxy...';
-        const success = await registerServiceWorker();
-        if (!success) {
-          document.getElementById('statusText').textContent = 'Proxy failed to start';
-          return;
-        }
-      }
-
-      document.getElementById('statusText').textContent = 'Loading...';
-      window.location.href = encodedUrl;
+      document.getElementById('statusText').textContent = 'Starting proxy...';
+      
+      registerServiceWorker().then(() => {
+        console.log('SW registered');
+      }).catch(e => {
+        console.warn('SW registration issue:', e);
+      });
+      
+      setTimeout(() => {
+        document.getElementById('statusText').textContent = 'Loading page...';
+        window.location.href = encodedUrl;
+      }, 1500);
     }
 
     function goHome() {
