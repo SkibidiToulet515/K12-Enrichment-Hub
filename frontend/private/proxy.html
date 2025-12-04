@@ -679,16 +679,21 @@
 
     async function initBareMux() {
       try {
+        console.log('Initializing BareMux...');
         const connection = new BareMuxConnection('/baremux/worker.js');
-        await connection.setTransport('/baremod/index.mjs', [location.origin + '/bare/']);
+        
+        const bareUrl = location.origin + '/bare/';
+        console.log('Setting transport to:', bareUrl);
+        
+        await connection.setTransport('/baremod/index.mjs', [bareUrl]);
+        
         window.bareMux = connection;
         window.bareMuxReady = true;
-        console.log('BareMux initialized successfully');
-        document.getElementById('statusText').textContent = 'Transport ready';
+        console.log('BareMux ready with bare server:', bareUrl);
         window.dispatchEvent(new Event('baremux-ready'));
       } catch (e) {
-        console.error('BareMux initialization failed:', e);
-        document.getElementById('statusText').textContent = 'Transport failed: ' + e.message;
+        console.error('BareMux init error:', e);
+        window.bareMuxReady = false;
       }
     }
 
@@ -739,26 +744,23 @@
         return false;
       }
 
-      const bareMuxOk = await waitForBareMux(3000);
+      console.log('Waiting for BareMux...');
+      const bareMuxOk = await waitForBareMux(5000);
       if (!bareMuxOk) {
-        console.warn('BareMux timeout, trying anyway...');
+        console.error('BareMux not ready - proxy will not work');
+        return false;
       }
+      console.log('BareMux ready, registering SW...');
 
       try {
-        const swPath = currentProxy === 'uv' ? '/uv/sw.js' : '/scram/sw.js';
-        const scope = currentProxy === 'uv' ? '/service/' : '/scramjet/';
+        const swPath = '/uv/sw.js';
+        const scope = '/service/';
         
         const reg = await navigator.serviceWorker.register(swPath, { scope });
+        console.log('SW registered, waiting for ready...');
         
-        const readyPromise = new Promise((resolve, reject) => {
-          const timer = setTimeout(() => reject(new Error('SW ready timeout')), 5000);
-          navigator.serviceWorker.ready.then(() => {
-            clearTimeout(timer);
-            resolve();
-          });
-        });
-        
-        await readyPromise;
+        await navigator.serviceWorker.ready;
+        console.log('SW ready!');
         swReady = true;
         return true;
       } catch (e) {
@@ -796,8 +798,7 @@
       currentUrl = url;
       document.getElementById('urlInput').value = url;
       
-      const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
-      const encodedUrl = prefix + encodeUrl(url);
+      const encodedUrl = '/service/' + encodeUrl(url);
       
       if (isInIframe) {
         document.getElementById('statusText').textContent = 'Opening...';
@@ -1038,21 +1039,19 @@
         document.getElementById('warningBanner').style.display = 'none';
         document.getElementById('statusText').textContent = 'Loading proxy...';
         
-        registerServiceWorker().then(() => {
-          swReady = true;
-          const params = new URLSearchParams(window.location.search);
-          const goUrl = params.get('go');
-          
-          if (goUrl) {
-            history.replaceState({}, '', '/private/proxy.html');
-            const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
-            window.location.href = prefix + encodeUrl(goUrl);
-          } else {
-            document.getElementById('statusText').textContent = 'Ready';
-          }
-        }).catch(() => {
+        const params = new URLSearchParams(window.location.search);
+        const goUrl = params.get('go');
+        
+        const success = await registerServiceWorker();
+        
+        if (goUrl && success) {
+          history.replaceState({}, '', '/private/proxy.html');
+          window.location.href = '/service/' + encodeUrl(goUrl);
+        } else if (success) {
           document.getElementById('statusText').textContent = 'Ready';
-        });
+        } else {
+          document.getElementById('statusText').textContent = 'Proxy failed to load';
+        }
       }
     });
   </script>
