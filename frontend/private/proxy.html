@@ -676,8 +676,9 @@
 
     window.bareMuxReady = false;
     window.bareMux = null;
-
-    async function initBareMux() {
+    window.initBareMux = async function() {
+      if (window.bareMuxReady) return true;
+      
       try {
         console.log('Initializing BareMux...');
         const connection = new BareMuxConnection('/baremux/worker.js');
@@ -687,17 +688,22 @@
         
         await connection.setTransport('/baremod/index.mjs', [bareUrl]);
         
+        const transportName = await connection.getTransport();
+        console.log('Transport set:', transportName);
+        
         window.bareMux = connection;
         window.bareMuxReady = true;
-        console.log('BareMux ready with bare server:', bareUrl);
+        console.log('BareMux ready');
         window.dispatchEvent(new Event('baremux-ready'));
+        return true;
       } catch (e) {
         console.error('BareMux init error:', e);
         window.bareMuxReady = false;
+        return false;
       }
-    }
+    };
 
-    initBareMux();
+    window.initBareMux();
   </script>
 
   <script>
@@ -745,22 +751,41 @@
       }
 
       console.log('Waiting for BareMux...');
-      const bareMuxOk = await waitForBareMux(5000);
+      let bareMuxOk = await waitForBareMux(3000);
+      
+      if (!bareMuxOk && window.initBareMux) {
+        console.log('Retrying BareMux init...');
+        bareMuxOk = await window.initBareMux();
+      }
+      
       if (!bareMuxOk) {
-        console.error('BareMux not ready - proxy will not work');
+        console.error('BareMux not ready');
         return false;
       }
+      
       console.log('BareMux ready, registering SW...');
 
       try {
-        const swPath = '/uv/sw.js';
-        const scope = '/service/';
+        const existingReg = await navigator.serviceWorker.getRegistration('/service/');
+        if (existingReg) {
+          console.log('SW already registered');
+          swReady = true;
+          return true;
+        }
         
-        const reg = await navigator.serviceWorker.register(swPath, { scope });
-        console.log('SW registered, waiting for ready...');
+        const reg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
+        console.log('SW registered');
+        
+        if (reg.installing) {
+          await new Promise(resolve => {
+            reg.installing.addEventListener('statechange', function() {
+              if (this.state === 'activated') resolve();
+            });
+          });
+        }
         
         await navigator.serviceWorker.ready;
-        console.log('SW ready!');
+        console.log('SW activated');
         swReady = true;
         return true;
       } catch (e) {
