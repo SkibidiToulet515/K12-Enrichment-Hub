@@ -567,10 +567,12 @@
     </div>
 
     <div class="main-content">
-      <div class="warning-banner" id="warningBanner" style="display:none;">
-        Service workers need to run in a new tab for full functionality.
+      <div class="warning-banner" id="warningBanner">
+        <strong>Important:</strong> The web proxy only works in a separate browser tab.
+        <br><br>
+        Click the button below to open in a new tab, then you can search and browse websites.
         <br>
-        <button onclick="openInNewTab()">Open in New Tab</button>
+        <button onclick="openInNewTab()">Open Proxy in New Tab</button>
       </div>
 
       <div class="search-container">
@@ -758,7 +760,8 @@
 
     function encodeUrl(url) {
       if (currentProxy === 'uv') {
-        return encodeURIComponent(url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join(''));
+        const encoded = url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
+        return encodeURIComponent(encoded);
       } else {
         return encodeURIComponent(url);
       }
@@ -776,6 +779,7 @@
         }
       }
       
+      console.log('Navigating to:', url);
       goTo(url);
     }
 
@@ -785,16 +789,19 @@
       document.getElementById('navUrlBar').value = url;
       
       if (!swReady) {
+        document.getElementById('statusText').textContent = 'Registering service worker...';
         const success = await registerServiceWorker();
         if (!success) {
+          console.error('Service worker registration failed');
           if (isInIframe) {
             document.getElementById('warningBanner').style.display = 'block';
+            document.getElementById('statusText').textContent = 'Open in new tab for proxy to work';
           }
           return;
         }
       }
 
-      document.getElementById('statusText').textContent = 'Loading...';
+      document.getElementById('statusText').textContent = 'Loading page...';
       
       const frame = document.getElementById('proxyFrame');
       const browserFrame = document.getElementById('browserFrame');
@@ -803,13 +810,22 @@
       const prefix = currentProxy === 'uv' ? '/service/' : '/scramjet/';
       const encodedUrl = prefix + encodeUrl(url);
       
+      console.log('Proxy URL:', encodedUrl);
+      
       browserFrame.classList.add('active');
       browserNavbar.classList.add('active');
-      frame.src = encodedUrl;
+      
+      frame.onerror = (e) => {
+        console.error('Frame error:', e);
+        document.getElementById('statusText').textContent = 'Error loading page';
+      };
       
       frame.onload = () => {
-        document.getElementById('statusText').textContent = 'Loaded';
+        document.getElementById('statusText').textContent = 'Page loaded';
+        console.log('Frame loaded');
       };
+      
+      frame.src = encodedUrl;
     }
 
     function goHome() {
@@ -1037,7 +1053,10 @@
       
       if (isInIframe) {
         document.getElementById('warningBanner').style.display = 'block';
-        document.getElementById('statusText').textContent = 'Open in new tab for best experience';
+        document.getElementById('statusText').textContent = 'Open in new tab to use proxy';
+      } else {
+        document.getElementById('warningBanner').style.display = 'none';
+        document.getElementById('statusText').textContent = 'Ready to browse';
       }
     });
   </script>
