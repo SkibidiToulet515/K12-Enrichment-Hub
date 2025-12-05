@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Center | K-12 Learning Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a365d;
+      --primary-light: #2c5282;
+      --accent: #c9a227;
+      --accent-light: #d4af37;
+      --text-dark: #1a202c;
+      --text-medium: #4a5568;
+      --text-light: #718096;
+      --bg-cream: #faf8f5;
+      --bg-white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      line-height: 1.7;
+    }
+
+    .top-bar {
+      background: var(--primary);
+      color: white;
+      padding: 10px 0;
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .top-bar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-bar-left {
+      display: flex;
+      gap: 24px;
+    }
+
+    .top-bar-left span {
+      opacity: 0.9;
+    }
+
+    .top-bar-right a {
+      color: var(--accent-light);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    header {
+      background: var(--bg-white);
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      box-shadow: var(--shadow-md);
+    }
+
+    .logo-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .logo-text p {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    nav a {
+      color: var(--text-medium);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      font-size: 18px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-box {
+      max-width: 600px;
+      margin: -30px auto 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 20px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-light);
+    }
+
+    .help-categories {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .help-category {
+      background: var(--bg-white);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .help-category:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .category-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .help-category h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .help-category p {
+      color: var(--text-medium);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .category-links {
+      list-style: none;
+    }
+
+    .category-links li {
+      margin-bottom: 10px;
+    }
+
+    .category-links a {
+      color: var(--text-medium);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .category-links a:hover {
+      color: var(--primary);
+    }
+
+    .category-links a::before {
+      content: ">";
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .faq-section {
+      max-width: 900px;
+      margin: 80px auto;
+      padding: 0 24px;
+    }
+
+    .faq-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .faq-item {
+      background: var(--bg-white);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .faq-question {
+      padding: 20px 24px;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .faq-question:hover {
+      background: rgba(0,0,0,0.02);
+    }
+
+    .faq-question::after {
+      content: "+";
+      font-size: 24px;
+      color: var(--primary);
+      transition: transform 0.3s;
+    }
+
+    .faq-item.open .faq-question::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+    }
+
+    .faq-answer-content {
+      padding: 0 24px 20px;
+      color: var(--text-medium);
+      line-height: 1.7;
+    }
+
+    .contact-section {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .contact-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .contact-section p {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .contact-options {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .contact-option {
+      background: rgba(255,255,255,0.1);
+      padding: 32px 40px;
+      border-radius: 16px;
+      min-width: 200px;
+    }
+
+    .contact-option-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .contact-option h4 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .contact-option p {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 0;
+    }
+
+    .contact-option a {
+      color: var(--accent-light);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer {
+      background: #0f1f35;
+      color: white;
+      padding: 40px 0;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 32px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .help-categories {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-options {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-content">
+        <div class="top-bar-left">
+          <span>Mon-Fri: 7:30 AM - 4:00 PM</span>
+          <span>Phone: 1-800-555-LEARN</span>
+        </div>
+        <div class="top-bar-right">
+          <a href="mailto:support@k12portal.edu">support@k12portal.edu</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="/public/index.html" class="logo">
+          <div class="logo-icon">K</div>
+          <div class="logo-text">
+            <h1>K-12 Learning Portal</h1>
+            <p>Excellence in Education</p>
+          </div>
+        </a>
+        <nav>
+          <a href="/public/index.html">Home</a>
+          <a href="/public/help.html">Help Center</a>
+          <a href="/public/privacy.html">Privacy Policy</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <div class="container">
+      <h1>Help Center</h1>
+      <p>Find answers to your questions and get the support you need to make the most of our learning platform.</p>
+    </div>
+  </section>
+
+  <div class="search-box">
+    <input type="text" placeholder="Search for help articles..." id="helpSearch">
+  </div>
+
+  <div class="help-categories">
+    <div class="help-category">
+      <div class="category-icon">🎓</div>
+      <h3>Getting Started</h3>
+      <p>New to our platform? Learn the basics and set up your account.</p>
+      <ul class="category-links">
+        <li><a href="#">How to create an account</a></li>
+        <li><a href="#">Setting up your student profile</a></li>
+        <li><a href="#">Navigating the dashboard</a></li>
+        <li><a href="#">System requirements</a></li>
+      </ul>
+    </div>
+
+    <div class="help-category">
+      <div class="category-icon">📚</div>
+      <h3>Courses & Learning</h3>
+      <p>Get help with courses, assignments, and learning materials.</p>
+      <ul class="category-links">
+        <li><a href="#">How to enroll in courses</a></li>
+        <li><a href="#">Submitting assignments</a></li>
+        <li><a href="#">Viewing grades and progress</a></li>
+        <li><a href="#">Downloading learning materials</a></li>
+      </ul>
+    </div>
+
+    <div class="help-category">
+      <div class="category-icon">👨‍👩‍👧‍👦</div>
+      <h3>For Parents</h3>
+      <p>Resources to help you support your child's education.</p>
+      <ul class="category-links">
+        <li><a href="#">Monitoring your child's progress</a></li>
+        <li><a href="#">Setting up parental controls</a></li>
+        <li><a href="#">Communicating with teachers</a></li>
+        <li><a href="#">Understanding grade reports</a></li>
+      </ul>
+    </div>
+
+    <div class="help-category">
+      <div class="category-icon">👩‍🏫</div>
+      <h3>For Educators</h3>
+      <p>Tools and guides for teachers and school administrators.</p>
+      <ul class="category-links">
+        <li><a href="#">Creating course content</a></li>
+        <li><a href="#">Managing student rosters</a></li>
+        <li><a href="#">Grading and assessments</a></li>
+        <li><a href="#">Generating class reports</a></li>
+      </ul>
+    </div>
+
+    <div class="help-category">
+      <div class="category-icon">🔧</div>
+      <h3>Technical Support</h3>
+      <p>Troubleshoot common issues and get technical help.</p>
+      <ul class="category-links">
+        <li><a href="#">Resetting your password</a></li>
+        <li><a href="#">Browser compatibility issues</a></li>
+        <li><a href="#">Video playback problems</a></li>
+        <li><a href="#">Mobile app troubleshooting</a></li>
+      </ul>
+    </div>
+
+    <div class="help-category">
+      <div class="category-icon">🔒</div>
+      <h3>Account & Security</h3>
+      <p>Manage your account settings and keep your data safe.</p>
+      <ul class="category-links">
+        <li><a href="#">Updating account information</a></li>
+        <li><a href="#">Two-factor authentication</a></li>
+        <li><a href="#">Privacy settings</a></li>
+        <li><a href="#">Deleting your account</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">How do I reset my password?</div>
+      <div class="faq-answer">
+        <div class="faq-answer-content">
+          Click the "Forgot Password" link on the login page. Enter your registered email address, and we'll send you a password reset link. The link expires after 24 hours for security. If you don't receive the email, check your spam folder or contact support.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What devices are supported?</div>
+      <div class="faq-answer">
+        <div class="faq-answer-content">
+          Our platform works on all modern devices including Windows PCs, Mac computers, Chromebooks, iPads, Android tablets, and smartphones. We recommend using the latest version of Chrome, Firefox, Safari, or Edge for the best experience.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How can parents monitor their child's progress?</div>
+      <div class="faq-answer">
+        <div class="faq-answer-content">
+          Parents with linked accounts can access a dedicated parent dashboard showing their child's course progress, grades, attendance, and recent activity. Weekly progress reports are also sent via email. Contact your school administrator to set up parent access.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Is my child's data safe and private?</div>
+      <div class="faq-answer">
+        <div class="faq-answer-content">
+          Absolutely. We comply with FERPA, COPPA, and all applicable student privacy laws. Student data is encrypted, never sold to third parties, and only shared with authorized school personnel. Read our full Privacy Policy for complete details.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What should I do if a video won't play?</div>
+      <div class="faq-answer">
+        <div class="faq-answer-content">
+          First, try refreshing the page and clearing your browser cache. Ensure you have a stable internet connection (we recommend at least 5 Mbps). If problems persist, try a different browser or disable any ad-blocking extensions that might interfere with video playback.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How do I contact my teacher?</div>
+      <div class="faq-answer">
+        <div class="faq-answer-content">
+          You can message your teacher directly through the platform's messaging system. Go to your course page and click "Message Instructor." Teachers typically respond within one business day. For urgent matters, contact your school office directly.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <h2>Still Need Help?</h2>
+      <p>Our support team is here for you Monday through Friday, 7:30 AM to 4:00 PM.</p>
+      <div class="contact-options">
+        <div class="contact-option">
+          <div class="contact-option-icon">📞</div>
+          <h4>Call Us</h4>
+          <p><a href="tel:1-800-555-LEARN">1-800-555-LEARN</a></p>
+        </div>
+        <div class="contact-option">
+          <div class="contact-option-icon">✉️</div>
+          <h4>Email Support</h4>
+          <p><a href="mailto:support@k12portal.edu">support@k12portal.edu</a></p>
+        </div>
+        <div class="contact-option">
+          <div class="contact-option-icon">💬</div>
+          <h4>Live Chat</h4>
+          <p>Available during office hours</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <p>&copy; 2025 K-12 Learning Portal. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="/public/index.html">Home</a>
+          <a href="/public/help.html">Help Center</a>
+          <a href="/public/privacy.html">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const item = question.parentElement;
+        item.classList.toggle('open');
+      });
+    });
+
+    document.getElementById('helpSearch').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      document.querySelectorAll('.category-links a').forEach(link => {
+        const text = link.textContent.toLowerCase();
+        link.parentElement.style.display = text.includes(searchTerm) || searchTerm === '' ? 'block' : 'none';
+      });
+    });
+  </script>
+
+  <script src="/js/transitions.js"></script>
+</body>
+</html>
