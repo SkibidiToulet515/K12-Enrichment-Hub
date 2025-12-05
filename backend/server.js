@@ -128,94 +128,114 @@ function xorEncode(url) {
   return url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
 }
 
-// Fast proxy handler with URL rewriting for proper loading
-async function handleProxyRequest(req, res, prefix) {
-  const encodedPath = req.url.slice(prefix.length);
+// Robust proxy handler using native http/https modules for streaming
+const proxyHttp = require('http');
+const proxyHttps = require('https');
+
+function proxyRequest(targetUrl, req, res, prefix) {
+  const parsedUrl = new URL(targetUrl);
+  const protocol = parsedUrl.protocol === 'https:' ? proxyHttps : proxyHttp;
+  
+  const options = {
+    hostname: parsedUrl.hostname,
+    port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? 443 : 80),
+    path: parsedUrl.pathname + parsedUrl.search,
+    method: req.method,
+    headers: {
+      'Host': parsedUrl.host,
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'identity',
+      'Connection': 'keep-alive',
+      'Upgrade-Insecure-Requests': '1'
+    }
+  };
+
+  const proxyReq = protocol.request(options, (proxyRes) => {
+    // Handle redirects
+    if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
+      let redirectUrl = proxyRes.headers.location;
+      if (!redirectUrl.startsWith('http')) {
+        redirectUrl = parsedUrl.origin + (redirectUrl.startsWith('/') ? '' : '/') + redirectUrl;
+      }
+      return proxyRequest(redirectUrl, req, res, prefix);
+    }
+
+    const contentType = proxyRes.headers['content-type'] || '';
+    
+    // Set response headers
+    res.status(proxyRes.statusCode);
+    Object.keys(proxyRes.headers).forEach(key => {
+      if (!['content-encoding', 'transfer-encoding', 'content-length', 'content-security-policy', 'x-frame-options'].includes(key.toLowerCase())) {
+        res.setHeader(key, proxyRes.headers[key]);
+      }
+    });
+    
+    // For HTML, buffer and inject base tag
+    if (contentType.includes('text/html')) {
+      let chunks = [];
+      proxyRes.on('data', chunk => chunks.push(chunk));
+      proxyRes.on('end', () => {
+        let html = Buffer.concat(chunks).toString('utf-8');
+        
+        // Inject base tag for relative URLs
+        const baseTag = `<base href="${parsedUrl.origin}/">`;
+        if (html.includes('<head>')) {
+          html = html.replace('<head>', '<head>' + baseTag);
+        } else if (html.includes('<HEAD>')) {
+          html = html.replace('<HEAD>', '<HEAD>' + baseTag);
+        } else if (html.includes('<html>') || html.includes('<HTML>')) {
+          html = html.replace(/<html>/i, '<html><head>' + baseTag + '</head>');
+        } else {
+          html = baseTag + html;
+        }
+        
+        res.send(html);
+      });
+    } else {
+      // Stream non-HTML content directly
+      proxyRes.pipe(res);
+    }
+  });
+
+  proxyReq.on('error', (err) => {
+    console.error('Proxy request error:', err.message);
+    if (!res.headersSent) {
+      res.status(502).send('Proxy error: ' + err.message);
+    }
+  });
+
+  proxyReq.setTimeout(30000, () => {
+    proxyReq.destroy();
+    if (!res.headersSent) {
+      res.status(504).send('Proxy timeout');
+    }
+  });
+
+  proxyReq.end();
+}
+
+function handleProxyRequest(req, res, prefix) {
+  // Express strips mount path, so req.url starts with / + the encoded URL
+  const encodedPath = req.url.slice(1); // Remove leading /
   if (!encodedPath) return res.status(400).send('No URL provided');
   
   try {
-    const decodedUrl = xorDecode(decodeURIComponent(encodedPath.split('?')[0]));
+    // The path may still be URL encoded, decode it first
+    const decoded = decodeURIComponent(encodedPath.split('?')[0]);
+    const decodedUrl = xorDecode(decoded);
+    
+    console.log('Proxy request - Encoded:', encodedPath.substring(0, 30), '-> Decoded:', decodedUrl.substring(0, 50));
     
     if (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://')) {
-      return res.status(400).send('Invalid URL');
+      return res.status(400).send('Invalid URL: ' + decodedUrl.substring(0, 50));
     }
 
-    const targetUrl = new URL(decodedUrl);
-    
-    const response = await fetch(decodedUrl, {
-      method: req.method,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': req.headers.accept || '*/*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Referer': targetUrl.origin
-      },
-      redirect: 'follow'
-    });
-
-    const contentType = response.headers.get('content-type') || '';
-    
-    // Copy response headers
-    res.status(response.status);
-    response.headers.forEach((value, key) => {
-      if (!['content-encoding', 'transfer-encoding', 'content-length'].includes(key.toLowerCase())) {
-        res.setHeader(key, value);
-      }
-    });
-
-    // For HTML, rewrite URLs to go through proxy
-    if (contentType.includes('text/html')) {
-      let html = await response.text();
-      const baseOrigin = targetUrl.origin;
-      
-      // Inject base tag and rewrite absolute URLs
-      const baseTag = `<base href="${baseOrigin}/">`;
-      if (html.includes('<head>')) {
-        html = html.replace('<head>', '<head>' + baseTag);
-      } else if (html.includes('<HEAD>')) {
-        html = html.replace('<HEAD>', '<HEAD>' + baseTag);
-      } else {
-        html = baseTag + html;
-      }
-      
-      // Rewrite links to go through our proxy
-      html = html.replace(/href=["'](https?:\/\/[^"']+)["']/gi, (match, url) => {
-        return `href="${prefix}${encodeURIComponent(xorEncode(url))}"`;
-      });
-      
-      // Rewrite form actions
-      html = html.replace(/action=["'](https?:\/\/[^"']+)["']/gi, (match, url) => {
-        return `action="${prefix}${encodeURIComponent(xorEncode(url))}"`;
-      });
-      
-      res.send(html);
-    } else {
-      // Stream other content types directly
-      const reader = response.body?.getReader();
-      if (reader) {
-        const pump = async () => {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            res.write(Buffer.from(value));
-          }
-          res.end();
-        };
-        pump().catch(err => {
-          console.error('Stream error:', err);
-          if (!res.headersSent) res.status(500);
-          res.end();
-        });
-      } else {
-        const buffer = await response.arrayBuffer();
-        res.send(Buffer.from(buffer));
-      }
-    }
+    proxyRequest(decodedUrl, req, res, prefix);
   } catch (error) {
-    console.error('Proxy error:', error.message);
-    if (!res.headersSent) {
-      res.status(500).send('Proxy error: ' + error.message);
-    }
+    console.error('Proxy decode error:', error.message);
+    res.status(500).send('Proxy error: ' + error.message);
   }
 }
 
