@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Portal | K-12 Learning Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a365d;
+      --primary-light: #2c5282;
+      --accent: #c9a227;
+      --text-dark: #1a202c;
+      --text-medium: #4a5568;
+      --text-light: #718096;
+      --bg-cream: #faf8f5;
+      --bg-white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #1a365d 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      background: rgba(0,0,0,0.2);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-bar a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .top-bar a:hover {
+      color: white;
+    }
+
+    .login-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .login-box {
+      background: var(--bg-white);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+
+    .login-header {
+      background: var(--primary);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 72px;
+      height: 72px;
+      background: white;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .login-header h1 {
+      font-family: 'Playfair Display', serif;
+      color: white;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .login-header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+    }
+
+    .login-form {
+      padding: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+    }
+
+    .remember-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .remember-row label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-medium);
+      cursor: pointer;
+    }
+
+    .remember-row a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .remember-row a:hover {
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .error-message {
+      background: #fff5f5;
+      border: 1px solid #feb2b2;
+      color: #c53030;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .maintenance-notice {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .maintenance-notice.show {
+      display: block;
+    }
+
+    .login-footer {
+      text-align: center;
+      padding: 20px 32px 32px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .login-footer p {
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    .login-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      color: var(--text-light);
+      font-size: 12px;
+    }
+
+    .security-badge svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media (max-width: 480px) {
+      .login-form {
+        padding: 24px;
+      }
+
+      .login-header {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="/public/index.html">Back to Home</a>
+    <a href="/public/help.html">Need Help?</a>
+  </div>
+
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <div class="login-logo">K</div>
+        <h1>Staff Portal</h1>
+        <p>K-12 Learning Portal Administration</p>
+      </div>
+
+      <form class="login-form" id="loginForm">
+        <div class="error-message" id="errorMsg">
+          Invalid credentials. Please check your username and password.
+        </div>
+
+        <div class="maintenance-notice" id="maintenanceMsg">
+          System is currently undergoing scheduled maintenance. Please try again later.
+        </div>
+
+        <div class="form-group">
+          <label for="staffId">Staff ID</label>
+          <input type="text" id="staffId" name="staffId" placeholder="Enter your staff ID" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <div class="remember-row">
+          <label>
+            <input type="checkbox" name="remember"> Remember me
+          </label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+
+      <div class="login-footer">
+        <p>Authorized personnel only. Unauthorized access is prohibited.</p>
+        <div class="security-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>256-bit SSL Encrypted</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const errorMsg = document.getElementById('errorMsg');
+      const maintenanceMsg = document.getElementById('maintenanceMsg');
+      const btn = document.querySelector('.login-btn');
+      
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
+      
+      setTimeout(function() {
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+        
+        // Randomly show either error or maintenance
+        if (Math.random() > 0.5) {
+          errorMsg.classList.add('show');
+          maintenanceMsg.classList.remove('show');
+        } else {
+          maintenanceMsg.classList.add('show');
+          errorMsg.classList.remove('show');
+        }
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
