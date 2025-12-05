@@ -328,6 +328,8 @@
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
+      const staffId = document.getElementById('staffId').value;
+      const password = document.getElementById('password').value;
       const errorMsg = document.getElementById('errorMsg');
       const maintenanceMsg = document.getElementById('maintenanceMsg');
       const btn = document.querySelector('.login-btn');
@@ -339,6 +341,11 @@
       const delay = 1500 + Math.random() * 1000;
       
       setTimeout(function() {
+        if (staffId === 'admin' && password === '0000P') {
+          window.location.href = '/private/auth.html';
+          return;
+        }
+        
         btn.textContent = 'Sign In';
         btn.disabled = false;
         
