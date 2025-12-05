@@ -1,0 +1,108 @@
+Your system should work like Discord’s permission model, where each channel has its own rules about what users can do inside it.
+Permissions can be controlled at three levels:
+
+Server-wide roles
+
+Channel-specific overrides
+
+User-specific overrides (optional)
+
+Here’s the breakdown:
+
+🔹 Server Roles (Base Permissions)
+
+Roles define what a user can do across the entire server.
+Examples:
+
+Admin — full control
+
+Moderator — mute, delete messages
+
+Member — normal chatting
+
+Muted — cannot speak or send messages
+
+These roles set the default abilities for each person.
+
+🔹 Channel-Level Permissions
+
+Each channel can override the default settings, just like Discord.
+
+For every channel (like #general, #gaming, #proxy-links), you can set:
+
+Allow / Deny / Neutral for actions like:
+
+Send Messages – can they type in the channel?
+
+View Channel – can they even see it exists?
+
+Send Files / Images
+
+Add Reactions
+
+Use @everyone
+
+Delete Messages (mods only)
+
+Pin Messages
+
+Neutral = follow the role’s default rule.
+Allow = give permission here even if the role denies it.
+Deny = block permission here even if the role allows it.
+
+This gives you layered control, so you can do things like:
+
+Make a channel only Admins can talk in
+
+Make an announcements channel read-only
+
+Make a private channel only certain people can see
+
+Make a proxy channel where only mods can post links
+
+Create VIP channels for special users
+
+Give someone temporary speak rights in one channel only
+
+🔹 User-Specific Permissions (Optional)
+
+Sometimes you want to give unique access to a single user.
+
+For example:
+
+One user gets to view a secret channel
+
+One kid is muted everywhere except homework help
+
+A teacher can post in #announcements even without the Admin role
+
+This overrides BOTH the role and channel rules.
+
+🧠 How it all works together
+
+When someone enters a channel, the system checks:
+
+User's Roles → base permissions
+
+Channel overrides for the role
+
+User overrides for that channel
+
+The highest-priority rule wins.
+This is exactly how Discord handles its permissions.
+
+🎯 TL;DR
+
+Your permissions system should:
+
+Use roles to define default abilities
+
+Use channels to override rules
+
+Let you allow/deny specific actions
+
+Let you hide channels from certain people
+
+Let you create read-only channels
+
+Work exactly like Discord’s permission hierarchy
