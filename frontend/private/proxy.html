@@ -1053,11 +1053,15 @@
       document.getElementById('greetingText').textContent = options[Math.floor(Math.random() * options.length)];
     }
 
+    const BOOKMARKS_VERSION = 'v2';
+    const BOOKMARKS_KEY = 'proxyBookmarks_' + BOOKMARKS_VERSION;
+
     function loadBookmarks() {
-      const saved = localStorage.getItem('proxyBookmarks');
+      const saved = localStorage.getItem(BOOKMARKS_KEY);
       if (saved) {
         bookmarks = JSON.parse(saved);
       } else {
+        localStorage.removeItem('proxyBookmarks');
         bookmarks = [...defaultBookmarks];
         saveBookmarksToStorage();
       }
@@ -1065,7 +1069,7 @@
     }
 
     function saveBookmarksToStorage() {
-      localStorage.setItem('proxyBookmarks', JSON.stringify(bookmarks));
+      localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
     }
 
     function renderBookmarks() {
@@ -1101,8 +1105,6 @@
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
 
-      saveProxyEngine();
-
       let url;
       if (query.match(/^https?:\/\//)) {
         url = query;
@@ -1117,7 +1119,6 @@
 
     function openBookmark(index) {
       const bm = bookmarks[index];
-      saveProxyEngine();
 
       let url = bm.url;
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
