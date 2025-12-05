@@ -7,10 +7,23 @@ const sw = new UVServiceWorker();
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         (async () => {
-            if (sw.route(event)) {
-                return await sw.fetch(event);
+            try {
+                if (sw.route(event)) {
+                    return await sw.fetch(event);
+                }
+                return await fetch(event.request);
+            } catch (err) {
+                console.error('Service worker fetch error:', err);
+                return new Response('Proxy error: ' + err.message, { status: 500 });
             }
-            return await fetch(event.request);
         })()
     );
+});
+
+self.addEventListener('install', () => {
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(clients.claim());
 });
