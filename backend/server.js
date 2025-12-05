@@ -172,23 +172,73 @@ function proxyRequest(targetUrl, req, res, prefix) {
       }
     });
     
-    // For HTML, buffer and inject base tag
+    // For HTML, buffer and inject base tag + fetch interceptor
     if (contentType.includes('text/html')) {
       let chunks = [];
       proxyRes.on('data', chunk => chunks.push(chunk));
       proxyRes.on('end', () => {
         let html = Buffer.concat(chunks).toString('utf-8');
         
-        // Inject base tag for relative URLs
-        const baseTag = `<base href="${parsedUrl.origin}/">`;
+        const currentOrigin = parsedUrl.origin;
+        
+        // XOR encode function for client-side
+        const xorEncodeJS = `function __xorEncode(u){return u.split('').map((c,i)=>i%2?String.fromCharCode(c.charCodeAt(0)^2):c).join('')}`;
+        
+        // Fetch/XHR interceptor script
+        const interceptorScript = `
+<script>
+(function(){
+  ${xorEncodeJS}
+  const BASE="${currentOrigin}";
+  const PROXY_PREFIX="/service/";
+  
+  function toProxyUrl(url){
+    try{
+      const u=new URL(url,BASE);
+      if(u.origin!==location.origin){
+        return PROXY_PREFIX+encodeURIComponent(__xorEncode(u.href));
+      }
+    }catch(e){}
+    return url;
+  }
+  
+  // Intercept fetch
+  const _fetch=window.fetch;
+  window.fetch=function(url,opts){
+    if(typeof url==='string'){
+      url=toProxyUrl(url);
+    }else if(url instanceof Request){
+      url=new Request(toProxyUrl(url.url),url);
+    }
+    return _fetch.call(this,url,opts);
+  };
+  
+  // Intercept XMLHttpRequest
+  const _open=XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open=function(method,url){
+    arguments[1]=toProxyUrl(url);
+    return _open.apply(this,arguments);
+  };
+  
+  // Intercept WebSocket (basic)
+  const _WS=window.WebSocket;
+  window.WebSocket=function(url,protocols){
+    console.log('[Proxy] WebSocket blocked:',url);
+    return {send:()=>{},close:()=>{},addEventListener:()=>{}};
+  };
+})();
+</script>`;
+        
+        // Inject base tag and interceptor
+        const baseTag = `<base href="${currentOrigin}/">`;
         if (html.includes('<head>')) {
-          html = html.replace('<head>', '<head>' + baseTag);
+          html = html.replace('<head>', '<head>' + baseTag + interceptorScript);
         } else if (html.includes('<HEAD>')) {
-          html = html.replace('<HEAD>', '<HEAD>' + baseTag);
+          html = html.replace('<HEAD>', '<HEAD>' + baseTag + interceptorScript);
         } else if (html.includes('<html>') || html.includes('<HTML>')) {
-          html = html.replace(/<html>/i, '<html><head>' + baseTag + '</head>');
+          html = html.replace(/<html>/i, '<html><head>' + baseTag + interceptorScript + '</head>');
         } else {
-          html = baseTag + html;
+          html = baseTag + interceptorScript + html;
         }
         
         res.send(html);
