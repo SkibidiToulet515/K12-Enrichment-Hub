@@ -39,6 +39,54 @@ const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 const app = express();
 const bareServer = createBareServer('/bare/');
+
+// Wrap bare server responses to strip iframe-blocking headers
+const headersToStrip = [
+  'x-frame-options',
+  'content-security-policy',
+  'content-security-policy-report-only',
+  'x-content-type-options',
+  'cross-origin-embedder-policy',
+  'cross-origin-opener-policy',
+  'cross-origin-resource-policy'
+];
+
+const originalSetHeader = http.ServerResponse.prototype.setHeader;
+http.ServerResponse.prototype.setHeader = function(name, value) {
+  if (this.req && this.req.url && this.req.url.startsWith('/bare/')) {
+    if (headersToStrip.includes(name.toLowerCase())) {
+      return this;
+    }
+  }
+  return originalSetHeader.apply(this, arguments);
+};
+
+const originalWriteHead = http.ServerResponse.prototype.writeHead;
+http.ServerResponse.prototype.writeHead = function(statusCode, statusMessage, headers) {
+  if (this.req && this.req.url && this.req.url.startsWith('/bare/')) {
+    headersToStrip.forEach(h => {
+      if (this.getHeader && this.getHeader(h)) {
+        this.removeHeader(h);
+      }
+    });
+    if (headers && typeof headers === 'object') {
+      Object.keys(headers).forEach(key => {
+        if (headersToStrip.includes(key.toLowerCase())) {
+          delete headers[key];
+        }
+      });
+    }
+    if (statusMessage && typeof statusMessage === 'object') {
+      Object.keys(statusMessage).forEach(key => {
+        if (headersToStrip.includes(key.toLowerCase())) {
+          delete statusMessage[key];
+        }
+      });
+    }
+  }
+  return originalWriteHead.apply(this, arguments);
+};
+
 const server = http.createServer((req, res) => {
   if (bareServer.shouldRoute(req)) {
     bareServer.routeRequest(req, res);

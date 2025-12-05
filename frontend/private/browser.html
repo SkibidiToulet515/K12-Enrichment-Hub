@@ -350,8 +350,8 @@
     <div class="engine-section">
       <div class="engine-label">Proxy Engine</div>
       <select class="engine-select" id="engineSelect" onchange="switchEngine()">
-        <option value="server">Server Proxy (Recommended)</option>
-        <option value="uv">Ultraviolet</option>
+        <option value="uv">Ultraviolet (Recommended)</option>
+        <option value="server">Server Proxy</option>
       </select>
     </div>
   </div>
@@ -412,7 +412,7 @@
   <script>
     let tabs = [];
     let activeTabId = null;
-    let currentEngine = localStorage.getItem('proxyEngine') || 'server';
+    let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
     let swStatus = { uv: false };
     let uvLoaded = false;
     let uvLoading = false;
@@ -699,8 +699,6 @@
       document.getElementById('engineSelect').value = currentEngine;
       
       const status = document.getElementById('swStatus');
-      status.textContent = currentEngine === 'server' ? 'Server Ready' : 'Ready';
-      status.className = 'status-indicator ready';
       
       newTab();
 
@@ -721,11 +719,19 @@
           document.getElementById('urlInput').value = url;
           renderTabs();
         }
-        loadUrl(url, false);
       }
 
       if (currentEngine === 'uv') {
-        registerServiceWorkers();
+        await registerServiceWorkers();
+        if (initialUrl) {
+          loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
+        }
+      } else {
+        status.textContent = 'Server Ready';
+        status.className = 'status-indicator ready';
+        if (initialUrl) {
+          loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
+        }
       }
     }
 
