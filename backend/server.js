@@ -178,7 +178,9 @@ function proxyRequest(targetUrl, req, res, prefix) {
       'cross-origin-opener-policy',
       'cross-origin-embedder-policy',
       'cross-origin-resource-policy',
-      'permissions-policy'
+      'permissions-policy',
+      'document-policy',
+      'x-download-options'
     ];
     Object.keys(proxyRes.headers).forEach(key => {
       if (!blockedHeaders.includes(key.toLowerCase())) {
@@ -202,10 +204,21 @@ function proxyRequest(targetUrl, req, res, prefix) {
         // XOR encode function for client-side
         const xorEncodeJS = `function __xorEncode(u){return u.split('').map((c,i)=>i%2?String.fromCharCode(c.charCodeAt(0)^2):c).join('')}`;
         
-        // Fetch/XHR interceptor script
+        // Fetch/XHR interceptor script + frame-busting bypass
         const interceptorScript = `
 <script>
 (function(){
+  // Frame-busting bypass - make the page think it's the top window
+  try {
+    Object.defineProperty(window, 'top', { get: function() { return window; } });
+    Object.defineProperty(window, 'parent', { get: function() { return window; } });
+    Object.defineProperty(window, 'frameElement', { get: function() { return null; } });
+  } catch(e) {}
+  
+  // Block common frame-busting patterns
+  window.onbeforeunload = null;
+  if (window.stop) window.stop = function(){};
+  
   ${xorEncodeJS}
   const BASE="${currentOrigin}";
   const PROXY_PREFIX="/service/";
