@@ -1,0 +1,240 @@
+1. Current situation (what I already have)
+
+Node.js + Express backend (server.js)
+
+Frontend split into:
+
+/frontend/public → “fake school” cover site
+
+/frontend/private → real dashboard (games, chat, profile, media, proxy)
+
+I have two proxy engines in the project:
+
+Ultraviolet (UV)
+
+Scramjet (SJ)
+
+The private dashboard has a “Proxy Tools” card. I want that section to load a browser-like UI:
+
+center search bar using DuckDuckGo
+
+a proxy engine selector (Ultraviolet / Scramjet)
+
+when you search or click bookmarks it should open through the selected proxy
+
+2. The problem (what’s broken / buggy)
+
+Right now the proxy part of my project is messy and unreliable. Some of the issues:
+
+Service workers and paths for Ultraviolet are misconfigured → pages don’t load correctly or get stuck on a blank page.
+
+Sometimes both UV and Scramjet conflict, especially with service workers and routing.
+
+Some URLs only work on one engine and outright fail on the other.
+
+I’m getting mixed-content / CORS / path errors depending on which host I use (Railway / Render).
+
+The /proxy, /uv, and /sj routes are not consistently set up, and I’m not sure which assets belong where.
+
+Embedding sites (like soundboards / media pages) is flaky or randomly fails.
+
+Overall, the proxy feels slow, inconsistent, and janky.
+
+Because of all this, I want the entire proxy part of the app to be re-done cleanly.
+
+3. What I want you to do (high-level)
+
+Remove / ignore the existing proxy setup
+
+Don’t try to patch the current proxy code.
+
+Instead, design a clean, new structure for:
+
+Ultraviolet files and routes
+
+Scramjet files and routes
+
+The Proxy UI page that talks to them
+
+Make only one engine active at a time from the user’s perspective
+
+The user picks “Ultraviolet” or “Scramjet” in the UI (dropdown / toggle).
+
+Their choice is saved in localStorage.
+
+When they search or click a bookmark, it always uses only the selected engine, never both.
+
+Make it fast, stable and production-ready
+
+Works on Railway / Render.
+
+No infinite reload loops.
+
+No broken service worker paths.
+
+No hard-coded localhost URLs.
+
+Clean Express routes.
+
+4. Desired file + route structure
+
+I’m okay with you reorganizing the proxy files, but here’s a structure that would be nice:
+
+backend/
+  server.js
+  proxy/
+    ultraviolet/
+      index.html
+      sw.js
+      uv.config.js
+      uv.bundle.js
+      uv/...
+      static/...
+
+    scramjet/
+      public/
+        index.html
+        assets/...
+
+
+Express routing in server.js:
+
+// Ultraviolet static files
+app.use('/uv', express.static(path.join(__dirname, 'proxy/ultraviolet')));
+
+// Scramjet static files
+app.use('/sj', express.static(path.join(__dirname, 'proxy/scramjet/public')));
+
+5. Correct Ultraviolet configuration
+
+Inside Ultraviolet’s sw.js and/or config, make sure you correctly set:
+
+self.__uv$config = {
+  prefix: '/uv/',
+  bare: '/uv/bare/',
+  encodeUrl: Ultraviolet.codec.xor.encode,
+  decodeUrl: Ultraviolet.codec.xor.decode,
+  handler: '/uv/uv.handler.js',
+  client: '/uv/uv.client.js',
+  bundle: '/uv/uv.bundle.js',
+  config: '/uv/uv.config.js',
+  sw: '/uv/sw.js'
+};
+
+
+Key points:
+
+All paths use /uv/... (NOT / or /service/ etc).
+
+Service worker registration should also use /uv/sw.js.
+
+It should work behind a reverse proxy / hosting platform, not assume localhost.
+
+6. Correct Scramjet configuration
+
+For Scramjet:
+
+Route: /sj
+
+Its config.json (or equivalent) should use DuckDuckGo as the default search engine:
+
+"search_engine": "https://duckduckgo.com/?q="
+
+
+Any internal paths should be relative to /sj.
+
+7. Proxy UI page (front-end)
+
+I want a single Proxy homepage in my private area, something like /private/proxy.html that:
+
+Has:
+
+A centered search bar (DuckDuckGo style)
+
+Proxy engine dropdown (Ultraviolet / Scramjet)
+
+A row of editable bookmark tiles (e.g., YouTube, CrazyGames, Soundboard, etc.)
+
+Engine selection logic:
+
+// on load
+const engine = localStorage.getItem('proxyEngine') || 'uv';
+
+// when user changes dropdown:
+localStorage.setItem('proxyEngine', selectedValue);
+
+
+Search behavior:
+
+When user presses Enter in search bar or clicks “Go”:
+
+const query = input.value.trim();
+const engine = localStorage.getItem('proxyEngine') || 'uv';
+let url;
+
+if (engine === 'uv') {
+  // open DuckDuckGo through UV
+  url = `/uv/#${encodeURIComponent('https://duckduckgo.com/?q=' + query)}`;
+} else {
+  // Scramjet query
+  url = `/sj/?q=${encodeURIComponent(query)}`;
+}
+
+window.location.href = url;
+
+
+Bookmark behavior:
+
+Bookmarks are stored in localStorage as an array of { label, url }.
+
+When user clicks a bookmark:
+
+If engine = uv → /uv/#<bookmark-url>
+
+If engine = sj → /sj/?q=<bookmark-url>
+
+8. Performance + reliability requirements
+
+All heavy proxy logic should be in the proxy engines, NOT in the main dashboard.
+
+Avoid unnecessary redirects.
+
+Ensure the service worker for UV doesn’t break the rest of the site:
+
+It should only scope to /uv/*.
+
+Make sure Scramjet and Ultraviolet don’t override each other’s SW/config.
+
+Make sure both work over HTTPS and on custom domains.
+
+9. Cleanup and clarity
+
+Remove or ignore any old proxy routes, random test files, or unused configs that could cause conflicts.
+
+Make the proxy part of the code easy to understand and documented:
+
+Comment the important bits (what each route does, how to change search engine, etc.).
+
+If possible, create a short README section explaining:
+
+How to add more bookmarks
+
+How to change search engines
+
+How to disable one proxy engine if needed
+
+10. Final goal
+
+I want a fresh, clean, working proxy system that:
+
+lets the user choose Ultraviolet OR Scramjet,
+
+uses DuckDuckGo for searching,
+
+opens websites reliably,
+
+works on deployment (Railway/Render),
+
+and is fast, stable, and understandable, not hacked together.
+
+Please rewrite / rebuild everything proxy-related with those goals in mind.
