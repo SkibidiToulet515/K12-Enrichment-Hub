@@ -38,12 +38,29 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 const app = express();
-const bareServer = createBareServer('/bare/');
+const bareServer = createBareServer('/bare/', {
+  logErrors: true,
+  localAddress: undefined,
+  maintainer: {
+    email: 'admin@example.com',
+    website: 'https://example.com'
+  }
+});
 
+// Add error handling for bare server
+bareServer.on('error', (error) => {
+  console.error('Bare server error:', error);
+});
 
 const server = http.createServer((req, res) => {
   if (bareServer.shouldRoute(req)) {
-    bareServer.routeRequest(req, res);
+    try {
+      bareServer.routeRequest(req, res);
+    } catch (err) {
+      console.error('Bare request error:', err);
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Proxy error', details: err.message }));
+    }
   } else {
     app(req, res);
   }
