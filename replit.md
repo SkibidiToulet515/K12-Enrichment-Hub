@@ -6,6 +6,27 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-05**: Redesigned Public Landing Page
+  - Professional, official-looking design with institutional branding
+  - Added stock images of students and teachers
+  - Top bar with contact info and portal access
+  - Hero section with "Now Enrolling" badge and compelling headline
+  - Statistics section (15,000+ students, 850+ teachers, 98% graduation rate)
+  - About section with features and establishment badge
+  - Academic programs grid (6 programs with icons)
+  - Testimonials section with 3 parent/educator reviews
+  - Call-to-action section with image
+  - Contact information section
+  - Professional footer with navigation, social links, and accreditation badges
+  - Images stored in `/public/images/`
+
+- **2025-12-05**: Added Theme System with 36 Themes
+  - Comprehensive theming with CSS variables (`/css/private-theme.css`)
+  - Theme selector modal with visual previews
+  - Theme button added to all major pages (dashboard, games, movies, chat, shop, proxy)
+  - Themes persist via localStorage
+  - Default theme: NebulaCore (cyan/purple neon glows, glassmorphism)
+
 - **2025-12-03**: Added Web Proxy System
   - Created server-side proxy at `/api/proxy/fetch` for reliable browsing
   - Dedicated proxy page at `/private/proxy.html`
