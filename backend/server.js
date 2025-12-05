@@ -131,6 +131,10 @@ app.use('/uv', (req, res, next) => {
   next();
 }, express.static(path.join(__dirname, '../frontend/uv')));
 
+// Serve bare-mux worker and transport
+app.use('/baremux', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-mux/dist')));
+app.use('/bareasmodule', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
+
 // Serve all frontend files (CSS, JS, uploads)
 app.use(express.static(path.join(__dirname, '../frontend')));
 

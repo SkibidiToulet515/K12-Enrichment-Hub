@@ -417,27 +417,44 @@
     let uvLoaded = false;
     let uvLoading = false;
 
+    async function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => resolve(true);
+        script.onerror = () => reject(new Error('Failed to load ' + src));
+        document.head.appendChild(script);
+      });
+    }
+
     async function loadUVBundle() {
       if (uvLoaded || uvLoading) return uvLoaded;
       uvLoading = true;
       
-      return new Promise((resolve) => {
-        const script1 = document.createElement('script');
-        script1.src = '/uv/uv.bundle.js';
-        script1.onload = () => {
-          const script2 = document.createElement('script');
-          script2.src = '/uv/uv.config.js';
-          script2.onload = () => {
-            uvLoaded = true;
-            uvLoading = false;
-            resolve(true);
-          };
-          script2.onerror = () => { uvLoading = false; resolve(false); };
-          document.head.appendChild(script2);
-        };
-        script1.onerror = () => { uvLoading = false; resolve(false); };
-        document.head.appendChild(script1);
-      });
+      try {
+        // Load bare-mux first
+        await loadScript('/baremux/index.js');
+        
+        // Initialize bare-mux connection with bare transport
+        if (typeof BareMux !== 'undefined' && BareMux.BareMuxConnection) {
+          const conn = new BareMux.BareMuxConnection('/baremux/worker.js');
+          const bareUrl = new URL('/bare/', location.origin).href;
+          await conn.setTransport('/bareasmodule/index.mjs', [bareUrl]);
+          console.log('BareMux transport configured with:', bareUrl);
+        }
+        
+        // Load UV bundle and config
+        await loadScript('/uv/uv.bundle.js');
+        await loadScript('/uv/uv.config.js');
+        
+        uvLoaded = true;
+        uvLoading = false;
+        return true;
+      } catch (err) {
+        console.error('Failed to load UV bundle:', err);
+        uvLoading = false;
+        return false;
+      }
     }
 
     async function registerServiceWorkers() {
@@ -514,10 +531,39 @@
       return Math.random().toString(36).substr(2, 9);
     }
 
+    async function ensureUVReady() {
+      if (currentEngine !== 'uv') return true;
+      if (swStatus.uv && typeof self.__uv$config !== 'undefined') return true;
+      
+      const status = document.getElementById('swStatus');
+      status.textContent = 'Loading UV...';
+      status.className = 'status-indicator loading';
+      
+      await loadUVBundle();
+      
+      if (!swStatus.uv) {
+        try {
+          const uvReg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
+          console.log('UV service worker registered:', uvReg.scope);
+          swStatus.uv = true;
+        } catch (err) {
+          console.error('UV SW registration failed:', err);
+          return false;
+        }
+      }
+      
+      status.textContent = 'UV Ready';
+      status.className = 'status-indicator ready';
+      return true;
+    }
+
     function getProxyUrl(url) {
       if (currentEngine === 'uv' && swStatus.uv && typeof self.__uv$config !== 'undefined') {
-        return self.__uv$config.prefix + self.__uv$config.encodeUrl(url);
+        const encoded = self.__uv$config.encodeUrl(url);
+        console.log('UV encoding:', url, '->', self.__uv$config.prefix + encoded);
+        return self.__uv$config.prefix + encoded;
       }
+      console.log('Using server proxy for:', url);
       return '/api/proxy/fetch?url=' + encodeURIComponent(url);
     }
 
@@ -601,7 +647,7 @@
       document.getElementById('emptyState').style.display = 'flex';
     }
 
-    function handleUrlInput(e) {
+    async function handleUrlInput(e) {
       if (e.key === 'Enter') {
         const input = e.target.value.trim();
         if (!input) return;
@@ -615,11 +661,11 @@
           url = 'https://duckduckgo.com/?q=' + encodeURIComponent(input);
         }
 
-        loadUrl(url, true);
+        await loadUrl(url, true);
       }
     }
 
-    function loadUrl(url, updateTab = true) {
+    async function loadUrl(url, updateTab = true) {
       const frame = document.getElementById('browserFrame');
       const loading = document.getElementById('loadingOverlay');
       const emptyState = document.getElementById('emptyState');
@@ -631,6 +677,11 @@
         loading.classList.add('phase2');
       }, 300);
 
+      // Ensure UV is ready if using UV engine
+      if (currentEngine === 'uv') {
+        await ensureUVReady();
+      }
+
       let iframe = frame.querySelector('iframe');
       if (!iframe) {
         iframe = document.createElement('iframe');
@@ -641,7 +692,8 @@
       }
 
       const proxyUrl = getProxyUrl(url);
-      console.log('Engine:', currentEngine, '| Loading:', url, '-> Proxy:', proxyUrl);
+      console.log('Engine:', currentEngine, '| UV Ready:', swStatus.uv, '| Config:', typeof self.__uv$config);
+      console.log('Loading:', url, '-> Proxy:', proxyUrl);
       
       iframe.src = proxyUrl;
       
