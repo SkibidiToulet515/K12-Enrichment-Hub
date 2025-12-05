@@ -411,29 +411,11 @@
 
   <script src="/uv/uv.bundle.js"></script>
   <script src="/uv/uv.config.js"></script>
-  <script src="/scram/scramjet.codecs.js"></script>
-  <script src="/scram/scramjet.config.js"></script>
-  <script type="module">
-    import { BareMuxConnection } from '/baremux/bare-mux.mjs';
-    
+  <script>
     let tabs = [];
     let activeTabId = null;
     let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
-    let swStatus = { uv: false, scramjet: false };
-    let bareMuxReady = false;
-
-    async function initBareMux() {
-      try {
-        const conn = new BareMuxConnection('/baremux/worker.js');
-        const bareServerUrl = location.origin + '/bare/';
-        await conn.setTransport('/baremod/bare-client.mjs', [bareServerUrl]);
-        bareMuxReady = true;
-        console.log('BareMux initialized with bare server:', bareServerUrl);
-      } catch (err) {
-        console.error('BareMux init failed:', err);
-        bareMuxReady = false;
-      }
-    }
+    let swStatus = { uv: false };
 
     async function registerServiceWorkers() {
       const status = document.getElementById('swStatus');
@@ -454,19 +436,17 @@
         swStatus.uv = true;
       } catch (err) {
         console.error('UV SW registration failed:', err);
+        swStatus.uv = false;
       }
-
-      try {
-        const sjReg = await navigator.serviceWorker.register('/scram/sw.js', { scope: '/scram/service/' });
-        console.log('Scramjet service worker registered:', sjReg.scope);
-        swStatus.scramjet = true;
-      } catch (err) {
-        console.error('Scramjet SW registration failed:', err);
-      }
-
-      await navigator.serviceWorker.ready;
       
       updateStatus();
+      
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(() => {
+          console.log('Service worker ready');
+          updateStatus();
+        });
+      }
     }
 
     function updateStatus() {
@@ -686,7 +666,6 @@
     async function init() {
       document.getElementById('engineSelect').value = currentEngine;
       
-      await initBareMux();
       await registerServiceWorkers();
 
       const params = new URLSearchParams(window.location.search);

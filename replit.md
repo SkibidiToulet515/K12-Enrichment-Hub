@@ -6,6 +6,13 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-05**: Fixed Web Proxy System
+  - Removed problematic Scramjet proxy (BareMux issues in Replit environment)
+  - Ultraviolet proxy now the recommended default option
+  - Server-side proxy fallback for maximum compatibility
+  - Added auto-login: users stay logged in across visits
+  - Fake staff login page at `/public/staff-login.html` (secret gateway with admin/0000P)
+
 - **2025-12-05**: Redesigned Public Landing Page
   - Professional, official-looking design with institutional branding
   - Added stock images of students and teachers
