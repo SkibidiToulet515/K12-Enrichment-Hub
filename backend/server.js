@@ -119,6 +119,87 @@ app.use('/api/preferences', preferencesRoutes);
 app.use('/api/proxy', proxyRoutes);
 app.use('/api/bookmarks', bookmarksRoutes);
 
+// XOR decode function for proxy URLs
+function xorDecode(encoded) {
+  return encoded.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
+}
+
+// Server-side proxy handler for /service/ (Ultraviolet) and /scram/service/ (Scramjet)
+// This handles requests when service workers can't register (iframe environment)
+app.use('/service', async (req, res, next) => {
+  if (req.path === '' || req.path === '/') return next();
+  
+  try {
+    const encodedPath = req.path.slice(1);
+    const decodedUrl = xorDecode(decodeURIComponent(encodedPath));
+    
+    if (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://')) {
+      return res.status(400).send('Invalid URL');
+    }
+
+    const response = await fetch(decodedUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5'
+      }
+    });
+
+    const contentType = response.headers.get('content-type') || 'text/html';
+    res.setHeader('Content-Type', contentType);
+
+    if (contentType.includes('text/html')) {
+      let html = await response.text();
+      const baseUrl = new URL(decodedUrl);
+      html = html.replace(/<head>/i, `<head><base href="${baseUrl.origin}/">`);
+      res.send(html);
+    } else {
+      const buffer = await response.arrayBuffer();
+      res.send(Buffer.from(buffer));
+    }
+  } catch (error) {
+    console.error('Proxy error:', error.message);
+    res.status(500).send(`Proxy error: ${error.message}`);
+  }
+});
+
+app.use('/scram/service', async (req, res, next) => {
+  if (req.path === '' || req.path === '/') return next();
+  
+  try {
+    const encodedPath = req.path.slice(1);
+    const decodedUrl = xorDecode(decodeURIComponent(encodedPath));
+    
+    if (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://')) {
+      return res.status(400).send('Invalid URL');
+    }
+
+    const response = await fetch(decodedUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5'
+      }
+    });
+
+    const contentType = response.headers.get('content-type') || 'text/html';
+    res.setHeader('Content-Type', contentType);
+
+    if (contentType.includes('text/html')) {
+      let html = await response.text();
+      const baseUrl = new URL(decodedUrl);
+      html = html.replace(/<head>/i, `<head><base href="${baseUrl.origin}/">`);
+      res.send(html);
+    } else {
+      const buffer = await response.arrayBuffer();
+      res.send(Buffer.from(buffer));
+    }
+  } catch (error) {
+    console.error('Proxy error:', error.message);
+    res.status(500).send(`Proxy error: ${error.message}`);
+  }
+});
+
 // File upload endpoint
 app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
