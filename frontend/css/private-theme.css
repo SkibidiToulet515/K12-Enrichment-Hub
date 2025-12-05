@@ -1,163 +1,1084 @@
-/* Deep Ocean Theme (default) */
-:root[data-theme="ocean"],
+/* ======================================
+   ENHANCED THEMING SYSTEM - 36 THEMES
+   ====================================== */
+
+/* CSS Variable Schema for All Themes */
 :root {
-  --bg: #0a0e27;
-  --card: #1a1f3a;
-  --text: #e0e5f0;
-  --text-light: #a0a8b8;
-  --primary: #00a8e8;
-  --accent: #00d4ff;
-  --success: #00b894;
-  --danger: #ff6b6b;
+  /* Base colors */
+  --bg: #0D1B2A;
+  --bg-secondary: #1B263B;
+  --card: #1B263B;
+  --card-hover: #253649;
+  --surface: #0D1B2A;
+  
+  /* Text colors */
+  --text: #ffffff;
+  --text-secondary: #a0aec0;
+  --text-muted: #64748b;
+  
+  /* Primary palette */
+  --primary: #4CC9F0;
+  --primary-glow: rgba(76, 201, 240, 0.5);
+  --accent: #A04FF9;
+  --accent-glow: rgba(160, 79, 249, 0.5);
+  
+  /* Status colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  
+  /* Effects */
+  --glow-primary: 0 0 20px var(--primary-glow);
+  --glow-accent: 0 0 20px var(--accent-glow);
+  --glass-bg: rgba(13, 27, 42, 0.8);
+  --glass-border: rgba(76, 201, 240, 0.2);
+  --blur-amount: 20px;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  --gradient-bg: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
+  --gradient-card: linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
+  
+  /* Borders */
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-glow: var(--primary);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px var(--primary-glow);
+  
+  /* Animation */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Star colors for particle system */
+  --star-color: var(--primary);
+  --star-color-alt: var(--accent);
 }
 
-/* Neon Arcade */
+/* ======================
+   THEME 1: NEBULACORE (Default)
+   ====================== */
+:root[data-theme="nebulacore"],
+:root {
+  --bg: #0D1B2A;
+  --bg-secondary: #1B263B;
+  --card: rgba(27, 38, 59, 0.8);
+  --card-hover: rgba(37, 54, 73, 0.9);
+  --surface: #0D1B2A;
+  --text: #ffffff;
+  --text-secondary: rgba(76, 201, 240, 0.8);
+  --text-muted: rgba(76, 201, 240, 0.5);
+  --primary: #4CC9F0;
+  --primary-glow: rgba(76, 201, 240, 0.5);
+  --accent: #A04FF9;
+  --accent-glow: rgba(160, 79, 249, 0.5);
+  --glass-bg: rgba(13, 27, 42, 0.85);
+  --glass-border: rgba(76, 201, 240, 0.25);
+  --star-color: #4CC9F0;
+  --star-color-alt: #A04FF9;
+}
+
+/* ======================
+   THEME 2: DEEP OCEAN
+   ====================== */
+:root[data-theme="ocean"] {
+  --bg: #0a0e27;
+  --bg-secondary: #141b3d;
+  --card: rgba(26, 31, 58, 0.9);
+  --card-hover: rgba(36, 45, 80, 0.95);
+  --surface: #0a0e27;
+  --text: #e0e5f0;
+  --text-secondary: #a0a8b8;
+  --text-muted: #6b7280;
+  --primary: #00a8e8;
+  --primary-glow: rgba(0, 168, 232, 0.5);
+  --accent: #00d4ff;
+  --accent-glow: rgba(0, 212, 255, 0.5);
+  --glass-bg: rgba(10, 14, 39, 0.9);
+  --glass-border: rgba(0, 168, 232, 0.2);
+  --star-color: #00d4ff;
+  --star-color-alt: #00a8e8;
+}
+
+/* ======================
+   THEME 3: NEON ARCADE
+   ====================== */
 :root[data-theme="arcade"] {
   --bg: #0a0a0a;
-  --card: #1a1a1a;
+  --bg-secondary: #1a1a1a;
+  --card: rgba(26, 26, 26, 0.9);
+  --card-hover: rgba(40, 40, 40, 0.95);
+  --surface: #0a0a0a;
   --text: #ffffff;
-  --text-light: #cccccc;
+  --text-secondary: #ff00ff;
+  --text-muted: #cccccc;
   --primary: #ff00ff;
+  --primary-glow: rgba(255, 0, 255, 0.6);
   --accent: #00ff00;
-  --success: #00ff00;
-  --danger: #ff0099;
+  --accent-glow: rgba(0, 255, 0, 0.6);
+  --glass-bg: rgba(10, 10, 10, 0.9);
+  --glass-border: rgba(255, 0, 255, 0.3);
+  --star-color: #ff00ff;
+  --star-color-alt: #00ff00;
 }
 
-/* Cotton Candy */
+/* ======================
+   THEME 4: COTTON CANDY
+   ====================== */
 :root[data-theme="candy"] {
   --bg: #fff5f8;
-  --card: #ffffff;
-  --text: #333333;
-  --text-light: #666666;
+  --bg-secondary: #ffe8f0;
+  --card: rgba(255, 255, 255, 0.9);
+  --card-hover: rgba(255, 230, 240, 0.95);
+  --surface: #fff5f8;
+  --text: #4a4a4a;
+  --text-secondary: #ff69b4;
+  --text-muted: #888888;
   --primary: #ff69b4;
+  --primary-glow: rgba(255, 105, 180, 0.4);
   --accent: #87ceeb;
-  --success: #ffb6c1;
-  --danger: #ff1493;
+  --accent-glow: rgba(135, 206, 235, 0.4);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 105, 180, 0.3);
+  --star-color: #ff69b4;
+  --star-color-alt: #87ceeb;
 }
 
-/* Solar Eclipse */
+/* ======================
+   THEME 5: SOLAR ECLIPSE
+   ====================== */
 :root[data-theme="eclipse"] {
   --bg: #0d0d0d;
-  --card: #1a1a1a;
+  --bg-secondary: #1a1a1a;
+  --card: rgba(26, 26, 26, 0.9);
+  --card-hover: rgba(40, 40, 40, 0.95);
+  --surface: #0d0d0d;
   --text: #f0f0f0;
-  --text-light: #cccccc;
+  --text-secondary: #ffd700;
+  --text-muted: #999999;
   --primary: #ffd700;
-  --accent: #ffed4e;
-  --success: #ffd700;
-  --danger: #ff6347;
+  --primary-glow: rgba(255, 215, 0, 0.5);
+  --accent: #ff8c00;
+  --accent-glow: rgba(255, 140, 0, 0.5);
+  --glass-bg: rgba(13, 13, 13, 0.9);
+  --glass-border: rgba(255, 215, 0, 0.25);
+  --star-color: #ffd700;
+  --star-color-alt: #ff8c00;
 }
 
-/* Cyber Matrix */
+/* ======================
+   THEME 6: CYBER MATRIX
+   ====================== */
 :root[data-theme="matrix"] {
   --bg: #0a0a0a;
-  --card: #0d1a0d;
+  --bg-secondary: #0d1a0d;
+  --card: rgba(13, 26, 13, 0.9);
+  --card-hover: rgba(20, 40, 20, 0.95);
+  --surface: #0a0a0a;
   --text: #00ff00;
-  --text-light: #00cc00;
+  --text-secondary: #00cc00;
+  --text-muted: #008800;
   --primary: #00ff00;
+  --primary-glow: rgba(0, 255, 0, 0.5);
   --accent: #00ff7f;
-  --success: #00ff00;
-  --danger: #ff3333;
-  font-family: 'Courier New', monospace;
+  --accent-glow: rgba(0, 255, 127, 0.5);
+  --glass-bg: rgba(0, 20, 0, 0.9);
+  --glass-border: rgba(0, 255, 0, 0.3);
+  --star-color: #00ff00;
+  --star-color-alt: #00ff7f;
 }
 
-/* School Notebook */
+/* ======================
+   THEME 7: SCHOOL NOTEBOOK
+   ====================== */
 :root[data-theme="notebook"] {
   --bg: #f0f0f0;
-  --card: #ffffff;
+  --bg-secondary: #e8e8e8;
+  --card: rgba(255, 255, 255, 0.95);
+  --card-hover: rgba(245, 245, 245, 1);
+  --surface: #f0f0f0;
   --text: #2c3e50;
-  --text-light: #7f8c8d;
+  --text-secondary: #3498db;
+  --text-muted: #7f8c8d;
   --primary: #3498db;
+  --primary-glow: rgba(52, 152, 219, 0.3);
   --accent: #2980b9;
-  --success: #27ae60;
-  --danger: #e74c3c;
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 39px,
-    #ddd 39px,
-    #ddd 40px
-  );
+  --accent-glow: rgba(41, 128, 185, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(52, 152, 219, 0.3);
+  --star-color: #3498db;
+  --star-color-alt: #27ae60;
 }
 
-/* Midnight Gaming */
+/* ======================
+   THEME 8: MIDNIGHT GAMING
+   ====================== */
 :root[data-theme="gaming"] {
-  --bg: #0a0a0a;
-  --card: #1a1a2e;
+  --bg: #0a0a14;
+  --bg-secondary: #1a1a2e;
+  --card: rgba(26, 26, 46, 0.9);
+  --card-hover: rgba(35, 35, 60, 0.95);
+  --surface: #0a0a14;
   --text: #eaeaea;
-  --text-light: #cccccc;
+  --text-secondary: #00d9ff;
+  --text-muted: #888899;
   --primary: #00d9ff;
-  --accent: #0099ff;
-  --success: #00ff88;
-  --danger: #ff3366;
-  text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+  --primary-glow: rgba(0, 217, 255, 0.5);
+  --accent: #ff3366;
+  --accent-glow: rgba(255, 51, 102, 0.5);
+  --glass-bg: rgba(10, 10, 20, 0.9);
+  --glass-border: rgba(0, 217, 255, 0.3);
+  --star-color: #00d9ff;
+  --star-color-alt: #ff3366;
 }
 
-/* Retro Pixel */
+/* ======================
+   THEME 9: RETRO PIXEL
+   ====================== */
 :root[data-theme="pixel"] {
-  --bg: #ff0080;
-  --card: #ffff00;
-  --text: #000000;
-  --text-light: #333333;
+  --bg: #1a1a2e;
+  --bg-secondary: #16213e;
+  --card: rgba(22, 33, 62, 0.95);
+  --card-hover: rgba(30, 45, 80, 1);
+  --surface: #1a1a2e;
+  --text: #ffd700;
+  --text-secondary: #ff00ff;
+  --text-muted: #00ffff;
   --primary: #ff00ff;
+  --primary-glow: rgba(255, 0, 255, 0.5);
   --accent: #00ffff;
-  --success: #00ff00;
-  --danger: #ff0000;
-  font-family: 'Courier New', monospace;
-  image-rendering: pixelated;
+  --accent-glow: rgba(0, 255, 255, 0.5);
+  --glass-bg: rgba(26, 26, 46, 0.9);
+  --glass-border: rgba(255, 0, 255, 0.3);
+  --star-color: #ffd700;
+  --star-color-alt: #ff00ff;
 }
 
-/* Cloudy Day */
+/* ======================
+   THEME 10: CLOUDY DAY
+   ====================== */
 :root[data-theme="cloudy"] {
   --bg: #e8eef3;
-  --card: #f5f7fa;
+  --bg-secondary: #d4dfe8;
+  --card: rgba(245, 247, 250, 0.9);
+  --card-hover: rgba(230, 235, 242, 0.95);
+  --surface: #e8eef3;
   --text: #3a4556;
-  --text-light: #7a8a9e;
+  --text-secondary: #6c92b8;
+  --text-muted: #7a8a9e;
   --primary: #6c92b8;
+  --primary-glow: rgba(108, 146, 184, 0.3);
   --accent: #8ab3d9;
-  --success: #5a9d6f;
-  --danger: #d46a6a;
-  backdrop-filter: blur(10px);
+  --accent-glow: rgba(138, 179, 217, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(108, 146, 184, 0.3);
+  --star-color: #6c92b8;
+  --star-color-alt: #8ab3d9;
 }
 
-/* Royal Academia */
+/* ======================
+   THEME 11: ROYAL ACADEMIA
+   ====================== */
 :root[data-theme="academia"] {
   --bg: #1a1410;
-  --card: #3d3230;
+  --bg-secondary: #2a221a;
+  --card: rgba(61, 50, 48, 0.9);
+  --card-hover: rgba(80, 65, 60, 0.95);
+  --surface: #1a1410;
   --text: #f5e6d3;
-  --text-light: #d4c5b0;
+  --text-secondary: #d4af37;
+  --text-muted: #a89080;
   --primary: #d4af37;
+  --primary-glow: rgba(212, 175, 55, 0.4);
   --accent: #c9a961;
-  --success: #a8860b;
-  --danger: #b83c3c;
+  --accent-glow: rgba(201, 169, 97, 0.4);
+  --glass-bg: rgba(26, 20, 16, 0.9);
+  --glass-border: rgba(212, 175, 55, 0.25);
+  --star-color: #d4af37;
+  --star-color-alt: #c9a961;
 }
 
-/* Apply theme to body */
+/* ======================
+   THEME 12: AURORA BOREALIS
+   ====================== */
+:root[data-theme="aurora"] {
+  --bg: #0a1628;
+  --bg-secondary: #102035;
+  --card: rgba(16, 32, 53, 0.9);
+  --card-hover: rgba(25, 45, 70, 0.95);
+  --surface: #0a1628;
+  --text: #e0f7fa;
+  --text-secondary: #4fd1c5;
+  --text-muted: #81e6d9;
+  --primary: #4fd1c5;
+  --primary-glow: rgba(79, 209, 197, 0.5);
+  --accent: #9f7aea;
+  --accent-glow: rgba(159, 122, 234, 0.5);
+  --glass-bg: rgba(10, 22, 40, 0.9);
+  --glass-border: rgba(79, 209, 197, 0.3);
+  --star-color: #4fd1c5;
+  --star-color-alt: #9f7aea;
+}
+
+/* ======================
+   THEME 13: CHERRY BLOSSOM
+   ====================== */
+:root[data-theme="cherry"] {
+  --bg: #1a1215;
+  --bg-secondary: #2a1f22;
+  --card: rgba(42, 31, 34, 0.9);
+  --card-hover: rgba(55, 40, 45, 0.95);
+  --surface: #1a1215;
+  --text: #fce4ec;
+  --text-secondary: #f8bbd9;
+  --text-muted: #c48b9f;
+  --primary: #f48fb1;
+  --primary-glow: rgba(244, 143, 177, 0.5);
+  --accent: #ce93d8;
+  --accent-glow: rgba(206, 147, 216, 0.5);
+  --glass-bg: rgba(26, 18, 21, 0.9);
+  --glass-border: rgba(244, 143, 177, 0.3);
+  --star-color: #f48fb1;
+  --star-color-alt: #ce93d8;
+}
+
+/* ======================
+   THEME 14: VOLCANIC
+   ====================== */
+:root[data-theme="volcanic"] {
+  --bg: #1a0a0a;
+  --bg-secondary: #2a1010;
+  --card: rgba(42, 16, 16, 0.9);
+  --card-hover: rgba(60, 20, 20, 0.95);
+  --surface: #1a0a0a;
+  --text: #fff5f0;
+  --text-secondary: #ff6b35;
+  --text-muted: #b84a30;
+  --primary: #ff6b35;
+  --primary-glow: rgba(255, 107, 53, 0.5);
+  --accent: #f72585;
+  --accent-glow: rgba(247, 37, 133, 0.5);
+  --glass-bg: rgba(26, 10, 10, 0.9);
+  --glass-border: rgba(255, 107, 53, 0.3);
+  --star-color: #ff6b35;
+  --star-color-alt: #f72585;
+}
+
+/* ======================
+   THEME 15: FOREST DEPTHS
+   ====================== */
+:root[data-theme="forest"] {
+  --bg: #0a1a0f;
+  --bg-secondary: #102a18;
+  --card: rgba(16, 42, 24, 0.9);
+  --card-hover: rgba(25, 55, 35, 0.95);
+  --surface: #0a1a0f;
+  --text: #e8f5e9;
+  --text-secondary: #81c784;
+  --text-muted: #4caf50;
+  --primary: #66bb6a;
+  --primary-glow: rgba(102, 187, 106, 0.5);
+  --accent: #8bc34a;
+  --accent-glow: rgba(139, 195, 74, 0.5);
+  --glass-bg: rgba(10, 26, 15, 0.9);
+  --glass-border: rgba(102, 187, 106, 0.3);
+  --star-color: #66bb6a;
+  --star-color-alt: #8bc34a;
+}
+
+/* ======================
+   THEME 16: CYBER PUNK
+   ====================== */
+:root[data-theme="cyberpunk"] {
+  --bg: #0d0221;
+  --bg-secondary: #1a0533;
+  --card: rgba(26, 5, 51, 0.9);
+  --card-hover: rgba(40, 10, 70, 0.95);
+  --surface: #0d0221;
+  --text: #fcee0a;
+  --text-secondary: #f72585;
+  --text-muted: #b388ff;
+  --primary: #f72585;
+  --primary-glow: rgba(247, 37, 133, 0.6);
+  --accent: #00f5d4;
+  --accent-glow: rgba(0, 245, 212, 0.6);
+  --glass-bg: rgba(13, 2, 33, 0.9);
+  --glass-border: rgba(247, 37, 133, 0.4);
+  --star-color: #f72585;
+  --star-color-alt: #00f5d4;
+}
+
+/* ======================
+   THEME 17: SUNSET VIBES
+   ====================== */
+:root[data-theme="sunset"] {
+  --bg: #1a0f15;
+  --bg-secondary: #2a1520;
+  --card: rgba(42, 21, 32, 0.9);
+  --card-hover: rgba(60, 30, 45, 0.95);
+  --surface: #1a0f15;
+  --text: #fff5f0;
+  --text-secondary: #ff7f50;
+  --text-muted: #cd5c5c;
+  --primary: #ff7f50;
+  --primary-glow: rgba(255, 127, 80, 0.5);
+  --accent: #ffd700;
+  --accent-glow: rgba(255, 215, 0, 0.5);
+  --glass-bg: rgba(26, 15, 21, 0.9);
+  --glass-border: rgba(255, 127, 80, 0.3);
+  --star-color: #ff7f50;
+  --star-color-alt: #ffd700;
+}
+
+/* ======================
+   THEME 18: ARCTIC ICE
+   ====================== */
+:root[data-theme="arctic"] {
+  --bg: #0a1520;
+  --bg-secondary: #102030;
+  --card: rgba(16, 32, 48, 0.9);
+  --card-hover: rgba(25, 45, 65, 0.95);
+  --surface: #0a1520;
+  --text: #e0f7ff;
+  --text-secondary: #80deea;
+  --text-muted: #4dd0e1;
+  --primary: #00bcd4;
+  --primary-glow: rgba(0, 188, 212, 0.5);
+  --accent: #e0f7fa;
+  --accent-glow: rgba(224, 247, 250, 0.4);
+  --glass-bg: rgba(10, 21, 32, 0.9);
+  --glass-border: rgba(0, 188, 212, 0.3);
+  --star-color: #80deea;
+  --star-color-alt: #e0f7fa;
+}
+
+/* ======================
+   THEME 19: GRAPE SODA
+   ====================== */
+:root[data-theme="grape"] {
+  --bg: #1a0a2e;
+  --bg-secondary: #2a1048;
+  --card: rgba(42, 16, 72, 0.9);
+  --card-hover: rgba(55, 25, 90, 0.95);
+  --surface: #1a0a2e;
+  --text: #f3e5f5;
+  --text-secondary: #ce93d8;
+  --text-muted: #ab47bc;
+  --primary: #9c27b0;
+  --primary-glow: rgba(156, 39, 176, 0.5);
+  --accent: #e040fb;
+  --accent-glow: rgba(224, 64, 251, 0.5);
+  --glass-bg: rgba(26, 10, 46, 0.9);
+  --glass-border: rgba(156, 39, 176, 0.3);
+  --star-color: #ce93d8;
+  --star-color-alt: #e040fb;
+}
+
+/* ======================
+   THEME 20: COFFEE HOUSE
+   ====================== */
+:root[data-theme="coffee"] {
+  --bg: #1a1510;
+  --bg-secondary: #2a2218;
+  --card: rgba(42, 34, 24, 0.9);
+  --card-hover: rgba(55, 45, 32, 0.95);
+  --surface: #1a1510;
+  --text: #f5f0e8;
+  --text-secondary: #d7a86e;
+  --text-muted: #a67b4e;
+  --primary: #a67c52;
+  --primary-glow: rgba(166, 124, 82, 0.4);
+  --accent: #8b4513;
+  --accent-glow: rgba(139, 69, 19, 0.4);
+  --glass-bg: rgba(26, 21, 16, 0.9);
+  --glass-border: rgba(166, 124, 82, 0.3);
+  --star-color: #d7a86e;
+  --star-color-alt: #a67c52;
+}
+
+/* ======================
+   THEME 21: MIDNIGHT PURPLE
+   ====================== */
+:root[data-theme="midnight"] {
+  --bg: #0f0a1a;
+  --bg-secondary: #1a1030;
+  --card: rgba(26, 16, 48, 0.9);
+  --card-hover: rgba(35, 25, 65, 0.95);
+  --surface: #0f0a1a;
+  --text: #e8e0f0;
+  --text-secondary: #a78bfa;
+  --text-muted: #8b5cf6;
+  --primary: #8b5cf6;
+  --primary-glow: rgba(139, 92, 246, 0.5);
+  --accent: #c4b5fd;
+  --accent-glow: rgba(196, 181, 253, 0.4);
+  --glass-bg: rgba(15, 10, 26, 0.9);
+  --glass-border: rgba(139, 92, 246, 0.3);
+  --star-color: #a78bfa;
+  --star-color-alt: #c4b5fd;
+}
+
+/* ======================
+   THEME 22: NEON TOKYO
+   ====================== */
+:root[data-theme="tokyo"] {
+  --bg: #0a0a12;
+  --bg-secondary: #141420;
+  --card: rgba(20, 20, 32, 0.9);
+  --card-hover: rgba(30, 30, 45, 0.95);
+  --surface: #0a0a12;
+  --text: #ffffff;
+  --text-secondary: #ff1493;
+  --text-muted: #00ced1;
+  --primary: #ff1493;
+  --primary-glow: rgba(255, 20, 147, 0.5);
+  --accent: #00ced1;
+  --accent-glow: rgba(0, 206, 209, 0.5);
+  --glass-bg: rgba(10, 10, 18, 0.9);
+  --glass-border: rgba(255, 20, 147, 0.3);
+  --star-color: #ff1493;
+  --star-color-alt: #00ced1;
+}
+
+/* ======================
+   THEME 23: EMERALD CITY
+   ====================== */
+:root[data-theme="emerald"] {
+  --bg: #0a1a15;
+  --bg-secondary: #103025;
+  --card: rgba(16, 48, 37, 0.9);
+  --card-hover: rgba(25, 65, 50, 0.95);
+  --surface: #0a1a15;
+  --text: #e8fff5;
+  --text-secondary: #34d399;
+  --text-muted: #10b981;
+  --primary: #10b981;
+  --primary-glow: rgba(16, 185, 129, 0.5);
+  --accent: #6ee7b7;
+  --accent-glow: rgba(110, 231, 183, 0.4);
+  --glass-bg: rgba(10, 26, 21, 0.9);
+  --glass-border: rgba(16, 185, 129, 0.3);
+  --star-color: #34d399;
+  --star-color-alt: #6ee7b7;
+}
+
+/* ======================
+   THEME 24: BLOOD MOON
+   ====================== */
+:root[data-theme="bloodmoon"] {
+  --bg: #0a0508;
+  --bg-secondary: #1a0a10;
+  --card: rgba(26, 10, 16, 0.9);
+  --card-hover: rgba(40, 15, 25, 0.95);
+  --surface: #0a0508;
+  --text: #fff0f0;
+  --text-secondary: #dc2626;
+  --text-muted: #991b1b;
+  --primary: #dc2626;
+  --primary-glow: rgba(220, 38, 38, 0.5);
+  --accent: #450a0a;
+  --accent-glow: rgba(69, 10, 10, 0.4);
+  --glass-bg: rgba(10, 5, 8, 0.9);
+  --glass-border: rgba(220, 38, 38, 0.3);
+  --star-color: #dc2626;
+  --star-color-alt: #fca5a5;
+}
+
+/* ======================
+   THEME 25: COTTON BLUE
+   ====================== */
+:root[data-theme="cottonblue"] {
+  --bg: #f0f8ff;
+  --bg-secondary: #e0f0ff;
+  --card: rgba(255, 255, 255, 0.9);
+  --card-hover: rgba(240, 248, 255, 0.95);
+  --surface: #f0f8ff;
+  --text: #1e3a5f;
+  --text-secondary: #3b82f6;
+  --text-muted: #6b7280;
+  --primary: #3b82f6;
+  --primary-glow: rgba(59, 130, 246, 0.3);
+  --accent: #60a5fa;
+  --accent-glow: rgba(96, 165, 250, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(59, 130, 246, 0.3);
+  --star-color: #3b82f6;
+  --star-color-alt: #60a5fa;
+}
+
+/* ======================
+   THEME 26: STEAMPUNK
+   ====================== */
+:root[data-theme="steampunk"] {
+  --bg: #1a1408;
+  --bg-secondary: #2a2210;
+  --card: rgba(42, 34, 16, 0.9);
+  --card-hover: rgba(55, 45, 22, 0.95);
+  --surface: #1a1408;
+  --text: #f5e6c8;
+  --text-secondary: #cd853f;
+  --text-muted: #8b4513;
+  --primary: #cd7f32;
+  --primary-glow: rgba(205, 127, 50, 0.5);
+  --accent: #b87333;
+  --accent-glow: rgba(184, 115, 51, 0.5);
+  --glass-bg: rgba(26, 20, 8, 0.9);
+  --glass-border: rgba(205, 127, 50, 0.3);
+  --star-color: #cd7f32;
+  --star-color-alt: #ffd700;
+}
+
+/* ======================
+   THEME 27: LAVENDER DREAM
+   ====================== */
+:root[data-theme="lavender"] {
+  --bg: #f8f5ff;
+  --bg-secondary: #f0e8ff;
+  --card: rgba(255, 255, 255, 0.9);
+  --card-hover: rgba(248, 245, 255, 0.95);
+  --surface: #f8f5ff;
+  --text: #4a3668;
+  --text-secondary: #7c3aed;
+  --text-muted: #9ca3af;
+  --primary: #8b5cf6;
+  --primary-glow: rgba(139, 92, 246, 0.3);
+  --accent: #a78bfa;
+  --accent-glow: rgba(167, 139, 250, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(139, 92, 246, 0.3);
+  --star-color: #8b5cf6;
+  --star-color-alt: #a78bfa;
+}
+
+/* ======================
+   THEME 28: SPACE GRAY
+   ====================== */
+:root[data-theme="spacegray"] {
+  --bg: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --card: rgba(44, 44, 46, 0.9);
+  --card-hover: rgba(58, 58, 60, 0.95);
+  --surface: #1c1c1e;
+  --text: #ffffff;
+  --text-secondary: #98989d;
+  --text-muted: #636366;
+  --primary: #0a84ff;
+  --primary-glow: rgba(10, 132, 255, 0.4);
+  --accent: #5e5ce6;
+  --accent-glow: rgba(94, 92, 230, 0.4);
+  --glass-bg: rgba(28, 28, 30, 0.9);
+  --glass-border: rgba(99, 99, 102, 0.3);
+  --star-color: #0a84ff;
+  --star-color-alt: #5e5ce6;
+}
+
+/* ======================
+   THEME 29: MINT FRESH
+   ====================== */
+:root[data-theme="mint"] {
+  --bg: #f0fff8;
+  --bg-secondary: #e0fff0;
+  --card: rgba(255, 255, 255, 0.9);
+  --card-hover: rgba(240, 255, 248, 0.95);
+  --surface: #f0fff8;
+  --text: #1a4d3e;
+  --text-secondary: #14b8a6;
+  --text-muted: #6b7280;
+  --primary: #14b8a6;
+  --primary-glow: rgba(20, 184, 166, 0.3);
+  --accent: #5eead4;
+  --accent-glow: rgba(94, 234, 212, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(20, 184, 166, 0.3);
+  --star-color: #14b8a6;
+  --star-color-alt: #5eead4;
+}
+
+/* ======================
+   THEME 30: DARK ROSE
+   ====================== */
+:root[data-theme="darkrose"] {
+  --bg: #1a0a10;
+  --bg-secondary: #2a1018;
+  --card: rgba(42, 16, 24, 0.9);
+  --card-hover: rgba(55, 22, 32, 0.95);
+  --surface: #1a0a10;
+  --text: #fff0f5;
+  --text-secondary: #fb7185;
+  --text-muted: #f43f5e;
+  --primary: #e11d48;
+  --primary-glow: rgba(225, 29, 72, 0.5);
+  --accent: #fda4af;
+  --accent-glow: rgba(253, 164, 175, 0.4);
+  --glass-bg: rgba(26, 10, 16, 0.9);
+  --glass-border: rgba(225, 29, 72, 0.3);
+  --star-color: #fb7185;
+  --star-color-alt: #fda4af;
+}
+
+/* ======================
+   THEME 31: ELECTRIC BLUE
+   ====================== */
+:root[data-theme="electric"] {
+  --bg: #000814;
+  --bg-secondary: #001d3d;
+  --card: rgba(0, 29, 61, 0.9);
+  --card-hover: rgba(0, 40, 80, 0.95);
+  --surface: #000814;
+  --text: #ffffff;
+  --text-secondary: #00b4d8;
+  --text-muted: #0077b6;
+  --primary: #00b4d8;
+  --primary-glow: rgba(0, 180, 216, 0.5);
+  --accent: #90e0ef;
+  --accent-glow: rgba(144, 224, 239, 0.4);
+  --glass-bg: rgba(0, 8, 20, 0.9);
+  --glass-border: rgba(0, 180, 216, 0.3);
+  --star-color: #00b4d8;
+  --star-color-alt: #90e0ef;
+}
+
+/* ======================
+   THEME 32: GOLDEN HOUR
+   ====================== */
+:root[data-theme="golden"] {
+  --bg: #1a1408;
+  --bg-secondary: #2a2010;
+  --card: rgba(42, 32, 16, 0.9);
+  --card-hover: rgba(55, 42, 22, 0.95);
+  --surface: #1a1408;
+  --text: #fff8e8;
+  --text-secondary: #fbbf24;
+  --text-muted: #d97706;
+  --primary: #f59e0b;
+  --primary-glow: rgba(245, 158, 11, 0.5);
+  --accent: #fcd34d;
+  --accent-glow: rgba(252, 211, 77, 0.4);
+  --glass-bg: rgba(26, 20, 8, 0.9);
+  --glass-border: rgba(245, 158, 11, 0.3);
+  --star-color: #fbbf24;
+  --star-color-alt: #fcd34d;
+}
+
+/* ======================
+   THEME 33: SYNTHWAVE
+   ====================== */
+:root[data-theme="synthwave"] {
+  --bg: #090014;
+  --bg-secondary: #15002a;
+  --card: rgba(21, 0, 42, 0.9);
+  --card-hover: rgba(35, 0, 60, 0.95);
+  --surface: #090014;
+  --text: #ff71ce;
+  --text-secondary: #01cdfe;
+  --text-muted: #b967ff;
+  --primary: #ff71ce;
+  --primary-glow: rgba(255, 113, 206, 0.5);
+  --accent: #01cdfe;
+  --accent-glow: rgba(1, 205, 254, 0.5);
+  --glass-bg: rgba(9, 0, 20, 0.9);
+  --glass-border: rgba(255, 113, 206, 0.3);
+  --star-color: #ff71ce;
+  --star-color-alt: #01cdfe;
+}
+
+/* ======================
+   THEME 34: OCEAN BREEZE
+   ====================== */
+:root[data-theme="breeze"] {
+  --bg: #f0fdfa;
+  --bg-secondary: #e0f7f5;
+  --card: rgba(255, 255, 255, 0.9);
+  --card-hover: rgba(240, 253, 250, 0.95);
+  --surface: #f0fdfa;
+  --text: #134e4a;
+  --text-secondary: #0d9488;
+  --text-muted: #6b7280;
+  --primary: #14b8a6;
+  --primary-glow: rgba(20, 184, 166, 0.3);
+  --accent: #2dd4bf;
+  --accent-glow: rgba(45, 212, 191, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(20, 184, 166, 0.3);
+  --star-color: #14b8a6;
+  --star-color-alt: #2dd4bf;
+}
+
+/* ======================
+   THEME 35: DARK MONO
+   ====================== */
+:root[data-theme="mono"] {
+  --bg: #0a0a0a;
+  --bg-secondary: #141414;
+  --card: rgba(20, 20, 20, 0.9);
+  --card-hover: rgba(30, 30, 30, 0.95);
+  --surface: #0a0a0a;
+  --text: #e5e5e5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --primary: #ffffff;
+  --primary-glow: rgba(255, 255, 255, 0.3);
+  --accent: #d4d4d4;
+  --accent-glow: rgba(212, 212, 212, 0.3);
+  --glass-bg: rgba(10, 10, 10, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --star-color: #ffffff;
+  --star-color-alt: #a3a3a3;
+}
+
+/* ======================
+   THEME 36: NEON JUNGLE
+   ====================== */
+:root[data-theme="jungle"] {
+  --bg: #021a09;
+  --bg-secondary: #042b10;
+  --card: rgba(4, 43, 16, 0.9);
+  --card-hover: rgba(8, 60, 25, 0.95);
+  --surface: #021a09;
+  --text: #d1fae5;
+  --text-secondary: #34d399;
+  --text-muted: #10b981;
+  --primary: #22c55e;
+  --primary-glow: rgba(34, 197, 94, 0.5);
+  --accent: #4ade80;
+  --accent-glow: rgba(74, 222, 128, 0.5);
+  --glass-bg: rgba(2, 26, 9, 0.9);
+  --glass-border: rgba(34, 197, 94, 0.3);
+  --star-color: #22c55e;
+  --star-color-alt: #4ade80;
+}
+
+/* ======================================
+   GLOBAL STYLES USING CSS VARIABLES
+   ====================================== */
+
+/* Body and base styles */
 body {
   background-color: var(--bg);
   color: var(--text);
-  transition: all 0.3s ease;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-.card, .navbar, .sidebar {
-  background-color: var(--card);
+/* Card styles */
+.card,
+.dashboard-card,
+.feature-card,
+.game-card,
+.movie-card,
+.chat-card,
+.navbar,
+.sidebar {
+  background: var(--card);
   color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(var(--blur-amount));
+  transition: all var(--transition-normal);
 }
 
-button, input, select {
-  background-color: var(--card);
+.card:hover,
+.dashboard-card:hover,
+.feature-card:hover,
+.game-card:hover,
+.movie-card:hover {
+  background: var(--card-hover);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-4px);
+}
+
+/* Button styles */
+button,
+.btn {
+  background: var(--glass-bg);
   color: var(--text);
-  border-color: var(--accent);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  cursor: pointer;
 }
 
-button:hover {
-  background-color: var(--accent);
+button:hover,
+.btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
   color: var(--bg);
+  box-shadow: var(--glow-primary);
 }
 
+.btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* Input styles */
+input,
+select,
+textarea {
+  background: var(--glass-bg);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: var(--glow-primary);
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Link styles */
 a {
   color: var(--primary);
+  transition: color var(--transition-fast);
 }
 
 a:hover {
   color: var(--accent);
+}
+
+/* Navbar specific */
+.navbar {
+  background: var(--glass-bg);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-amount));
+}
+
+/* Sidebar specific */
+.sidebar {
+  background: var(--glass-bg);
+  border-right: 1px solid var(--glass-border);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Glow text effect */
+.glow-text {
+  text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow);
+}
+
+/* Glass panel effect */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+}
+
+/* Status colors */
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+.text-info { color: var(--info); }
+.text-primary { color: var(--primary); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--text-muted); }
+
+/* Background colors */
+.bg-success { background-color: var(--success); }
+.bg-warning { background-color: var(--warning); }
+.bg-danger { background-color: var(--danger); }
+.bg-primary { background-color: var(--primary); }
+
+/* Theme selector styling */
+.theme-selector {
+  background: var(--glass-bg);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 8px 32px 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.theme-selector:hover {
+  border-color: var(--primary);
+}
+
+.theme-selector:focus {
+  border-color: var(--primary);
+  box-shadow: var(--glow-primary);
+  outline: none;
+}
+
+/* Gradient background for certain sections */
+.gradient-bg {
+  background: var(--gradient-bg);
+}
+
+/* Card icon styling */
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+/* Animated gradient text */
+.gradient-text {
+  background: var(--gradient-primary);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Pulse animation for notifications */
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--primary-glow); }
+  50% { box-shadow: 0 0 20px 5px var(--primary-glow); }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
 }

@@ -4,11 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Enrichment Access</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/transitions.css">
   <link rel="stylesheet" href="/css/private-theme.css">
   <link rel="stylesheet" href="/css/private.css">
   <script src="/js/private-auth.js"></script>
+  <style>
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .theme-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--bg);
+      box-shadow: var(--glow-primary);
+    }
+    
+    .theme-btn .theme-icon {
+      font-size: 16px;
+    }
+    
+    .welcome-header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .welcome-header h2 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 8px;
+      background: var(--gradient-primary);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 8s ease infinite;
+    }
+    
+    .welcome-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+  </style>
 </head>
 <body class="private-page">
   <div class="app-container">
@@ -17,17 +76,11 @@
         <h1>Enrichment Hub</h1>
       </div>
       <div class="nav-right">
-        <select id="themeSelector" class="theme-selector">
-          <option value="ocean">Deep Ocean</option>
-          <option value="arcade">Neon Arcade</option>
-          <option value="candy">Cotton Candy</option>
-          <option value="eclipse">Solar Eclipse</option>
-          <option value="matrix">Cyber Matrix</option>
-          <option value="notebook">School Notebook</option>
-          <option value="gaming">Midnight Gaming</option>
-          <option value="pixel">Retro Pixel</option>
-          <option value="cloudy">Cloudy Day</option>
-          <option value="academia">Royal Academia</option>
+        <button class="theme-btn" onclick="openThemeModal()" title="Choose from 36 themes">
+          <span class="theme-icon">🎨</span>
+          <span>Themes</span>
+        </button>
+        <select id="themeSelector" class="theme-selector" title="Quick theme switch">
         </select>
         <a href="https://forms.gle/sT7PrP6TDNzwirX38" target="_blank" class="help-btn" title="Send feedback or report an issue">❓ Help</a>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -35,6 +88,11 @@
     </nav>
 
     <main class="dashboard">
+      <div class="welcome-header">
+        <h2 id="welcomeGreeting">Welcome back</h2>
+        <p>Choose where you want to explore today</p>
+      </div>
+      
       <div class="dashboard-grid">
         <a href="/private/games.html" class="dashboard-card games-card">
           <span class="card-icon">🎮</span>
@@ -62,8 +120,8 @@
 
         <a href="/private/proxy.html" class="dashboard-card proxy-card">
           <span class="card-icon">🌐</span>
-          <h3>Proxy Tools</h3>
-          <p>Additional proxy and utility tools</p>
+          <h3>Web Browser</h3>
+          <p>Browse the web with privacy</p>
         </a>
 
         <a href="/private/shop.html" class="dashboard-card shop-card">
@@ -92,8 +150,23 @@
       window.location.href = '/private/auth.html';
     }
 
+    // Set random welcome greeting
+    const greetings = [
+      "Welcome back",
+      "Hey there",
+      "Ready to explore?",
+      "What's good?",
+      "Let's get moving",
+      "Your hub awaits",
+      "Back for more?",
+      "Good to see you"
+    ];
+    const greetingEl = document.getElementById('welcomeGreeting');
+    if (greetingEl) {
+      greetingEl.textContent = greetings[Math.floor(Math.random() * greetings.length)];
+    }
+
     function logout() {
-      // Only logout from the real gaming account, not the cover login
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       localStorage.removeItem('userId');

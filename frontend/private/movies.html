@@ -54,6 +54,23 @@
       color: var(--bg);
     }
 
+    .theme-btn {
+      padding: 10px 16px;
+      background: var(--glass-bg, var(--card));
+      border: 1px solid var(--glass-border, var(--accent));
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .theme-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -135,7 +152,10 @@
   <div class="page-container">
     <div class="page-header">
       <h1>🎬 Streaming Links</h1>
-      <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="theme-btn" onclick="openThemeModal()" title="Choose theme">🎨</button>
+        <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+      </div>
     </div>
 
     <div class="services-grid">

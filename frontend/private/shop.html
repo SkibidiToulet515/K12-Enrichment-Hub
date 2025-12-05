@@ -198,6 +198,25 @@
     .back-link:hover {
       color: var(--primary);
     }
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--glass-bg, var(--card));
+      border: 1px solid var(--glass-border, var(--accent));
+      border-radius: var(--radius-md, 8px);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .theme-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--bg);
+      box-shadow: var(--glow-primary, 0 0 20px rgba(76, 201, 240, 0.5));
+    }
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -216,17 +235,11 @@
         <h1>Enrichment Hub</h1>
       </div>
       <div class="nav-right">
+        <button class="theme-btn" onclick="openThemeModal()" title="Choose from 36 themes">
+          <span>🎨</span>
+          <span>Themes</span>
+        </button>
         <select id="themeSelector" class="theme-selector">
-          <option value="ocean">Deep Ocean</option>
-          <option value="arcade">Neon Arcade</option>
-          <option value="candy">Cotton Candy</option>
-          <option value="eclipse">Solar Eclipse</option>
-          <option value="matrix">Cyber Matrix</option>
-          <option value="notebook">School Notebook</option>
-          <option value="gaming">Midnight Gaming</option>
-          <option value="pixel">Retro Pixel</option>
-          <option value="cloudy">Cloudy Day</option>
-          <option value="academia">Royal Academia</option>
         </select>
         <button class="logout-btn" onclick="logout()">Logout</button>
       </div>

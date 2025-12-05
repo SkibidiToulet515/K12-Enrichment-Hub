@@ -128,6 +128,23 @@
       color: var(--bg);
     }
 
+    .theme-btn {
+      padding: 10px 16px;
+      background: var(--glass-bg, var(--card));
+      border: 1px solid var(--glass-border, var(--accent));
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .theme-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
     .games-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -339,6 +356,7 @@
         >
         <button class="search-clear" id="clearBtn" onclick="clearSearch()">Clear</button>
       </div>
+      <button class="theme-btn" onclick="openThemeModal()" title="Choose theme">🎨</button>
       <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
     </div>
 

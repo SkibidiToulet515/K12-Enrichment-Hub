@@ -271,6 +271,33 @@
       box-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
     }
 
+    .theme-btn {
+      position: fixed;
+      top: 20px;
+      right: 80px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(13, 27, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(160, 79, 249, 0.2);
+      border-radius: 14px;
+      color: rgba(160, 79, 249, 0.7);
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 100;
+    }
+
+    .theme-btn:hover {
+      background: rgba(27, 38, 59, 0.9);
+      border-color: rgba(160, 79, 249, 0.5);
+      color: #A04FF9;
+      box-shadow: 0 0 20px rgba(160, 79, 249, 0.3);
+    }
+
     .settings-panel {
       position: fixed;
       top: 76px;
@@ -676,6 +703,7 @@
     <span>Back to Hub</span>
   </a>
 
+  <button class="theme-btn" onclick="openThemeModal()" title="Choose from 36 themes">🎨</button>
   <button class="settings-btn" onclick="toggleSettings()">⚙</button>
 
   <div class="settings-panel" id="settingsPanel">

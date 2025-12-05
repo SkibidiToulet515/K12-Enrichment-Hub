@@ -242,6 +242,21 @@
     .mention { color: var(--primary); background: rgba(var(--primary-rgb), 0.2); padding: 0 3px; border-radius: 3px; cursor: pointer; }
     /* Pins button */
     .pins-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-left: 10px; }
+    /* Theme button */
+    .theme-btn {
+      background: var(--glass-bg, var(--card));
+      border: 1px solid var(--glass-border, var(--accent));
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body class="chat-page">
@@ -306,6 +321,7 @@
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="pins-btn" id="pinsBtn" title="Pinned Messages">📌</button>
           <button class="search-btn" id="searchBtn" title="Search">🔍</button>
+          <button class="theme-btn" onclick="openThemeModal()" title="Choose theme">🎨</button>
           <button class="back-btn" onclick="window.location.href='/private/dashboard.html'">← Dashboard</button>
         </div>
       </div>
