@@ -203,12 +203,18 @@
       transform: scale(0.98);
     }
 
-    .bookmarks-section {
+    .bookmarks-section, .unblockers-section {
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 16px;
       animation: fadeIn 1.2s ease-out;
+    }
+
+    .unblockers-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
 
     .bookmarks-header {
@@ -702,11 +708,20 @@
       <div class="bookmarks-section">
         <div class="bookmarks-header">
           <span class="bookmarks-title">Privacy-Friendly Sites</span>
-          <span class="info-tooltip" title="These are alternative frontends and privacy-focused sites that work well through the proxy. Invidious/Piped = YouTube, Teddit/LibReddit = Reddit, Nitter = Twitter">ℹ️</span>
+          <span class="info-tooltip" title="Piped = YouTube, Teddit/LibReddit = Reddit. These work better through the proxy.">ℹ️</span>
           <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
         </div>
         <p class="bookmarks-note">Alternative frontends for popular sites - designed for privacy and embedding</p>
         <div class="bookmarks-grid" id="bookmarksGrid"></div>
+      </div>
+
+      <div class="unblockers-section">
+        <div class="bookmarks-header">
+          <span class="bookmarks-title">Unblockers</span>
+          <span class="info-tooltip" title="External proxy services and unblocked sites. These open in new tabs.">ℹ️</span>
+        </div>
+        <p class="bookmarks-note">Proxy services and unblocked alternatives - opens in new tab</p>
+        <div class="bookmarks-grid" id="unblockersGrid"></div>
       </div>
 
       <div class="footer">
@@ -998,18 +1013,23 @@
     }
 
     const defaultBookmarks = [
-      { title: 'Invidious', url: 'https://inv.nadeko.net' },
       { title: 'Piped', url: 'https://piped.video' },
       { title: 'DuckDuckGo', url: 'https://duckduckgo.com' },
       { title: 'Wikipedia', url: 'https://en.wikipedia.org' },
       { title: 'Archive.org', url: 'https://archive.org' },
       { title: 'Ecosia', url: 'https://www.ecosia.org' },
-      { title: 'Wiby', url: 'https://wiby.me' },
       { title: 'Hacker News', url: 'https://news.ycombinator.com' },
-      { title: 'Lobsters', url: 'https://lobste.rs' },
       { title: 'Teddit', url: 'https://teddit.net' },
-      { title: 'Nitter', url: 'https://nitter.net' },
       { title: 'LibReddit', url: 'https://libreddit.spike.codes' }
+    ];
+
+    const defaultUnblockers = [
+      { title: 'YouTube (No Cookie)', url: 'https://www.youtube-nocookie.com', desc: 'Embed-friendly YouTube' },
+      { title: 'Interstellar', url: 'https://interstellar.lol', desc: 'Web proxy service' },
+      { title: 'Holy Unblocker', url: 'https://holyubofficial.net', desc: 'Unblocking service' },
+      { title: 'Rammerhead', url: 'https://rammerhead.org', desc: 'Fast proxy' },
+      { title: 'Metallic', url: 'https://metallic.codes', desc: 'Web proxy' },
+      { title: 'Tsunami', url: 'https://tsunami.lol', desc: 'Proxy service' }
     ];
 
     function getFaviconUrl(url) {
@@ -1053,7 +1073,7 @@
       document.getElementById('greetingText').textContent = options[Math.floor(Math.random() * options.length)];
     }
 
-    const BOOKMARKS_VERSION = 'v2';
+    const BOOKMARKS_VERSION = 'v3';
     const BOOKMARKS_KEY = 'proxyBookmarks_' + BOOKMARKS_VERSION;
 
     function loadBookmarks() {
@@ -1093,6 +1113,22 @@
           </div>
         `;
       }
+
+      grid.innerHTML = html;
+    }
+
+    function renderUnblockers() {
+      const grid = document.getElementById('unblockersGrid');
+      
+      const html = defaultUnblockers.map((ub, i) => `
+        <div class="bookmark" onclick="window.open('${ub.url}', '_blank')" title="${ub.desc}">
+          <div class="bookmark-icon">
+            <img src="${getFaviconUrl(ub.url)}" alt="${ub.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <span class="fallback-icon" style="display:none;">${ub.title.charAt(0).toUpperCase()}</span>
+          </div>
+          <div class="bookmark-label">${ub.title}</div>
+        </div>
+      `).join('');
 
       grid.innerHTML = html;
     }
@@ -1217,6 +1253,7 @@
       if (!checkAuth()) return;
       setGreeting();
       loadBookmarks();
+      renderUnblockers();
       loadSettings();
       document.getElementById('searchInput').focus();
     }
