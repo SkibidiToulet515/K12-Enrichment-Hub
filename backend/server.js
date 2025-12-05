@@ -260,16 +260,32 @@ function proxyRequest(targetUrl, req, res, prefix) {
 })();
 </script>`;
         
-        // Inject base tag and interceptor
+        // Inject interceptor at the VERY START of the document (before any other scripts)
+        // This ensures our code runs first
         const baseTag = `<base href="${currentOrigin}/">`;
-        if (html.includes('<head>')) {
+        
+        // Inject at the absolute beginning, before <!DOCTYPE> if possible
+        if (html.toLowerCase().includes('<!doctype')) {
+          html = html.replace(/<!doctype[^>]*>/i, (match) => match + interceptorScript);
+          // Also inject base tag in head
+          if (html.includes('<head>')) {
+            html = html.replace('<head>', '<head>' + baseTag);
+          } else if (html.includes('<HEAD>')) {
+            html = html.replace('<HEAD>', '<HEAD>' + baseTag);
+          }
+        } else if (html.includes('<html')) {
+          html = html.replace(/<html[^>]*>/i, (match) => match + interceptorScript);
+          if (html.includes('<head>')) {
+            html = html.replace('<head>', '<head>' + baseTag);
+          } else if (html.includes('<HEAD>')) {
+            html = html.replace('<HEAD>', '<HEAD>' + baseTag);
+          }
+        } else if (html.includes('<head>')) {
           html = html.replace('<head>', '<head>' + baseTag + interceptorScript);
         } else if (html.includes('<HEAD>')) {
           html = html.replace('<HEAD>', '<HEAD>' + baseTag + interceptorScript);
-        } else if (html.includes('<html>') || html.includes('<HTML>')) {
-          html = html.replace(/<html>/i, '<html><head>' + baseTag + interceptorScript + '</head>');
         } else {
-          html = baseTag + interceptorScript + html;
+          html = interceptorScript + baseTag + html;
         }
         
         res.send(html);
