@@ -336,15 +336,6 @@ function handleProxyRequest(req, res, prefix) {
   }
 }
 
-app.use('/service', (req, res, next) => {
-  if (req.path === '' || req.path === '/') return next();
-  handleProxyRequest(req, res, '/service/');
-});
-
-app.use('/scram/service', (req, res, next) => {
-  if (req.path === '' || req.path === '/') return next();
-  handleProxyRequest(req, res, '/scram/service/');
-});
 
 // File upload endpoint
 app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {
