@@ -120,6 +120,39 @@
       color: #fff;
     }
 
+    .engine-section {
+      padding: 12px 16px;
+      border-top: 1px solid #222;
+    }
+
+    .engine-label {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .engine-select {
+      width: 100%;
+      padding: 8px 10px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .engine-select:hover {
+      border-color: #444;
+    }
+
+    .engine-select:focus {
+      border-color: #6366f1;
+    }
+
     .main-content {
       flex: 1;
       display: flex;
@@ -287,6 +320,7 @@
       border-radius: 4px;
       font-size: 11px;
       margin-left: 8px;
+      white-space: nowrap;
     }
 
     .status-indicator.ready {
@@ -312,6 +346,14 @@
       <span>+</span> New Tab
     </button>
     <div class="tabs-list" id="tabsList"></div>
+    
+    <div class="engine-section">
+      <div class="engine-label">Proxy Engine</div>
+      <select class="engine-select" id="engineSelect" onchange="switchEngine()">
+        <option value="uv">Ultraviolet</option>
+        <option value="scramjet">Scramjet</option>
+      </select>
+    </div>
   </div>
 
   <div class="main-content">
@@ -369,36 +411,71 @@
 
   <script src="/uv/uv.bundle.js"></script>
   <script src="/uv/uv.config.js"></script>
+  <script src="/scram/scramjet.codecs.js"></script>
+  <script src="/scram/scramjet.config.js"></script>
   <script>
     let tabs = [];
     let activeTabId = null;
-    let swReady = false;
+    let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
+    let swStatus = { uv: false, scramjet: false };
 
-    async function registerSW() {
+    async function registerServiceWorkers() {
       const status = document.getElementById('swStatus');
       
       if (!('serviceWorker' in navigator)) {
         status.textContent = 'SW Not Supported';
         status.className = 'status-indicator error';
         console.error('Service workers not supported');
-        return false;
+        return;
+      }
+
+      status.textContent = 'Registering...';
+      status.className = 'status-indicator loading';
+
+      try {
+        const uvReg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
+        console.log('UV service worker registered:', uvReg.scope);
+        swStatus.uv = true;
+      } catch (err) {
+        console.error('UV SW registration failed:', err);
       }
 
       try {
-        const reg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
-        console.log('Service worker registered:', reg.scope);
-        
-        await navigator.serviceWorker.ready;
-        swReady = true;
-        status.textContent = 'Ready';
-        status.className = 'status-indicator ready';
-        console.log('Service worker ready');
-        return true;
+        const sjReg = await navigator.serviceWorker.register('/scram/sw.js', { scope: '/scram/service/' });
+        console.log('Scramjet service worker registered:', sjReg.scope);
+        swStatus.scramjet = true;
       } catch (err) {
-        console.error('SW registration failed:', err);
-        status.textContent = 'SW Error';
+        console.error('Scramjet SW registration failed:', err);
+      }
+
+      await navigator.serviceWorker.ready;
+      
+      updateStatus();
+    }
+
+    function updateStatus() {
+      const status = document.getElementById('swStatus');
+      const engineReady = currentEngine === 'uv' ? swStatus.uv : swStatus.scramjet;
+      const engineName = currentEngine === 'uv' ? 'UV' : 'SJ';
+      
+      if (engineReady) {
+        status.textContent = engineName + ' Ready';
+        status.className = 'status-indicator ready';
+      } else {
+        status.textContent = engineName + ' Error';
         status.className = 'status-indicator error';
-        return false;
+      }
+    }
+
+    function switchEngine() {
+      const select = document.getElementById('engineSelect');
+      currentEngine = select.value;
+      localStorage.setItem('proxyEngine', currentEngine);
+      updateStatus();
+      
+      const tab = tabs.find(t => t.id === activeTabId);
+      if (tab && tab.url) {
+        loadUrl(tab.url, false);
       }
     }
 
@@ -407,8 +484,10 @@
     }
 
     function getProxyUrl(url) {
-      if (typeof self.__uv$config !== 'undefined' && swReady) {
+      if (currentEngine === 'uv' && swStatus.uv && typeof self.__uv$config !== 'undefined') {
         return self.__uv$config.prefix + self.__uv$config.encodeUrl(url);
+      } else if (currentEngine === 'scramjet' && swStatus.scramjet && typeof self.__scramjet$config !== 'undefined') {
+        return self.__scramjet$config.prefix + self.__scramjet$config.codec.encode(url);
       }
       return '/api/proxy/fetch?url=' + encodeURIComponent(url);
     }
@@ -533,7 +612,7 @@
       }
 
       const proxyUrl = getProxyUrl(url);
-      console.log('Loading:', url, '-> Proxy:', proxyUrl);
+      console.log('Engine:', currentEngine, '| Loading:', url, '-> Proxy:', proxyUrl);
       
       iframe.src = proxyUrl;
       
@@ -588,7 +667,9 @@
     }
 
     async function init() {
-      await registerSW();
+      document.getElementById('engineSelect').value = currentEngine;
+      
+      await registerServiceWorkers();
 
       const params = new URLSearchParams(window.location.search);
       const initialUrl = params.get('url') || params.get('q');

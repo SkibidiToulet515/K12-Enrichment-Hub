@@ -633,6 +633,14 @@
         <button class="settings-opt active" data-glow="on" onclick="setGlow('on')">On</button>
       </div>
     </div>
+
+    <div class="settings-group">
+      <div class="settings-label">Proxy Engine</div>
+      <div class="settings-options">
+        <button class="settings-opt" data-engine="uv" onclick="setEngine('uv')">Ultraviolet</button>
+        <button class="settings-opt" data-engine="scramjet" onclick="setEngine('scramjet')">Scramjet</button>
+      </div>
+    </div>
   </div>
 
   <div class="main-wrapper">
@@ -924,6 +932,13 @@
       });
     }
 
+    function setEngine(engine) {
+      localStorage.setItem('proxyEngine', engine);
+      document.querySelectorAll('[data-engine]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.engine === engine);
+      });
+    }
+
     function loadSettings() {
       document.querySelectorAll('[data-theme]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.theme === fluidConfig.theme);
@@ -933,6 +948,10 @@
       });
       document.querySelectorAll('[data-glow]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.glow === fluidConfig.glow);
+      });
+      const engine = localStorage.getItem('proxyEngine') || 'uv';
+      document.querySelectorAll('[data-engine]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.engine === engine);
       });
     }
 
