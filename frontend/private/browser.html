@@ -350,8 +350,8 @@
     <div class="engine-section">
       <div class="engine-label">Proxy Engine</div>
       <select class="engine-select" id="engineSelect" onchange="switchEngine()">
-        <option value="uv">Ultraviolet</option>
-        <option value="scramjet">Scramjet</option>
+        <option value="uv">Ultraviolet (Recommended)</option>
+        <option value="server">Server Proxy</option>
       </select>
     </div>
   </div>
@@ -413,11 +413,27 @@
   <script src="/uv/uv.config.js"></script>
   <script src="/scram/scramjet.codecs.js"></script>
   <script src="/scram/scramjet.config.js"></script>
-  <script>
+  <script type="module">
+    import { BareMuxConnection } from '/baremux/bare-mux.mjs';
+    
     let tabs = [];
     let activeTabId = null;
     let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
     let swStatus = { uv: false, scramjet: false };
+    let bareMuxReady = false;
+
+    async function initBareMux() {
+      try {
+        const conn = new BareMuxConnection('/baremux/worker.js');
+        const bareServerUrl = location.origin + '/bare/';
+        await conn.setTransport('/baremod/bare-client.mjs', [bareServerUrl]);
+        bareMuxReady = true;
+        console.log('BareMux initialized with bare server:', bareServerUrl);
+      } catch (err) {
+        console.error('BareMux init failed:', err);
+        bareMuxReady = false;
+      }
+    }
 
     async function registerServiceWorkers() {
       const status = document.getElementById('swStatus');
@@ -455,15 +471,18 @@
 
     function updateStatus() {
       const status = document.getElementById('swStatus');
-      const engineReady = currentEngine === 'uv' ? swStatus.uv : swStatus.scramjet;
-      const engineName = currentEngine === 'uv' ? 'UV' : 'SJ';
       
-      if (engineReady) {
-        status.textContent = engineName + ' Ready';
-        status.className = 'status-indicator ready';
+      if (currentEngine === 'uv') {
+        if (swStatus.uv) {
+          status.textContent = 'UV Ready';
+          status.className = 'status-indicator ready';
+        } else {
+          status.textContent = 'UV Loading';
+          status.className = 'status-indicator loading';
+        }
       } else {
-        status.textContent = engineName + ' Error';
-        status.className = 'status-indicator error';
+        status.textContent = 'Server Ready';
+        status.className = 'status-indicator ready';
       }
     }
 
@@ -486,8 +505,6 @@
     function getProxyUrl(url) {
       if (currentEngine === 'uv' && swStatus.uv && typeof self.__uv$config !== 'undefined') {
         return self.__uv$config.prefix + self.__uv$config.encodeUrl(url);
-      } else if (currentEngine === 'scramjet' && swStatus.scramjet && typeof self.__scramjet$config !== 'undefined') {
-        return self.__scramjet$config.prefix + self.__scramjet$config.codec.encode(url);
       }
       return '/api/proxy/fetch?url=' + encodeURIComponent(url);
     }
@@ -669,6 +686,7 @@
     async function init() {
       document.getElementById('engineSelect').value = currentEngine;
       
+      await initBareMux();
       await registerServiceWorkers();
 
       const params = new URLSearchParams(window.location.search);
