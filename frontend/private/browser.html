@@ -234,28 +234,45 @@
     .loading-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.8);
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 10;
+      flex-direction: column;
     }
 
     .loading-overlay.hidden {
       display: none;
     }
 
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid #333;
-      border-top-color: #6366f1;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .loading-frame {
+      max-width: 80%;
+      max-height: 60%;
+      object-fit: contain;
+      image-rendering: pixelated;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .loading-frame.closed {
+      display: block;
+    }
+
+    .loading-frame.loading {
+      display: none;
+    }
+
+    .loading-overlay.phase2 .loading-frame.closed {
+      display: none;
+    }
+
+    .loading-overlay.phase2 .loading-frame.loading {
+      display: block;
+      animation: pulse 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.02); }
     }
 
     .home-btn {
@@ -309,7 +326,8 @@
 
     <div class="browser-frame" id="browserFrame">
       <div class="loading-overlay hidden" id="loadingOverlay">
-        <div class="spinner"></div>
+        <img src="/assets/proxy-frame.png" class="loading-frame closed" alt="">
+        <img src="/assets/proxy-loading.png" class="loading-frame loading" alt="">
       </div>
       <div class="empty-state" id="emptyState">
         <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -444,7 +462,14 @@
       const emptyState = document.getElementById('emptyState');
 
       emptyState.style.display = 'none';
-      loading.classList.remove('hidden');
+      
+      // Phase 1: Show closed frame
+      loading.classList.remove('hidden', 'phase2');
+
+      // Phase 2: Show loading text after short delay
+      setTimeout(() => {
+        loading.classList.add('phase2');
+      }, 300);
 
       let iframe = frame.querySelector('iframe');
       if (!iframe) {
@@ -457,6 +482,7 @@
 
       iframe.onload = () => {
         loading.classList.add('hidden');
+        loading.classList.remove('phase2');
       };
 
       if (updateTab && activeTabId) {
