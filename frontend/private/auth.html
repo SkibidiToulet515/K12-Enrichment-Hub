@@ -172,6 +172,23 @@
   </div>
 
   <script>
+    // Auto-login: Check if already logged in
+    (async function checkExistingLogin() {
+      const token = localStorage.getItem('userToken');
+      if (token) {
+        try {
+          const res = await fetch('/api/auth/me', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (res.ok) {
+            window.location.href = '/private/dashboard.html';
+            return;
+          }
+        } catch (e) {}
+        localStorage.removeItem('userToken');
+      }
+    })();
+
     let isSignup = false;
     const errorEl = document.getElementById('errorMessage');
     const authForm = document.getElementById('authForm');

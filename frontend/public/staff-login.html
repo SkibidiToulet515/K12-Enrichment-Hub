@@ -254,6 +254,23 @@
   </style>
 </head>
 <body>
+  <script>
+    (async function checkAlreadyLoggedIn() {
+      const token = localStorage.getItem('userToken');
+      if (token) {
+        try {
+          const res = await fetch('/api/auth/me', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (res.ok) {
+            window.location.href = '/private/dashboard.html';
+            return;
+          }
+        } catch (e) {}
+      }
+    })();
+  </script>
+
   <div class="top-bar">
     <a href="/public/index.html">Back to Home</a>
     <a href="/public/help.html">Need Help?</a>
