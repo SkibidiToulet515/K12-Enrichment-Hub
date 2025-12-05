@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Games - Enrichment Hub</title>
+  <title>Games - NebulaCore</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/transitions.css">
   <link rel="stylesheet" href="/css/private-theme.css">
@@ -253,6 +253,14 @@
       display: flex;
     }
 
+    .game-viewer.fullscreen-mode .game-viewer-header {
+      display: none;
+    }
+
+    .game-viewer.fullscreen-mode .game-viewer-content {
+      height: 100%;
+    }
+
     .game-viewer-header {
       background: var(--card);
       border-bottom: 2px solid var(--accent);
@@ -316,6 +324,37 @@
       border: none;
     }
 
+    /* Fullscreen exit hint */
+    .fullscreen-hint {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 10001;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .fullscreen-hint.show {
+      opacity: 1;
+    }
+
+    .fullscreen-hint kbd {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin: 0 4px;
+      font-family: monospace;
+      font-size: 15px;
+    }
+
     @media (max-width: 768px) {
       .games-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -372,13 +411,18 @@
     <div class="game-viewer-header">
       <h2 class="game-viewer-title" id="gameTitleHeader"></h2>
       <div class="game-viewer-buttons">
-        <button class="game-btn fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
-        <button class="game-btn exit-btn" onclick="closeGameViewer()">✕ Exit Game</button>
+        <button class="game-btn fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        <button class="game-btn exit-btn" onclick="closeGameViewer()">✕ Exit</button>
       </div>
     </div>
     <div class="game-viewer-content">
       <iframe id="gameFrame"></iframe>
     </div>
+  </div>
+  
+  <!-- Fullscreen exit hint -->
+  <div class="fullscreen-hint" id="fullscreenHint">
+    Press <kbd>\</kbd> to exit fullscreen
   </div>
 
   <script src="/js/themes.js"></script>
@@ -412,6 +456,15 @@
       await loadGames();
       setupSearch();
       setupLazyLoad();
+      
+      // Check for search query from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('search');
+      if (searchQuery) {
+        const searchInput = document.getElementById('searchInput');
+        searchInput.value = searchQuery;
+        searchInput.dispatchEvent(new Event('input'));
+      }
     });
 
     async function loadGames() {
@@ -487,32 +540,82 @@
     }
 
     function closeGameViewer() {
-      document.getElementById('gameViewer').classList.remove('active');
+      const gameViewer = document.getElementById('gameViewer');
+      gameViewer.classList.remove('active');
+      gameViewer.classList.remove('fullscreen-mode');
       document.getElementById('gameFrame').src = '';
       document.body.style.overflow = '';
+      isFullscreenMode = false;
       
       // Exit fullscreen if active
       if (document.fullscreenElement) {
-        document.exitFullscreen();
+        document.exitFullscreen().catch(() => {});
       }
     }
+
+    let isFullscreenMode = false;
+    let hintTimeout = null;
 
     function toggleFullscreen() {
       const gameViewer = document.getElementById('gameViewer');
+      const hint = document.getElementById('fullscreenHint');
       
-      if (!document.fullscreenElement) {
-        gameViewer.requestFullscreen().catch(err => {
-          console.log(`Error attempting to enable fullscreen: ${err.message}`);
-        });
+      if (!isFullscreenMode) {
+        // Enter fullscreen mode - hide header bar
+        gameViewer.classList.add('fullscreen-mode');
+        isFullscreenMode = true;
+        
+        // Show hint briefly
+        hint.classList.add('show');
+        if (hintTimeout) clearTimeout(hintTimeout);
+        hintTimeout = setTimeout(() => {
+          hint.classList.remove('show');
+        }, 3000);
+        
+        // Also try browser fullscreen
+        gameViewer.requestFullscreen().catch(() => {});
       } else {
-        document.exitFullscreen();
+        exitFullscreenMode();
       }
     }
 
-    // Close game viewer with Escape key
+    function exitFullscreenMode() {
+      const gameViewer = document.getElementById('gameViewer');
+      const hint = document.getElementById('fullscreenHint');
+      
+      gameViewer.classList.remove('fullscreen-mode');
+      isFullscreenMode = false;
+      hint.classList.remove('show');
+      
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Handle keyboard shortcuts
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.getElementById('gameViewer').classList.contains('active')) {
-        closeGameViewer();
+      const gameViewer = document.getElementById('gameViewer');
+      
+      // Backslash (\) to exit fullscreen mode
+      if (e.key === '\\' && isFullscreenMode) {
+        e.preventDefault();
+        exitFullscreenMode();
+      }
+      
+      // Escape to close game viewer entirely
+      if (e.key === 'Escape' && gameViewer.classList.contains('active')) {
+        if (isFullscreenMode) {
+          exitFullscreenMode();
+        } else {
+          closeGameViewer();
+        }
+      }
+    });
+
+    // Handle browser fullscreen change
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && isFullscreenMode) {
+        exitFullscreenMode();
       }
     });
 

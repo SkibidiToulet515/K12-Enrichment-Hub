@@ -1,15 +1,9 @@
 [
   {
-    "name": "Amongus",
-    "short": "AMON",
-    "tagline": "Play Amongus in your browser.",
-    "url": "games/Amongus (1).html"
-  },
-  {
-    "name": "Cookie Clicker",
-    "short": "COOK",
-    "tagline": "Play Cookie Clicker in your browser.",
-    "url": "games/CC (1).html"
+    "name": ".50 Caliber Contracts",
+    "short": "500C",
+    "tagline": "Play .50 Caliber Contracts in your browser.",
+    "url": "games/cl500calibercontractz.html"
   },
   {
     "name": "1",
@@ -18,40 +12,46 @@
     "url": "games/cl1.html"
   },
   {
+    "name": "1 on 1 Soccer",
+    "short": "1ON1",
+    "tagline": "Play 1 on 1 Soccer in your browser.",
+    "url": "games/cl1on1soccer.html"
+  },
+  {
+    "name": "1v1 LOL",
+    "short": "1V1L",
+    "tagline": "Play 1v1 LOL in your browser.",
+    "url": "games/cl1v1lol.html"
+  },
+  {
+    "name": "1v1 Tennis",
+    "short": "1V1T",
+    "tagline": "Play 1v1 Tennis in your browser.",
+    "url": "games/cl1v1tennis.html"
+  },
+  {
     "name": "10 Bullets",
     "short": "10BU",
     "tagline": "Play 10 Bullets in your browser.",
     "url": "games/cl10bullets.html"
   },
   {
-    "name": "Minutes Til Dawn",
-    "short": "10MI",
-    "tagline": "Play Minutes Til Dawn in your browser.",
-    "url": "games/cl10minutestildawn.html"
+    "name": "2D Shooting",
+    "short": "2DSH",
+    "tagline": "Play 2D Shooting in your browser.",
+    "url": "games/cl2Dshooting (1).html"
   },
   {
-    "name": "Mini Battles",
-    "short": "12MI",
-    "tagline": "Play Mini Battles in your browser.",
-    "url": "games/cl12minibattles.html"
+    "name": "2D Shooting",
+    "short": "2DSH",
+    "tagline": "Play 2D Shooting in your browser.",
+    "url": "games/cl2Dshooting.html"
   },
   {
-    "name": "1 On 1 Soccer",
-    "short": "1ON1",
-    "tagline": "Play 1 On 1 Soccer in your browser.",
-    "url": "games/cl1on1soccer.html"
-  },
-  {
-    "name": "1 V 1 Lol",
-    "short": "1V1L",
-    "tagline": "Play 1 V 1 Lol in your browser.",
-    "url": "games/cl1v1lol.html"
-  },
-  {
-    "name": "1 V 1 Tennis",
-    "short": "1V1T",
-    "tagline": "Play 1 V 1 Tennis in your browser.",
-    "url": "games/cl1v1tennis.html"
+    "name": "2 Doom",
+    "short": "2DOO",
+    "tagline": "Play 2 Doom in your browser.",
+    "url": "games/cl2doom.html"
   },
   {
     "name": "2048",
@@ -66,24 +66,6 @@
     "url": "games/cl2048cupcakes.html"
   },
   {
-    "name": "2dshooting",
-    "short": "2DSH",
-    "tagline": "Play 2dshooting in your browser.",
-    "url": "games/cl2Dshooting (1).html"
-  },
-  {
-    "name": "2dshooting",
-    "short": "2DSH",
-    "tagline": "Play 2dshooting in your browser.",
-    "url": "games/cl2Dshooting.html"
-  },
-  {
-    "name": "2 Doom",
-    "short": "2DOO",
-    "tagline": "Play 2 Doom in your browser.",
-    "url": "games/cl2doom.html"
-  },
-  {
     "name": "3 Dash",
     "short": "3DAS",
     "tagline": "Play 3 Dash in your browser.",
@@ -96,28 +78,28 @@
     "url": "games/cl3pandas.html"
   },
   {
-    "name": "3 Pandasbrazil",
+    "name": "3 Pandas at Night",
     "short": "3PAN",
-    "tagline": "Play 3 Pandasbrazil in your browser.",
+    "tagline": "Play 3 Pandas at Night in your browser.",
+    "url": "games/cl3pandasnight.html"
+  },
+  {
+    "name": "3 Pandas in Brazil",
+    "short": "3PAN",
+    "tagline": "Play 3 Pandas in Brazil in your browser.",
     "url": "games/cl3pandasbrazil.html"
   },
   {
-    "name": "3 Pandasfantasy",
+    "name": "3 Pandas in Fantasy",
     "short": "3PAN",
-    "tagline": "Play 3 Pandasfantasy in your browser.",
+    "tagline": "Play 3 Pandas in Fantasy in your browser.",
     "url": "games/cl3pandasfantasy.html"
   },
   {
-    "name": "3 Pandasjapan",
+    "name": "3 Pandas in Japan",
     "short": "3PAN",
-    "tagline": "Play 3 Pandasjapan in your browser.",
+    "tagline": "Play 3 Pandas in Japan in your browser.",
     "url": "games/cl3pandasjapan.html"
-  },
-  {
-    "name": "3 Pandasnight",
-    "short": "3PAN",
-    "tagline": "Play 3 Pandasnight in your browser.",
-    "url": "games/cl3pandasnight.html"
   },
   {
     "name": "3 Slices 2",
@@ -126,51 +108,45 @@
     "url": "games/cl3slices2.html"
   },
   {
-    "name": "40 Xescape",
-    "short": "40XE",
-    "tagline": "Play 40 Xescape in your browser.",
-    "url": "games/cl40xescape.html"
-  },
-  {
-    "name": "4 Thandgoal",
+    "name": "4th and Goal",
     "short": "4THA",
-    "tagline": "Play 4 Thandgoal in your browser.",
+    "tagline": "Play 4th and Goal in your browser.",
     "url": "games/cl4thandgoal.html"
   },
   {
-    "name": "500 Calibercontractz",
-    "short": "500C",
-    "tagline": "Play 500 Calibercontractz in your browser.",
-    "url": "games/cl500calibercontractz.html"
+    "name": "40x Escape",
+    "short": "40XE",
+    "tagline": "Play 40x Escape in your browser.",
+    "url": "games/cl40xescape.html"
   },
   {
-    "name": "60 Secondsburgerrun",
+    "name": "60 Seconds Burger Run",
     "short": "60SE",
-    "tagline": "Play 60 Secondsburgerrun in your browser.",
+    "tagline": "Play 60 Seconds Burger Run in your browser.",
     "url": "games/cl60secondsburgerrun.html"
   },
   {
-    "name": "60 Secondssantarun",
+    "name": "60 Seconds Santa Run",
     "short": "60SE",
-    "tagline": "Play 60 Secondssantarun in your browser.",
+    "tagline": "Play 60 Seconds Santa Run in your browser.",
     "url": "games/cl60secondssantarun.html"
   },
   {
-    "name": "8 Ballpool (copy)",
+    "name": "8 Ball Pool",
     "short": "8BAL",
-    "tagline": "Play 8 Ballpool (copy) in your browser.",
+    "tagline": "Play 8 Ball Pool in your browser.",
     "url": "games/cl8ballpool (copy).html"
   },
   {
-    "name": "8 Ballpool",
+    "name": "8 Ball Pool",
     "short": "8BAL",
-    "tagline": "Play 8 Ballpool in your browser.",
+    "tagline": "Play 8 Ball Pool in your browser.",
     "url": "games/cl8ballpool.html"
   },
   {
-    "name": "9007199254740992",
+    "name": "2048 (Big Numbers)",
     "short": "9007",
-    "tagline": "Play 9007199254740992 in your browser.",
+    "tagline": "Play 2048 (Big Numbers) in your browser.",
     "url": "games/cl9007199254740992.html"
   },
   {
@@ -180,376 +156,22 @@
     "url": "games/cl99balls.html"
   },
   {
-    "name": "99 Nightsitf",
+    "name": "99 Nights",
     "short": "99NI",
-    "tagline": "Play 99 Nightsitf in your browser.",
+    "tagline": "Play 99 Nights in your browser.",
     "url": "games/cl99nightsitf.html"
   },
   {
-    "name": "Adofai",
+    "name": "A Dance of Fire and Ice",
     "short": "ADOF",
-    "tagline": "Play Adofai in your browser.",
+    "tagline": "Play A Dance of Fire and Ice in your browser.",
     "url": "games/clADOFAI.html"
   },
   {
-    "name": "Adark Room",
+    "name": "A Dark Room",
     "short": "ADAR",
-    "tagline": "Play Adark Room in your browser.",
+    "tagline": "Play A Dark Room in your browser.",
     "url": "games/clADarkRoom.html"
-  },
-  {
-    "name": "Awesome Pirates",
-    "short": "AWES",
-    "tagline": "Play Awesome Pirates in your browser.",
-    "url": "games/clAwesomePirates.html"
-  },
-  {
-    "name": "B3313",
-    "short": "B331",
-    "tagline": "Play B3313 in your browser.",
-    "url": "games/clB3313.html"
-  },
-  {
-    "name": "Bmx2",
-    "short": "BMX2",
-    "tagline": "Play Bmx2 in your browser.",
-    "url": "games/clBMX2.html"
-  },
-  {
-    "name": "Btd1",
-    "short": "BTD1",
-    "tagline": "Play Btd1 in your browser.",
-    "url": "games/clBTD1.html"
-  },
-  {
-    "name": "Big_time_butter_baron",
-    "short": "BIG_",
-    "tagline": "Play Big_time_butter_baron in your browser.",
-    "url": "games/clBig_Time_Butter_Baron.html"
-  },
-  {
-    "name": "Bounty Of One",
-    "short": "BOUN",
-    "tagline": "Play Bounty Of One in your browser.",
-    "url": "games/clBountyOfOne.html"
-  },
-  {
-    "name": "Cartoon Network Table Tennis Ultimate Tournament",
-    "short": "CART",
-    "tagline": "Play Cartoon Network Table Tennis Ultimate Tournament in your browser.",
-    "url": "games/clCartoonNetworkTableTennisUltimateTournament.html"
-  },
-  {
-    "name": "Circlo O2",
-    "short": "CIRC",
-    "tagline": "Play Circlo O2 in your browser.",
-    "url": "games/clCircloO2.html"
-  },
-  {
-    "name": "Dragon Ball Zthe Legacyof Goku",
-    "short": "DRAG",
-    "tagline": "Play Dragon Ball Zthe Legacyof Goku in your browser.",
-    "url": "games/clDragonBallZTheLegacyofGoku.html"
-  },
-  {
-    "name": "Dragon Quest Ix",
-    "short": "DRAG",
-    "tagline": "Play Dragon Quest Ix in your browser.",
-    "url": "games/clDragonQuestIX.html"
-  },
-  {
-    "name": "Ff3",
-    "short": "FF3",
-    "tagline": "Play Ff3 in your browser.",
-    "url": "games/clFF3.html"
-  },
-  {
-    "name": "Ffsonic 1",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 1 in your browser.",
-    "url": "games/clFFsonic1.html"
-  },
-  {
-    "name": "Ffsonic 2",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 2 in your browser.",
-    "url": "games/clFFsonic2.html"
-  },
-  {
-    "name": "Ffsonic 3",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 3 in your browser.",
-    "url": "games/clFFsonic3.html"
-  },
-  {
-    "name": "Ffsonic 4",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 4 in your browser.",
-    "url": "games/clFFsonic4.html"
-  },
-  {
-    "name": "Ffsonic 5",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 5 in your browser.",
-    "url": "games/clFFsonic5.html"
-  },
-  {
-    "name": "Ffsonic 61",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 61 in your browser.",
-    "url": "games/clFFsonic61.html"
-  },
-  {
-    "name": "Ffsonic 62",
-    "short": "FFSO",
-    "tagline": "Play Ffsonic 62 in your browser.",
-    "url": "games/clFFsonic62.html"
-  },
-  {
-    "name": "Fifa07",
-    "short": "FIFA",
-    "tagline": "Play Fifa07 in your browser.",
-    "url": "games/clFIFA07.html"
-  },
-  {
-    "name": "Fifa10",
-    "short": "FIFA",
-    "tagline": "Play Fifa10 in your browser.",
-    "url": "games/clFIFA10.html"
-  },
-  {
-    "name": "Fifa11",
-    "short": "FIFA",
-    "tagline": "Play Fifa11 in your browser.",
-    "url": "games/clFIFA11.html"
-  },
-  {
-    "name": "Fifa2000(1)",
-    "short": "FIFA",
-    "tagline": "Play Fifa2000(1) in your browser.",
-    "url": "games/clFIFA2000(1).html"
-  },
-  {
-    "name": "Fifa99",
-    "short": "FIFA",
-    "tagline": "Play Fifa99 in your browser.",
-    "url": "games/clFIFA99.html"
-  },
-  {
-    "name": "Fifainternationalsoccer",
-    "short": "FIFA",
-    "tagline": "Play Fifainternationalsoccer in your browser.",
-    "url": "games/clFIFAinternationalsoccer.html"
-  },
-  {
-    "name": "Fifaroadtoworldcup 98",
-    "short": "FIFA",
-    "tagline": "Play Fifaroadtoworldcup 98 in your browser.",
-    "url": "games/clFIFAroadtoworldcup98.html"
-  },
-  {
-    "name": "Fifasoccer 06",
-    "short": "FIFA",
-    "tagline": "Play Fifasoccer 06 in your browser.",
-    "url": "games/clFIFAsoccer06.html"
-  },
-  {
-    "name": "Fifasoccer 95",
-    "short": "FIFA",
-    "tagline": "Play Fifasoccer 95 in your browser.",
-    "url": "games/clFIFAsoccer95.html"
-  },
-  {
-    "name": "Fifasoccer 96",
-    "short": "FIFA",
-    "tagline": "Play Fifasoccer 96 in your browser.",
-    "url": "games/clFIFAsoccer96.html"
-  },
-  {
-    "name": "Fifasoccer 97",
-    "short": "FIFA",
-    "tagline": "Play Fifasoccer 97 in your browser.",
-    "url": "games/clFIFAsoccer97.html"
-  },
-  {
-    "name": "Fifastreet 2",
-    "short": "FIFA",
-    "tagline": "Play Fifastreet 2 in your browser.",
-    "url": "games/clFIFAstreet2.html"
-  },
-  {
-    "name": "Fnaf",
-    "short": "FNAF",
-    "tagline": "Play Fnaf in your browser.",
-    "url": "games/clFNAF.html"
-  },
-  {
-    "name": "Fnaf2",
-    "short": "FNAF",
-    "tagline": "Play Fnaf2 in your browser.",
-    "url": "games/clFNAF2.html"
-  },
-  {
-    "name": "Fnaf3",
-    "short": "FNAF",
-    "tagline": "Play Fnaf3 in your browser.",
-    "url": "games/clFNAF3.html"
-  },
-  {
-    "name": "Fnaf4",
-    "short": "FNAF",
-    "tagline": "Play Fnaf4 in your browser.",
-    "url": "games/clFNAF4.html"
-  },
-  {
-    "name": "Gettothetopalthoughthereisnotop",
-    "short": "GETT",
-    "tagline": "Play Gettothetopalthoughthereisnotop in your browser.",
-    "url": "games/clGettothetopalthoughthereisnotop.html"
-  },
-  {
-    "name": "Golden Sun The Lost Age",
-    "short": "GOLD",
-    "tagline": "Play Golden Sun The Lost Age in your browser.",
-    "url": "games/clGoldenSunTheLostAge.html"
-  },
-  {
-    "name": "Haroldsbadday",
-    "short": "HARO",
-    "tagline": "Play Haroldsbadday in your browser.",
-    "url": "games/clHaroldsbadday.html"
-  },
-  {
-    "name": "Hi No Homo",
-    "short": "HINO",
-    "tagline": "Play Hi No Homo in your browser.",
-    "url": "games/clHiNoHomo.html"
-  },
-  {
-    "name": "Jump",
-    "short": "JUMP",
-    "tagline": "Play Jump in your browser.",
-    "url": "games/clJUMP.html"
-  },
-  {
-    "name": "Ken Griffey Jr Presents Major League Baseball",
-    "short": "KENG",
-    "tagline": "Play Ken Griffey Jr Presents Major League Baseball in your browser.",
-    "url": "games/clKenGriffeyJrPresentsMajorLeagueBaseball.html"
-  },
-  {
-    "name": "Mariois Missing Done Right",
-    "short": "MARI",
-    "tagline": "Play Mariois Missing Done Right in your browser.",
-    "url": "games2/clMarioisMissingDoneRight.html"
-  },
-  {
-    "name": "Metal Sonic Hyperdrive",
-    "short": "META",
-    "tagline": "Play Metal Sonic Hyperdrive in your browser.",
-    "url": "games2/clMetalSonicHyperdrive.html"
-  },
-  {
-    "name": "Nbahangtime",
-    "short": "NBAH",
-    "tagline": "Play Nbahangtime in your browser.",
-    "url": "games2/clNBAhangtime.html"
-  },
-  {
-    "name": "Nbajam",
-    "short": "NBAJ",
-    "tagline": "Play Nbajam in your browser.",
-    "url": "games2/clNBAjam.html"
-  },
-  {
-    "name": "New Super Mario World 2aroundthe World",
-    "short": "NEWS",
-    "tagline": "Play New Super Mario World 2aroundthe World in your browser.",
-    "url": "games2/clNewSuperMarioWorld2AroundtheWorld.html"
-  },
-  {
-    "name": "Nicktoons Freeze Frame Frenzy",
-    "short": "NICK",
-    "tagline": "Play Nicktoons Freeze Frame Frenzy in your browser.",
-    "url": "games2/clNicktoonsFreezeFrameFrenzy.html"
-  },
-  {
-    "name": "Nutsand Bolts Screwing Puzzle",
-    "short": "NUTS",
-    "tagline": "Play Nutsand Bolts Screwing Puzzle in your browser.",
-    "url": "games2/clNutsandBoltsScrewingPuzzle.html"
-  },
-  {
-    "name": "Pokemonemeraldrouge",
-    "short": "POKE",
-    "tagline": "Play Pokemonemeraldrouge in your browser.",
-    "url": "games2/clPokemonemeraldrouge.html"
-  },
-  {
-    "name": "Pokemonrocketedition",
-    "short": "POKE",
-    "tagline": "Play Pokemonrocketedition in your browser.",
-    "url": "games2/clPokemonrocketedition.html"
-  },
-  {
-    "name": "Pokémonstunningsteel",
-    "short": "POKÉ",
-    "tagline": "Play Pokémonstunningsteel in your browser.",
-    "url": "games2/clPokémonstunningsteel.html"
-  },
-  {
-    "name": "Singlefile",
-    "short": "SING",
-    "tagline": "Play Singlefile in your browser.",
-    "url": "games2/clSINGLEFILE.html"
-  },
-  {
-    "name": "Sonic 1score Rush",
-    "short": "SONI",
-    "tagline": "Play Sonic 1score Rush in your browser.",
-    "url": "games2/clSonic1ScoreRush.html"
-  },
-  {
-    "name": "Sonic 2score Rush",
-    "short": "SONI",
-    "tagline": "Play Sonic 2score Rush in your browser.",
-    "url": "games2/clSonic2ScoreRush.html"
-  },
-  {
-    "name": "Sonic Hellfire Saga",
-    "short": "SONI",
-    "tagline": "Play Sonic Hellfire Saga in your browser.",
-    "url": "games2/clSonicHellfireSaga.html"
-  },
-  {
-    "name": "Stickman Kingdomclash",
-    "short": "STIC",
-    "tagline": "Play Stickman Kingdomclash in your browser.",
-    "url": "games2/clStickmanKingdomclash.html"
-  },
-  {
-    "name": "Super Mario World The Secret Of The 7golden Statues",
-    "short": "SUPE",
-    "tagline": "Play Super Mario World The Secret Of The 7golden Statues in your browser.",
-    "url": "games2/clSuperMarioWorldThe SecretOfThe7GoldenStatues.html"
-  },
-  {
-    "name": "Taikono Tatsujin",
-    "short": "TAIK",
-    "tagline": "Play Taikono Tatsujin in your browser.",
-    "url": "games2/clTaikonoTatsujin.html"
-  },
-  {
-    "name": "Uzg",
-    "short": "UZG",
-    "tagline": "Play Uzg in your browser.",
-    "url": "games2/clUZG.html"
-  },
-  {
-    "name": "Ultimatecardrivingsimulator",
-    "short": "ULTI",
-    "tagline": "Play Ultimatecardrivingsimulator in your browser.",
-    "url": "games2/clUltimatecardrivingsimulator.html"
   },
   {
     "name": "Abandoned 3",
@@ -576,33 +198,33 @@
     "url": "games/clacecombat3.html"
   },
   {
-    "name": "Acegangstertaxi",
+    "name": "Ace Gangster Taxi",
     "short": "ACEG",
-    "tagline": "Play Acegangstertaxi in your browser.",
+    "tagline": "Play Ace Gangster Taxi in your browser.",
     "url": "games/clacegangstertaxi.html"
   },
   {
-    "name": "Achievementunlocked",
+    "name": "Achievement Unlocked",
     "short": "ACHI",
-    "tagline": "Play Achievementunlocked in your browser.",
+    "tagline": "Play Achievement Unlocked in your browser.",
     "url": "games/clachievementunlocked.html"
   },
   {
-    "name": "Achievmentunlocked",
+    "name": "Achievment Unlocked",
     "short": "ACHI",
-    "tagline": "Play Achievmentunlocked in your browser.",
+    "tagline": "Play Achievment Unlocked in your browser.",
     "url": "games/clachievmentunlocked.html"
   },
   {
-    "name": "Achievmentunlocked 2",
+    "name": "Achievment Unlocked 2",
     "short": "ACHI",
-    "tagline": "Play Achievmentunlocked 2 in your browser.",
+    "tagline": "Play Achievment Unlocked 2 in your browser.",
     "url": "games/clachievmentunlocked2.html"
   },
   {
-    "name": "Achievmentunlocked 3",
+    "name": "Achievment Unlocked 3",
     "short": "ACHI",
-    "tagline": "Play Achievmentunlocked 3 in your browser.",
+    "tagline": "Play Achievment Unlocked 3 in your browser.",
     "url": "games/clachievmentunlocked3.html"
   },
   {
@@ -642,9 +264,9 @@
     "url": "games/cladventneon.html"
   },
   {
-    "name": "Adventurecapitalist",
+    "name": "Adventure Capitalist",
     "short": "ADVE",
-    "tagline": "Play Adventurecapitalist in your browser.",
+    "tagline": "Play Adventure Capitalist in your browser.",
     "url": "games/cladventurecapitalist.html"
   },
   {
@@ -672,9 +294,9 @@
     "url": "games/clagesofconflict.html"
   },
   {
-    "name": "Ahoysurvival",
+    "name": "Ahoy Survival",
     "short": "AHOY",
-    "tagline": "Play Ahoysurvival in your browser.",
+    "tagline": "Play Ahoy Survival in your browser.",
     "url": "games/clahoysurvival.html"
   },
   {
@@ -684,15 +306,15 @@
     "url": "games/clai.html"
   },
   {
-    "name": "Akoopasrevenge",
+    "name": "Akoopas Revenge",
     "short": "AKOO",
-    "tagline": "Play Akoopasrevenge in your browser.",
+    "tagline": "Play Akoopas Revenge in your browser.",
     "url": "games/clakoopasrevenge.html"
   },
   {
-    "name": "Akoopasrevenge 2",
+    "name": "Akoopas Revenge 2",
     "short": "AKOO",
-    "tagline": "Play Akoopasrevenge 2 in your browser.",
+    "tagline": "Play Akoopas Revenge 2 in your browser.",
     "url": "games/clakoopasrevenge2.html"
   },
   {
@@ -714,15 +336,15 @@
     "url": "games/clalienhominidgba.html"
   },
   {
-    "name": "Alienskyinvasion",
-    "short": "ALIE",
-    "tagline": "Play Alienskyinvasion in your browser.",
-    "url": "games/clalienskyinvasion.html"
+    "name": "Alien Hominid",
+    "short": "ORMM",
+    "tagline": "Play Alien Hominid in your browser.",
+    "url": "games2/clormmimastickwithclsoitcanberememberedoyeahclalienhominid.html"
   },
   {
-    "name": "Alientransporter",
+    "name": "Alien Transporter",
     "short": "ALIE",
-    "tagline": "Play Alientransporter in your browser.",
+    "tagline": "Play Alien Transporter in your browser.",
     "url": "games/clalientransporter.html"
   },
   {
@@ -730,6 +352,12 @@
     "short": "ALIE",
     "tagline": "Play Alien vs Predator in your browser.",
     "url": "games/clalienvspredator.html"
+  },
+  {
+    "name": "Aliensky Invasion",
+    "short": "ALIE",
+    "tagline": "Play Aliensky Invasion in your browser.",
+    "url": "games/clalienskyinvasion.html"
   },
   {
     "name": "Allbossesin 1",
@@ -798,9 +426,15 @@
     "url": "games/clamigopancho7.html"
   },
   {
-    "name": "Amongus",
+    "name": "Among Us",
     "short": "AMON",
-    "tagline": "Play Amongus in your browser.",
+    "tagline": "Play Among Us in your browser.",
+    "url": "games/Amongus (1).html"
+  },
+  {
+    "name": "Among Us",
+    "short": "AMON",
+    "tagline": "Play Among Us in your browser.",
     "url": "games/clamongus.html"
   },
   {
@@ -822,33 +456,33 @@
     "url": "games/clangry-birdsspace.html"
   },
   {
-    "name": "Angrybirds-space",
-    "short": "ANGR",
-    "tagline": "Play Angrybirds-space in your browser.",
-    "url": "games/clangrybirds-space.html"
-  },
-  {
     "name": "Angrybirds",
     "short": "ANGR",
     "tagline": "Play Angrybirds in your browser.",
     "url": "games/clangrybirds.html"
   },
   {
-    "name": "Angrybirdsshowdown",
+    "name": "Angrybirds Showdown",
     "short": "ANGR",
-    "tagline": "Play Angrybirdsshowdown in your browser.",
+    "tagline": "Play Angrybirds Showdown in your browser.",
     "url": "games/clangrybirdsshowdown.html"
   },
   {
-    "name": "Animalcrossingwildworld",
+    "name": "Angrybirds-space",
+    "short": "ANGR",
+    "tagline": "Play Angrybirds-space in your browser.",
+    "url": "games/clangrybirds-space.html"
+  },
+  {
+    "name": "Animalcrossingwild World",
     "short": "ANIM",
-    "tagline": "Play Animalcrossingwildworld in your browser.",
+    "tagline": "Play Animalcrossingwild World in your browser.",
     "url": "games/clanimalcrossingwildworld.html"
   },
   {
-    "name": "Anotherworld",
+    "name": "Another World",
     "short": "ANOT",
-    "tagline": "Play Anotherworld in your browser.",
+    "tagline": "Play Another World in your browser.",
     "url": "games/clanotherworld.html"
   },
   {
@@ -858,9 +492,9 @@
     "url": "games/clapotris.html"
   },
   {
-    "name": "Appleshooter",
+    "name": "Apple Shooter",
     "short": "APPL",
-    "tagline": "Play Appleshooter in your browser.",
+    "tagline": "Play Apple Shooter in your browser.",
     "url": "games/clappleshooter.html"
   },
   {
@@ -876,15 +510,15 @@
     "url": "games/claquaparkio.html"
   },
   {
-    "name": "Arceuslegend",
+    "name": "Arceus Legend",
     "short": "ARCE",
-    "tagline": "Play Arceuslegend in your browser.",
+    "tagline": "Play Arceus Legend in your browser.",
     "url": "games/clarceuslegend.html"
   },
   {
-    "name": "Archeryworldtour",
+    "name": "Archery World Tour",
     "short": "ARCH",
-    "tagline": "Play Archeryworldtour in your browser.",
+    "tagline": "Play Archery World Tour in your browser.",
     "url": "games/clarcheryworldtour.html"
   },
   {
@@ -894,9 +528,9 @@
     "url": "games/clarena.html"
   },
   {
-    "name": "Armormayhem 2",
+    "name": "Armor Mayhem 2",
     "short": "ARMO",
-    "tagline": "Play Armormayhem 2 in your browser.",
+    "tagline": "Play Armor Mayhem 2 in your browser.",
     "url": "games/clarmormayhem2.html"
   },
   {
@@ -912,9 +546,9 @@
     "url": "games/clascent.html"
   },
   {
-    "name": "Asmallworldcup",
+    "name": "Asmall World Cup",
     "short": "ASMA",
-    "tagline": "Play Asmallworldcup in your browser.",
+    "tagline": "Play Asmall World Cup in your browser.",
     "url": "games/clasmallworldcup.html"
   },
   {
@@ -936,9 +570,9 @@
     "url": "games/clasteroidsALT.html"
   },
   {
-    "name": "Attackhole",
+    "name": "Attack Hole",
     "short": "ATTA",
-    "tagline": "Play Attackhole in your browser.",
+    "tagline": "Play Attack Hole in your browser.",
     "url": "games/clattackhole.html"
   },
   {
@@ -948,16 +582,22 @@
     "url": "games/clavalanche.html"
   },
   {
-    "name": "Aviamasters",
+    "name": "Avia Master S",
     "short": "AVIA",
-    "tagline": "Play Aviamasters in your browser.",
+    "tagline": "Play Avia Master S in your browser.",
     "url": "games/claviamasters.html"
   },
   {
-    "name": "Aviamastersbuggy",
+    "name": "Avia Master Sbuggy",
     "short": "AVIA",
-    "tagline": "Play Aviamastersbuggy in your browser.",
+    "tagline": "Play Avia Master Sbuggy in your browser.",
     "url": "games/claviamastersbuggy.html"
+  },
+  {
+    "name": "Awesome Pirates",
+    "short": "AWES",
+    "tagline": "Play Awesome Pirates in your browser.",
+    "url": "games/clAwesomePirates.html"
   },
   {
     "name": "Awesomeplanes",
@@ -978,15 +618,27 @@
     "url": "games/clawesometanks2.html"
   },
   {
+    "name": "B 3313",
+    "short": "B331",
+    "tagline": "Play B 3313 in your browser.",
+    "url": "games/clB3313.html"
+  },
+  {
     "name": "Babeltower",
     "short": "BABE",
     "tagline": "Play Babeltower in your browser.",
     "url": "games/clbabeltower.html"
   },
   {
-    "name": "Babychiccoadventure",
+    "name": "Baby Sniper Invietnam",
     "short": "BABY",
-    "tagline": "Play Babychiccoadventure in your browser.",
+    "tagline": "Play Baby Sniper Invietnam in your browser.",
+    "url": "games/clbabysniperinvietnam.html"
+  },
+  {
+    "name": "Babychicco Adventure",
+    "short": "BABY",
+    "tagline": "Play Babychicco Adventure in your browser.",
     "url": "games/clbabychiccoadventure.html"
   },
   {
@@ -996,39 +648,33 @@
     "url": "games/clbabykaizo.html"
   },
   {
-    "name": "Babysniperinvietnam",
-    "short": "BABY",
-    "tagline": "Play Babysniperinvietnam in your browser.",
-    "url": "games/clbabysniperinvietnam.html"
-  },
-  {
     "name": "Backrooms",
     "short": "BACK",
     "tagline": "Play Backrooms in your browser.",
     "url": "games/clbackrooms.html"
   },
   {
-    "name": "Backrooms 2d",
+    "name": "Backrooms 2D",
     "short": "BACK",
-    "tagline": "Play Backrooms 2d in your browser.",
+    "tagline": "Play Backrooms 2D in your browser.",
     "url": "games/clbackrooms2D.html"
   },
   {
-    "name": "Backyardbaseball",
+    "name": "Backyard Baseball",
     "short": "BACK",
-    "tagline": "Play Backyardbaseball in your browser.",
+    "tagline": "Play Backyard Baseball in your browser.",
     "url": "games/clbackyardbaseball.html"
   },
   {
-    "name": "Backyardbaseball 09",
+    "name": "Backyard Baseball 09",
     "short": "BACK",
-    "tagline": "Play Backyardbaseball 09 in your browser.",
+    "tagline": "Play Backyard Baseball 09 in your browser.",
     "url": "games/clbackyardbaseball09.html"
   },
   {
-    "name": "Backyardbaseball 10",
+    "name": "Backyard Baseball 10",
     "short": "BACK",
-    "tagline": "Play Backyardbaseball 10 in your browser.",
+    "tagline": "Play Backyard Baseball 10 in your browser.",
     "url": "games/clbackyardbaseball10.html"
   },
   {
@@ -1056,9 +702,9 @@
     "url": "games/clbadicecream.html"
   },
   {
-    "name": "Badmondaysimulator",
+    "name": "Badmonday Simulator",
     "short": "BADM",
-    "tagline": "Play Badmondaysimulator in your browser.",
+    "tagline": "Play Badmonday Simulator in your browser.",
     "url": "games/clbadmondaysimulator.html"
   },
   {
@@ -1074,16 +720,16 @@
     "url": "games/clbadpiggies.html"
   },
   {
+    "name": "Badtime Simulator",
+    "short": "BADT",
+    "tagline": "Play Badtime Simulator in your browser.",
+    "url": "games/clbadtimesimulator.html"
+  },
+  {
     "name": "Badtimesim",
     "short": "BADT",
     "tagline": "Play Badtimesim in your browser.",
     "url": "games/clbadtimesim.html"
-  },
-  {
-    "name": "Badtimesimulator",
-    "short": "BADT",
-    "tagline": "Play Badtimesimulator in your browser.",
-    "url": "games/clbadtimesimulator.html"
   },
   {
     "name": "Baldidecomp",
@@ -1098,15 +744,15 @@
     "url": "games/clbaldisbasics.html"
   },
   {
-    "name": "Baldisbasicsremaster",
+    "name": "Baldisbasicsre Master",
     "short": "BALD",
-    "tagline": "Play Baldisbasicsremaster in your browser.",
+    "tagline": "Play Baldisbasicsre Master in your browser.",
     "url": "games/clbaldisbasicsremaster.html"
   },
   {
-    "name": "Baldisfunnewschoolultimate",
+    "name": "Baldisfunnewschool Ultimate",
     "short": "BALD",
-    "tagline": "Play Baldisfunnewschoolultimate in your browser.",
+    "tagline": "Play Baldisfunnewschool Ultimate in your browser.",
     "url": "games/clbaldisfunnewschoolultimate.html"
   },
   {
@@ -1128,9 +774,9 @@
     "url": "games/clballsandbricksgood.html"
   },
   {
-    "name": "Bananasimulator",
+    "name": "Banana Simulator",
     "short": "BANA",
-    "tagline": "Play Bananasimulator in your browser.",
+    "tagline": "Play Banana Simulator in your browser.",
     "url": "games/clbananasimulator.html"
   },
   {
@@ -1152,9 +798,9 @@
     "url": "games/clbanjotooie.html"
   },
   {
-    "name": "Bankbreakout 2",
+    "name": "Bank Breakout 2",
     "short": "BANK",
-    "tagline": "Play Bankbreakout 2 in your browser.",
+    "tagline": "Play Bank Breakout 2 in your browser.",
     "url": "games/clbankbreakout2.html"
   },
   {
@@ -1176,34 +822,34 @@
     "url": "games/clbas.html"
   },
   {
-    "name": "Baseballbros",
+    "name": "Baseball Bros",
     "short": "BASE",
-    "tagline": "Play Baseballbros in your browser.",
+    "tagline": "Play Baseball Bros in your browser.",
     "url": "games/clbaseballbros.html"
   },
   {
-    "name": "Basketballfrvr",
+    "name": "Basket Battle",
     "short": "BASK",
-    "tagline": "Play Basketballfrvr in your browser.",
+    "tagline": "Play Basket Battle in your browser.",
+    "url": "games/clbasketbattle.html"
+  },
+  {
+    "name": "Basketball Frvr",
+    "short": "BASK",
+    "tagline": "Play Basketball Frvr in your browser.",
     "url": "games/clbasketballfrvr.html"
   },
   {
-    "name": "Basketballlegends",
+    "name": "Basketball Legend S",
     "short": "BASK",
-    "tagline": "Play Basketballlegends in your browser.",
+    "tagline": "Play Basketball Legend S in your browser.",
     "url": "games/clbasketballlegends.html"
   },
   {
-    "name": "Basketballstars",
+    "name": "Basketball Stars",
     "short": "BASK",
-    "tagline": "Play Basketballstars in your browser.",
+    "tagline": "Play Basketball Stars in your browser.",
     "url": "games/clbasketballstars.html"
-  },
-  {
-    "name": "Basketbattle",
-    "short": "BASK",
-    "tagline": "Play Basketbattle in your browser.",
-    "url": "games/clbasketbattle.html"
   },
   {
     "name": "Basketrandom",
@@ -1230,27 +876,27 @@
     "url": "games/clbatterup.html"
   },
   {
-    "name": "Battlekarts",
+    "name": "Battle Karts",
     "short": "BATT",
-    "tagline": "Play Battlekarts in your browser.",
+    "tagline": "Play Battle Karts in your browser.",
     "url": "games/clbattlekarts.html"
   },
   {
-    "name": "Battles",
+    "name": "Battle S",
     "short": "BATT",
-    "tagline": "Play Battles in your browser.",
+    "tagline": "Play Battle S in your browser.",
     "url": "games/clbattles.html"
   },
   {
-    "name": "Battlesim",
+    "name": "Battle Sim",
     "short": "BATT",
-    "tagline": "Play Battlesim in your browser.",
+    "tagline": "Play Battle Sim in your browser.",
     "url": "games/clbattlesim.html"
   },
   {
-    "name": "Battlezone",
+    "name": "Battle Zone",
     "short": "BATT",
-    "tagline": "Play Battlezone in your browser.",
+    "tagline": "Play Battle Zone in your browser.",
     "url": "games/clbattlezone.html"
   },
   {
@@ -1260,9 +906,9 @@
     "url": "games/clbazookaboy.html"
   },
   {
-    "name": "Bballlegend",
+    "name": "Bball Legend",
     "short": "BBAL",
-    "tagline": "Play Bballlegend in your browser.",
+    "tagline": "Play Bball Legend in your browser.",
     "url": "games/clbballlegend.html"
   },
   {
@@ -1314,33 +960,69 @@
     "url": "games/clben10racing.html"
   },
   {
-    "name": "Ben 10 Ultimatealien",
+    "name": "Ben 10 Ultimate Alien",
     "short": "BEN1",
-    "tagline": "Play Ben 10 Ultimatealien in your browser.",
+    "tagline": "Play Ben 10 Ultimate Alien in your browser.",
     "url": "games/clben10ultimatealien.html"
   },
   {
-    "name": "Bergentruck 201 X",
+    "name": "Bergentruck 201X",
     "short": "BERG",
-    "tagline": "Play Bergentruck 201 X in your browser.",
+    "tagline": "Play Bergentruck 201X in your browser.",
     "url": "games/clbergentruck201x.html"
   },
   {
-    "name": "Bfdia 5 B",
+    "name": "Bfdia 5B",
     "short": "BFDI",
-    "tagline": "Play Bfdia 5 B in your browser.",
+    "tagline": "Play Bfdia 5B in your browser.",
     "url": "games/clbfdia5b.html"
   },
   {
-    "name": "Bigicetowertinysquare",
+    "name": "Big Neon Tower Tiny Square",
+    "short": "BNTT",
+    "tagline": "Play Big Neon Tower Tiny Square in your browser.",
+    "url": "games/clbntts.html"
+  },
+  {
+    "name": "Big Time Butter Baron",
+    "short": "BIG_",
+    "tagline": "Play Big Time Butter Baron in your browser.",
+    "url": "games/clBig_Time_Butter_Baron.html"
+  },
+  {
+    "name": "Big Tower Tiny Square",
+    "short": "BTTS",
+    "tagline": "Play Big Tower Tiny Square in your browser.",
+    "url": "games/clbtts.html"
+  },
+  {
+    "name": "Big Tower Tiny Square",
+    "short": "BIGT",
+    "tagline": "Play Big Tower Tiny Square in your browser.",
+    "url": "games/clbigtowertinysquare.html"
+  },
+  {
+    "name": "Big Tower Tiny Square 2",
+    "short": "BIGT",
+    "tagline": "Play Big Tower Tiny Square 2 in your browser.",
+    "url": "games/clbigtowertinysquare2.html"
+  },
+  {
+    "name": "Big Tower Tiny Square 2 Good",
+    "short": "BIGT",
+    "tagline": "Play Big Tower Tiny Square 2 Good in your browser.",
+    "url": "games/clbigtowertinysquare2good.html"
+  },
+  {
+    "name": "Bigicetower Tiny Square",
     "short": "BIGI",
-    "tagline": "Play Bigicetowertinysquare in your browser.",
+    "tagline": "Play Bigicetower Tiny Square in your browser.",
     "url": "games/clbigicetowertinysquare.html"
   },
   {
-    "name": "Bigneontowertinysquare",
+    "name": "Bigneontower Tiny Square",
     "short": "BIGN",
-    "tagline": "Play Bigneontowertinysquare in your browser.",
+    "tagline": "Play Bigneontower Tiny Square in your browser.",
     "url": "games/clbigneontowertinysquare.html"
   },
   {
@@ -1348,24 +1030,6 @@
     "short": "BIGS",
     "tagline": "Play Bigshotboxing 2 in your browser.",
     "url": "games/clbigshotboxing2.html"
-  },
-  {
-    "name": "Bigtowertinysquare",
-    "short": "BIGT",
-    "tagline": "Play Bigtowertinysquare in your browser.",
-    "url": "games/clbigtowertinysquare.html"
-  },
-  {
-    "name": "Bigtowertinysquare 2",
-    "short": "BIGT",
-    "tagline": "Play Bigtowertinysquare 2 in your browser.",
-    "url": "games/clbigtowertinysquare2.html"
-  },
-  {
-    "name": "Bigtowertinysquare 2 Good",
-    "short": "BIGT",
-    "tagline": "Play Bigtowertinysquare 2 Good in your browser.",
-    "url": "games/clbigtowertinysquare2good.html"
   },
   {
     "name": "Bindingofisaccsheeptime",
@@ -1416,15 +1080,15 @@
     "url": "games/clblackjack.html"
   },
   {
-    "name": "Blackjackbattle",
+    "name": "Blackjack Battle",
     "short": "BLAC",
-    "tagline": "Play Blackjackbattle in your browser.",
+    "tagline": "Play Blackjack Battle in your browser.",
     "url": "games/clblackjackbattle (1).html"
   },
   {
-    "name": "Blackjackbattle",
+    "name": "Blackjack Battle",
     "short": "BLAC",
-    "tagline": "Play Blackjackbattle in your browser.",
+    "tagline": "Play Blackjack Battle in your browser.",
     "url": "games/clblackjackbattle.html"
   },
   {
@@ -1506,16 +1170,16 @@
     "url": "games/clblockblast.html"
   },
   {
+    "name": "Blockcraft Shooter",
+    "short": "BLOC",
+    "tagline": "Play Blockcraft Shooter in your browser.",
+    "url": "games/clblockcraftshooter.html"
+  },
+  {
     "name": "Blockcraftparkour",
     "short": "BLOC",
     "tagline": "Play Blockcraftparkour in your browser.",
     "url": "games/clblockcraftparkour.html"
-  },
-  {
-    "name": "Blockcraftshooter",
-    "short": "BLOC",
-    "tagline": "Play Blockcraftshooter in your browser.",
-    "url": "games/clblockcraftshooter.html"
   },
   {
     "name": "Blockpost",
@@ -1542,9 +1206,9 @@
     "url": "games/clblockthepig.html"
   },
   {
-    "name": "Blockydemolitionderby",
+    "name": "Blocky Demolition Derby",
     "short": "BLOC",
-    "tagline": "Play Blockydemolitionderby in your browser.",
+    "tagline": "Play Blocky Demolition Derby in your browser.",
     "url": "games/clblockydemolitionderby.html"
   },
   {
@@ -1554,16 +1218,16 @@
     "url": "games/clblockysnakes.html"
   },
   {
+    "name": "Blood Tournament",
+    "short": "BLOO",
+    "tagline": "Play Blood Tournament in your browser.",
+    "url": "games/clbloodtournament.html"
+  },
+  {
     "name": "Bloodmoney",
     "short": "BLOO",
     "tagline": "Play Bloodmoney in your browser.",
     "url": "games/clbloodmoney.html"
-  },
-  {
-    "name": "Bloodtournament",
-    "short": "BLOO",
-    "tagline": "Play Bloodtournament in your browser.",
-    "url": "games/clbloodtournament.html"
   },
   {
     "name": "Bloons",
@@ -1578,76 +1242,88 @@
     "url": "games/clbloons2.html"
   },
   {
-    "name": "Bloons Td1",
+    "name": "Bloons Pop 1",
     "short": "BLOO",
-    "tagline": "Play Bloons Td1 in your browser.",
-    "url": "games/clbloonsTD1.html"
-  },
-  {
-    "name": "Bloons Td2",
-    "short": "BLOO",
-    "tagline": "Play Bloons Td2 in your browser.",
-    "url": "games/clbloonsTD2.html"
-  },
-  {
-    "name": "Bloons Td3",
-    "short": "BLOO",
-    "tagline": "Play Bloons Td3 in your browser.",
-    "url": "games/clbloonsTD3.html"
-  },
-  {
-    "name": "Bloons Td4",
-    "short": "BLOO",
-    "tagline": "Play Bloons Td4 in your browser.",
-    "url": "games/clbloonsTD4.html"
-  },
-  {
-    "name": "Bloons Td5",
-    "short": "BLOO",
-    "tagline": "Play Bloons Td5 in your browser.",
-    "url": "games/clbloonsTD5 (1).html"
-  },
-  {
-    "name": "Bloons Td5",
-    "short": "BLOO",
-    "tagline": "Play Bloons Td5 in your browser.",
-    "url": "games/clbloonsTD5.html"
-  },
-  {
-    "name": "Bloons Td6 Scratch",
-    "short": "BLOO",
-    "tagline": "Play Bloons Td6 Scratch in your browser.",
-    "url": "games/clbloonsTD6scratch.html"
-  },
-  {
-    "name": "Bloonspp 1",
-    "short": "BLOO",
-    "tagline": "Play Bloonspp 1 in your browser.",
+    "tagline": "Play Bloons Pop 1 in your browser.",
     "url": "games/clbloonspp1.html"
   },
   {
-    "name": "Bloonspp 2",
+    "name": "Bloons Pop 2",
     "short": "BLOO",
-    "tagline": "Play Bloonspp 2 in your browser.",
+    "tagline": "Play Bloons Pop 2 in your browser.",
     "url": "games/clbloonspp2.html"
   },
   {
-    "name": "Bloonspp 3",
+    "name": "Bloons Pop 3",
     "short": "BLOO",
-    "tagline": "Play Bloonspp 3 in your browser.",
+    "tagline": "Play Bloons Pop 3 in your browser.",
     "url": "games/clbloonspp3.html"
   },
   {
-    "name": "Bloonspp 4",
+    "name": "Bloons Pop 4",
     "short": "BLOO",
-    "tagline": "Play Bloonspp 4 in your browser.",
+    "tagline": "Play Bloons Pop 4 in your browser.",
     "url": "games/clbloonspp4.html"
   },
   {
-    "name": "Bloonspp 5",
+    "name": "Bloons Pop 5",
     "short": "BLOO",
-    "tagline": "Play Bloonspp 5 in your browser.",
+    "tagline": "Play Bloons Pop 5 in your browser.",
     "url": "games/clbloonspp5.html"
+  },
+  {
+    "name": "Bloons Td 1",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 1 in your browser.",
+    "url": "games/clbloonsTD1.html"
+  },
+  {
+    "name": "Bloons TD 1",
+    "short": "BTD1",
+    "tagline": "Play Bloons TD 1 in your browser.",
+    "url": "games/clBTD1.html"
+  },
+  {
+    "name": "Bloons Td 2",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 2 in your browser.",
+    "url": "games/clbloonsTD2.html"
+  },
+  {
+    "name": "Bloons Td 3",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 3 in your browser.",
+    "url": "games/clbloonsTD3.html"
+  },
+  {
+    "name": "Bloons Td 4",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 4 in your browser.",
+    "url": "games/clbloonsTD4.html"
+  },
+  {
+    "name": "Bloons Td 5",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 5 in your browser.",
+    "url": "games/clbloonsTD5 (1).html"
+  },
+  {
+    "name": "Bloons Td 5",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 5 in your browser.",
+    "url": "games/clbloonsTD5.html"
+  },
+  {
+    "name": "Bloons TD 5",
+    "short": "BTD5",
+    "tagline": "Play Bloons TD 5 in your browser.",
+    "url": "games/clbtd5.html"
+  },
+  {
+    "name": "Bloons Td 6 Scratch",
+    "short": "BLOO",
+    "tagline": "Play Bloons Td 6 Scratch in your browser.",
+    "url": "games/clbloonsTD6scratch.html"
   },
   {
     "name": "Bloxorz",
@@ -1662,10 +1338,10 @@
     "url": "games/clblumgiracers.html"
   },
   {
-    "name": "Bntts",
-    "short": "BNTT",
-    "tagline": "Play Bntts in your browser.",
-    "url": "games/clbntts.html"
+    "name": "BMX 2",
+    "short": "BMX2",
+    "tagline": "Play BMX 2 in your browser.",
+    "url": "games/clBMX2.html"
   },
   {
     "name": "Bobtherobber",
@@ -1728,10 +1404,16 @@
     "url": "games/clbottlecracks.html"
   },
   {
-    "name": "Bottleflip 3 D",
+    "name": "Bottleflip 3D",
     "short": "BOTT",
-    "tagline": "Play Bottleflip 3 D in your browser.",
+    "tagline": "Play Bottleflip 3D in your browser.",
     "url": "games/clbottleflip3d.html"
+  },
+  {
+    "name": "Bounce Master S",
+    "short": "BOUN",
+    "tagline": "Play Bounce Master S in your browser.",
+    "url": "games/clbouncemasters.html"
   },
   {
     "name": "Bounceback",
@@ -1740,16 +1422,16 @@
     "url": "games/clbounceback.html"
   },
   {
-    "name": "Bouncemasters",
-    "short": "BOUN",
-    "tagline": "Play Bouncemasters in your browser.",
-    "url": "games/clbouncemasters.html"
-  },
-  {
     "name": "Bouncymotors",
     "short": "BOUN",
     "tagline": "Play Bouncymotors in your browser.",
     "url": "games/clbouncymotors.html"
+  },
+  {
+    "name": "Bounty of One",
+    "short": "BOUN",
+    "tagline": "Play Bounty of One in your browser.",
+    "url": "games/clBountyOfOne.html"
   },
   {
     "name": "Bowlalt",
@@ -1794,33 +1476,21 @@
     "url": "games/clbridgerace.html"
   },
   {
-    "name": "Btd 5",
-    "short": "BTD5",
-    "tagline": "Play Btd 5 in your browser.",
-    "url": "games/clbtd5.html"
-  },
-  {
-    "name": "Btts",
-    "short": "BTTS",
-    "tagline": "Play Btts in your browser.",
-    "url": "games/clbtts.html"
-  },
-  {
     "name": "Btts 2",
     "short": "BTTS",
     "tagline": "Play Btts 2 in your browser.",
     "url": "games/clbtts2.html"
   },
   {
-    "name": "Bubbleshooter",
+    "name": "Bubble Shooter",
     "short": "BUBB",
-    "tagline": "Play Bubbleshooter in your browser.",
+    "tagline": "Play Bubble Shooter in your browser.",
     "url": "games/clbubbleshooter.html"
   },
   {
-    "name": "Bubbleshooterpirate",
+    "name": "Bubble Shooter Pirate",
     "short": "BUBB",
-    "tagline": "Play Bubbleshooterpirate in your browser.",
+    "tagline": "Play Bubble Shooter Pirate in your browser.",
     "url": "games/clbubbleshooterpirate.html"
   },
   {
@@ -1842,9 +1512,9 @@
     "url": "games/clbubbletanks3.html"
   },
   {
-    "name": "Bubbletanksarenas",
+    "name": "Bubbletanks Arena S",
     "short": "BUBB",
-    "tagline": "Play Bubbletanksarenas in your browser.",
+    "tagline": "Play Bubbletanks Arena S in your browser.",
     "url": "games/clbubbletanksarenas.html"
   },
   {
@@ -1902,16 +1572,16 @@
     "url": "games/clburritobison2.html"
   },
   {
+    "name": "Burritobison Revenge",
+    "short": "BURR",
+    "tagline": "Play Burritobison Revenge in your browser.",
+    "url": "games/clburritobisonrevenge.html"
+  },
+  {
     "name": "Burritobisonlaunchalibre",
     "short": "BURR",
     "tagline": "Play Burritobisonlaunchalibre in your browser.",
     "url": "games/clburritobisonlaunchalibre.html"
-  },
-  {
-    "name": "Burritobisonrevenge",
-    "short": "BURR",
-    "tagline": "Play Burritobisonrevenge in your browser.",
-    "url": "games/clburritobisonrevenge.html"
   },
   {
     "name": "Bushidoblade",
@@ -1932,9 +1602,9 @@
     "url": "games/clcactusmccoy2.html"
   },
   {
-    "name": "Cannonballs 3 D",
+    "name": "Cannonballs 3D",
     "short": "CANN",
-    "tagline": "Play Cannonballs 3 D in your browser.",
+    "tagline": "Play Cannonballs 3D in your browser.",
     "url": "games/clcannonballs3d.html"
   },
   {
@@ -1968,9 +1638,9 @@
     "url": "games/clcareatscar2deluxe.html"
   },
   {
-    "name": "Carkingarena",
+    "name": "Carking Arena",
     "short": "CARK",
-    "tagline": "Play Carkingarena in your browser.",
+    "tagline": "Play Carking Arena in your browser.",
     "url": "games/clcarkingarena.html"
   },
   {
@@ -1986,51 +1656,57 @@
     "url": "games/clcarstuntsdriving.html"
   },
   {
-    "name": "Castlebloodline",
+    "name": "Cartoon Network Table Tennis Ultimate Tournament",
+    "short": "CART",
+    "tagline": "Play Cartoon Network Table Tennis Ultimate Tournament in your browser.",
+    "url": "games/clCartoonNetworkTableTennisUltimateTournament.html"
+  },
+  {
+    "name": "Castle Bloodline",
     "short": "CAST",
-    "tagline": "Play Castlebloodline in your browser.",
+    "tagline": "Play Castle Bloodline in your browser.",
     "url": "games/clcastlebloodline.html"
   },
   {
-    "name": "Castlecircleofmoon",
+    "name": "Castle Circleofmoon",
     "short": "CAST",
-    "tagline": "Play Castlecircleofmoon in your browser.",
+    "tagline": "Play Castle Circleofmoon in your browser.",
     "url": "games/clcastlecircleofmoon.html"
   },
   {
-    "name": "Castlevania",
+    "name": "Castle Vania",
     "short": "CAST",
-    "tagline": "Play Castlevania in your browser.",
+    "tagline": "Play Castle Vania in your browser.",
     "url": "games/clcastlevania.html"
   },
   {
-    "name": "Castlevania 2",
+    "name": "Castle Vania 2",
     "short": "CAST",
-    "tagline": "Play Castlevania 2 in your browser.",
+    "tagline": "Play Castle Vania 2 in your browser.",
     "url": "games/clcastlevania2.html"
   },
   {
-    "name": "Castlevania 3",
+    "name": "Castle Vania 3",
     "short": "CAST",
-    "tagline": "Play Castlevania 3 in your browser.",
+    "tagline": "Play Castle Vania 3 in your browser.",
     "url": "games/clcastlevania3.html"
   },
   {
-    "name": "Castlevaniaariaofsorrow",
+    "name": "Castle Vaniaariaofsorrow",
     "short": "CAST",
-    "tagline": "Play Castlevaniaariaofsorrow in your browser.",
+    "tagline": "Play Castle Vaniaariaofsorrow in your browser.",
     "url": "games/clcastlevaniaariaofsorrow.html"
   },
   {
-    "name": "Castlevanianes",
+    "name": "Castle Vanianes",
     "short": "CAST",
-    "tagline": "Play Castlevanianes in your browser.",
+    "tagline": "Play Castle Vanianes in your browser.",
     "url": "games/clcastlevanianes.html"
   },
   {
-    "name": "Castlewarsmodern",
+    "name": "Castle Warsmodern",
     "short": "CAST",
-    "tagline": "Play Castlewarsmodern in your browser.",
+    "tagline": "Play Castle Warsmodern in your browser.",
     "url": "games/clcastlewarsmodern.html"
   },
   {
@@ -2076,9 +1752,9 @@
     "url": "games/clcellmachine.html"
   },
   {
-    "name": "Chaosfaction 2",
+    "name": "Chaos Faction 2",
     "short": "CHAO",
-    "tagline": "Play Chaosfaction 2 in your browser.",
+    "tagline": "Play Chaos Faction 2 in your browser.",
     "url": "games/clchaosfaction2.html"
   },
   {
@@ -2088,9 +1764,9 @@
     "url": "games/clcheckers.html"
   },
   {
-    "name": "Cheesechompers 3 D",
+    "name": "Cheesechompers 3D",
     "short": "CHEE",
-    "tagline": "Play Cheesechompers 3 D in your browser.",
+    "tagline": "Play Cheesechompers 3D in your browser.",
     "url": "games/clcheesechompers3d.html"
   },
   {
@@ -2106,15 +1782,15 @@
     "url": "games/clchess.html"
   },
   {
-    "name": "Chessclassic",
+    "name": "Chess Classic",
     "short": "CHES",
-    "tagline": "Play Chessclassic in your browser.",
+    "tagline": "Play Chess Classic in your browser.",
     "url": "games/clchessclassic.html"
   },
   {
-    "name": "Chibiknight",
+    "name": "Chibi Knight",
     "short": "CHIB",
-    "tagline": "Play Chibiknight in your browser.",
+    "tagline": "Play Chibi Knight in your browser.",
     "url": "games/clchibiknight.html"
   },
   {
@@ -2130,9 +1806,9 @@
     "url": "games/clchickenwar.html"
   },
   {
-    "name": "Chipschallenge",
+    "name": "Chips Challenge",
     "short": "CHIP",
-    "tagline": "Play Chipschallenge in your browser.",
+    "tagline": "Play Chips Challenge in your browser.",
     "url": "games/clchipschallenge.html"
   },
   {
@@ -2148,6 +1824,12 @@
     "url": "games/clchronotrigger.html"
   },
   {
+    "name": "Circlo O 2",
+    "short": "CIRC",
+    "tagline": "Play Circlo O 2 in your browser.",
+    "url": "games/clCircloO2.html"
+  },
+  {
     "name": "Civiballs",
     "short": "CIVI",
     "tagline": "Play Civiballs in your browser.",
@@ -2158,6 +1840,12 @@
     "short": "CIVI",
     "tagline": "Play Civiballs 2 in your browser.",
     "url": "games/clciviballs2.html"
+  },
+  {
+    "name": "Cl Madness Ambulation",
+    "short": "CLMA",
+    "tagline": "Play Cl Madness Ambulation in your browser.",
+    "url": "games/clclmadnessambulation.html"
   },
   {
     "name": "Clashofvikings",
@@ -2208,12 +1896,6 @@
     "url": "games/clclearvision5.html"
   },
   {
-    "name": "Clmadnessambulation",
-    "short": "CLMA",
-    "tagline": "Play Clmadnessambulation in your browser.",
-    "url": "games/clclmadnessambulation.html"
-  },
-  {
     "name": "Clubbytheseal",
     "short": "CLUB",
     "tagline": "Play Clubbytheseal in your browser.",
@@ -2238,34 +1920,34 @@
     "url": "games/clcod4.html"
   },
   {
-    "name": "Codblackopp",
+    "name": "COD Black Ops",
     "short": "CODB",
-    "tagline": "Play Codblackopp in your browser.",
+    "tagline": "Play COD Black Ops in your browser.",
     "url": "games/clcodblackopp.html"
   },
   {
-    "name": "Coddefiance",
+    "name": "COD Defiance",
     "short": "CODD",
-    "tagline": "Play Coddefiance in your browser.",
+    "tagline": "Play COD Defiance in your browser.",
     "url": "games/clcoddefiance.html"
   },
   {
-    "name": "Codenamegordon",
-    "short": "CODE",
-    "tagline": "Play Codenamegordon in your browser.",
-    "url": "games/clcodenamegordon.html"
-  },
-  {
-    "name": "Codmodernwarfare",
+    "name": "COD Modern Warfare",
     "short": "CODM",
-    "tagline": "Play Codmodernwarfare in your browser.",
+    "tagline": "Play COD Modern Warfare in your browser.",
     "url": "games/clcodmodernwarfare.html"
   },
   {
-    "name": "Codworldatwar",
+    "name": "COD World at War",
     "short": "CODW",
-    "tagline": "Play Codworldatwar in your browser.",
+    "tagline": "Play COD World at War in your browser.",
     "url": "games/clcodworldatwar.html"
+  },
+  {
+    "name": "Codename Gordon",
+    "short": "CODE",
+    "tagline": "Play Codename Gordon in your browser.",
+    "url": "games/clcodenamegordon.html"
   },
   {
     "name": "Coffeemaker",
@@ -2274,9 +1956,9 @@
     "url": "games/clcoffeemaker.html"
   },
   {
-    "name": "Colorburst 3 D",
+    "name": "Colorburst 3D",
     "short": "COLO",
-    "tagline": "Play Colorburst 3 D in your browser.",
+    "tagline": "Play Colorburst 3D in your browser.",
     "url": "games/clcolorburst3d.html"
   },
   {
@@ -2286,9 +1968,9 @@
     "url": "games/clcolormatch.html"
   },
   {
-    "name": "Colorwatersort 3 D",
+    "name": "Colorwatersort 3D",
     "short": "COLO",
-    "tagline": "Play Colorwatersort 3 D in your browser.",
+    "tagline": "Play Colorwatersort 3D in your browser.",
     "url": "games/clcolorwatersort3d.html"
   },
   {
@@ -2334,21 +2016,27 @@
     "url": "games/clcontra3.html"
   },
   {
-    "name": "Cookieclicker",
+    "name": "Cookie Clicker",
     "short": "COOK",
-    "tagline": "Play Cookieclicker in your browser.",
+    "tagline": "Play Cookie Clicker in your browser.",
+    "url": "games/CC (1).html"
+  },
+  {
+    "name": "Cookie Clicker",
+    "short": "COOK",
+    "tagline": "Play Cookie Clicker in your browser.",
     "url": "games/clcookieclicker.html"
   },
   {
-    "name": "Cookieclickercool",
+    "name": "Cookie Clickercool",
     "short": "COOK",
-    "tagline": "Play Cookieclickercool in your browser.",
+    "tagline": "Play Cookie Clickercool in your browser.",
     "url": "games/clcookieclickercool.html"
   },
   {
-    "name": "Cookieclickergood",
+    "name": "Cookie Clickergood",
     "short": "COOK",
-    "tagline": "Play Cookieclickergood in your browser.",
+    "tagline": "Play Cookie Clickergood in your browser.",
     "url": "games/clcookieclickergood.html"
   },
   {
@@ -2382,10 +2070,22 @@
     "url": "games/clcotlk.html"
   },
   {
-    "name": "Countmastersstickmangames",
+    "name": "Count Master Sstickmangames",
     "short": "COUN",
-    "tagline": "Play Countmastersstickmangames in your browser.",
+    "tagline": "Play Count Master Sstickmangames in your browser.",
     "url": "games/clcountmastersstickmangames.html"
+  },
+  {
+    "name": "Counter-Strike 1.6",
+    "short": "CS1.",
+    "tagline": "Play Counter-Strike 1.6 in your browser.",
+    "url": "games/clcs1.6.html"
+  },
+  {
+    "name": "Counter-Strike DS",
+    "short": "CSDS",
+    "tagline": "Play Counter-Strike DS in your browser.",
+    "url": "games/clcsds.html"
   },
   {
     "name": "Coverorange",
@@ -2400,15 +2100,15 @@
     "url": "games/clcoverorange2.html"
   },
   {
-    "name": "Coverorangejourneygangsters",
+    "name": "Coverorangejourney Gangster S",
     "short": "COVE",
-    "tagline": "Play Coverorangejourneygangsters in your browser.",
+    "tagline": "Play Coverorangejourney Gangster S in your browser.",
     "url": "games/clcoverorangejourneygangsters.html"
   },
   {
-    "name": "Coverorangejourneyknights",
+    "name": "Coverorangejourney Knight S",
     "short": "COVE",
-    "tagline": "Play Coverorangejourneyknights in your browser.",
+    "tagline": "Play Coverorangejourney Knight S in your browser.",
     "url": "games/clcoverorangejourneyknights.html"
   },
   {
@@ -2460,9 +2160,9 @@
     "url": "games/clcrashbandicoot2.html"
   },
   {
-    "name": "Crashteamracing",
+    "name": "Crashteam Racing",
     "short": "CRAS",
-    "tagline": "Play Crashteamracing in your browser.",
+    "tagline": "Play Crashteam Racing in your browser.",
     "url": "games/clcrashteamracing.html"
   },
   {
@@ -2472,15 +2172,15 @@
     "url": "games/clcrazycars.html"
   },
   {
-    "name": "Crazycattle 3 D",
+    "name": "Crazycattle 3D",
     "short": "CRAZ",
-    "tagline": "Play Crazycattle 3 D in your browser.",
+    "tagline": "Play Crazycattle 3D in your browser.",
     "url": "games/clcrazycattle3d.html"
   },
   {
-    "name": "Crazychicken 3d",
+    "name": "Crazychicken 3D",
     "short": "CRAZ",
-    "tagline": "Play Crazychicken 3d in your browser.",
+    "tagline": "Play Crazychicken 3D in your browser.",
     "url": "games/clcrazychicken3D.html"
   },
   {
@@ -2496,9 +2196,9 @@
     "url": "games/clcrazymotorcycle.html"
   },
   {
-    "name": "Creeperworld 2",
+    "name": "Creeper World 2",
     "short": "CREE",
-    "tagline": "Play Creeperworld 2 in your browser.",
+    "tagline": "Play Creeper World 2 in your browser.",
     "url": "games/clcreeperworld2.html"
   },
   {
@@ -2514,27 +2214,15 @@
     "url": "games/clcrunchball3000.html"
   },
   {
-    "name": "Cs 1.6",
-    "short": "CS1.",
-    "tagline": "Play Cs 1.6 in your browser.",
-    "url": "games/clcs1.6.html"
-  },
-  {
-    "name": "Csds",
-    "short": "CSDS",
-    "tagline": "Play Csds in your browser.",
-    "url": "games/clcsds.html"
-  },
-  {
-    "name": "Csgoclicker",
+    "name": "CSGO Clicker",
     "short": "CSGO",
-    "tagline": "Play Csgoclicker in your browser.",
+    "tagline": "Play CSGO Clicker in your browser.",
     "url": "games/clcsgoclicker.html"
   },
   {
-    "name": "Ctgpnitro",
+    "name": "CTGP Nitro",
     "short": "CTGP",
-    "tagline": "Play Ctgpnitro in your browser.",
+    "tagline": "Play CTGP Nitro in your browser.",
     "url": "games/clctgpnitro.html"
   },
   {
@@ -2556,9 +2244,9 @@
     "url": "games/clcuttheropetimetravel.html"
   },
   {
-    "name": "Cyberbungracing",
+    "name": "Cyberbung Racing",
     "short": "CYBE",
-    "tagline": "Play Cyberbungracing in your browser.",
+    "tagline": "Play Cyberbung Racing in your browser.",
     "url": "games/clcyberbungracing.html"
   },
   {
@@ -2590,42 +2278,6 @@
     "short": "DANK",
     "tagline": "Play Danktomb in your browser.",
     "url": "games/cldanktomb.html"
-  },
-  {
-    "name": "Dborigins",
-    "short": "DBOR",
-    "tagline": "Play Dborigins in your browser.",
-    "url": "games/cldborigins.html"
-  },
-  {
-    "name": "Dborigins 2",
-    "short": "DBOR",
-    "tagline": "Play Dborigins 2 in your browser.",
-    "url": "games/cldborigins2.html"
-  },
-  {
-    "name": "Dbsniper",
-    "short": "DBSN",
-    "tagline": "Play Dbsniper in your browser.",
-    "url": "games/cldbsniper.html"
-  },
-  {
-    "name": "Dbzattacksaiyans",
-    "short": "DBZA",
-    "tagline": "Play Dbzattacksaiyans in your browser.",
-    "url": "games/cldbzattacksaiyans.html"
-  },
-  {
-    "name": "Dbzdevolution",
-    "short": "DBZD",
-    "tagline": "Play Dbzdevolution in your browser.",
-    "url": "games/cldbzdevolution.html"
-  },
-  {
-    "name": "Dbzsuperwarriorssonic",
-    "short": "DBZS",
-    "tagline": "Play Dbzsuperwarriorssonic in your browser.",
-    "url": "games/cldbzsuperwarriorssonic.html"
   },
   {
     "name": "Deadestate",
@@ -2712,9 +2364,9 @@
     "url": "games/cldeepsleep.html"
   },
   {
-    "name": "Defendyourcastle",
+    "name": "Defendyour Castle",
     "short": "DEFE",
-    "tagline": "Play Defendyourcastle in your browser.",
+    "tagline": "Play Defendyour Castle in your browser.",
     "url": "games/cldefendyourcastle.html"
   },
   {
@@ -2748,9 +2400,9 @@
     "url": "games/cldementium.html"
   },
   {
-    "name": "Demolitionderbycrashracing",
+    "name": "Demolition Derbycrash Racing",
     "short": "DEMO",
-    "tagline": "Play Demolitionderbycrashracing in your browser.",
+    "tagline": "Play Demolition Derbycrash Racing in your browser.",
     "url": "games/cldemolitionderbycrashracing.html"
   },
   {
@@ -2772,9 +2424,9 @@
     "url": "games/cldiamondhollow2.html"
   },
   {
-    "name": "Diddykong-racing",
+    "name": "Diddykong- Racing",
     "short": "DIDD",
-    "tagline": "Play Diddykong-racing in your browser.",
+    "tagline": "Play Diddykong- Racing in your browser.",
     "url": "games/cldiddykong-racing.html"
   },
   {
@@ -2850,57 +2502,57 @@
     "url": "games/cldokidokiliteratureclub.html"
   },
   {
-    "name": "Donkeykong",
+    "name": "Donkey Kong",
     "short": "DONK",
-    "tagline": "Play Donkeykong in your browser.",
+    "tagline": "Play Donkey Kong in your browser.",
     "url": "games/cldonkeykong.html"
   },
   {
-    "name": "Donkeykong 64",
+    "name": "Donkey Kong 64",
     "short": "DONK",
-    "tagline": "Play Donkeykong 64 in your browser.",
+    "tagline": "Play Donkey Kong 64 in your browser.",
     "url": "games/cldonkeykong64.html"
   },
   {
-    "name": "Donkeykongcountry",
+    "name": "Donkey Kongcountry",
     "short": "DONK",
-    "tagline": "Play Donkeykongcountry in your browser.",
+    "tagline": "Play Donkey Kongcountry in your browser.",
     "url": "games/cldonkeykongcountry.html"
   },
   {
-    "name": "Donkeykongcountry 2",
+    "name": "Donkey Kongcountry 2",
     "short": "DONK",
-    "tagline": "Play Donkeykongcountry 2 in your browser.",
+    "tagline": "Play Donkey Kongcountry 2 in your browser.",
     "url": "games/cldonkeykongcountry2.html"
   },
   {
-    "name": "Donkeykongcountry 3",
+    "name": "Donkey Kongcountry 3",
     "short": "DONK",
-    "tagline": "Play Donkeykongcountry 3 in your browser.",
+    "tagline": "Play Donkey Kongcountry 3 in your browser.",
     "url": "games/cldonkeykongcountry3.html"
   },
   {
-    "name": "Donkeykongnes",
+    "name": "Donkey Kongnes",
     "short": "DONK",
-    "tagline": "Play Donkeykongnes in your browser.",
+    "tagline": "Play Donkey Kongnes in your browser.",
     "url": "games/cldonkeykongnes.html"
   },
   {
-    "name": "Dontescape",
+    "name": "Dont Escape",
     "short": "DONT",
-    "tagline": "Play Dontescape in your browser.",
+    "tagline": "Play Dont Escape in your browser.",
     "url": "games/cldontescape.html"
   },
   {
-    "name": "Dontescape 2",
+    "name": "Dont Escape 2",
     "short": "DONT",
-    "tagline": "Play Dontescape 2 in your browser.",
+    "tagline": "Play Dont Escape 2 in your browser.",
     "url": "games/cldontescape2.html"
   },
   {
-    "name": "Dontescape 3",
+    "name": "Dont Escape 3",
     "short": "DONT",
-    "tagline": "Play Dontescape 3 in your browser.",
+    "tagline": "Play Dont Escape 3 in your browser.",
     "url": "games/cldontescape3.html"
   },
   {
@@ -2928,15 +2580,15 @@
     "url": "games/cldoom2.html"
   },
   {
-    "name": "Doom 2 D",
+    "name": "Doom 2D",
     "short": "DOOM",
-    "tagline": "Play Doom 2 D in your browser.",
+    "tagline": "Play Doom 2D in your browser.",
     "url": "games/cldoom2d.html"
   },
   {
-    "name": "Doom 2 D Dos",
+    "name": "Doom 2D Dos",
     "short": "DOOM",
-    "tagline": "Play Doom 2 D Dos in your browser.",
+    "tagline": "Play Doom 2D Dos in your browser.",
     "url": "games/cldoom2dDOS.html"
   },
   {
@@ -2994,15 +2646,75 @@
     "url": "games/cldownthemountain.html"
   },
   {
-    "name": "Dragonballadvance",
+    "name": "Dr. Mario",
+    "short": "DRMA",
+    "tagline": "Play Dr. Mario in your browser.",
+    "url": "games/cldrmario.html"
+  },
+  {
+    "name": "Dr. W.D. Gaster",
+    "short": "DRWE",
+    "tagline": "Play Dr. W.D. Gaster in your browser.",
+    "url": "games/cldrweedgaster.html"
+  },
+  {
+    "name": "Dragon Ball Origins",
+    "short": "DBOR",
+    "tagline": "Play Dragon Ball Origins in your browser.",
+    "url": "games/cldborigins.html"
+  },
+  {
+    "name": "Dragon Ball Origins 2",
+    "short": "DBOR",
+    "tagline": "Play Dragon Ball Origins 2 in your browser.",
+    "url": "games/cldborigins2.html"
+  },
+  {
+    "name": "Dragon Ball Sniper",
+    "short": "DBSN",
+    "tagline": "Play Dragon Ball Sniper in your browser.",
+    "url": "games/cldbsniper.html"
+  },
+  {
+    "name": "Dragon Ball Z Attack of the Saiyans",
+    "short": "DBZA",
+    "tagline": "Play Dragon Ball Z Attack of the Saiyans in your browser.",
+    "url": "games/cldbzattacksaiyans.html"
+  },
+  {
+    "name": "Dragon Ball Z Devolution",
+    "short": "DBZD",
+    "tagline": "Play Dragon Ball Z Devolution in your browser.",
+    "url": "games/cldbzdevolution.html"
+  },
+  {
+    "name": "Dragon Ball Z Super Warrior S",
+    "short": "DBZS",
+    "tagline": "Play Dragon Ball Z Super Warrior S in your browser.",
+    "url": "games/cldbzsuperwarriorssonic.html"
+  },
+  {
+    "name": "Dragon Ball Zthe Legacyof Goku",
     "short": "DRAG",
-    "tagline": "Play Dragonballadvance in your browser.",
+    "tagline": "Play Dragon Ball Zthe Legacyof Goku in your browser.",
+    "url": "games/clDragonBallZTheLegacyofGoku.html"
+  },
+  {
+    "name": "Dragon Balladvance",
+    "short": "DRAG",
+    "tagline": "Play Dragon Balladvance in your browser.",
     "url": "games/cldragonballadvance.html"
   },
   {
-    "name": "Drawclimber",
+    "name": "Dragon Quest Ix",
+    "short": "DRAG",
+    "tagline": "Play Dragon Quest Ix in your browser.",
+    "url": "games/clDragonQuestIX.html"
+  },
+  {
+    "name": "Draw Climber",
     "short": "DRAW",
-    "tagline": "Play Drawclimber in your browser.",
+    "tagline": "Play Draw Climber in your browser.",
     "url": "games/cldrawclimber.html"
   },
   {
@@ -3048,22 +2760,46 @@
     "url": "games/cldrivenwild.html"
   },
   {
-    "name": "Drmario",
-    "short": "DRMA",
-    "tagline": "Play Drmario in your browser.",
-    "url": "games/cldrmario.html"
-  },
-  {
-    "name": "Drweedgaster",
-    "short": "DRWE",
-    "tagline": "Play Drweedgaster in your browser.",
-    "url": "games/cldrweedgaster.html"
-  },
-  {
     "name": "Dubstep",
     "short": "DUBS",
     "tagline": "Play Dubstep in your browser.",
     "url": "games/cldubstep.html"
+  },
+  {
+    "name": "Duck Life",
+    "short": "DUCK",
+    "tagline": "Play Duck Life in your browser.",
+    "url": "games/clducklife.html"
+  },
+  {
+    "name": "Duck Life 2",
+    "short": "DUCK",
+    "tagline": "Play Duck Life 2 in your browser.",
+    "url": "games/clducklife2.html"
+  },
+  {
+    "name": "Duck Life 3",
+    "short": "DUCK",
+    "tagline": "Play Duck Life 3 in your browser.",
+    "url": "games/clducklife3.html"
+  },
+  {
+    "name": "Duck Life 4",
+    "short": "DUCK",
+    "tagline": "Play Duck Life 4 in your browser.",
+    "url": "games/clducklife4.html"
+  },
+  {
+    "name": "Duck Life Battle",
+    "short": "DUCK",
+    "tagline": "Play Duck Life Battle in your browser.",
+    "url": "games/clducklifebattle.html"
+  },
+  {
+    "name": "Duck Lifespace",
+    "short": "DUCK",
+    "tagline": "Play Duck Lifespace in your browser.",
+    "url": "games/clducklifespace.html"
   },
   {
     "name": "Duckhunt",
@@ -3076,42 +2812,6 @@
     "short": "DUCK",
     "tagline": "Play Ducklfe 5 in your browser.",
     "url": "games/clducklfe5.html"
-  },
-  {
-    "name": "Ducklife",
-    "short": "DUCK",
-    "tagline": "Play Ducklife in your browser.",
-    "url": "games/clducklife.html"
-  },
-  {
-    "name": "Ducklife 2",
-    "short": "DUCK",
-    "tagline": "Play Ducklife 2 in your browser.",
-    "url": "games/clducklife2.html"
-  },
-  {
-    "name": "Ducklife 3",
-    "short": "DUCK",
-    "tagline": "Play Ducklife 3 in your browser.",
-    "url": "games/clducklife3.html"
-  },
-  {
-    "name": "Ducklife 4",
-    "short": "DUCK",
-    "tagline": "Play Ducklife 4 in your browser.",
-    "url": "games/clducklife4.html"
-  },
-  {
-    "name": "Ducklifebattle",
-    "short": "DUCK",
-    "tagline": "Play Ducklifebattle in your browser.",
-    "url": "games/clducklifebattle.html"
-  },
-  {
-    "name": "Ducklifespace",
-    "short": "DUCK",
-    "tagline": "Play Ducklifespace in your browser.",
-    "url": "games/clducklifespace.html"
   },
   {
     "name": "Ducklingsio",
@@ -3132,9 +2832,9 @@
     "url": "games/cldud.html"
   },
   {
-    "name": "Dukenukem 3 D",
+    "name": "Dukenukem 3D",
     "short": "DUKE",
-    "tagline": "Play Dukenukem 3 D in your browser.",
+    "tagline": "Play Dukenukem 3D in your browser.",
     "url": "games/cldukenukem3d.html"
   },
   {
@@ -3258,9 +2958,9 @@
     "url": "games/cledelweiss.html"
   },
   {
-    "name": "Edyscarsimulator",
+    "name": "Edyscar Simulator",
     "short": "EDYS",
-    "tagline": "Play Edyscarsimulator in your browser.",
+    "tagline": "Play Edyscar Simulator in your browser.",
     "url": "games/cledyscarsimulator.html"
   },
   {
@@ -3354,9 +3054,9 @@
     "url": "games/clenduro.html"
   },
   {
-    "name": "Epicbattlefantasy 5",
+    "name": "Epic Battle Fantasy 5",
     "short": "EPIC",
-    "tagline": "Play Epicbattlefantasy 5 in your browser.",
+    "tagline": "Play Epic Battle Fantasy 5 in your browser.",
     "url": "games/clepicbattlefantasy5.html"
   },
   {
@@ -3366,9 +3066,9 @@
     "url": "games/clescalatingduel.html"
   },
   {
-    "name": "Escaperoad",
+    "name": "Escape Road",
     "short": "ESCA",
-    "tagline": "Play Escaperoad in your browser.",
+    "tagline": "Play Escape Road in your browser.",
     "url": "games/clescaperoad.html"
   },
   {
@@ -3402,9 +3102,9 @@
     "url": "games/clexcitebike64.html"
   },
   {
-    "name": "Extremerun 3 D",
+    "name": "Extreme Run 3D",
     "short": "EXTR",
-    "tagline": "Play Extremerun 3 D in your browser.",
+    "tagline": "Play Extreme Run 3D in your browser.",
     "url": "games/clextremerun3d.html"
   },
   {
@@ -3450,21 +3150,21 @@
     "url": "games/clfamidash.html"
   },
   {
-    "name": "Fancypantsadventure",
+    "name": "Fancypants Adventure",
     "short": "FANC",
-    "tagline": "Play Fancypantsadventure in your browser.",
+    "tagline": "Play Fancypants Adventure in your browser.",
     "url": "games/clfancypantsadventure.html"
   },
   {
-    "name": "Fancypantsadventure 2",
+    "name": "Fancypants Adventure 2",
     "short": "FANC",
-    "tagline": "Play Fancypantsadventure 2 in your browser.",
+    "tagline": "Play Fancypants Adventure 2 in your browser.",
     "url": "games/clfancypantsadventure2.html"
   },
   {
-    "name": "Fancypantsadventure 3",
+    "name": "Fancypants Adventure 3",
     "short": "FANC",
-    "tagline": "Play Fancypantsadventure 3 in your browser.",
+    "tagline": "Play Fancypants Adventure 3 in your browser.",
     "url": "games/clfancypantsadventure3.html"
   },
   {
@@ -3474,9 +3174,9 @@
     "url": "games/clfancysnowboarding.html"
   },
   {
-    "name": "Fashionbattle",
+    "name": "Fashion Battle",
     "short": "FASH",
-    "tagline": "Play Fashionbattle in your browser.",
+    "tagline": "Play Fashion Battle in your browser.",
     "url": "games/clfashionbattle.html"
   },
   {
@@ -3528,10 +3228,28 @@
     "url": "games/clff6.html"
   },
   {
-    "name": "Ffmysticquest",
+    "name": "Ffmystic Quest",
     "short": "FFMY",
-    "tagline": "Play Ffmysticquest in your browser.",
+    "tagline": "Play Ffmystic Quest in your browser.",
     "url": "games/clffmysticquest.html"
+  },
+  {
+    "name": "Fifa 07",
+    "short": "FIFA",
+    "tagline": "Play Fifa 07 in your browser.",
+    "url": "games/clFIFA07.html"
+  },
+  {
+    "name": "Fifa 10",
+    "short": "FIFA",
+    "tagline": "Play Fifa 10 in your browser.",
+    "url": "games/clFIFA10.html"
+  },
+  {
+    "name": "Fifa 11",
+    "short": "FIFA",
+    "tagline": "Play Fifa 11 in your browser.",
+    "url": "games/clFIFA11.html"
   },
   {
     "name": "Fifa 2000",
@@ -3540,58 +3258,160 @@
     "url": "games/clfifa2000.html"
   },
   {
+    "name": "Fifa 2000(1)",
+    "short": "FIFA",
+    "tagline": "Play Fifa 2000(1) in your browser.",
+    "url": "games/clFIFA2000(1).html"
+  },
+  {
+    "name": "Fifa 99",
+    "short": "FIFA",
+    "tagline": "Play Fifa 99 in your browser.",
+    "url": "games/clFIFA99.html"
+  },
+  {
+    "name": "FIFA International Soccer",
+    "short": "FIFA",
+    "tagline": "Play FIFA International Soccer in your browser.",
+    "url": "games/clFIFAinternationalsoccer.html"
+  },
+  {
+    "name": "Fifaroadto World Cup 98",
+    "short": "FIFA",
+    "tagline": "Play Fifaroadto World Cup 98 in your browser.",
+    "url": "games/clFIFAroadtoworldcup98.html"
+  },
+  {
+    "name": "Fifasoccer 06",
+    "short": "FIFA",
+    "tagline": "Play Fifasoccer 06 in your browser.",
+    "url": "games/clFIFAsoccer06.html"
+  },
+  {
+    "name": "Fifasoccer 95",
+    "short": "FIFA",
+    "tagline": "Play Fifasoccer 95 in your browser.",
+    "url": "games/clFIFAsoccer95.html"
+  },
+  {
+    "name": "Fifasoccer 96",
+    "short": "FIFA",
+    "tagline": "Play Fifasoccer 96 in your browser.",
+    "url": "games/clFIFAsoccer96.html"
+  },
+  {
+    "name": "Fifasoccer 97",
+    "short": "FIFA",
+    "tagline": "Play Fifasoccer 97 in your browser.",
+    "url": "games/clFIFAsoccer97.html"
+  },
+  {
+    "name": "Fifastreet 2",
+    "short": "FIFA",
+    "tagline": "Play Fifastreet 2 in your browser.",
+    "url": "games/clFIFAstreet2.html"
+  },
+  {
+    "name": "Final Fantasy",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy in your browser.",
+    "url": "games/clfinalfantasy.html"
+  },
+  {
+    "name": "Final Fantasy 3",
+    "short": "FF3",
+    "tagline": "Play Final Fantasy 3 in your browser.",
+    "url": "games/clFF3.html"
+  },
+  {
+    "name": "Final Fantasy Ii",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy Ii in your browser.",
+    "url": "games/clfinalfantasyII.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X 1",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X 1 in your browser.",
+    "url": "games/clFFsonic1.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X 2",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X 2 in your browser.",
+    "url": "games/clFFsonic2.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X 3",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X 3 in your browser.",
+    "url": "games/clFFsonic3.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X 4",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X 4 in your browser.",
+    "url": "games/clFFsonic4.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X 5",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X 5 in your browser.",
+    "url": "games/clFFsonic5.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X6 Part 1",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X6 Part 1 in your browser.",
+    "url": "games/clFFsonic61.html"
+  },
+  {
+    "name": "Final Fantasy Sonic X6 Part 2",
+    "short": "FFSO",
+    "tagline": "Play Final Fantasy Sonic X6 Part 2 in your browser.",
+    "url": "games/clFFsonic62.html"
+  },
+  {
+    "name": "Final Fantasy Vi",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy Vi in your browser.",
+    "url": "games/clfinalfantasyVI.html"
+  },
+  {
+    "name": "Final Fantasy Vii",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy Vii in your browser.",
+    "url": "games/clfinalfantasyVII.html"
+  },
+  {
+    "name": "Final Fantasy Viid 2",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy Viid 2 in your browser.",
+    "url": "games/clfinalfantasyVIId2.html"
+  },
+  {
+    "name": "Final Fantasy Viid 3",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy Viid 3 in your browser.",
+    "url": "games/clfinalfantasyVIId3.html"
+  },
+  {
+    "name": "Final Fantasy Viitheothertetrr",
+    "short": "FINA",
+    "tagline": "Play Final Fantasy Viitheothertetrr in your browser.",
+    "url": "games/clfinalfantasyVIItheothertetrr.html"
+  },
+  {
+    "name": "Final Fantasytactics",
+    "short": "FINA",
+    "tagline": "Play Final Fantasytactics in your browser.",
+    "url": "games/clfinalfantasytactics.html"
+  },
+  {
     "name": "Finalearth 2",
     "short": "FINA",
     "tagline": "Play Finalearth 2 in your browser.",
     "url": "games/clfinalearth2.html"
-  },
-  {
-    "name": "Finalfantasy",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy in your browser.",
-    "url": "games/clfinalfantasy.html"
-  },
-  {
-    "name": "Finalfantasy Ii",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy Ii in your browser.",
-    "url": "games/clfinalfantasyII.html"
-  },
-  {
-    "name": "Finalfantasy Vi",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy Vi in your browser.",
-    "url": "games/clfinalfantasyVI.html"
-  },
-  {
-    "name": "Finalfantasy Vii",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy Vii in your browser.",
-    "url": "games/clfinalfantasyVII.html"
-  },
-  {
-    "name": "Finalfantasy Viid 2",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy Viid 2 in your browser.",
-    "url": "games/clfinalfantasyVIId2.html"
-  },
-  {
-    "name": "Finalfantasy Viid 3",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy Viid 3 in your browser.",
-    "url": "games/clfinalfantasyVIId3.html"
-  },
-  {
-    "name": "Finalfantasy Viitheothertetrr",
-    "short": "FINA",
-    "tagline": "Play Finalfantasy Viitheothertetrr in your browser.",
-    "url": "games/clfinalfantasyVIItheothertetrr.html"
-  },
-  {
-    "name": "Finalfantasytactics",
-    "short": "FINA",
-    "tagline": "Play Finalfantasytactics in your browser.",
-    "url": "games/clfinalfantasytactics.html"
   },
   {
     "name": "Finalninja",
@@ -3654,6 +3474,30 @@
     "url": "games/clfisquarium.html"
   },
   {
+    "name": "Five Nights at Freddys",
+    "short": "FNAF",
+    "tagline": "Play Five Nights at Freddys in your browser.",
+    "url": "games/clFNAF.html"
+  },
+  {
+    "name": "Five Nights at Freddys 2",
+    "short": "FNAF",
+    "tagline": "Play Five Nights at Freddys 2 in your browser.",
+    "url": "games/clFNAF2.html"
+  },
+  {
+    "name": "Five Nights at Freddys 3",
+    "short": "FNAF",
+    "tagline": "Play Five Nights at Freddys 3 in your browser.",
+    "url": "games/clFNAF3.html"
+  },
+  {
+    "name": "Five Nights at Freddys 4",
+    "short": "FNAF",
+    "tagline": "Play Five Nights at Freddys 4 in your browser.",
+    "url": "games/clFNAF4.html"
+  },
+  {
     "name": "Fivenightsatbaldisredone",
     "short": "FIVE",
     "tagline": "Play Fivenightsatbaldisredone in your browser.",
@@ -3666,21 +3510,21 @@
     "url": "games/clfivenightsatshrekshotel.html"
   },
   {
-    "name": "Floodrunner",
+    "name": "Flood Runner",
     "short": "FLOO",
-    "tagline": "Play Floodrunner in your browser.",
+    "tagline": "Play Flood Runner in your browser.",
     "url": "games/clfloodrunner.html"
   },
   {
-    "name": "Floodrunner 2",
+    "name": "Flood Runner 2",
     "short": "FLOO",
-    "tagline": "Play Floodrunner 2 in your browser.",
+    "tagline": "Play Flood Runner 2 in your browser.",
     "url": "games/clfloodrunner2.html"
   },
   {
-    "name": "Floodrunner 4",
+    "name": "Flood Runner 4",
     "short": "FLOO",
-    "tagline": "Play Floodrunner 4 in your browser.",
+    "tagline": "Play Flood Runner 4 in your browser.",
     "url": "games/clfloodrunner4.html"
   },
   {
@@ -3708,6 +3552,12 @@
     "url": "games/clfnaf4halloween.html"
   },
   {
+    "name": "Fnaf World D",
+    "short": "FNAF",
+    "tagline": "Play Fnaf World D in your browser.",
+    "url": "games/clfnafworldd.html"
+  },
+  {
     "name": "Fnafanimatronics",
     "short": "FNAF",
     "tagline": "Play Fnafanimatronics in your browser.",
@@ -3732,10 +3582,10 @@
     "url": "games/clfnafucn.html"
   },
   {
-    "name": "Fnafworldd",
-    "short": "FNAF",
-    "tagline": "Play Fnafworldd in your browser.",
-    "url": "games/clfnafworldd.html"
+    "name": "Fnf Madness Poop",
+    "short": "FNFM",
+    "tagline": "Play Fnf Madness Poop in your browser.",
+    "url": "games/clfnfmadnesspoop.html"
   },
   {
     "name": "Fnfagoti",
@@ -3762,9 +3612,9 @@
     "url": "games/clfnfbside.html"
   },
   {
-    "name": "Fnfcamelliarudeblaster",
+    "name": "Fnfcamelliarude Blaster",
     "short": "FNFC",
-    "tagline": "Play Fnfcamelliarudeblaster in your browser.",
+    "tagline": "Play Fnfcamelliarude Blaster in your browser.",
     "url": "games/clfnfcamelliarudeblaster.html"
   },
   {
@@ -3850,12 +3700,6 @@
     "short": "FNFI",
     "tagline": "Play Fnfindiecross in your browser.",
     "url": "games/clfnfindiecross.html"
-  },
-  {
-    "name": "Fnfmadnesspoop",
-    "short": "FNFM",
-    "tagline": "Play Fnfmadnesspoop in your browser.",
-    "url": "games/clfnfmadnesspoop.html"
   },
   {
     "name": "Fnfmidfight",
@@ -3996,15 +3840,15 @@
     "url": "games/clfolderdungeon.html"
   },
   {
-    "name": "Footballbros",
+    "name": "Football Bros",
     "short": "FOOT",
-    "tagline": "Play Footballbros in your browser.",
+    "tagline": "Play Football Bros in your browser.",
     "url": "games/clfootballbros.html"
   },
   {
-    "name": "Footballlegends",
+    "name": "Football Legend S",
     "short": "FOOT",
-    "tagline": "Play Footballlegends in your browser.",
+    "tagline": "Play Football Legend S in your browser.",
     "url": "games/clfootballlegends.html"
   },
   {
@@ -4020,15 +3864,15 @@
     "url": "games/clfortzone.html"
   },
   {
-    "name": "Fpa 4 P 1",
+    "name": "Fpa 4P 1",
     "short": "FPA4",
-    "tagline": "Play Fpa 4 P 1 in your browser.",
+    "tagline": "Play Fpa 4P 1 in your browser.",
     "url": "games/clfpa4p1.html"
   },
   {
-    "name": "Fpa 4 P 2",
+    "name": "Fpa 4P 2",
     "short": "FPA4",
-    "tagline": "Play Fpa 4 P 2 in your browser.",
+    "tagline": "Play Fpa 4P 2 in your browser.",
     "url": "games/clfpa4p2.html"
   },
   {
@@ -4074,28 +3918,28 @@
     "url": "games/clfruitninja.html"
   },
   {
-    "name": "Funnybattle",
+    "name": "Funny Battle",
     "short": "FUNN",
-    "tagline": "Play Funnybattle in your browser.",
+    "tagline": "Play Funny Battle in your browser.",
     "url": "games/clfunnybattle.html"
   },
   {
-    "name": "Funnybattle 2",
+    "name": "Funny Battle 2",
     "short": "FUNN",
-    "tagline": "Play Funnybattle 2 in your browser.",
+    "tagline": "Play Funny Battle 2 in your browser.",
     "url": "games/clfunnybattle2.html"
   },
   {
-    "name": "Funnymadracing",
+    "name": "Funny Shooter 22",
     "short": "FUNN",
-    "tagline": "Play Funnymadracing in your browser.",
-    "url": "games/clfunnymadracing.html"
+    "tagline": "Play Funny Shooter 22 in your browser.",
+    "url": "games/clfunnyshooter22.html"
   },
   {
-    "name": "Funnyshooter 22",
+    "name": "Funnymad Racing",
     "short": "FUNN",
-    "tagline": "Play Funnyshooter 22 in your browser.",
-    "url": "games/clfunnyshooter22.html"
+    "tagline": "Play Funnymad Racing in your browser.",
+    "url": "games/clfunnymadracing.html"
   },
   {
     "name": "Fzero",
@@ -4134,9 +3978,9 @@
     "url": "games/clgangstabean2.html"
   },
   {
-    "name": "Gangsterbros",
+    "name": "Gangster Bros",
     "short": "GANG",
-    "tagline": "Play Gangsterbros in your browser.",
+    "tagline": "Play Gangster Bros in your browser.",
     "url": "games/clgangsterbros.html"
   },
   {
@@ -4152,21 +3996,21 @@
     "url": "games/clgdlite.html"
   },
   {
-    "name": "Generalchaos",
+    "name": "General Chaos",
     "short": "GENE",
-    "tagline": "Play Generalchaos in your browser.",
+    "tagline": "Play General Chaos in your browser.",
     "url": "games/clgeneralchaos.html"
   },
   {
-    "name": "Genericfightermaybe",
+    "name": "Generic Fighter Maybe",
     "short": "GENE",
-    "tagline": "Play Genericfightermaybe in your browser.",
+    "tagline": "Play Generic Fighter Maybe in your browser.",
     "url": "games/clgenericfightermaybe.html"
   },
   {
-    "name": "Geometrydashlite",
+    "name": "Geometry Dashlite",
     "short": "GEOM",
-    "tagline": "Play Geometrydashlite in your browser.",
+    "tagline": "Play Geometry Dashlite in your browser.",
     "url": "games/clgeometrydashlite.html"
   },
   {
@@ -4192,6 +4036,12 @@
     "short": "GETO",
     "tagline": "Play Getontop in your browser.",
     "url": "games/clgetontop.html"
+  },
+  {
+    "name": "Gettothetopalthoughthereisnotop",
+    "short": "GETT",
+    "tagline": "Play Gettothetopalthoughthereisnotop in your browser.",
+    "url": "games/clGettothetopalthoughthereisnotop.html"
   },
   {
     "name": "Getyoked",
@@ -4254,6 +4104,12 @@
     "url": "games/clgolddiggerfrvr.html"
   },
   {
+    "name": "Golden Sun the Lost Age",
+    "short": "GOLD",
+    "tagline": "Play Golden Sun the Lost Age in your browser.",
+    "url": "games/clGoldenSunTheLostAge.html"
+  },
+  {
     "name": "Goldeneye 007",
     "short": "GOLD",
     "tagline": "Play Goldeneye 007 in your browser.",
@@ -4284,15 +4140,15 @@
     "url": "games/clgolfsunday.html"
   },
   {
-    "name": "Goodbigtowertinysquare",
+    "name": "Good Big Tower Tiny Square",
     "short": "GOOD",
-    "tagline": "Play Goodbigtowertinysquare in your browser.",
+    "tagline": "Play Good Big Tower Tiny Square in your browser.",
     "url": "games/clgoodbigtowertinysquare.html"
   },
   {
-    "name": "Goodbigtowertinysquare 2",
+    "name": "Good Big Tower Tiny Square 2",
     "short": "GOOD",
-    "tagline": "Play Goodbigtowertinysquare 2 in your browser.",
+    "tagline": "Play Good Big Tower Tiny Square 2 in your browser.",
     "url": "games/clgoodbigtowertinysquare2.html"
   },
   {
@@ -4308,9 +4164,9 @@
     "url": "games/clgoodmonkeymart.html"
   },
   {
-    "name": "Googlebaseball",
+    "name": "Google Baseball",
     "short": "GOOG",
-    "tagline": "Play Googlebaseball in your browser.",
+    "tagline": "Play Google Baseball in your browser.",
     "url": "games/clgooglebaseball.html"
   },
   {
@@ -4320,15 +4176,15 @@
     "url": "games/clgoogledino.html"
   },
   {
-    "name": "Gorescriptclassic",
+    "name": "Gorescript Classic",
     "short": "GORE",
-    "tagline": "Play Gorescriptclassic in your browser.",
+    "tagline": "Play Gorescript Classic in your browser.",
     "url": "games/clgorescriptclassic.html"
   },
   {
-    "name": "Grandactionsimulator-ny",
+    "name": "Grandaction Simulator -ny",
     "short": "GRAN",
-    "tagline": "Play Grandactionsimulator-ny in your browser.",
+    "tagline": "Play Grandaction Simulator -ny in your browser.",
     "url": "games/clgrandactionsimulator-ny.html"
   },
   {
@@ -4452,16 +4308,16 @@
     "url": "games/clgta2.html"
   },
   {
-    "name": "Gta 22",
-    "short": "GTA2",
-    "tagline": "Play Gta 22 in your browser.",
-    "url": "games/clgta22.html"
-  },
-  {
     "name": "Gta 2 Alt",
     "short": "GTA2",
     "tagline": "Play Gta 2 Alt in your browser.",
     "url": "games/clgta2alt.html"
+  },
+  {
+    "name": "Gta 22",
+    "short": "GTA2",
+    "tagline": "Play Gta 22 in your browser.",
+    "url": "games/clgta22.html"
   },
   {
     "name": "Gtaalty",
@@ -4482,6 +4338,36 @@
     "url": "games/clguesstheiranswer.html"
   },
   {
+    "name": "Gun Knight",
+    "short": "GUNK",
+    "tagline": "Play Gun Knight in your browser.",
+    "url": "games/clgunknight.html"
+  },
+  {
+    "name": "Gun Mayhem",
+    "short": "GUNM",
+    "tagline": "Play Gun Mayhem in your browser.",
+    "url": "games/clgunmayhem.html"
+  },
+  {
+    "name": "Gun Mayhem 2",
+    "short": "GUNM",
+    "tagline": "Play Gun Mayhem 2 in your browser.",
+    "url": "games/clgunmayhem2.html"
+  },
+  {
+    "name": "Gun Mayhem 2 Goof",
+    "short": "GUNM",
+    "tagline": "Play Gun Mayhem 2 Goof in your browser.",
+    "url": "games/clgunmayhem2goof.html"
+  },
+  {
+    "name": "Gun Mayhem Redux",
+    "short": "GUNM",
+    "tagline": "Play Gun Mayhem Redux in your browser.",
+    "url": "games/clgunmayhemredux.html"
+  },
+  {
     "name": "Gun-spin",
     "short": "GUN-",
     "tagline": "Play Gun-spin in your browser.",
@@ -4498,36 +4384,6 @@
     "short": "GUNC",
     "tagline": "Play Guncho in your browser.",
     "url": "games/clguncho.html"
-  },
-  {
-    "name": "Gunknight",
-    "short": "GUNK",
-    "tagline": "Play Gunknight in your browser.",
-    "url": "games/clgunknight.html"
-  },
-  {
-    "name": "Gunmayhem",
-    "short": "GUNM",
-    "tagline": "Play Gunmayhem in your browser.",
-    "url": "games/clgunmayhem.html"
-  },
-  {
-    "name": "Gunmayhem 2",
-    "short": "GUNM",
-    "tagline": "Play Gunmayhem 2 in your browser.",
-    "url": "games/clgunmayhem2.html"
-  },
-  {
-    "name": "Gunmayhem 2 Goof",
-    "short": "GUNM",
-    "tagline": "Play Gunmayhem 2 Goof in your browser.",
-    "url": "games/clgunmayhem2goof.html"
-  },
-  {
-    "name": "Gunmayhemredux",
-    "short": "GUNM",
-    "tagline": "Play Gunmayhemredux in your browser.",
-    "url": "games/clgunmayhemredux.html"
   },
   {
     "name": "Gunnight",
@@ -4572,16 +4428,16 @@
     "url": "games/clhandshakes.html"
   },
   {
-    "name": "Handsofwar(1)",
-    "short": "HAND",
-    "tagline": "Play Handsofwar(1) in your browser.",
-    "url": "games/clhandsofwar(1).html"
-  },
-  {
     "name": "Handsofwar",
     "short": "HAND",
     "tagline": "Play Handsofwar in your browser.",
     "url": "games/clhandsofwar.html"
+  },
+  {
+    "name": "Handsofwar(1)",
+    "short": "HAND",
+    "tagline": "Play Handsofwar(1) in your browser.",
+    "url": "games/clhandsofwar(1).html"
   },
   {
     "name": "Handulum",
@@ -4612,6 +4468,12 @@
     "short": "HARD",
     "tagline": "Play Hardwaretycoon in your browser.",
     "url": "games/clhardwaretycoon.html"
+  },
+  {
+    "name": "Haroldsbadday",
+    "short": "HARO",
+    "tagline": "Play Haroldsbadday in your browser.",
+    "url": "games/clHaroldsbadday.html"
   },
   {
     "name": "Harvestio",
@@ -4674,6 +4536,12 @@
     "url": "games/clhextris.html"
   },
   {
+    "name": "Hi No Homo",
+    "short": "HINO",
+    "tagline": "Play Hi No Homo in your browser.",
+    "url": "games/clHiNoHomo.html"
+  },
+  {
     "name": "Highstakes",
     "short": "HIGH",
     "tagline": "Play Highstakes in your browser.",
@@ -4686,15 +4554,15 @@
     "url": "games/clhighwayracer2.html"
   },
   {
-    "name": "Highwaytraffic 3 D",
+    "name": "Highwaytraffic 3D",
     "short": "HIGH",
-    "tagline": "Play Highwaytraffic 3 D in your browser.",
+    "tagline": "Play Highwaytraffic 3D in your browser.",
     "url": "games/clhighwaytraffic3d.html"
   },
   {
-    "name": "Hillclimbracinglite",
+    "name": "Hillclimb Racing Lite",
     "short": "HILL",
-    "tagline": "Play Hillclimbracinglite in your browser.",
+    "tagline": "Play Hillclimb Racing Lite in your browser.",
     "url": "games/clhillclimbracinglite.html"
   },
   {
@@ -4776,9 +4644,9 @@
     "url": "games/clholeio.html"
   },
   {
-    "name": "Hollowknight",
+    "name": "Hollow Knight",
     "short": "HOLL",
-    "tagline": "Play Hollowknight in your browser.",
+    "tagline": "Play Hollow Knight in your browser.",
     "url": "games/clhollowknight.html"
   },
   {
@@ -4800,9 +4668,9 @@
     "url": "games/clhumanexpenditureprogram.html"
   },
   {
-    "name": "Hungryknight",
+    "name": "Hungry Knight",
     "short": "HUNG",
-    "tagline": "Play Hungryknight in your browser.",
+    "tagline": "Play Hungry Knight in your browser.",
     "url": "games/clhungryknight.html"
   },
   {
@@ -4842,9 +4710,9 @@
     "url": "games/clicypurplehead.html"
   },
   {
-    "name": "Idlebreakout",
+    "name": "Idle Breakout",
     "short": "IDLE",
-    "tagline": "Play Idlebreakout in your browser.",
+    "tagline": "Play Idle Breakout in your browser.",
     "url": "games/clidlebreakout.html"
   },
   {
@@ -5058,9 +4926,9 @@
     "url": "games/cljetrush.html"
   },
   {
-    "name": "Jetskiracing",
+    "name": "Jetski Racing",
     "short": "JETS",
-    "tagline": "Play Jetskiracing in your browser.",
+    "tagline": "Play Jetski Racing in your browser.",
     "url": "games/cljetskiracing.html"
   },
   {
@@ -5088,6 +4956,12 @@
     "url": "games/cljsvecx.html"
   },
   {
+    "name": "Jump",
+    "short": "JUMP",
+    "tagline": "Play Jump in your browser.",
+    "url": "games/clJUMP.html"
+  },
+  {
     "name": "Jumpingshell",
     "short": "JUMP",
     "tagline": "Play Jumpingshell in your browser.",
@@ -5112,9 +4986,9 @@
     "url": "games/cljustoneboss.html"
   },
   {
-    "name": "Kaizomarioworld",
+    "name": "Kaizomario World",
     "short": "KAIZ",
-    "tagline": "Play Kaizomarioworld in your browser.",
+    "tagline": "Play Kaizomario World in your browser.",
     "url": "games/clkaizomarioworld.html"
   },
   {
@@ -5148,6 +5022,12 @@
     "url": "games/clkartbros.html"
   },
   {
+    "name": "Ken Griffey Jr Presents Major League Baseball",
+    "short": "KENG",
+    "tagline": "Play Ken Griffey Jr Presents Major League Baseball in your browser.",
+    "url": "games/clKenGriffeyJrPresentsMajorLeagueBaseball.html"
+  },
+  {
     "name": "Killerinstinct",
     "short": "KILL",
     "tagline": "Play Killerinstinct in your browser.",
@@ -5160,21 +5040,21 @@
     "url": "games/clkillover.html"
   },
   {
-    "name": "Kingdomheartsdays",
+    "name": "Kingdom Heartsdays",
     "short": "KING",
-    "tagline": "Play Kingdomheartsdays in your browser.",
+    "tagline": "Play Kingdom Heartsdays in your browser.",
     "url": "games/clkingdomheartsdays.html"
   },
   {
-    "name": "Kingdomheartsrecoded",
+    "name": "Kingdom Heartsrecoded",
     "short": "KING",
-    "tagline": "Play Kingdomheartsrecoded in your browser.",
+    "tagline": "Play Kingdom Heartsrecoded in your browser.",
     "url": "games/clkingdomheartsrecoded.html"
   },
   {
-    "name": "Kingdomheartsrecodedalt",
+    "name": "Kingdom Heartsrecodedalt",
     "short": "KING",
-    "tagline": "Play Kingdomheartsrecodedalt in your browser.",
+    "tagline": "Play Kingdom Heartsrecodedalt in your browser.",
     "url": "games/clkingdomheartsrecodedalt.html"
   },
   {
@@ -5190,9 +5070,9 @@
     "url": "games/clkirbyandtheamzingmirror.html"
   },
   {
-    "name": "Kirbysadventure",
+    "name": "Kirbys Adventure",
     "short": "KIRB",
-    "tagline": "Play Kirbysadventure in your browser.",
+    "tagline": "Play Kirbys Adventure in your browser.",
     "url": "games/clkirbysadventure.html"
   },
   {
@@ -5244,9 +5124,9 @@
     "url": "games/clknifehit.html"
   },
   {
-    "name": "Knightmaretower",
+    "name": "Knight Maretower",
     "short": "KNIG",
-    "tagline": "Play Knightmaretower in your browser.",
+    "tagline": "Play Knight Maretower in your browser.",
     "url": "games/clknightmaretower.html"
   },
   {
@@ -5256,15 +5136,15 @@
     "url": "games/clkonkrio.html"
   },
   {
-    "name": "Koopasrevenge",
+    "name": "Koopas Revenge",
     "short": "KOOP",
-    "tagline": "Play Koopasrevenge in your browser.",
+    "tagline": "Play Koopas Revenge in your browser.",
     "url": "games/clkoopasrevenge (1).html"
   },
   {
-    "name": "Koopasrevenge",
+    "name": "Koopas Revenge",
     "short": "KOOP",
-    "tagline": "Play Koopasrevenge in your browser.",
+    "tagline": "Play Koopas Revenge in your browser.",
     "url": "games/clkoopasrevenge.html"
   },
   {
@@ -5334,9 +5214,9 @@
     "url": "games/cllegobatman.html"
   },
   {
-    "name": "Legobatman 2 Superheroes",
+    "name": "Legobatman 2 Super Heroes",
     "short": "LEGO",
-    "tagline": "Play Legobatman 2 Superheroes in your browser.",
+    "tagline": "Play Legobatman 2 Super Heroes in your browser.",
     "url": "games/cllegobatman2superheroes.html"
   },
   {
@@ -5376,9 +5256,9 @@
     "url": "games/clleveldevil.html"
   },
   {
-    "name": "Leverwarriors",
+    "name": "Lever Warrior S",
     "short": "LEVE",
-    "tagline": "Play Leverwarriors in your browser.",
+    "tagline": "Play Lever Warrior S in your browser.",
     "url": "games/clleverwarriors.html"
   },
   {
@@ -5418,9 +5298,9 @@
     "url": "games/cllockthedoor.html"
   },
   {
-    "name": "Loderunner",
+    "name": "Lode Runner",
     "short": "LODE",
-    "tagline": "Play Loderunner in your browser.",
+    "tagline": "Play Lode Runner in your browser.",
     "url": "games/clloderunner.html"
   },
   {
@@ -5436,9 +5316,9 @@
     "url": "games/cllosangelesshark.html"
   },
   {
-    "name": "Lowknight",
+    "name": "Low Knight",
     "short": "LOWK",
-    "tagline": "Play Lowknight in your browser.",
+    "tagline": "Play Low Knight in your browser.",
     "url": "games/cllowknight.html"
   },
   {
@@ -5526,15 +5406,15 @@
     "url": "games/clmadden99.html"
   },
   {
-    "name": "Maddenfootball",
+    "name": "Madden Football",
     "short": "MADD",
-    "tagline": "Play Maddenfootball in your browser.",
+    "tagline": "Play Madden Football in your browser.",
     "url": "games/clmaddenfootball.html"
   },
   {
-    "name": "Maddenfootball 64",
+    "name": "Madden Football 64",
     "short": "MADD",
-    "tagline": "Play Maddenfootball 64 in your browser.",
+    "tagline": "Play Madden Football 64 in your browser.",
     "url": "games/clmaddenfootball64.html"
   },
   {
@@ -5568,69 +5448,69 @@
     "url": "games/clmaddy98.html"
   },
   {
-    "name": "Madness-retaliation",
+    "name": "Madness -retaliation",
     "short": "MADN",
-    "tagline": "Play Madness-retaliation in your browser.",
+    "tagline": "Play Madness -retaliation in your browser.",
     "url": "games2/clmadness-retaliation.html"
   },
   {
-    "name": "Madnessaccelerant",
+    "name": "Madness Accelerant",
     "short": "MADN",
-    "tagline": "Play Madnessaccelerant in your browser.",
+    "tagline": "Play Madness Accelerant in your browser.",
     "url": "games/clmadnessaccelerant.html"
   },
   {
-    "name": "Madnesscombatdefense",
+    "name": "Madness Combat Defense",
     "short": "MADN",
-    "tagline": "Play Madnesscombatdefense in your browser.",
+    "tagline": "Play Madness Combat Defense in your browser.",
     "url": "games2/clmadnesscombatdefense.html"
   },
   {
-    "name": "Madnesscombatnexus",
+    "name": "Madness Combatnexus",
     "short": "MADN",
-    "tagline": "Play Madnesscombatnexus in your browser.",
+    "tagline": "Play Madness Combatnexus in your browser.",
     "url": "games2/clmadnesscombatnexus.html"
   },
   {
-    "name": "Madnessgemini",
+    "name": "Madness Gemini",
     "short": "MADN",
-    "tagline": "Play Madnessgemini in your browser.",
+    "tagline": "Play Madness Gemini in your browser.",
     "url": "games2/clmadnessgemini.html"
   },
   {
-    "name": "Madnesshydraulic",
+    "name": "Madness Hydraulic",
     "short": "MADN",
-    "tagline": "Play Madnesshydraulic in your browser.",
+    "tagline": "Play Madness Hydraulic in your browser.",
     "url": "games2/clmadnesshydraulic.html"
   },
   {
-    "name": "Madnessinteractive",
+    "name": "Madness Interactive",
     "short": "MADN",
-    "tagline": "Play Madnessinteractive in your browser.",
+    "tagline": "Play Madness Interactive in your browser.",
     "url": "games2/clmadnessinteractive.html"
   },
   {
-    "name": "Madnessoffcolor",
+    "name": "Madness Offcolor",
     "short": "MADN",
-    "tagline": "Play Madnessoffcolor in your browser.",
+    "tagline": "Play Madness Offcolor in your browser.",
     "url": "games2/clmadnessoffcolor.html"
   },
   {
-    "name": "Madnesspremediation",
+    "name": "Madness Premediation",
     "short": "MADN",
-    "tagline": "Play Madnesspremediation in your browser.",
+    "tagline": "Play Madness Premediation in your browser.",
     "url": "games2/clmadnesspremediation.html"
   },
   {
-    "name": "Madnesss 2010",
+    "name": "Madness S 2010",
     "short": "MADN",
-    "tagline": "Play Madnesss 2010 in your browser.",
+    "tagline": "Play Madness S 2010 in your browser.",
     "url": "games2/clmadnesss2010.html"
   },
   {
-    "name": "Madnessstand",
+    "name": "Madness Stand",
     "short": "MADN",
-    "tagline": "Play Madnessstand in your browser.",
+    "tagline": "Play Madness Stand in your browser.",
     "url": "games2/clmadnessstand.html"
   },
   {
@@ -5676,6 +5556,12 @@
     "url": "games2/clmario3.html"
   },
   {
+    "name": "Mario Madness",
+    "short": "MARI",
+    "tagline": "Play Mario Madness in your browser.",
+    "url": "games2/clmariomadness.html"
+  },
+  {
     "name": "Marioandluigisuperstarsaga",
     "short": "MARI",
     "tagline": "Play Marioandluigisuperstarsaga in your browser.",
@@ -5694,6 +5580,12 @@
     "url": "games2/clmariogolf.html"
   },
   {
+    "name": "Mariois Missing Done Right",
+    "short": "MARI",
+    "tagline": "Play Mariois Missing Done Right in your browser.",
+    "url": "games2/clMarioisMissingDoneRight.html"
+  },
+  {
     "name": "Mariokart 64",
     "short": "MARI",
     "tagline": "Play Mariokart 64 in your browser.",
@@ -5710,12 +5602,6 @@
     "short": "MARI",
     "tagline": "Play Mariokartsupercircuit in your browser.",
     "url": "games2/clmariokartsupercircuit.html"
-  },
-  {
-    "name": "Mariomadness",
-    "short": "MARI",
-    "tagline": "Play Mariomadness in your browser.",
-    "url": "games2/clmariomadness.html"
   },
   {
     "name": "Mariominusrabbids",
@@ -5772,15 +5658,15 @@
     "url": "games2/clmaskedforcesunlimited.html"
   },
   {
-    "name": "Mastermindworldconquerer",
+    "name": "Master Mind World Conquerer",
     "short": "MAST",
-    "tagline": "Play Mastermindworldconquerer in your browser.",
+    "tagline": "Play Master Mind World Conquerer in your browser.",
     "url": "games2/clmastermindworldconquerer.html"
   },
   {
-    "name": "Matrixrampage",
+    "name": "Matrix Rampage",
     "short": "MATR",
-    "tagline": "Play Matrixrampage in your browser.",
+    "tagline": "Play Matrix Rampage in your browser.",
     "url": "games2/clmatrixrampage.html"
   },
   {
@@ -5886,15 +5772,15 @@
     "url": "games2/clmegaman8.html"
   },
   {
-    "name": "Megamanlegends",
+    "name": "Megaman Legend S",
     "short": "MEGA",
-    "tagline": "Play Megamanlegends in your browser.",
+    "tagline": "Play Megaman Legend S in your browser.",
     "url": "games2/clmegamanlegends.html"
   },
   {
-    "name": "Megamanlegends 2",
+    "name": "Megaman Legend S 2",
     "short": "MEGA",
-    "tagline": "Play Megamanlegends 2 in your browser.",
+    "tagline": "Play Megaman Legend S 2 in your browser.",
     "url": "games2/clmegamanlegends2.html"
   },
   {
@@ -5956,6 +5842,12 @@
     "short": "MERG",
     "tagline": "Play Mergeroundracers in your browser.",
     "url": "games2/clmergeroundracers.html"
+  },
+  {
+    "name": "Metal Sonic Hyperdrive",
+    "short": "META",
+    "tagline": "Play Metal Sonic Hyperdrive in your browser.",
+    "url": "games2/clMetalSonicHyperdrive.html"
   },
   {
     "name": "Metalgear",
@@ -6030,15 +5922,15 @@
     "url": "games2/clmicromages.html"
   },
   {
-    "name": "Mightyknight",
+    "name": "Mighty Knight",
     "short": "MIGH",
-    "tagline": "Play Mightyknight in your browser.",
+    "tagline": "Play Mighty Knight in your browser.",
     "url": "games2/clmightyknight.html"
   },
   {
-    "name": "Mightyknight 2",
+    "name": "Mighty Knight 2",
     "short": "MIGH",
-    "tagline": "Play Mightyknight 2 in your browser.",
+    "tagline": "Play Mighty Knight 2 in your browser.",
     "url": "games2/clmightyknight2.html"
   },
   {
@@ -6054,16 +5946,16 @@
     "url": "games2/clmindscape.html"
   },
   {
+    "name": "Mine Shooter",
+    "short": "MINE",
+    "tagline": "Play Mine Shooter in your browser.",
+    "url": "games2/clmineshooter.html"
+  },
+  {
     "name": "Minecraft 1-8-8",
     "short": "MINE",
     "tagline": "Play Minecraft 1-8-8 in your browser.",
     "url": "games2/clminecraft1-8-8.html"
-  },
-  {
-    "name": "Mineshooter",
-    "short": "MINE",
-    "tagline": "Play Mineshooter in your browser.",
-    "url": "games2/clmineshooter.html"
   },
   {
     "name": "Minesweeperplus",
@@ -6078,6 +5970,18 @@
     "url": "games2/clminhero.html"
   },
   {
+    "name": "Mini Battle S",
+    "short": "12MI",
+    "tagline": "Play Mini Battle S in your browser.",
+    "url": "games/cl12minibattles.html"
+  },
+  {
+    "name": "Mini Shooter S",
+    "short": "MINI",
+    "tagline": "Play Mini Shooter S in your browser.",
+    "url": "games2/clminishooters.html"
+  },
+  {
     "name": "Minicrossword",
     "short": "MINI",
     "tagline": "Play Minicrossword in your browser.",
@@ -6090,16 +5994,16 @@
     "url": "games2/clminimart.html"
   },
   {
-    "name": "Minishooters",
-    "short": "MINI",
-    "tagline": "Play Minishooters in your browser.",
-    "url": "games2/clminishooters.html"
-  },
-  {
     "name": "Minitooth",
     "short": "MINI",
     "tagline": "Play Minitooth in your browser.",
     "url": "games2/clminitooth.html"
+  },
+  {
+    "name": "Minutes Til Dawn",
+    "short": "10MI",
+    "tagline": "Play Minutes Til Dawn in your browser.",
+    "url": "games/cl10minutestildawn.html"
   },
   {
     "name": "Miraginewar",
@@ -6210,15 +6114,15 @@
     "url": "games2/clmotoroadrash.html"
   },
   {
-    "name": "Motox 3 M 2",
+    "name": "Motox 3M 2",
     "short": "MOTO",
-    "tagline": "Play Motox 3 M 2 in your browser.",
+    "tagline": "Play Motox 3M 2 in your browser.",
     "url": "games2/clmotox3m2.html"
   },
   {
-    "name": "Motox 3 M 3",
+    "name": "Motox 3M 3",
     "short": "MOTO",
-    "tagline": "Play Motox 3 M 3 in your browser.",
+    "tagline": "Play Motox 3M 3 in your browser.",
     "url": "games2/clmotox3m3.html"
   },
   {
@@ -6276,9 +6180,9 @@
     "url": "games2/clmutilate-a-doll.html"
   },
   {
-    "name": "Mxoffroadmaster",
+    "name": "Mxoffroad Master",
     "short": "MXOF",
-    "tagline": "Play Mxoffroadmaster in your browser.",
+    "tagline": "Play Mxoffroad Master in your browser.",
     "url": "games2/clmxoffroadmaster.html"
   },
   {
@@ -6288,9 +6192,9 @@
     "url": "games2/clmyfriendpedro.html"
   },
   {
-    "name": "Myfriendpedroarena",
+    "name": "Myfriendpedro Arena",
     "short": "MYFR",
-    "tagline": "Play Myfriendpedroarena in your browser.",
+    "tagline": "Play Myfriendpedro Arena in your browser.",
     "url": "games2/clmyfriendpedroarena.html"
   },
   {
@@ -6312,15 +6216,27 @@
     "url": "games2/clnaturalselection.html"
   },
   {
+    "name": "Nbahangtime",
+    "short": "NBAH",
+    "tagline": "Play Nbahangtime in your browser.",
+    "url": "games2/clNBAhangtime.html"
+  },
+  {
+    "name": "Nbajam",
+    "short": "NBAJ",
+    "tagline": "Play Nbajam in your browser.",
+    "url": "games2/clNBAjam.html"
+  },
+  {
     "name": "Nbajam Te",
     "short": "NBAJ",
     "tagline": "Play Nbajam Te in your browser.",
     "url": "games2/clnbajamTE.html"
   },
   {
-    "name": "Neonblaster",
+    "name": "Neon Blaster",
     "short": "NEON",
-    "tagline": "Play Neonblaster in your browser.",
+    "tagline": "Play Neon Blaster in your browser.",
     "url": "games2/clneonblaster.html"
   },
   {
@@ -6330,15 +6246,15 @@
     "url": "games2/clneonrider.html"
   },
   {
-    "name": "Nesworldchampion",
+    "name": "Nes World Champion",
     "short": "NESW",
-    "tagline": "Play Nesworldchampion in your browser.",
+    "tagline": "Play Nes World Champion in your browser.",
     "url": "games2/clnesworldchampion.html"
   },
   {
-    "name": "Netattack",
+    "name": "Net Attack",
     "short": "NETA",
-    "tagline": "Play Netattack in your browser.",
+    "tagline": "Play Net Attack in your browser.",
     "url": "games2/clnetattack.html"
   },
   {
@@ -6348,16 +6264,22 @@
     "url": "games2/clneverendinglegacy.html"
   },
   {
+    "name": "New Super Mario World 2 Aroundthe World",
+    "short": "NEWS",
+    "tagline": "Play New Super Mario World 2 Aroundthe World in your browser.",
+    "url": "games2/clNewSuperMarioWorld2AroundtheWorld.html"
+  },
+  {
+    "name": "New Super Mariobros",
+    "short": "NEWS",
+    "tagline": "Play New Super Mariobros in your browser.",
+    "url": "games2/clnewsupermariobros.html"
+  },
+  {
     "name": "Newgroundsrumble",
     "short": "NEWG",
     "tagline": "Play Newgroundsrumble in your browser.",
     "url": "games2/clnewgroundsrumble.html"
-  },
-  {
-    "name": "Newsupermariobros",
-    "short": "NEWS",
-    "tagline": "Play Newsupermariobros in your browser.",
-    "url": "games2/clnewsupermariobros.html"
   },
   {
     "name": "Newyorkshark",
@@ -6426,9 +6348,15 @@
     "url": "games2/clnhlhitz2003.html"
   },
   {
-    "name": "Nightclubshowdown",
+    "name": "Nicktoons Freeze Frame Frenzy",
+    "short": "NICK",
+    "tagline": "Play Nicktoons Freeze Frame Frenzy in your browser.",
+    "url": "games2/clNicktoonsFreezeFrameFrenzy.html"
+  },
+  {
+    "name": "Nightclub Showdown",
     "short": "NIGH",
-    "tagline": "Play Nightclubshowdown in your browser.",
+    "tagline": "Play Nightclub Showdown in your browser.",
     "url": "games2/clnightclubshowdown.html"
   },
   {
@@ -6450,16 +6378,16 @@
     "url": "games2/clninjabrawl.html"
   },
   {
+    "name": "Nintendo World Cup",
+    "short": "NINT",
+    "tagline": "Play Nintendo World Cup in your browser.",
+    "url": "games2/clnintendoworldcup.html"
+  },
+  {
     "name": "Nintendogslab",
     "short": "NINT",
     "tagline": "Play Nintendogslab in your browser.",
     "url": "games2/clnintendogslab.html"
-  },
-  {
-    "name": "Nintendoworldcup",
-    "short": "NINT",
-    "tagline": "Play Nintendoworldcup in your browser.",
-    "url": "games2/clnintendoworldcup.html"
   },
   {
     "name": "Nitromemustdie",
@@ -6504,6 +6432,12 @@
     "url": "games2/clnullkevin.html"
   },
   {
+    "name": "Nutsand Bolts Screwing Puzzle",
+    "short": "NUTS",
+    "tagline": "Play Nutsand Bolts Screwing Puzzle in your browser.",
+    "url": "games2/clNutsandBoltsScrewingPuzzle.html"
+  },
+  {
     "name": "Nzp",
     "short": "NZP",
     "tagline": "Play Nzp in your browser.",
@@ -6546,9 +6480,9 @@
     "url": "games2/clomeganuggetclicker.html"
   },
   {
-    "name": "Onebitadventure",
+    "name": "Onebit Adventure",
     "short": "ONEB",
-    "tagline": "Play Onebitadventure in your browser.",
+    "tagline": "Play Onebit Adventure in your browser.",
     "url": "games2/clonebitadventure.html"
   },
   {
@@ -6604,12 +6538,6 @@
     "short": "OREG",
     "tagline": "Play Oregontrail in your browser.",
     "url": "games2/cloregontrail.html"
-  },
-  {
-    "name": "Alien Hominid",
-    "short": "ORMM",
-    "tagline": "Play Alien Hominid in your browser.",
-    "url": "games2/clormmimastickwithclsoitcanberememberedoyeahclalienhominid.html"
   },
   {
     "name": "Osu",
@@ -6678,21 +6606,21 @@
     "url": "games2/clpapalouienighthunt2.html"
   },
   {
-    "name": "Papalouiewhenburgersattack",
+    "name": "Papalouiewhenburgers Attack",
     "short": "PAPA",
-    "tagline": "Play Papalouiewhenburgersattack in your browser.",
+    "tagline": "Play Papalouiewhenburgers Attack in your browser.",
     "url": "games2/clpapalouiewhenburgersattack.html"
   },
   {
-    "name": "Papalouiewhenpizzasattack",
+    "name": "Papalouiewhenpizzas Attack",
     "short": "PAPA",
-    "tagline": "Play Papalouiewhenpizzasattack in your browser.",
+    "tagline": "Play Papalouiewhenpizzas Attack in your browser.",
     "url": "games2/clpapalouiewhenpizzasattack.html"
   },
   {
-    "name": "Papalouiewhensundaesattack",
+    "name": "Papalouiewhensundaes Attack",
     "short": "PAPA",
-    "tagline": "Play Papalouiewhensundaesattack in your browser.",
+    "tagline": "Play Papalouiewhensundaes Attack in your browser.",
     "url": "games2/clpapalouiewhensundaesattack.html"
   },
   {
@@ -7020,9 +6948,9 @@
     "url": "games2/clpikwip.html"
   },
   {
-    "name": "Pingpongchaos",
+    "name": "Pingpong Chaos",
     "short": "PING",
-    "tagline": "Play Pingpongchaos in your browser.",
+    "tagline": "Play Pingpong Chaos in your browser.",
     "url": "games2/clpingpongchaos.html"
   },
   {
@@ -7038,28 +6966,28 @@
     "url": "games2/clpitof100trials.html"
   },
   {
-    "name": "Pixelbattlegroundsio",
+    "name": "Pixel Battle Groundsio",
     "short": "PIXE",
-    "tagline": "Play Pixelbattlegroundsio in your browser.",
+    "tagline": "Play Pixel Battle Groundsio in your browser.",
     "url": "games2/clpixelbattlegroundsio.html"
+  },
+  {
+    "name": "Pixel Quest Lostidols",
+    "short": "PIXE",
+    "tagline": "Play Pixel Quest Lostidols in your browser.",
+    "url": "games2/clpixelquestlostidols.html"
+  },
+  {
+    "name": "Pixel Shooter",
+    "short": "PIXE",
+    "tagline": "Play Pixel Shooter in your browser.",
+    "url": "games2/clpixelshooter.html"
   },
   {
     "name": "Pixelcombat 2",
     "short": "PIXE",
     "tagline": "Play Pixelcombat 2 in your browser.",
     "url": "games2/clpixelcombat2.html"
-  },
-  {
-    "name": "Pixelquestlostidols",
-    "short": "PIXE",
-    "tagline": "Play Pixelquestlostidols in your browser.",
-    "url": "games2/clpixelquestlostidols.html"
-  },
-  {
-    "name": "Pixelshooter",
-    "short": "PIXE",
-    "tagline": "Play Pixelshooter in your browser.",
-    "url": "games2/clpixelshooter.html"
   },
   {
     "name": "Pixelspeedrun",
@@ -7116,16 +7044,22 @@
     "url": "games2/clplonky.html"
   },
   {
-    "name": "Pogo 3d",
+    "name": "Pogo 3D",
     "short": "POGO",
-    "tagline": "Play Pogo 3d in your browser.",
+    "tagline": "Play Pogo 3D in your browser.",
     "url": "games2/clpogo3D.html"
   },
   {
-    "name": "Pokebattlefact",
+    "name": "Poke Battle Fact",
     "short": "POKE",
-    "tagline": "Play Pokebattlefact in your browser.",
+    "tagline": "Play Poke Battle Fact in your browser.",
     "url": "games2/clpokebattlefact.html"
+  },
+  {
+    "name": "Poke Classic",
+    "short": "POKE",
+    "tagline": "Play Poke Classic in your browser.",
+    "url": "games2/clpokeclassic.html"
   },
   {
     "name": "Pokeblack",
@@ -7134,16 +7068,16 @@
     "url": "games2/clpokeblack.html"
   },
   {
-    "name": "Pokeblack 2.html",
-    "short": "POKE",
-    "tagline": "Play Pokeblack 2.html in your browser.",
-    "url": "games2/clpokeblack2.html.html"
-  },
-  {
     "name": "Pokeblack 2 Alt",
     "short": "POKE",
     "tagline": "Play Pokeblack 2 Alt in your browser.",
     "url": "games2/clpokeblack2alt.html"
+  },
+  {
+    "name": "Pokeblack 2.html",
+    "short": "POKE",
+    "tagline": "Play Pokeblack 2.html in your browser.",
+    "url": "games2/clpokeblack2.html.html"
   },
   {
     "name": "Pokeblackalt",
@@ -7162,12 +7096,6 @@
     "short": "POKE",
     "tagline": "Play Pokeblue in your browser.",
     "url": "games2/clpokeblue.html"
-  },
-  {
-    "name": "Pokeclassic",
-    "short": "POKE",
-    "tagline": "Play Pokeclassic in your browser.",
-    "url": "games2/clpokeclassic.html"
   },
   {
     "name": "Pokecrown",
@@ -7278,6 +7206,12 @@
     "url": "games2/clpokemegamoemon.html"
   },
   {
+    "name": "Pokemon Ultimate Fusion",
+    "short": "POKE",
+    "tagline": "Play Pokemon Ultimate Fusion in your browser.",
+    "url": "games2/clpokemonultimatefusion.html"
+  },
+  {
     "name": "Pokemonamnesia",
     "short": "POKE",
     "tagline": "Play Pokemonamnesia in your browser.",
@@ -7324,6 +7258,12 @@
     "short": "POKE",
     "tagline": "Play Pokemonemeraldmini in your browser.",
     "url": "games2/clpokemonemeraldmini.html"
+  },
+  {
+    "name": "Pokemonemeraldrouge",
+    "short": "POKE",
+    "tagline": "Play Pokemonemeraldrouge in your browser.",
+    "url": "games2/clPokemonemeraldrouge.html"
   },
   {
     "name": "Pokemonemeraldseaglass",
@@ -7398,6 +7338,12 @@
     "url": "games2/clpokemonquetzal.html"
   },
   {
+    "name": "Pokemonrocketedition",
+    "short": "POKE",
+    "tagline": "Play Pokemonrocketedition in your browser.",
+    "url": "games2/clPokemonrocketedition.html"
+  },
+  {
     "name": "Pokemonruby",
     "short": "POKE",
     "tagline": "Play Pokemonruby in your browser.",
@@ -7434,16 +7380,16 @@
     "url": "games2/clpokemonstadium.html"
   },
   {
-    "name": "Pokemontowerdefense",
-    "short": "POKE",
-    "tagline": "Play Pokemontowerdefense in your browser.",
-    "url": "games2/clpokemontowerdefense.html"
+    "name": "Pokémonstunningsteel",
+    "short": "POKÉ",
+    "tagline": "Play Pokémonstunningsteel in your browser.",
+    "url": "games2/clPokémonstunningsteel.html"
   },
   {
-    "name": "Pokemonultimatefusion",
+    "name": "Pokemontower Defense",
     "short": "POKE",
-    "tagline": "Play Pokemonultimatefusion in your browser.",
-    "url": "games2/clpokemonultimatefusion.html"
+    "tagline": "Play Pokemontower Defense in your browser.",
+    "url": "games2/clpokemontowerdefense.html"
   },
   {
     "name": "Pokemonunbound",
@@ -7656,9 +7602,9 @@
     "url": "games2/clportal.html"
   },
   {
-    "name": "Portal 2 D",
+    "name": "Portal 2D",
     "short": "PORT",
-    "tagline": "Play Portal 2 D in your browser.",
+    "tagline": "Play Portal 2D in your browser.",
     "url": "games2/clportal2d.html"
   },
   {
@@ -7686,9 +7632,9 @@
     "url": "games2/clporter.html"
   },
   {
-    "name": "Possessquest",
+    "name": "Possess Quest",
     "short": "POSS",
-    "tagline": "Play Possessquest in your browser.",
+    "tagline": "Play Possess Quest in your browser.",
     "url": "games2/clpossessquest.html"
   },
   {
@@ -7710,9 +7656,9 @@
     "url": "games2/clpou.html"
   },
   {
-    "name": "Praxisfighterx",
+    "name": "Praxis Fighter X",
     "short": "PRAX",
-    "tagline": "Play Praxisfighterx in your browser.",
+    "tagline": "Play Praxis Fighter X in your browser.",
     "url": "games2/clpraxisfighterx.html"
   },
   {
@@ -7812,9 +7758,9 @@
     "url": "games2/clquake64.html"
   },
   {
-    "name": "Quickieworld",
+    "name": "Quickie World",
     "short": "QUIC",
-    "tagline": "Play Quickieworld in your browser.",
+    "tagline": "Play Quickie World in your browser.",
     "url": "games2/clquickieworld.html"
   },
   {
@@ -7824,15 +7770,15 @@
     "url": "games2/clqwop.html"
   },
   {
-    "name": "Racemaster 3 D",
+    "name": "Race Master 3D",
     "short": "RACE",
-    "tagline": "Play Racemaster 3 D in your browser.",
+    "tagline": "Play Race Master 3D in your browser.",
     "url": "games2/clracemaster3d.html"
   },
   {
-    "name": "Racingarena",
+    "name": "Racing Arena",
     "short": "RACI",
-    "tagline": "Play Racingarena in your browser.",
+    "tagline": "Play Racing Arena in your browser.",
     "url": "games2/clracingarena.html"
   },
   {
@@ -8010,9 +7956,9 @@
     "url": "games2/clredhanded.html"
   },
   {
-    "name": "Redtierunner",
+    "name": "Redtie Runner",
     "short": "REDT",
-    "tagline": "Play Redtierunner in your browser.",
+    "tagline": "Play Redtie Runner in your browser.",
     "url": "games2/clredtierunner.html"
   },
   {
@@ -8058,21 +8004,21 @@
     "url": "games2/clresizer.html"
   },
   {
-    "name": "Resortempire",
+    "name": "Resort Empire",
     "short": "RESO",
-    "tagline": "Play Resortempire in your browser.",
+    "tagline": "Play Resort Empire in your browser.",
     "url": "games2/clresortempire.html"
   },
   {
-    "name": "Retrobowl",
+    "name": "Retro Bowl",
     "short": "RETR",
-    "tagline": "Play Retrobowl in your browser.",
+    "tagline": "Play Retro Bowl in your browser.",
     "url": "games2/clretrobowl.html"
   },
   {
-    "name": "Retrobowlcollege",
+    "name": "Retro Bowlcollege",
     "short": "RETR",
-    "tagline": "Play Retrobowlcollege in your browser.",
+    "tagline": "Play Retro Bowlcollege in your browser.",
     "url": "games2/clretrobowlcollege.html"
   },
   {
@@ -8178,9 +8124,9 @@
     "url": "games2/clridgeracer.html"
   },
   {
-    "name": "Roadfighter",
+    "name": "Road Fighter",
     "short": "ROAD",
-    "tagline": "Play Roadfighter in your browser.",
+    "tagline": "Play Road Fighter in your browser.",
     "url": "games2/clroadfighter.html"
   },
   {
@@ -8202,16 +8148,16 @@
     "url": "games2/clroadofthedead2.html"
   },
   {
+    "name": "Rocket Knight Adventure S",
+    "short": "ROCK",
+    "tagline": "Play Rocket Knight Adventure S in your browser.",
+    "url": "games2/clrocketknightadventures.html"
+  },
+  {
     "name": "Rocketjump",
     "short": "ROCK",
     "tagline": "Play Rocketjump in your browser.",
     "url": "games2/clrocketjump.html"
-  },
-  {
-    "name": "Rocketknightadventures",
-    "short": "ROCK",
-    "tagline": "Play Rocketknightadventures in your browser.",
-    "url": "games2/clrocketknightadventures.html"
   },
   {
     "name": "Rocketleague",
@@ -8274,15 +8220,15 @@
     "url": "games2/clrolypolymonster.html"
   },
   {
-    "name": "Rooftopsnipers",
+    "name": "Rooftop Sniper S",
     "short": "ROOF",
-    "tagline": "Play Rooftopsnipers in your browser.",
+    "tagline": "Play Rooftop Sniper S in your browser.",
     "url": "games2/clrooftopsnipers.html"
   },
   {
-    "name": "Rooftopsnipers 2",
+    "name": "Rooftop Sniper S 2",
     "short": "ROOF",
-    "tagline": "Play Rooftopsnipers 2 in your browser.",
+    "tagline": "Play Rooftop Sniper S 2 in your browser.",
     "url": "games2/clrooftopsnipers2.html"
   },
   {
@@ -8298,9 +8244,9 @@
     "url": "games2/clrotate.html"
   },
   {
-    "name": "Rouletteknight",
+    "name": "Roulette Knight",
     "short": "ROUL",
-    "tagline": "Play Rouletteknight in your browser.",
+    "tagline": "Play Roulette Knight in your browser.",
     "url": "games2/clrouletteknight.html"
   },
   {
@@ -8308,12 +8254,6 @@
     "short": "RUFF",
     "tagline": "Play Ruffle in your browser.",
     "url": "games2/clruffle.html"
-  },
-  {
-    "name": "Run-2",
-    "short": "RUN-",
-    "tagline": "Play Run-2 in your browser.",
-    "url": "games2/clrun-2.html"
   },
   {
     "name": "Run",
@@ -8326,6 +8266,12 @@
     "short": "RUN3",
     "tagline": "Play Run 3 in your browser.",
     "url": "games2/clrun3.html"
+  },
+  {
+    "name": "Run-2",
+    "short": "RUN-",
+    "tagline": "Play Run-2 in your browser.",
+    "url": "games2/clrun-2.html"
   },
   {
     "name": "Russiancardriver",
@@ -8424,9 +8370,9 @@
     "url": "games2/clserenitrove.html"
   },
   {
-    "name": "Servingupmadness",
+    "name": "Servingup Madness",
     "short": "SERV",
-    "tagline": "Play Servingupmadness in your browser.",
+    "tagline": "Play Servingup Madness in your browser.",
     "url": "games2/clservingupmadness.html"
   },
   {
@@ -8526,9 +8472,9 @@
     "url": "games2/clshrubnaut.html"
   },
   {
-    "name": "Shwultimatem",
+    "name": "Shw Ultimate M",
     "short": "SHWU",
-    "tagline": "Play Shwultimatem in your browser.",
+    "tagline": "Play Shw Ultimate M in your browser.",
     "url": "games2/clshwultimatem.html"
   },
   {
@@ -8574,6 +8520,12 @@
     "url": "games2/clsiloshowdow.html"
   },
   {
+    "name": "Singlefile",
+    "short": "SING",
+    "tagline": "Play Singlefile in your browser.",
+    "url": "games2/clSINGLEFILE.html"
+  },
+  {
     "name": "Sixwaystodie",
     "short": "SIXW",
     "tagline": "Play Sixwaystodie in your browser.",
@@ -8592,9 +8544,9 @@
     "url": "games2/clskibididibidygyattohiorizzingallovertheplacestillwatermangotheoryfemboydrool.html"
   },
   {
-    "name": "Skibidiinthebackrooms",
+    "name": "Skibidiinthe Backrooms",
     "short": "SKIB",
-    "tagline": "Play Skibidiinthebackrooms in your browser.",
+    "tagline": "Play Skibidiinthe Backrooms in your browser.",
     "url": "games2/clskibidiinthebackrooms.html"
   },
   {
@@ -8604,9 +8556,9 @@
     "url": "games2/clskong.html"
   },
   {
-    "name": "Skyrace-3 D",
+    "name": "Skyrace-3D",
     "short": "SKYR",
-    "tagline": "Play Skyrace-3 D in your browser.",
+    "tagline": "Play Skyrace-3D in your browser.",
     "url": "games2/clskyrace-3d.html"
   },
   {
@@ -8772,15 +8724,15 @@
     "url": "games2/clsnakelike.html"
   },
   {
-    "name": "Snipershot",
+    "name": "Sniper Shot",
     "short": "SNIP",
-    "tagline": "Play Snipershot in your browser.",
+    "tagline": "Play Sniper Shot in your browser.",
     "url": "games2/clsnipershot.html"
   },
   {
-    "name": "Sniperv 2",
+    "name": "Sniper V 2",
     "short": "SNIP",
-    "tagline": "Play Sniperv 2 in your browser.",
+    "tagline": "Play Sniper V 2 in your browser.",
     "url": "games2/clsniperv2.html"
   },
   {
@@ -8868,6 +8820,18 @@
     "url": "games2/clsonic1contemporary.html"
   },
   {
+    "name": "Sonic 1 Score Rush",
+    "short": "SONI",
+    "tagline": "Play Sonic 1 Score Rush in your browser.",
+    "url": "games2/clSonic1ScoreRush.html"
+  },
+  {
+    "name": "Sonic 2 Score Rush",
+    "short": "SONI",
+    "tagline": "Play Sonic 2 Score Rush in your browser.",
+    "url": "games2/clSonic2ScoreRush.html"
+  },
+  {
     "name": "Sonic 3 Andknuckles",
     "short": "SONI",
     "tagline": "Play Sonic 3 Andknuckles in your browser.",
@@ -8884,6 +8848,30 @@
     "short": "SONI",
     "tagline": "Play Sonic 3 Dblastdx in your browser.",
     "url": "games2/clsonic3dblastdx.html"
+  },
+  {
+    "name": "Sonic Battle",
+    "short": "SONI",
+    "tagline": "Play Sonic Battle in your browser.",
+    "url": "games2/clsonicbattle.html"
+  },
+  {
+    "name": "Sonic Classic Collection",
+    "short": "SONI",
+    "tagline": "Play Sonic Classic Collection in your browser.",
+    "url": "games2/clsonicclassiccollection.html"
+  },
+  {
+    "name": "Sonic Classic Heroes",
+    "short": "SONI",
+    "tagline": "Play Sonic Classic Heroes in your browser.",
+    "url": "games2/clsonicclassicheroes.html"
+  },
+  {
+    "name": "Sonic Hellfire Saga",
+    "short": "SONI",
+    "tagline": "Play Sonic Hellfire Saga in your browser.",
+    "url": "games2/clSonicHellfireSaga.html"
   },
   {
     "name": "Sonicadvance",
@@ -8922,28 +8910,10 @@
     "url": "games2/clsonicandknuckles.html"
   },
   {
-    "name": "Sonicbattle",
-    "short": "SONI",
-    "tagline": "Play Sonicbattle in your browser.",
-    "url": "games2/clsonicbattle.html"
-  },
-  {
     "name": "Soniccd",
     "short": "SONI",
     "tagline": "Play Soniccd in your browser.",
     "url": "games2/clsoniccd.html"
-  },
-  {
-    "name": "Sonicclassiccollection",
-    "short": "SONI",
-    "tagline": "Play Sonicclassiccollection in your browser.",
-    "url": "games2/clsonicclassiccollection.html"
-  },
-  {
-    "name": "Sonicclassicheroes",
-    "short": "SONI",
-    "tagline": "Play Sonicclassicheroes in your browser.",
-    "url": "games2/clsonicclassicheroes.html"
   },
   {
     "name": "Soniccolors",
@@ -9012,9 +8982,9 @@
     "url": "games2/clsonicrush.html"
   },
   {
-    "name": "Sonicrushadventure",
+    "name": "Sonicrush Adventure",
     "short": "SONI",
-    "tagline": "Play Sonicrushadventure in your browser.",
+    "tagline": "Play Sonicrush Adventure in your browser.",
     "url": "games2/clsonicrushadventure.html"
   },
   {
@@ -9048,9 +9018,9 @@
     "url": "games2/clsonny2.html"
   },
   {
-    "name": "Souljumper",
+    "name": "Soul Jumper",
     "short": "SOUL",
-    "tagline": "Play Souljumper in your browser.",
+    "tagline": "Play Soul Jumper in your browser.",
     "url": "games2/clsouljumper.html"
   },
   {
@@ -9090,9 +9060,9 @@
     "url": "games2/clspaceiskeyxmas.html"
   },
   {
-    "name": "Spacewarsbattleground",
+    "name": "Spacewars Battle Ground",
     "short": "SPAC",
-    "tagline": "Play Spacewarsbattleground in your browser.",
+    "tagline": "Play Spacewars Battle Ground in your browser.",
     "url": "games2/clspacewarsbattleground.html"
   },
   {
@@ -9204,21 +9174,21 @@
     "url": "games2/clstealbrainrotonline.html"
   },
   {
+    "name": "Stealth Master",
+    "short": "STEA",
+    "tagline": "Play Stealth Master in your browser.",
+    "url": "games2/clstealthmaster.html"
+  },
+  {
     "name": "Stealthassassin",
     "short": "STEA",
     "tagline": "Play Stealthassassin in your browser.",
     "url": "games2/clstealthassassin.html"
   },
   {
-    "name": "Stealthmaster",
-    "short": "STEA",
-    "tagline": "Play Stealthmaster in your browser.",
-    "url": "games2/clstealthmaster.html"
-  },
-  {
-    "name": "Steelempire",
+    "name": "Steel Empire",
     "short": "STEE",
-    "tagline": "Play Steelempire in your browser.",
+    "tagline": "Play Steel Empire in your browser.",
     "url": "games2/clsteelempire.html"
   },
   {
@@ -9228,22 +9198,28 @@
     "url": "games2/clsteelsurge.html"
   },
   {
-    "name": "Stickarchersbattle",
+    "name": "Stick Fighter",
     "short": "STIC",
-    "tagline": "Play Stickarchersbattle in your browser.",
-    "url": "games2/clstickarchersbattle.html"
-  },
-  {
-    "name": "Stickfighter",
-    "short": "STIC",
-    "tagline": "Play Stickfighter in your browser.",
+    "tagline": "Play Stick Fighter in your browser.",
     "url": "games2/clstickfighter.html"
   },
   {
-    "name": "Stickjetchallenge",
+    "name": "Stickarchers Battle",
     "short": "STIC",
-    "tagline": "Play Stickjetchallenge in your browser.",
+    "tagline": "Play Stickarchers Battle in your browser.",
+    "url": "games2/clstickarchersbattle.html"
+  },
+  {
+    "name": "Stickjet Challenge",
+    "short": "STIC",
+    "tagline": "Play Stickjet Challenge in your browser.",
     "url": "games2/clstickjetchallenge.html"
+  },
+  {
+    "name": "Stickman Kingdom Clash",
+    "short": "STIC",
+    "tagline": "Play Stickman Kingdom Clash in your browser.",
+    "url": "games2/clStickmanKingdomclash.html"
   },
   {
     "name": "Stickmanandguns",
@@ -9276,9 +9252,9 @@
     "url": "games2/clstickmanhook.html"
   },
   {
-    "name": "Stickmankombat 2 D",
+    "name": "Stickmankombat 2D",
     "short": "STIC",
-    "tagline": "Play Stickmankombat 2 D in your browser.",
+    "tagline": "Play Stickmankombat 2D in your browser.",
     "url": "games2/clstickmankombat2d.html"
   },
   {
@@ -9366,27 +9342,27 @@
     "url": "games2/clstreangeropepolice.html"
   },
   {
-    "name": "Streetfighter 2",
+    "name": "Street Fighter 2",
     "short": "STRE",
-    "tagline": "Play Streetfighter 2 in your browser.",
+    "tagline": "Play Street Fighter 2 in your browser.",
     "url": "games2/clstreetfighter2.html"
   },
   {
-    "name": "Streetfighter 2 Turbo",
+    "name": "Street Fighter 2 Turbo",
     "short": "STRE",
-    "tagline": "Play Streetfighter 2 Turbo in your browser.",
+    "tagline": "Play Street Fighter 2 Turbo in your browser.",
     "url": "games2/clstreetfighter2turbo.html"
   },
   {
-    "name": "Streetfighteralpha 3",
+    "name": "Street Fighter Alpha 3",
     "short": "STRE",
-    "tagline": "Play Streetfighteralpha 3 in your browser.",
+    "tagline": "Play Street Fighter Alpha 3 in your browser.",
     "url": "games2/clstreetfighteralpha3.html"
   },
   {
-    "name": "Streetfighterumuhsomething",
+    "name": "Street Fighter Umuhsomething",
     "short": "STRE",
-    "tagline": "Play Streetfighterumuhsomething in your browser.",
+    "tagline": "Play Street Fighter Umuhsomething in your browser.",
     "url": "games2/clstreetfighterumuhsomething.html"
   },
   {
@@ -9408,21 +9384,21 @@
     "url": "games2/clstreetofrage3.html"
   },
   {
-    "name": "Strikeforceheroes",
+    "name": "Strikeforce Heroes",
     "short": "STRI",
-    "tagline": "Play Strikeforceheroes in your browser.",
+    "tagline": "Play Strikeforce Heroes in your browser.",
     "url": "games2/clstrikeforceheroes.html"
   },
   {
-    "name": "Strikeforceheroes 2",
+    "name": "Strikeforce Heroes 2",
     "short": "STRI",
-    "tagline": "Play Strikeforceheroes 2 in your browser.",
+    "tagline": "Play Strikeforce Heroes 2 in your browser.",
     "url": "games2/clstrikeforceheroes2.html"
   },
   {
-    "name": "Strikeforceheroes 3",
+    "name": "Strikeforce Heroes 3",
     "short": "STRI",
-    "tagline": "Play Strikeforceheroes 3 in your browser.",
+    "tagline": "Play Strikeforce Heroes 3 in your browser.",
     "url": "games2/clstrikeforceheroes3.html"
   },
   {
@@ -9522,16 +9498,16 @@
     "url": "games2/clsubwaysurferssanfrancisco (1).html"
   },
   {
-    "name": "Subwaysurferssanfrancisco(1)",
-    "short": "SUBW",
-    "tagline": "Play Subwaysurferssanfrancisco(1) in your browser.",
-    "url": "games2/clsubwaysurferssanfrancisco(1).html"
-  },
-  {
     "name": "Subwaysurferssanfrancisco",
     "short": "SUBW",
     "tagline": "Play Subwaysurferssanfrancisco in your browser.",
     "url": "games2/clsubwaysurferssanfrancisco.html"
+  },
+  {
+    "name": "Subwaysurferssanfrancisco(1)",
+    "short": "SUBW",
+    "tagline": "Play Subwaysurferssanfrancisco(1) in your browser.",
+    "url": "games2/clsubwaysurferssanfrancisco(1).html"
   },
   {
     "name": "Subwaysurfersstpetersburg",
@@ -9576,6 +9552,138 @@
     "url": "games2/clsunandmoon.html"
   },
   {
+    "name": "Super Castle Vania Vi",
+    "short": "SUPE",
+    "tagline": "Play Super Castle Vania Vi in your browser.",
+    "url": "games2/clsupercastlevaniaVI.html"
+  },
+  {
+    "name": "Super Fighter S",
+    "short": "SUPE",
+    "tagline": "Play Super Fighter S in your browser.",
+    "url": "games2/clsuperfighters.html"
+  },
+  {
+    "name": "Super Island Adventure",
+    "short": "SUPE",
+    "tagline": "Play Super Island Adventure in your browser.",
+    "url": "games2/clsuperislandadventure.html"
+  },
+  {
+    "name": "Super Mario",
+    "short": "SUPE",
+    "tagline": "Play Super Mario in your browser.",
+    "url": "games2/clsupermario.html"
+  },
+  {
+    "name": "Super Mario 63",
+    "short": "SUPE",
+    "tagline": "Play Super Mario 63 in your browser.",
+    "url": "games2/clsupermario63.html"
+  },
+  {
+    "name": "Super Mario 64",
+    "short": "SUPE",
+    "tagline": "Play Super Mario 64 in your browser.",
+    "url": "games2/clsupermario64.html"
+  },
+  {
+    "name": "Super Mario 64 Ds",
+    "short": "SUPE",
+    "tagline": "Play Super Mario 64 Ds in your browser.",
+    "url": "games2/clsupermario64ds.html"
+  },
+  {
+    "name": "Super Mario World",
+    "short": "SUPE",
+    "tagline": "Play Super Mario World in your browser.",
+    "url": "games2/clsupermarioworld.html"
+  },
+  {
+    "name": "Super Mario World 2",
+    "short": "SUPE",
+    "tagline": "Play Super Mario World 2 in your browser.",
+    "url": "games2/clsupermarioworld2.html"
+  },
+  {
+    "name": "Super Mario World the Secret of the 7 Golden Statues",
+    "short": "SUPE",
+    "tagline": "Play Super Mario World the Secret of the 7 Golden Statues in your browser.",
+    "url": "games2/clSuperMarioWorldThe SecretOfThe7GoldenStatues.html"
+  },
+  {
+    "name": "Super Marioallstars",
+    "short": "SUPE",
+    "tagline": "Play Super Marioallstars in your browser.",
+    "url": "games2/clsupermarioallstars.html"
+  },
+  {
+    "name": "Super Mariobros",
+    "short": "SUPE",
+    "tagline": "Play Super Mariobros in your browser.",
+    "url": "games2/clsupermariobros.html"
+  },
+  {
+    "name": "Super Mariobros 2",
+    "short": "SUPE",
+    "tagline": "Play Super Mariobros 2 in your browser.",
+    "url": "games2/clsupermariobros2.html"
+  },
+  {
+    "name": "Super Mariobros 2 Us",
+    "short": "SUPE",
+    "tagline": "Play Super Mariobros 2 Us in your browser.",
+    "url": "games2/clsupermariobros2us.html"
+  },
+  {
+    "name": "Super Mariobros 3",
+    "short": "SUPE",
+    "tagline": "Play Super Mariobros 3 in your browser.",
+    "url": "games2/clsupermariobros3.html"
+  },
+  {
+    "name": "Super Mariobros 3 Real",
+    "short": "SUPE",
+    "tagline": "Play Super Mariobros 3 Real in your browser.",
+    "url": "games2/clsupermariobros3real.html"
+  },
+  {
+    "name": "Super Mariokart",
+    "short": "SUPE",
+    "tagline": "Play Super Mariokart in your browser.",
+    "url": "games2/clsupermariokart.html"
+  },
+  {
+    "name": "Super Marioland",
+    "short": "SUPE",
+    "tagline": "Play Super Marioland in your browser.",
+    "url": "games2/clsupermarioland.html"
+  },
+  {
+    "name": "Super Marioland 2",
+    "short": "SUPE",
+    "tagline": "Play Super Marioland 2 in your browser.",
+    "url": "games2/clsupermarioland2.html"
+  },
+  {
+    "name": "Super Mariomon",
+    "short": "SUPE",
+    "tagline": "Play Super Mariomon in your browser.",
+    "url": "games2/clsupermariomon.html"
+  },
+  {
+    "name": "Super Mariorpg",
+    "short": "SUPE",
+    "tagline": "Play Super Mariorpg in your browser.",
+    "url": "games2/clsupermariorpg.html"
+  },
+  {
+    "name": "Super Smash Bros",
+    "short": "SUPE",
+    "tagline": "Play Super Smash Bros in your browser.",
+    "url": "games2/clsupersmashbros.html"
+  },
+  {
     "name": "Superbomberman",
     "short": "SUPE",
     "tagline": "Play Superbomberman in your browser.",
@@ -9612,15 +9720,9 @@
     "url": "games2/clsupercarrush.html"
   },
   {
-    "name": "Supercastlevania Vi",
+    "name": "Superchibi Knight",
     "short": "SUPE",
-    "tagline": "Play Supercastlevania Vi in your browser.",
-    "url": "games2/clsupercastlevaniaVI.html"
-  },
-  {
-    "name": "Superchibiknight",
-    "short": "SUPE",
-    "tagline": "Play Superchibiknight in your browser.",
+    "tagline": "Play Superchibi Knight in your browser.",
     "url": "games2/clsuperchibiknight.html"
   },
   {
@@ -9642,12 +9744,6 @@
     "url": "games2/clsuperdiagonalmario2.html"
   },
   {
-    "name": "Superfighters",
-    "short": "SUPE",
-    "tagline": "Play Superfighters in your browser.",
-    "url": "games2/clsuperfighters.html"
-  },
-  {
     "name": "Superhot",
     "short": "SUPE",
     "tagline": "Play Superhot in your browser.",
@@ -9666,118 +9762,10 @@
     "url": "games2/clsuperhouseofdeadninjas.html"
   },
   {
-    "name": "Superislandadventure",
-    "short": "SUPE",
-    "tagline": "Play Superislandadventure in your browser.",
-    "url": "games2/clsuperislandadventure.html"
-  },
-  {
     "name": "Superliquidsoccer",
     "short": "SUPE",
     "tagline": "Play Superliquidsoccer in your browser.",
     "url": "games2/clsuperliquidsoccer.html"
-  },
-  {
-    "name": "Supermario",
-    "short": "SUPE",
-    "tagline": "Play Supermario in your browser.",
-    "url": "games2/clsupermario.html"
-  },
-  {
-    "name": "Supermario 63",
-    "short": "SUPE",
-    "tagline": "Play Supermario 63 in your browser.",
-    "url": "games2/clsupermario63.html"
-  },
-  {
-    "name": "Supermario 64",
-    "short": "SUPE",
-    "tagline": "Play Supermario 64 in your browser.",
-    "url": "games2/clsupermario64.html"
-  },
-  {
-    "name": "Supermario 64 Ds",
-    "short": "SUPE",
-    "tagline": "Play Supermario 64 Ds in your browser.",
-    "url": "games2/clsupermario64ds.html"
-  },
-  {
-    "name": "Supermarioallstars",
-    "short": "SUPE",
-    "tagline": "Play Supermarioallstars in your browser.",
-    "url": "games2/clsupermarioallstars.html"
-  },
-  {
-    "name": "Supermariobros",
-    "short": "SUPE",
-    "tagline": "Play Supermariobros in your browser.",
-    "url": "games2/clsupermariobros.html"
-  },
-  {
-    "name": "Supermariobros 2",
-    "short": "SUPE",
-    "tagline": "Play Supermariobros 2 in your browser.",
-    "url": "games2/clsupermariobros2.html"
-  },
-  {
-    "name": "Supermariobros 2 Us",
-    "short": "SUPE",
-    "tagline": "Play Supermariobros 2 Us in your browser.",
-    "url": "games2/clsupermariobros2us.html"
-  },
-  {
-    "name": "Supermariobros 3",
-    "short": "SUPE",
-    "tagline": "Play Supermariobros 3 in your browser.",
-    "url": "games2/clsupermariobros3.html"
-  },
-  {
-    "name": "Supermariobros 3 Real",
-    "short": "SUPE",
-    "tagline": "Play Supermariobros 3 Real in your browser.",
-    "url": "games2/clsupermariobros3real.html"
-  },
-  {
-    "name": "Supermariokart",
-    "short": "SUPE",
-    "tagline": "Play Supermariokart in your browser.",
-    "url": "games2/clsupermariokart.html"
-  },
-  {
-    "name": "Supermarioland",
-    "short": "SUPE",
-    "tagline": "Play Supermarioland in your browser.",
-    "url": "games2/clsupermarioland.html"
-  },
-  {
-    "name": "Supermarioland 2",
-    "short": "SUPE",
-    "tagline": "Play Supermarioland 2 in your browser.",
-    "url": "games2/clsupermarioland2.html"
-  },
-  {
-    "name": "Supermariomon",
-    "short": "SUPE",
-    "tagline": "Play Supermariomon in your browser.",
-    "url": "games2/clsupermariomon.html"
-  },
-  {
-    "name": "Supermariorpg",
-    "short": "SUPE",
-    "tagline": "Play Supermariorpg in your browser.",
-    "url": "games2/clsupermariorpg.html"
-  },
-  {
-    "name": "Supermarioworld",
-    "short": "SUPE",
-    "tagline": "Play Supermarioworld in your browser.",
-    "url": "games2/clsupermarioworld.html"
-  },
-  {
-    "name": "Supermarioworld 2",
-    "short": "SUPE",
-    "tagline": "Play Supermarioworld 2 in your browser.",
-    "url": "games2/clsupermarioworld2.html"
   },
   {
     "name": "Supermetroid",
@@ -9792,15 +9780,15 @@
     "url": "games2/clsupermonkeyballjr.html"
   },
   {
-    "name": "Supernoahsark 3d",
+    "name": "Supernoahsark 3D",
     "short": "SUPE",
-    "tagline": "Play Supernoahsark 3d in your browser.",
+    "tagline": "Play Supernoahsark 3D in your browser.",
     "url": "games2/clsupernoahsark3D.html"
   },
   {
-    "name": "Superoliverworld",
+    "name": "Superoliver World",
     "short": "SUPE",
-    "tagline": "Play Superoliverworld in your browser.",
+    "tagline": "Play Superoliver World in your browser.",
     "url": "games2/clsuperoliverworld.html"
   },
   {
@@ -9810,15 +9798,15 @@
     "url": "games2/clsuperpunchout.html"
   },
   {
-    "name": "Superpuzzlefighter 2 Turbo",
+    "name": "Superpuzzle Fighter 2 Turbo",
     "short": "SUPE",
-    "tagline": "Play Superpuzzlefighter 2 Turbo in your browser.",
+    "tagline": "Play Superpuzzle Fighter 2 Turbo in your browser.",
     "url": "games2/clsuperpuzzlefighter2turbo.html"
   },
   {
-    "name": "Superpuzzlefighter 2 Turboalt",
+    "name": "Superpuzzle Fighter 2 Turboalt",
     "short": "SUPE",
-    "tagline": "Play Superpuzzlefighter 2 Turboalt in your browser.",
+    "tagline": "Play Superpuzzle Fighter 2 Turboalt in your browser.",
     "url": "games2/clsuperpuzzlefighter2turboalt.html"
   },
   {
@@ -9826,12 +9814,6 @@
     "short": "SUPE",
     "tagline": "Play Superscribblenauts in your browser.",
     "url": "games2/clsuperscribblenauts.html"
-  },
-  {
-    "name": "Supersmashbros",
-    "short": "SUPE",
-    "tagline": "Play Supersmashbros in your browser.",
-    "url": "games2/clsupersmashbros.html"
   },
   {
     "name": "Supersmashflash",
@@ -9870,9 +9852,9 @@
     "url": "games2/clsupremeduelist.html"
   },
   {
-    "name": "Survivalracev 2",
+    "name": "Survival Racev 2",
     "short": "SURV",
-    "tagline": "Play Survivalracev 2 in your browser.",
+    "tagline": "Play Survival Racev 2 in your browser.",
     "url": "games2/clsurvivalracev2.html"
   },
   {
@@ -9906,9 +9888,9 @@
     "url": "games2/clswitchblade.html"
   },
   {
-    "name": "Swordandshieldultimateplus",
+    "name": "Swordandshield Ultimate Plus",
     "short": "SWOR",
-    "tagline": "Play Swordandshieldultimateplus in your browser.",
+    "tagline": "Play Swordandshield Ultimate Plus in your browser.",
     "url": "games2/clswordandshieldultimateplus.html"
   },
   {
@@ -9954,9 +9936,9 @@
     "url": "games2/cltabletanks.html"
   },
   {
-    "name": "Tabletennisworldtour",
+    "name": "Tabletennis World Tour",
     "short": "TABL",
-    "tagline": "Play Tabletennisworldtour in your browser.",
+    "tagline": "Play Tabletennis World Tour in your browser.",
     "url": "games2/cltabletennisworldtour.html"
   },
   {
@@ -9970,6 +9952,12 @@
     "short": "TAGC",
     "tagline": "Play Tagc 3 in your browser.",
     "url": "games2/cltagc3.html"
+  },
+  {
+    "name": "Taikono Tatsujin",
+    "short": "TAIK",
+    "tagline": "Play Taikono Tatsujin in your browser.",
+    "url": "games2/clTaikonoTatsujin.html"
   },
   {
     "name": "Taisei",
@@ -9990,9 +9978,9 @@
     "url": "games2/cltallmanrun.html"
   },
   {
-    "name": "Tankmayhem",
+    "name": "Tank Mayhem",
     "short": "TANK",
-    "tagline": "Play Tankmayhem in your browser.",
+    "tagline": "Play Tank Mayhem in your browser.",
     "url": "games2/cltankmayhem.html"
   },
   {
@@ -10098,9 +10086,9 @@
     "url": "games2/cltetris.html"
   },
   {
-    "name": "Tetrisattack",
+    "name": "Tetris Attack",
     "short": "TETR",
-    "tagline": "Play Tetrisattack in your browser.",
+    "tagline": "Play Tetris Attack in your browser.",
     "url": "games2/cltetrisattack.html"
   },
   {
@@ -10254,21 +10242,21 @@
     "url": "games2/clthwack.html"
   },
   {
-    "name": "Timeshooter 2",
+    "name": "Time Shooter 2",
     "short": "TIME",
-    "tagline": "Play Timeshooter 2 in your browser.",
+    "tagline": "Play Time Shooter 2 in your browser.",
     "url": "games2/cltimeshooter2.html"
   },
   {
-    "name": "Timeshooter 3",
+    "name": "Time Shooter 3",
     "short": "TIME",
-    "tagline": "Play Timeshooter 3 in your browser.",
+    "tagline": "Play Time Shooter 3 in your browser.",
     "url": "games2/cltimeshooter3.html"
   },
   {
-    "name": "Timewarriors",
+    "name": "Time Warrior S",
     "short": "TIME",
-    "tagline": "Play Timewarriors in your browser.",
+    "tagline": "Play Time Warrior S in your browser.",
     "url": "games2/cltimewarriors.html"
   },
   {
@@ -10338,9 +10326,9 @@
     "url": "games2/cltoomanytypes.html"
   },
   {
-    "name": "Topspeedracing 3 D",
+    "name": "Topspeed Racing 3D",
     "short": "TOPS",
-    "tagline": "Play Topspeedracing 3 D in your browser.",
+    "tagline": "Play Topspeed Racing 3D in your browser.",
     "url": "games2/cltopspeedracing3d.html"
   },
   {
@@ -10368,9 +10356,9 @@
     "url": "games2/cltowerblocks.html"
   },
   {
-    "name": "Towercrash 3 D",
+    "name": "Towercrash 3D",
     "short": "TOWE",
-    "tagline": "Play Towercrash 3 D in your browser.",
+    "tagline": "Play Towercrash 3D in your browser.",
     "url": "games2/cltowercrash3d.html"
   },
   {
@@ -10386,9 +10374,9 @@
     "url": "games2/cltrace.html"
   },
   {
-    "name": "Trafficjam 3 D",
+    "name": "Trafficjam 3D",
     "short": "TRAF",
-    "tagline": "Play Trafficjam 3 D in your browser.",
+    "tagline": "Play Trafficjam 3D in your browser.",
     "url": "games2/cltrafficjam3d.html"
   },
   {
@@ -10422,81 +10410,81 @@
     "url": "games2/cltriviacrack.html"
   },
   {
-    "name": "Trollfacequest 1",
+    "name": "Trollface Quest 1",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 1 in your browser.",
+    "tagline": "Play Trollface Quest 1 in your browser.",
     "url": "games2/cltrollfacequest1.html"
   },
   {
-    "name": "Trollfacequest 10",
+    "name": "Trollface Quest 10",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 10 in your browser.",
+    "tagline": "Play Trollface Quest 10 in your browser.",
     "url": "games2/cltrollfacequest10.html"
   },
   {
-    "name": "Trollfacequest 11",
+    "name": "Trollface Quest 11",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 11 in your browser.",
+    "tagline": "Play Trollface Quest 11 in your browser.",
     "url": "games2/cltrollfacequest11.html"
   },
   {
-    "name": "Trollfacequest 12",
+    "name": "Trollface Quest 12",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 12 in your browser.",
+    "tagline": "Play Trollface Quest 12 in your browser.",
     "url": "games2/cltrollfacequest12.html"
   },
   {
-    "name": "Trollfacequest 13",
+    "name": "Trollface Quest 13",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 13 in your browser.",
+    "tagline": "Play Trollface Quest 13 in your browser.",
     "url": "games2/cltrollfacequest13.html"
   },
   {
-    "name": "Trollfacequest 2",
+    "name": "Trollface Quest 2",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 2 in your browser.",
+    "tagline": "Play Trollface Quest 2 in your browser.",
     "url": "games2/cltrollfacequest2.html"
   },
   {
-    "name": "Trollfacequest 3",
+    "name": "Trollface Quest 3",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 3 in your browser.",
+    "tagline": "Play Trollface Quest 3 in your browser.",
     "url": "games2/cltrollfacequest3.html"
   },
   {
-    "name": "Trollfacequest 4",
+    "name": "Trollface Quest 4",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 4 in your browser.",
+    "tagline": "Play Trollface Quest 4 in your browser.",
     "url": "games2/cltrollfacequest4.html"
   },
   {
-    "name": "Trollfacequest 5",
+    "name": "Trollface Quest 5",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 5 in your browser.",
+    "tagline": "Play Trollface Quest 5 in your browser.",
     "url": "games2/cltrollfacequest5.html"
   },
   {
-    "name": "Trollfacequest 6",
+    "name": "Trollface Quest 6",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 6 in your browser.",
+    "tagline": "Play Trollface Quest 6 in your browser.",
     "url": "games2/cltrollfacequest6.html"
   },
   {
-    "name": "Trollfacequest 7",
+    "name": "Trollface Quest 7",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 7 in your browser.",
+    "tagline": "Play Trollface Quest 7 in your browser.",
     "url": "games2/cltrollfacequest7.html"
   },
   {
-    "name": "Trollfacequest 8",
+    "name": "Trollface Quest 8",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 8 in your browser.",
+    "tagline": "Play Trollface Quest 8 in your browser.",
     "url": "games2/cltrollfacequest8.html"
   },
   {
-    "name": "Trollfacequest 9",
+    "name": "Trollface Quest 9",
     "short": "TROL",
-    "tagline": "Play Trollfacequest 9 in your browser.",
+    "tagline": "Play Trollface Quest 9 in your browser.",
     "url": "games2/cltrollfacequest9.html"
   },
   {
@@ -10506,9 +10494,9 @@
     "url": "games2/cltrucksim.html"
   },
   {
-    "name": "Tubejumpers",
+    "name": "Tube Jumper S",
     "short": "TUBE",
-    "tagline": "Play Tubejumpers in your browser.",
+    "tagline": "Play Tube Jumper S in your browser.",
     "url": "games2/cltubejumpers.html"
   },
   {
@@ -10536,16 +10524,16 @@
     "url": "games2/clturokdinosaurhunter.html"
   },
   {
-    "name": "Twinshot(1)",
-    "short": "TWIN",
-    "tagline": "Play Twinshot(1) in your browser.",
-    "url": "games2/cltwinshot(1).html"
-  },
-  {
     "name": "Twinshot",
     "short": "TWIN",
     "tagline": "Play Twinshot in your browser.",
     "url": "games2/cltwinshot.html"
+  },
+  {
+    "name": "Twinshot(1)",
+    "short": "TWIN",
+    "tagline": "Play Twinshot(1) in your browser.",
+    "url": "games2/cltwinshot(1).html"
   },
   {
     "name": "Twistedmetal",
@@ -10560,9 +10548,9 @@
     "url": "games2/cltwistedmetal2.html"
   },
   {
-    "name": "Twoball 3 D",
+    "name": "Twoball 3D",
     "short": "TWOB",
-    "tagline": "Play Twoball 3 D in your browser.",
+    "tagline": "Play Twoball 3D in your browser.",
     "url": "games2/cltwoball3d.html"
   },
   {
@@ -10584,27 +10572,33 @@
     "url": "games2/clufoswampoddysey.html"
   },
   {
-    "name": "Ultimateassassian 2",
+    "name": "Ultimate Assassian 2",
     "short": "ULTI",
-    "tagline": "Play Ultimateassassian 2 in your browser.",
+    "tagline": "Play Ultimate Assassian 2 in your browser.",
     "url": "games2/clultimateassassian2.html"
   },
   {
-    "name": "Ultimateassassian 3",
+    "name": "Ultimate Assassian 3",
     "short": "ULTI",
-    "tagline": "Play Ultimateassassian 3 in your browser.",
+    "tagline": "Play Ultimate Assassian 3 in your browser.",
     "url": "games2/clultimateassassian3.html"
   },
   {
-    "name": "Ultimatemortalkombat",
+    "name": "Ultimate Cardriving Simulator",
     "short": "ULTI",
-    "tagline": "Play Ultimatemortalkombat in your browser.",
+    "tagline": "Play Ultimate Cardriving Simulator in your browser.",
+    "url": "games2/clUltimatecardrivingsimulator.html"
+  },
+  {
+    "name": "Ultimate Mortalkombat",
+    "short": "ULTI",
+    "tagline": "Play Ultimate Mortalkombat in your browser.",
     "url": "games2/clultimatemortalkombat.html"
   },
   {
-    "name": "Ultimatemortalkombat 3",
+    "name": "Ultimate Mortalkombat 3",
     "short": "ULTI",
-    "tagline": "Play Ultimatemortalkombat 3 in your browser.",
+    "tagline": "Play Ultimate Mortalkombat 3 in your browser.",
     "url": "games2/clultimatemortalkombat3.html"
   },
   {
@@ -10650,9 +10644,9 @@
     "url": "games2/clunfairmario.html"
   },
   {
-    "name": "Unfairmarioworkquestionmark",
+    "name": "Unfairmariowork Quest Ionmark",
     "short": "UNFA",
-    "tagline": "Play Unfairmarioworkquestionmark in your browser.",
+    "tagline": "Play Unfairmariowork Quest Ionmark in your browser.",
     "url": "games2/clunfairmarioworkquestionmark.html"
   },
   {
@@ -10696,6 +10690,12 @@
     "short": "UPSL",
     "tagline": "Play Upslash in your browser.",
     "url": "games2/clupslash.html"
+  },
+  {
+    "name": "Uzg",
+    "short": "UZG",
+    "tagline": "Play Uzg in your browser.",
+    "url": "games2/clUZG.html"
   },
   {
     "name": "Vampiresurvivors",
@@ -10770,21 +10770,21 @@
     "url": "games2/clvex8.html"
   },
   {
-    "name": "Vexchallenges",
+    "name": "Vex Challenge S",
     "short": "VEXC",
-    "tagline": "Play Vexchallenges in your browser.",
+    "tagline": "Play Vex Challenge S in your browser.",
     "url": "games2/clvexchallenges.html"
   },
   {
-    "name": "Vexx 3 M",
+    "name": "Vexx 3M",
     "short": "VEXX",
-    "tagline": "Play Vexx 3 M in your browser.",
+    "tagline": "Play Vexx 3M in your browser.",
     "url": "games2/clvexx3m.html"
   },
   {
-    "name": "Vexx 3 M 2",
+    "name": "Vexx 3M 2",
     "short": "VEXX",
-    "tagline": "Play Vexx 3 M 2 in your browser.",
+    "tagline": "Play Vexx 3M 2 in your browser.",
     "url": "games2/clvexx3m2.html"
   },
   {
@@ -10806,9 +10806,9 @@
     "url": "games2/clvolleyrandom.html"
   },
   {
-    "name": "Vollyballchallenge",
+    "name": "Vollyball Challenge",
     "short": "VOLL",
-    "tagline": "Play Vollyballchallenge in your browser.",
+    "tagline": "Play Vollyball Challenge in your browser.",
     "url": "games2/clvollyballchallenge.html"
   },
   {
@@ -10848,9 +10848,9 @@
     "url": "games2/clwariowareinc.html"
   },
   {
-    "name": "Wartheknight",
+    "name": "Warthe Knight",
     "short": "WART",
-    "tagline": "Play Wartheknight in your browser.",
+    "tagline": "Play Warthe Knight in your browser.",
     "url": "games2/clwartheknight.html"
   },
   {

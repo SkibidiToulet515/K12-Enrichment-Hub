@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Enrichment Access</title>
+  <title>Dashboard - NebulaCore</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/transitions.css">
   <link rel="stylesheet" href="/css/private-theme.css">
@@ -67,13 +67,129 @@
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
+    
+    /* Universal Search */
+    .universal-search {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+    
+    .universal-search-input {
+      width: 100%;
+      padding: 16px 20px 16px 50px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg, 16px);
+      color: var(--text);
+      font-size: 16px;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    
+    .universal-search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--glow-primary, 0 0 20px rgba(76, 201, 240, 0.3));
+    }
+    
+    .universal-search-input::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .universal-search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      opacity: 0.6;
+    }
+    
+    .universal-search-results {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg, 16px);
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    
+    .universal-search-results.active {
+      display: block;
+    }
+    
+    .search-category {
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--glass-border);
+      background: var(--bg);
+    }
+    
+    .search-result-item {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .search-result-item:hover {
+      background: var(--accent);
+    }
+    
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .search-result-icon {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border-radius: 10px;
+    }
+    
+    .search-result-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 2px;
+      color: var(--text);
+    }
+    
+    .search-result-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    
+    .search-no-results {
+      padding: 30px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
   </style>
 </head>
 <body class="private-page">
   <div class="app-container">
     <nav class="navbar">
       <div class="nav-left">
-        <h1>Enrichment Hub</h1>
+        <h1>NebulaCore</h1>
       </div>
       <div class="nav-right">
         <button class="theme-btn" onclick="openThemeModal()" title="Choose from 36 themes">
@@ -91,6 +207,19 @@
       <div class="welcome-header">
         <h2 id="welcomeGreeting">Welcome back</h2>
         <p>Choose where you want to explore today</p>
+      </div>
+      
+      <!-- Universal Search -->
+      <div class="universal-search">
+        <span class="universal-search-icon">🔍</span>
+        <input 
+          type="text" 
+          class="universal-search-input" 
+          id="universalSearch" 
+          placeholder="Search games, movies, messages..."
+          autocomplete="off"
+        >
+        <div class="universal-search-results" id="searchResults"></div>
       </div>
       
       <div class="dashboard-grid">
@@ -114,8 +243,8 @@
 
         <a href="/private/movies.html" class="dashboard-card movies-card">
           <span class="card-icon">🎬</span>
-          <h3>Educational Media</h3>
-          <p>Watch educational videos and trailers</p>
+          <h3>Movies & TV Shows</h3>
+          <p>Stream movies and TV shows</p>
         </a>
 
         <a href="/private/proxy.html" class="dashboard-card proxy-card">
@@ -171,6 +300,144 @@
       localStorage.removeItem('user');
       localStorage.removeItem('userId');
       window.location.href = '/private/auth.html';
+    }
+
+    // Universal Search
+    let gamesData = [];
+    let moviesData = [
+      { name: 'Hulu', icon: '🎭', url: 'https://docs.google.com/presentation/d/1YDZCGRJMcIXA6CDnnxEUcNuZuEx-NdUETeeVFulhYDg/edit' },
+      { name: 'Paramount+', icon: '📺', url: 'https://docs.google.com/presentation/d/1CiZMdBm677M7EIus7gT89WPxwYPzXJQgwmXGv3sLAaw/edit' },
+      { name: 'Tubi', icon: '🎬', url: 'https://docs.google.com/presentation/d/1MKUZLOhfS1PyOtbz-uhfdNqewzDJIqZxBEfMeWPhJpE/edit' },
+      { name: 'Roku', icon: '📟', url: 'https://docs.google.com/presentation/d/1OjrWHYHz5xbxhVYfWbDF4J0NdM3AYHC9x2pTchv4GuU/edit' },
+      { name: 'Disney+', icon: '✨', url: 'https://docs.google.com/presentation/d/1cqMoS7rNvOX77938GusdWNi6mYVPOfETCVsAVW9I9ps/edit' },
+      { name: 'Netflix', icon: '🎥', url: 'https://docs.google.com/presentation/d/1nrMdmkRFEUbYWqTPbk4qVQFSRxcVbqJSZMgpb1QjkTQ/edit' },
+    ];
+    let quickLinks = [
+      { name: 'Games', icon: '🎮', url: '/private/games.html', type: 'page' },
+      { name: 'Chat', icon: '💬', url: '/private/chat.html', type: 'page' },
+      { name: 'Profile', icon: '👤', url: '/private/profile.html', type: 'page' },
+      { name: 'Movies & TV Shows', icon: '🎬', url: '/private/movies.html', type: 'page' },
+      { name: 'Web Browser', icon: '🌐', url: '/private/proxy.html', type: 'page' },
+      { name: 'Shop', icon: '🛒', url: '/private/shop.html', type: 'page' },
+    ];
+
+    // Load games data
+    async function loadGamesData() {
+      try {
+        const res = await fetch('/games.json');
+        gamesData = await res.json();
+      } catch (e) {
+        console.log('Could not load games data');
+      }
+    }
+
+    // Initialize search
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGamesData();
+      
+      const searchInput = document.getElementById('universalSearch');
+      const searchResults = document.getElementById('searchResults');
+      
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (!query) {
+          searchResults.classList.remove('active');
+          return;
+        }
+        
+        performSearch(query);
+      });
+      
+      searchInput.addEventListener('focus', (e) => {
+        if (e.target.value.trim()) {
+          performSearch(e.target.value.toLowerCase().trim());
+        }
+      });
+      
+      // Close search on click outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.universal-search')) {
+          searchResults.classList.remove('active');
+        }
+      });
+    });
+
+    function performSearch(query) {
+      const searchResults = document.getElementById('searchResults');
+      let html = '';
+      let hasResults = false;
+      
+      // Search quick links / pages
+      const matchedPages = quickLinks.filter(p => 
+        p.name.toLowerCase().includes(query)
+      );
+      
+      if (matchedPages.length > 0) {
+        hasResults = true;
+        html += '<div class="search-category">Pages</div>';
+        matchedPages.forEach(page => {
+          html += `
+            <div class="search-result-item" onclick="window.location.href='${page.url}'">
+              <div class="search-result-icon">${page.icon}</div>
+              <div class="search-result-info">
+                <h4>${page.name}</h4>
+                <p>Go to ${page.name}</p>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      // Search games
+      const matchedGames = gamesData.filter(g => 
+        g.name.toLowerCase().includes(query)
+      ).slice(0, 8);
+      
+      if (matchedGames.length > 0) {
+        hasResults = true;
+        html += '<div class="search-category">Games</div>';
+        matchedGames.forEach(game => {
+          const url = game.url.startsWith('/') ? game.url : '/' + game.url;
+          html += `
+            <div class="search-result-item" onclick="window.location.href='/private/games.html?search=${encodeURIComponent(game.name)}'">
+              <div class="search-result-icon">🎮</div>
+              <div class="search-result-info">
+                <h4>${game.name}</h4>
+                <p>${game.tagline}</p>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      // Search movies/streaming
+      const matchedMovies = moviesData.filter(m => 
+        m.name.toLowerCase().includes(query)
+      );
+      
+      if (matchedMovies.length > 0) {
+        hasResults = true;
+        html += '<div class="search-category">Movies & TV</div>';
+        matchedMovies.forEach(movie => {
+          html += `
+            <div class="search-result-item" onclick="window.open('${movie.url}', '_blank')">
+              <div class="search-result-icon">${movie.icon}</div>
+              <div class="search-result-info">
+                <h4>${movie.name}</h4>
+                <p>Open streaming service</p>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      if (!hasResults) {
+        html = '<div class="search-no-results">No results found for "' + query + '"</div>';
+      }
+      
+      searchResults.innerHTML = html;
+      searchResults.classList.add('active');
     }
   </script>
 </body>
