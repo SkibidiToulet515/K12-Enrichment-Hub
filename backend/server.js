@@ -164,13 +164,31 @@ function proxyRequest(targetUrl, req, res, prefix) {
 
     const contentType = proxyRes.headers['content-type'] || '';
     
-    // Set response headers
+    // Set response headers - strip security headers that block iframes
     res.status(proxyRes.statusCode);
+    const blockedHeaders = [
+      'content-encoding', 
+      'transfer-encoding', 
+      'content-length', 
+      'content-security-policy',
+      'content-security-policy-report-only',
+      'x-frame-options',
+      'x-content-type-options',
+      'strict-transport-security',
+      'cross-origin-opener-policy',
+      'cross-origin-embedder-policy',
+      'cross-origin-resource-policy',
+      'permissions-policy'
+    ];
     Object.keys(proxyRes.headers).forEach(key => {
-      if (!['content-encoding', 'transfer-encoding', 'content-length', 'content-security-policy', 'x-frame-options'].includes(key.toLowerCase())) {
+      if (!blockedHeaders.includes(key.toLowerCase())) {
         res.setHeader(key, proxyRes.headers[key]);
       }
     });
+    // Add permissive headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', '*');
     
     // For HTML, buffer and inject base tag + fetch interceptor
     if (contentType.includes('text/html')) {

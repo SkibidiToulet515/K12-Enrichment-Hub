@@ -474,16 +474,38 @@
       let iframe = frame.querySelector('iframe');
       if (!iframe) {
         iframe = document.createElement('iframe');
+        iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-pointer-lock allow-presentation allow-top-navigation');
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.setAttribute('referrerpolicy', 'no-referrer');
         frame.appendChild(iframe);
       }
 
       const proxyUrl = getProxyUrl(url);
+      console.log('Loading proxy URL:', proxyUrl);
       iframe.src = proxyUrl;
 
       iframe.onload = () => {
+        console.log('Iframe loaded successfully');
         loading.classList.add('hidden');
         loading.classList.remove('phase2');
       };
+      
+      iframe.onerror = (e) => {
+        console.error('Iframe error:', e);
+        loading.classList.add('hidden');
+        loading.classList.remove('phase2');
+        alert('Failed to load page. Check console for details.');
+      };
+      
+      // Timeout fallback - hide loading after 30 seconds
+      setTimeout(() => {
+        if (!loading.classList.contains('hidden')) {
+          console.log('Loading timeout - hiding overlay');
+          loading.classList.add('hidden');
+          loading.classList.remove('phase2');
+        }
+      }, 30000);
 
       if (updateTab && activeTabId) {
         const tab = tabs.find(t => t.id === activeTabId);
