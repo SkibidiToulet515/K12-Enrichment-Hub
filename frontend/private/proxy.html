@@ -17,32 +17,28 @@
       background: #0C0C0C;
       color: #ffffff;
       min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #fluid-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .main-wrapper {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 40px 20px;
       position: relative;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: 
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 50px 50px;
-      pointer-events: none;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
-      pointer-events: none;
+      z-index: 1;
     }
 
     .container {
@@ -52,8 +48,6 @@
       flex-direction: column;
       align-items: center;
       gap: 40px;
-      position: relative;
-      z-index: 1;
       animation: fadeIn 0.6s ease-out;
     }
 
@@ -71,15 +65,14 @@
       font-size: 48px;
       font-weight: 300;
       letter-spacing: -1px;
-      background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #fff;
+      text-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
       margin-bottom: 8px;
     }
 
     .greeting p {
       font-size: 16px;
-      color: #666;
+      color: rgba(255,255,255,0.6);
       font-weight: 400;
     }
 
@@ -96,20 +89,21 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
+      padding: 10px 18px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
     }
 
     .proxy-selector label {
       font-size: 13px;
-      color: #888;
+      color: rgba(255,255,255,0.7);
     }
 
     .proxy-selector select {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 8px;
       padding: 8px 32px 8px 12px;
       color: #fff;
@@ -125,12 +119,12 @@
     }
 
     .proxy-selector select:hover {
-      border-color: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.25);
     }
 
     .proxy-selector select:focus {
       border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     }
 
     .search-bar {
@@ -140,28 +134,28 @@
       height: 60px;
       display: flex;
       align-items: center;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 20px;
       padding: 0 8px 0 24px;
       transition: all 0.3s ease;
-      position: relative;
     }
 
     .search-bar:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.6);
+      border-color: rgba(255,255,255,0.2);
     }
 
     .search-bar:focus-within {
-      background: rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.7);
       border-color: #6366f1;
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), 0 8px 32px rgba(0,0,0,0.3);
-      transform: scale(1.01);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2), 0 8px 40px rgba(0,0,0,0.4);
+      transform: scale(1.02);
     }
 
     .search-icon {
-      color: #666;
+      color: rgba(255,255,255,0.5);
       font-size: 20px;
       margin-right: 16px;
       transition: color 0.2s;
@@ -182,7 +176,7 @@
     }
 
     .search-input::placeholder {
-      color: #555;
+      color: rgba(255,255,255,0.4);
     }
 
     .search-btn {
@@ -201,8 +195,8 @@
     }
 
     .search-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+      transform: scale(1.08);
+      box-shadow: 0 4px 24px rgba(99, 102, 241, 0.5);
     }
 
     .search-btn:active {
@@ -226,16 +220,17 @@
 
     .bookmarks-title {
       font-size: 14px;
-      color: #666;
+      color: rgba(255,255,255,0.5);
       font-weight: 500;
     }
 
     .edit-btn {
       padding: 6px 14px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
-      color: #888;
+      color: rgba(255,255,255,0.6);
       font-size: 12px;
       font-family: inherit;
       cursor: pointer;
@@ -248,7 +243,7 @@
     }
 
     .edit-btn.active {
-      background: rgba(99, 102, 241, 0.2);
+      background: rgba(99, 102, 241, 0.3);
       border-color: #6366f1;
       color: #6366f1;
     }
@@ -268,29 +263,29 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      position: relative;
+      transition: all 0.3s ease;
     }
 
     .bookmark:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.15);
-      transform: scale(1.05) translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      transform: scale(1.08) translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 40px rgba(99, 102, 241, 0.2);
     }
 
     .bookmark.editing {
-      animation: shake 0.3s ease-in-out;
+      animation: shake 0.3s ease-in-out infinite;
     }
 
     @keyframes shake {
       0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-2deg); }
-      75% { transform: rotate(2deg); }
+      25% { transform: rotate(-1.5deg); }
+      75% { transform: rotate(1.5deg); }
     }
 
     .bookmark-icon {
@@ -300,19 +295,20 @@
       align-items: center;
       justify-content: center;
       font-size: 28px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.08);
       border-radius: 14px;
-      transition: all 0.2s;
+      transition: all 0.3s;
     }
 
     .bookmark:hover .bookmark-icon {
-      background: rgba(99, 102, 241, 0.2);
+      background: rgba(99, 102, 241, 0.3);
       transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
     }
 
     .bookmark-label {
       font-size: 12px;
-      color: #aaa;
+      color: rgba(255,255,255,0.7);
       font-weight: 500;
       text-align: center;
       max-width: 90px;
@@ -327,12 +323,12 @@
 
     .add-bookmark {
       border-style: dashed;
-      border-color: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.2);
     }
 
     .add-bookmark .bookmark-icon {
       font-size: 24px;
-      color: #666;
+      color: rgba(255,255,255,0.5);
     }
 
     .add-bookmark:hover .bookmark-icon {
@@ -342,7 +338,8 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -358,43 +355,44 @@
     }
 
     .modal {
-      background: #1a1a1a;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 28px;
+      background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 32px;
       width: 90%;
-      max-width: 400px;
-      transform: scale(0.9);
+      max-width: 420px;
+      transform: scale(0.9) translateY(20px);
       transition: transform 0.3s;
     }
 
     .modal-overlay.active .modal {
-      transform: scale(1);
+      transform: scale(1) translateY(0);
     }
 
     .modal-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .modal-field {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .modal-field label {
       display: block;
       font-size: 13px;
-      color: #888;
+      color: rgba(255,255,255,0.6);
       margin-bottom: 8px;
     }
 
     .modal-field input {
       width: 100%;
-      padding: 12px 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
       color: #fff;
       font-size: 14px;
       font-family: inherit;
@@ -404,20 +402,20 @@
 
     .modal-field input:focus {
       border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     }
 
     .modal-actions {
       display: flex;
       gap: 12px;
-      margin-top: 24px;
+      margin-top: 28px;
     }
 
     .modal-btn {
       flex: 1;
-      padding: 12px;
+      padding: 14px;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 14px;
       font-weight: 500;
       font-family: inherit;
@@ -426,12 +424,12 @@
     }
 
     .modal-btn.secondary {
-      background: rgba(255,255,255,0.08);
-      color: #aaa;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
     }
 
     .modal-btn.secondary:hover {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.15);
       color: #fff;
     }
 
@@ -442,7 +440,7 @@
 
     .modal-btn.primary:hover {
       transform: scale(1.02);
-      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 4px 24px rgba(99, 102, 241, 0.4);
     }
 
     .modal-btn.danger {
@@ -461,11 +459,12 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px;
-      background: rgba(255,255,255,0.05);
+      padding: 10px 18px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      color: #888;
+      border-radius: 14px;
+      color: rgba(255,255,255,0.7);
       font-size: 13px;
       text-decoration: none;
       transition: all 0.2s;
@@ -477,11 +476,105 @@
       color: #fff;
     }
 
+    .settings-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: rgba(255,255,255,0.6);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .settings-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .settings-panel {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      width: 280px;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s;
+    }
+
+    .settings-panel.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .settings-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .settings-group {
+      margin-bottom: 16px;
+    }
+
+    .settings-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+
+    .settings-options {
+      display: flex;
+      gap: 6px;
+    }
+
+    .settings-opt {
+      flex: 1;
+      padding: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .settings-opt:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .settings-opt.active {
+      background: rgba(99, 102, 241, 0.3);
+      border-color: #6366f1;
+      color: #fff;
+    }
+
     .footer {
       margin-top: 60px;
       text-align: center;
       font-size: 12px;
-      color: #444;
+      color: rgba(255,255,255,0.3);
     }
 
     @media (max-width: 768px) {
@@ -513,46 +606,82 @@
   </style>
 </head>
 <body>
+  <canvas id="fluid-canvas"></canvas>
+
   <a href="/private/dashboard.html" class="back-link">
     <span>←</span>
     <span>Back to Hub</span>
   </a>
 
-  <div class="container">
-    <div class="greeting">
-      <h1 id="greetingText">Welcome</h1>
-      <p>Search the web privately</p>
-    </div>
+  <button class="settings-btn" onclick="toggleSettings()">⚙</button>
 
-    <div class="search-section">
-      <div class="proxy-selector">
-        <label>Proxy Engine:</label>
-        <select id="proxyEngine">
-          <option value="uv">Ultraviolet</option>
-          <option value="scramjet">Scramjet</option>
-        </select>
-      </div>
-
-      <div class="search-bar">
-        <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="searchInput" 
-               placeholder="Search with DuckDuckGo..." 
-               autocomplete="off">
-        <button class="search-btn" onclick="doSearch()">→</button>
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-title">Fluid Settings</div>
+    
+    <div class="settings-group">
+      <div class="settings-label">Color Theme</div>
+      <div class="settings-options">
+        <button class="settings-opt active" data-theme="cyber" onclick="setTheme('cyber')">Cyber</button>
+        <button class="settings-opt" data-theme="fire" onclick="setTheme('fire')">Fire</button>
+        <button class="settings-opt" data-theme="ocean" onclick="setTheme('ocean')">Ocean</button>
       </div>
     </div>
 
-    <div class="bookmarks-section">
-      <div class="bookmarks-header">
-        <span class="bookmarks-title">Quick Links</span>
-        <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
+    <div class="settings-group">
+      <div class="settings-label">Intensity</div>
+      <div class="settings-options">
+        <button class="settings-opt" data-intensity="low" onclick="setIntensity('low')">Low</button>
+        <button class="settings-opt active" data-intensity="medium" onclick="setIntensity('medium')">Medium</button>
+        <button class="settings-opt" data-intensity="high" onclick="setIntensity('high')">High</button>
       </div>
-
-      <div class="bookmarks-grid" id="bookmarksGrid"></div>
     </div>
 
-    <div class="footer">
-      Enrichment Hub Browser
+    <div class="settings-group">
+      <div class="settings-label">Glow</div>
+      <div class="settings-options">
+        <button class="settings-opt" data-glow="off" onclick="setGlow('off')">Off</button>
+        <button class="settings-opt active" data-glow="on" onclick="setGlow('on')">On</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div class="container">
+      <div class="greeting">
+        <h1 id="greetingText">Welcome</h1>
+        <p>Search the web privately</p>
+      </div>
+
+      <div class="search-section">
+        <div class="proxy-selector">
+          <label>Proxy Engine:</label>
+          <select id="proxyEngine">
+            <option value="uv">Ultraviolet</option>
+            <option value="scramjet">Scramjet</option>
+          </select>
+        </div>
+
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="searchInput" 
+                 placeholder="Search with DuckDuckGo..." 
+                 autocomplete="off">
+          <button class="search-btn" onclick="doSearch()">→</button>
+        </div>
+      </div>
+
+      <div class="bookmarks-section">
+        <div class="bookmarks-header">
+          <span class="bookmarks-title">Quick Links</span>
+          <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
+        </div>
+
+        <div class="bookmarks-grid" id="bookmarksGrid"></div>
+      </div>
+
+      <div class="footer">
+        Enrichment Hub Browser
+      </div>
     </div>
   </div>
 
@@ -583,6 +712,266 @@
   </div>
 
   <script>
+    const canvas = document.getElementById('fluid-canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+    let fluidConfig = {
+      theme: localStorage.getItem('fluidTheme') || 'cyber',
+      intensity: localStorage.getItem('fluidIntensity') || 'medium',
+      glow: localStorage.getItem('fluidGlow') || 'on'
+    };
+
+    const themes = {
+      cyber: [[0.4, 0.2, 1.0], [0.0, 0.8, 1.0], [0.8, 0.2, 0.8]],
+      fire: [[1.0, 0.3, 0.0], [1.0, 0.6, 0.0], [1.0, 0.1, 0.1]],
+      ocean: [[0.0, 0.4, 0.8], [0.0, 0.7, 0.6], [0.2, 0.2, 0.6]]
+    };
+
+    const intensities = { low: 0.3, medium: 0.6, high: 1.0 };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    if (!gl) {
+      console.warn('WebGL not supported, using CSS fallback');
+      canvas.style.background = 'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%)';
+    } else {
+      const vertexShaderSource = `
+        attribute vec2 a_position;
+        void main() {
+          gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+      `;
+
+      const fragmentShaderSource = `
+        precision highp float;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec2 u_mouse;
+        uniform float u_mouseStrength;
+        uniform vec3 u_color1;
+        uniform vec3 u_color2;
+        uniform vec3 u_color3;
+        uniform float u_intensity;
+        uniform float u_glow;
+
+        float noise(vec2 p) {
+          return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+        }
+
+        float smoothNoise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          float a = noise(i);
+          float b = noise(i + vec2(1.0, 0.0));
+          float c = noise(i + vec2(0.0, 1.0));
+          float d = noise(i + vec2(1.0, 1.0));
+          return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+        }
+
+        float fbm(vec2 p) {
+          float value = 0.0;
+          float amplitude = 0.5;
+          for (int i = 0; i < 6; i++) {
+            value += amplitude * smoothNoise(p);
+            p *= 2.0;
+            amplitude *= 0.5;
+          }
+          return value;
+        }
+
+        void main() {
+          vec2 uv = gl_FragCoord.xy / u_resolution;
+          vec2 p = uv * 3.0;
+          
+          float t = u_time * 0.15;
+          
+          vec2 mouseEffect = vec2(0.0);
+          float mouseDist = distance(uv, u_mouse);
+          if (mouseDist < 0.3) {
+            float strength = (1.0 - mouseDist / 0.3) * u_mouseStrength * 2.0;
+            mouseEffect = normalize(uv - u_mouse) * strength * 0.5;
+          }
+          
+          p += mouseEffect;
+          
+          float n1 = fbm(p + vec2(t, t * 0.7));
+          float n2 = fbm(p + vec2(n1 * 2.0, t * 0.5));
+          float n3 = fbm(p + vec2(n2, n1) + t * 0.3);
+          
+          float flow = fbm(p + vec2(n3 * 1.5, n2 * 1.5));
+          
+          vec3 col1 = u_color1;
+          vec3 col2 = u_color2;
+          vec3 col3 = u_color3;
+          
+          vec3 color = mix(col1, col2, n1);
+          color = mix(color, col3, n2 * 0.6);
+          color = mix(color, col1, flow * 0.4);
+          
+          float brightness = (n3 + flow) * 0.5 * u_intensity;
+          color *= brightness + 0.1;
+          
+          if (u_glow > 0.5) {
+            float glow = pow(brightness, 2.0) * 0.5;
+            color += color * glow;
+          }
+          
+          float vignette = 1.0 - length(uv - 0.5) * 0.8;
+          color *= vignette;
+          
+          color *= 0.7;
+          
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `;
+
+      function createShader(type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+      const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error('Program link error:', gl.getProgramInfoLog(program));
+      }
+
+      gl.useProgram(program);
+
+      const positionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1, -1, 1, -1, -1, 1,
+        -1, 1, 1, -1, 1, 1
+      ]), gl.STATIC_DRAW);
+
+      const positionLocation = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+      const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+      const timeLocation = gl.getUniformLocation(program, 'u_time');
+      const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+      const mouseStrengthLocation = gl.getUniformLocation(program, 'u_mouseStrength');
+      const color1Location = gl.getUniformLocation(program, 'u_color1');
+      const color2Location = gl.getUniformLocation(program, 'u_color2');
+      const color3Location = gl.getUniformLocation(program, 'u_color3');
+      const intensityLocation = gl.getUniformLocation(program, 'u_intensity');
+      const glowLocation = gl.getUniformLocation(program, 'u_glow');
+
+      let mouseX = 0.5, mouseY = 0.5;
+      let mouseStrength = 0;
+      let targetMouseStrength = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX / window.innerWidth;
+        mouseY = 1.0 - e.clientY / window.innerHeight;
+        targetMouseStrength = 1.0;
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        mouseX = touch.clientX / window.innerWidth;
+        mouseY = 1.0 - touch.clientY / window.innerHeight;
+        targetMouseStrength = 1.0;
+      });
+
+      document.addEventListener('mouseleave', () => {
+        targetMouseStrength = 0;
+      });
+
+      function updateColors() {
+        const colors = themes[fluidConfig.theme];
+        gl.uniform3fv(color1Location, colors[0]);
+        gl.uniform3fv(color2Location, colors[1]);
+        gl.uniform3fv(color3Location, colors[2]);
+        gl.uniform1f(intensityLocation, intensities[fluidConfig.intensity]);
+        gl.uniform1f(glowLocation, fluidConfig.glow === 'on' ? 1.0 : 0.0);
+      }
+
+      let startTime = Date.now();
+
+      function render() {
+        const time = (Date.now() - startTime) / 1000;
+        
+        mouseStrength += (targetMouseStrength - mouseStrength) * 0.1;
+        targetMouseStrength *= 0.98;
+
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        gl.uniform1f(timeLocation, time);
+        gl.uniform2f(mouseLocation, mouseX, mouseY);
+        gl.uniform1f(mouseStrengthLocation, mouseStrength);
+        
+        updateColors();
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+      }
+
+      render();
+    }
+
+    function toggleSettings() {
+      document.getElementById('settingsPanel').classList.toggle('active');
+    }
+
+    function setTheme(theme) {
+      fluidConfig.theme = theme;
+      localStorage.setItem('fluidTheme', theme);
+      document.querySelectorAll('[data-theme]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+      });
+    }
+
+    function setIntensity(intensity) {
+      fluidConfig.intensity = intensity;
+      localStorage.setItem('fluidIntensity', intensity);
+      document.querySelectorAll('[data-intensity]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.intensity === intensity);
+      });
+    }
+
+    function setGlow(glow) {
+      fluidConfig.glow = glow;
+      localStorage.setItem('fluidGlow', glow);
+      document.querySelectorAll('[data-glow]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.glow === glow);
+      });
+    }
+
+    function loadSettings() {
+      document.querySelectorAll('[data-theme]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === fluidConfig.theme);
+      });
+      document.querySelectorAll('[data-intensity]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.intensity === fluidConfig.intensity);
+      });
+      document.querySelectorAll('[data-glow]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.glow === fluidConfig.glow);
+      });
+    }
+
     const defaultBookmarks = [
       { title: 'CrazyGames', url: 'https://www.crazygames.com', icon: '🎮' },
       { title: 'YouTube', url: 'https://www.youtube.com', icon: '🎬' },
@@ -794,11 +1183,20 @@
 
     document.getElementById('proxyEngine').addEventListener('change', saveProxyEngine);
 
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('settingsPanel');
+      const btn = document.querySelector('.settings-btn');
+      if (!panel.contains(e.target) && !btn.contains(e.target)) {
+        panel.classList.remove('active');
+      }
+    });
+
     function init() {
       if (!checkAuth()) return;
       setGreeting();
       loadProxyEngine();
       loadBookmarks();
+      loadSettings();
       document.getElementById('searchInput').focus();
     }
 

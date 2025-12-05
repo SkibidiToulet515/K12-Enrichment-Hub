@@ -1,0 +1,181 @@
+I want you to add an interactive fluid-simulation background to my homepage. The background should look like a glowing, living, animated field of flowing colors (like a fire/water plasma). It should react to the user’s mouse or touch movement.
+
+General Description
+
+The background is NOT a static image.
+It must be a live, interactive effect that looks similar to the “Fluid Simulation” app/game:
+
+Smooth liquid movement
+
+Fire-like tendrils
+
+Color blending
+
+Neon glow
+
+High-resolution feel
+
+Real-time GPU animation (WebGL)
+
+This must run behind ALL main UI elements (search bar, bookmarks, etc.).
+
+The UI elements should remain clear and readable, while the background slowly moves, swirls, and responds to the user.
+
+⭐ Behavior Requirements
+1. Fluid Simulation Rules
+
+Use a WebGL or canvas-based fluid simulation (examples: WebGL2, navier-stokes solver, or a lightweight JS library).
+
+Must include:
+
+Viscosity
+
+Diffusion
+
+Curl
+
+Pressure solving
+
+Dissipation
+
+The visuals should look like:
+
+Flowing neon smoke
+
+Lava lamp liquid
+
+Fiery plasma
+
+Ink swirling in water
+
+Colors should blend smoothly.
+
+2. Color Palette Options
+
+Please implement a default palette like:
+
+Cyan → Blue → Purple (cool mode)
+OR
+
+Orange → Yellow → Red (fire mode)
+
+The user should see glowing trails when moving the mouse.
+
+The AI should make the background look “alive” even when idle.
+
+3. Mouse Interaction
+
+When the user drags the mouse:
+
+Emit a burst of color
+
+Push the fluid outward (force vector)
+
+Create glowing, fiery streaks
+
+Add velocity to the simulation
+
+Cause ripples or turbulence
+
+The faster the user moves, the stronger the fluid distortion.
+
+4. Performance Requirements
+
+Make sure:
+
+It uses WebGL (NOT slow canvas 2D)
+
+It adapts to screen resolution
+
+It falls back gracefully if GPU is weak
+
+It runs at 60fps if possible
+
+This background must NEVER block the UI.
+
+5. Layering
+
+The fluid simulation must be placed as:
+
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+
+
+So it stays behind all elements and fills the entire screen.
+
+UI must remain fully functional:
+
+Search bar
+
+Bookmarks
+
+Proxy engine selector
+
+Everything centered
+
+6. Glow / Bloom Effect
+
+Apply bloom/glow to the fluid colors using:
+
+additive blending
+
+or a render pass shader
+
+The background should look like bright neon light trails.
+
+7. Motion When Idle
+
+Even if the user stops moving:
+
+The background should gently swirl on its own
+
+Slow currents
+
+Gentle waves
+
+Occasional soft pulses
+
+Must feel alive and dynamic at all times.
+
+8. No External Server Needed
+
+All code should run locally:
+
+Use JS + WebGL shaders directly
+
+Or embed the necessary code inside the project
+
+NO external dependency loading unless from CDN
+
+9. Don’t Interfere With UI
+
+Make sure:
+
+UI text stays readable
+
+Elements have slight opacity backgrounds if needed
+
+z-index is handled correctly
+
+10. Optional: Settings Menu
+
+Create a hidden menu (top right gear icon) where user can:
+
+Change color palette
+
+Toggle glow strength
+
+Toggle particle streaks
+
+Change fluid speed
+
+Save choices in localStorage.
+
+⭐ Final Goal
+
+The entire homepage should feel like it's sitting on top of a glowing, flowing, interactive, neon liquid surface.
+When the user moves their mouse, the background should react like a fluid.
