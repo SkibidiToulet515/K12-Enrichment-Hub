@@ -309,6 +309,22 @@
   </div>
 
   <script>
+    let attempts = 0;
+    const errorMessages = [
+      "Invalid credentials. Please check your Staff ID and password.",
+      "Authentication failed. Please verify your account details.",
+      "Access denied. Your account may be inactive or suspended.",
+      "Login failed. Please contact IT support if this persists.",
+      "Unable to authenticate. Please ensure caps lock is off.",
+      "Account not recognized. Please use your district-issued credentials."
+    ];
+    
+    const lockoutMessages = [
+      "Too many failed attempts. Account temporarily locked for 15 minutes.",
+      "Security lockout activated. Please wait 10 minutes before trying again.",
+      "Maximum login attempts exceeded. Contact your administrator."
+    ];
+
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -316,22 +332,28 @@
       const maintenanceMsg = document.getElementById('maintenanceMsg');
       const btn = document.querySelector('.login-btn');
       
-      btn.textContent = 'Signing in...';
+      btn.textContent = 'Authenticating...';
       btn.disabled = true;
+      attempts++;
+      
+      const delay = 1500 + Math.random() * 1000;
       
       setTimeout(function() {
         btn.textContent = 'Sign In';
         btn.disabled = false;
         
-        // Randomly show either error or maintenance
-        if (Math.random() > 0.5) {
+        maintenanceMsg.classList.remove('show');
+        
+        if (attempts >= 3) {
+          const lockMsg = lockoutMessages[Math.floor(Math.random() * lockoutMessages.length)];
+          errorMsg.textContent = lockMsg;
           errorMsg.classList.add('show');
-          maintenanceMsg.classList.remove('show');
         } else {
-          maintenanceMsg.classList.add('show');
-          errorMsg.classList.remove('show');
+          const errMsg = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+          errorMsg.textContent = errMsg;
+          errorMsg.classList.add('show');
         }
-      }, 1500);
+      }, delay);
     });
   </script>
 </body>
