@@ -350,8 +350,8 @@
     <div class="engine-section">
       <div class="engine-label">Proxy Engine</div>
       <select class="engine-select" id="engineSelect" onchange="switchEngine()">
-        <option value="uv">Ultraviolet (Recommended)</option>
-        <option value="server">Server Proxy</option>
+        <option value="server">Server Proxy (Recommended)</option>
+        <option value="uv">Ultraviolet</option>
       </select>
     </div>
   </div>
@@ -412,7 +412,7 @@
   <script>
     let tabs = [];
     let activeTabId = null;
-    let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
+    let currentEngine = localStorage.getItem('proxyEngine') || 'server';
     let swStatus = { uv: false };
     let uvLoaded = false;
     let uvLoading = false;
@@ -699,7 +699,7 @@
       document.getElementById('engineSelect').value = currentEngine;
       
       const status = document.getElementById('swStatus');
-      status.textContent = 'Ready';
+      status.textContent = currentEngine === 'server' ? 'Server Ready' : 'Ready';
       status.className = 'status-indicator ready';
       
       newTab();
@@ -724,7 +724,9 @@
         loadUrl(url, false);
       }
 
-      registerServiceWorkers();
+      if (currentEngine === 'uv') {
+        registerServiceWorkers();
+      }
     }
 
     init();
