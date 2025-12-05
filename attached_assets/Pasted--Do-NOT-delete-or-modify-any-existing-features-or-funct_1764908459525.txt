@@ -1,0 +1,173 @@
+**Do NOT delete or modify any existing features or functionality.
+KEEP all current systems exactly as they are, including:
+
+Games
+
+Movies
+
+Proxy
+
+Chatting system
+
+Authentication
+
+Routing
+
+Backend logic
+
+APIs
+
+File structure
+
+JS functionality
+
+Database / localStorage logic
+
+ANY functionality-related JavaScript**
+
+You are ONLY allowed to replace the UI layout and visual styling.
+Do NOT remove or rename any JS hooks, IDs, or functional elements.
+Only rebuild the visual interface (HTML + CSS).
+
+🎨 NEW THEME TO APPLY (NebulaCore)
+
+Replace the current tiles/cards UI with this:
+
+Background
+
+Full-screen dark nebula background
+
+Deep blue → teal → purple swirling gradient
+
+Soft blurry glow in the center
+
+Subtle moving star particles
+
+Slight noise texture for depth
+
+Dynamic Title (NEW FEATURE)
+
+Replace the static “Hey there” title with a randomized rotating greeting.
+
+On each page load or returning to the site, randomly choose one greeting:
+
+"Hey there"
+
+"Welcome back"
+
+"Ready to explore?"
+
+"What’s good?"
+
+"Back for more?"
+
+"Let’s get moving"
+
+"Your hub awaits"
+
+"Loading the universe…"
+
+"Returning to orbit"
+
+Important:
+
+This greeting must change ONLY on load/refresh.
+
+Must NOT break any scripts or UI layout.
+
+Subtitle stays: "Search the web privately"
+
+Search Bar
+
+Centered under the greeting
+
+Large glassmorphism bar
+
+Transparent navy glass
+
+Neon blue outline glow
+
+Purple glowing search icon
+
+Right-side glowing arrow button
+
+Rounded corners (14px)
+
+Glow intensifies on hover or focus
+
+Quick Links Area
+
+Replace your current tiles with:
+
+Rounded glass panels
+
+Dark navy interior
+
+Soft neon cyan/purple rim
+
+Clean flat icons
+
+Hover animation:
+
+Slight scale-up
+
+Glow brightens
+
+Subtle ripple behind icon
+
+General UI Style Guidelines
+
+Futuristic gaming dashboard
+
+Minimalist but polished
+
+Neon accents everywhere
+
+Smooth fade-in animations
+
+No sharp edges
+
+Everything feels like a gaming OS home screen
+
+Keep spacing very clean and modern
+
+Color Palette
+
+Use these exact colors for glow/theme:
+
+#0D1B2A (deep navy)
+
+#1B263B (dark blue)
+
+#415A77 (soft blue accent)
+
+#4CC9F0 (neon cyan)
+
+#A04FF9 (neon purple)
+
+Rules for Replit AI
+
+You may ONLY:
+
+Update HTML structure for layout
+
+Update CSS for visuals
+
+Add JS for the randomized greeting
+
+You may NOT:
+
+Delete any functional JS
+
+Break any event listeners
+
+Remove any game/movie/proxy systems
+
+Change backend logic
+
+Rename IDs used by scripts
+
+Remove or modify routing
+
+ONLY replace the tiles + UI styling with the NebulaCore design.
+KEEP EVERYTHING ELSE FULLY INTACT.
