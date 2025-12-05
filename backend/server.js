@@ -73,13 +73,15 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.get('/uv/sw.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript');
   res.setHeader('Service-Worker-Allowed', '/');
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
   res.sendFile(path.join(__dirname, '../frontend/uv/sw.js'));
 });
-app.get('/scram/sw.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript');
-  res.setHeader('Service-Worker-Allowed', '/');
-  res.sendFile(path.join(__dirname, '../frontend/scram/sw.js'));
-});
+
+// Cache UV assets for 1 year (immutable) - speeds up proxy loading significantly
+app.use('/uv', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  next();
+}, express.static(path.join(__dirname, '../frontend/uv')));
 
 // Serve all frontend files (CSS, JS, uploads)
 app.use(express.static(path.join(__dirname, '../frontend')));

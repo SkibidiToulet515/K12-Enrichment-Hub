@@ -382,7 +382,7 @@
         <input type="text" class="url-input" id="urlInput" placeholder="Search or enter URL..." onkeydown="handleUrlInput(event)">
       </div>
 
-      <span class="status-indicator loading" id="swStatus">Loading...</span>
+      <span class="status-indicator ready" id="swStatus">Ready</span>
 
       <div class="toolbar-actions">
         <button class="nav-btn home-btn" onclick="goHome()" title="Home">
@@ -409,43 +409,70 @@
     </div>
   </div>
 
-  <script src="/uv/uv.bundle.js"></script>
-  <script src="/uv/uv.config.js"></script>
   <script>
     let tabs = [];
     let activeTabId = null;
     let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
     let swStatus = { uv: false };
+    let uvLoaded = false;
+    let uvLoading = false;
+
+    async function loadUVBundle() {
+      if (uvLoaded || uvLoading) return uvLoaded;
+      uvLoading = true;
+      
+      return new Promise((resolve) => {
+        const script1 = document.createElement('script');
+        script1.src = '/uv/uv.bundle.js';
+        script1.onload = () => {
+          const script2 = document.createElement('script');
+          script2.src = '/uv/uv.config.js';
+          script2.onload = () => {
+            uvLoaded = true;
+            uvLoading = false;
+            resolve(true);
+          };
+          script2.onerror = () => { uvLoading = false; resolve(false); };
+          document.head.appendChild(script2);
+        };
+        script1.onerror = () => { uvLoading = false; resolve(false); };
+        document.head.appendChild(script1);
+      });
+    }
 
     async function registerServiceWorkers() {
       const status = document.getElementById('swStatus');
       
       if (!('serviceWorker' in navigator)) {
-        status.textContent = 'SW Not Supported';
-        status.className = 'status-indicator error';
-        console.error('Service workers not supported');
+        status.textContent = 'Using Server';
+        status.className = 'status-indicator ready';
+        currentEngine = 'server';
+        document.getElementById('engineSelect').value = 'server';
         return;
       }
 
-      status.textContent = 'Registering...';
+      status.textContent = 'Loading UV...';
       status.className = 'status-indicator loading';
+
+      const loaded = await loadUVBundle();
+      if (!loaded) {
+        status.textContent = 'Using Server';
+        status.className = 'status-indicator ready';
+        currentEngine = 'server';
+        return;
+      }
 
       try {
         const uvReg = await navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' });
         console.log('UV service worker registered:', uvReg.scope);
         swStatus.uv = true;
+        status.textContent = 'UV Ready';
+        status.className = 'status-indicator ready';
       } catch (err) {
         console.error('UV SW registration failed:', err);
-        swStatus.uv = false;
-      }
-      
-      updateStatus();
-      
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(() => {
-          console.log('Service worker ready');
-          updateStatus();
-        });
+        status.textContent = 'Using Server';
+        status.className = 'status-indicator ready';
+        currentEngine = 'server';
       }
     }
 
@@ -457,7 +484,7 @@
           status.textContent = 'UV Ready';
           status.className = 'status-indicator ready';
         } else {
-          status.textContent = 'UV Loading';
+          status.textContent = 'Loading...';
           status.className = 'status-indicator loading';
         }
       } else {
@@ -470,7 +497,12 @@
       const select = document.getElementById('engineSelect');
       currentEngine = select.value;
       localStorage.setItem('proxyEngine', currentEngine);
-      updateStatus();
+      
+      if (currentEngine === 'uv' && !swStatus.uv) {
+        registerServiceWorkers();
+      } else {
+        updateStatus();
+      }
       
       const tab = tabs.find(t => t.id === activeTabId);
       if (tab && tab.url) {
@@ -666,7 +698,11 @@
     async function init() {
       document.getElementById('engineSelect').value = currentEngine;
       
-      await registerServiceWorkers();
+      const status = document.getElementById('swStatus');
+      status.textContent = 'Ready';
+      status.className = 'status-indicator ready';
+      
+      newTab();
 
       const params = new URLSearchParams(window.location.search);
       const initialUrl = params.get('url') || params.get('q');
@@ -677,20 +713,18 @@
           url = 'https://' + url;
         }
         
-        const id = generateId();
-        tabs.push({
-          id,
-          url,
-          title: getTitle(url),
-          favicon: getFavicon(url)
-        });
-        activeTabId = id;
-        renderTabs();
-        document.getElementById('urlInput').value = url;
+        const tab = tabs.find(t => t.id === activeTabId);
+        if (tab) {
+          tab.url = url;
+          tab.title = getTitle(url);
+          tab.favicon = getFavicon(url);
+          document.getElementById('urlInput').value = url;
+          renderTabs();
+        }
         loadUrl(url, false);
-      } else {
-        newTab();
       }
+
+      registerServiceWorkers();
     }
 
     init();
