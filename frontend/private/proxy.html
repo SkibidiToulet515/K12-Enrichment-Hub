@@ -214,7 +214,7 @@
     .bookmarks-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       padding: 0 10px;
     }
 
@@ -224,7 +224,27 @@
       font-weight: 500;
     }
 
+    .info-tooltip {
+      cursor: help;
+      font-size: 14px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .info-tooltip:hover {
+      opacity: 1;
+    }
+
+    .bookmarks-note {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      margin: -8px 0 0 0;
+      padding: 0 10px;
+    }
+
     .edit-btn {
+      margin-left: auto;
       padding: 6px 14px;
       background: rgba(0,0,0,0.4);
       backdrop-filter: blur(10px);
@@ -670,14 +690,6 @@
       </div>
 
       <div class="search-section">
-        <div class="proxy-selector">
-          <label>Proxy Engine:</label>
-          <select id="proxyEngine">
-            <option value="uv">Ultraviolet</option>
-            <option value="scramjet">Scramjet</option>
-          </select>
-        </div>
-
         <div class="search-bar">
           <span class="search-icon">🔍</span>
           <input type="text" class="search-input" id="searchInput" 
@@ -689,10 +701,11 @@
 
       <div class="bookmarks-section">
         <div class="bookmarks-header">
-          <span class="bookmarks-title">Quick Links</span>
+          <span class="bookmarks-title">Privacy-Friendly Sites</span>
+          <span class="info-tooltip" title="These are alternative frontends and privacy-focused sites that work well through the proxy. Invidious/Piped = YouTube, Teddit/LibReddit = Reddit, Nitter = Twitter">ℹ️</span>
           <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
         </div>
-
+        <p class="bookmarks-note">Alternative frontends for popular sites - designed for privacy and embedding</p>
         <div class="bookmarks-grid" id="bookmarksGrid"></div>
       </div>
 
@@ -985,14 +998,18 @@
     }
 
     const defaultBookmarks = [
-      { title: 'CrazyGames', url: 'https://www.crazygames.com' },
-      { title: 'YouTube', url: 'https://www.youtube.com' },
-      { title: 'SoundCloud', url: 'https://soundcloud.com' },
-      { title: 'Cineby', url: 'https://www.cineby.app' },
-      { title: 'GitHub', url: 'https://github.com' },
-      { title: 'Discord', url: 'https://discord.com/app' },
-      { title: 'Reddit', url: 'https://www.reddit.com' },
-      { title: 'Twitch', url: 'https://www.twitch.tv' }
+      { title: 'Invidious', url: 'https://inv.nadeko.net' },
+      { title: 'Piped', url: 'https://piped.video' },
+      { title: 'DuckDuckGo', url: 'https://duckduckgo.com' },
+      { title: 'Wikipedia', url: 'https://en.wikipedia.org' },
+      { title: 'Archive.org', url: 'https://archive.org' },
+      { title: 'Ecosia', url: 'https://www.ecosia.org' },
+      { title: 'Wiby', url: 'https://wiby.me' },
+      { title: 'Hacker News', url: 'https://news.ycombinator.com' },
+      { title: 'Lobsters', url: 'https://lobste.rs' },
+      { title: 'Teddit', url: 'https://teddit.net' },
+      { title: 'Nitter', url: 'https://nitter.net' },
+      { title: 'LibReddit', url: 'https://libreddit.spike.codes' }
     ];
 
     function getFaviconUrl(url) {
@@ -1034,18 +1051,6 @@
       
       const options = greetings[timeOfDay];
       document.getElementById('greetingText').textContent = options[Math.floor(Math.random() * options.length)];
-    }
-
-    function loadProxyEngine() {
-      const saved = localStorage.getItem('proxyEngine');
-      if (saved) {
-        document.getElementById('proxyEngine').value = saved;
-      }
-    }
-
-    function saveProxyEngine() {
-      const engine = document.getElementById('proxyEngine').value;
-      localStorage.setItem('proxyEngine', engine);
     }
 
     function loadBookmarks() {
@@ -1199,8 +1204,6 @@
       if (e.key === 'Enter') doSearch();
     });
 
-    document.getElementById('proxyEngine').addEventListener('change', saveProxyEngine);
-
     document.addEventListener('click', (e) => {
       const panel = document.getElementById('settingsPanel');
       const btn = document.querySelector('.settings-btn');
@@ -1212,7 +1215,6 @@
     function init() {
       if (!checkAuth()) return;
       setGreeting();
-      loadProxyEngine();
       loadBookmarks();
       loadSettings();
       document.getElementById('searchInput').focus();
