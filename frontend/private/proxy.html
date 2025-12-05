@@ -1072,21 +1072,22 @@
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
 
-      const engine = document.getElementById('proxyEngine').value;
       saveProxyEngine();
 
-      const searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
-      
-      if (engine === 'uv') {
-        window.location.href = '/service/' + encodeURIComponent(encodeUrl(searchUrl));
+      let url;
+      if (query.match(/^https?:\/\//)) {
+        url = query;
+      } else if (query.match(/^[\w-]+\.[a-z]{2,}/i)) {
+        url = 'https://' + query;
       } else {
-        window.location.href = '/scram/service/' + encodeURIComponent(encodeUrl(searchUrl));
+        url = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
       }
+      
+      window.location.href = '/private/browser.html?url=' + encodeURIComponent(url);
     }
 
     function openBookmark(index) {
       const bm = bookmarks[index];
-      const engine = document.getElementById('proxyEngine').value;
       saveProxyEngine();
 
       let url = bm.url;
@@ -1094,11 +1095,7 @@
         url = 'https://' + url;
       }
 
-      if (engine === 'uv') {
-        window.location.href = '/service/' + encodeURIComponent(encodeUrl(url));
-      } else {
-        window.location.href = '/scram/service/' + encodeURIComponent(encodeUrl(url));
-      }
+      window.location.href = '/private/browser.html?url=' + encodeURIComponent(url);
     }
 
     function toggleEdit() {

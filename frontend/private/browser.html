@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0C0C0C;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 200px;
+      background: #111;
+      border-right: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .new-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .new-tab-btn:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .tabs-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .tab-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+
+    .tab-item:hover {
+      background: #1a1a1a;
+    }
+
+    .tab-item.active {
+      background: #1a1a1a;
+      border-left-color: #6366f1;
+    }
+
+    .tab-favicon {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      object-fit: contain;
+      background: #333;
+    }
+
+    .tab-title {
+      flex: 1;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab-close {
+      opacity: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .tab-item:hover .tab-close {
+      opacity: 1;
+    }
+
+    .tab-close:hover {
+      background: #333;
+      color: #fff;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .toolbar {
+      height: 48px;
+      background: #111;
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #888;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      font-size: 16px;
+    }
+
+    .nav-btn:hover {
+      background: #222;
+      color: #fff;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .url-bar {
+      flex: 1;
+      height: 32px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+    }
+
+    .url-bar:focus-within {
+      border-color: #6366f1;
+    }
+
+    .url-icon {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .url-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .url-input::placeholder {
+      color: #555;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .browser-frame {
+      flex: 1;
+      background: #000;
+      position: relative;
+    }
+
+    .browser-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .empty-state {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .loading-overlay.hidden {
+      display: none;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #333;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .home-btn {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">Tabs</div>
+    <button class="new-tab-btn" onclick="newTab()">
+      <span>+</span> New Tab
+    </button>
+    <div class="tabs-list" id="tabsList"></div>
+  </div>
+
+  <div class="main-content">
+    <div class="toolbar">
+      <button class="nav-btn" onclick="goBack()" title="Back">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <button class="nav-btn" onclick="goForward()" title="Forward">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+      <button class="nav-btn" onclick="refresh()" title="Refresh">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 4v5h5M20 20v-5h-5"/>
+          <path d="M20.5 9A9 9 0 0 0 5.6 5.6L4 7m16 10l-1.6-1.4A9 9 0 0 1 3.5 15"/>
+        </svg>
+      </button>
+      
+      <div class="url-bar">
+        <svg class="url-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <input type="text" class="url-input" id="urlInput" placeholder="Search or enter URL..." onkeydown="handleUrlInput(event)">
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="nav-btn home-btn" onclick="goHome()" title="Home">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="browser-frame" id="browserFrame">
+      <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+      </div>
+      <div class="empty-state" id="emptyState">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z"/>
+          <path d="M3.6 9h16.8M3.6 15h16.8"/>
+          <path d="M12 3a15 15 0 014 9 15 15 0 01-4 9 15 15 0 01-4-9 15 15 0 014-9z"/>
+        </svg>
+        <p>Enter a URL or search to get started</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let tabs = [];
+    let activeTabId = null;
+
+    function generateId() {
+      return Math.random().toString(36).substr(2, 9);
+    }
+
+    function encodeUrl(url) {
+      return url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
+    }
+
+    function getProxyUrl(url) {
+      const engine = localStorage.getItem('proxyEngine') || 'uv';
+      const prefix = engine === 'uv' ? '/service/' : '/scram/service/';
+      return prefix + encodeURIComponent(encodeUrl(url));
+    }
+
+    function getFavicon(url) {
+      try {
+        const u = new URL(url);
+        return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`;
+      } catch {
+        return '';
+      }
+    }
+
+    function getTitle(url) {
+      try {
+        const u = new URL(url);
+        return u.hostname.replace('www.', '');
+      } catch {
+        return 'New Tab';
+      }
+    }
+
+    function renderTabs() {
+      const list = document.getElementById('tabsList');
+      list.innerHTML = tabs.map(tab => `
+        <div class="tab-item ${tab.id === activeTabId ? 'active' : ''}" onclick="switchTab('${tab.id}')">
+          <img class="tab-favicon" src="${tab.favicon || ''}" onerror="this.style.display='none'">
+          <span class="tab-title">${tab.title}</span>
+          <button class="tab-close" onclick="event.stopPropagation(); closeTab('${tab.id}')">&times;</button>
+        </div>
+      `).join('');
+    }
+
+    function newTab() {
+      const id = generateId();
+      const tab = {
+        id,
+        url: '',
+        title: 'New Tab',
+        favicon: ''
+      };
+      tabs.push(tab);
+      switchTab(id);
+      document.getElementById('urlInput').focus();
+    }
+
+    function switchTab(id) {
+      activeTabId = id;
+      const tab = tabs.find(t => t.id === id);
+      
+      if (tab && tab.url) {
+        document.getElementById('urlInput').value = tab.url;
+        loadUrl(tab.url, false);
+      } else {
+        document.getElementById('urlInput').value = '';
+        showEmptyState();
+      }
+      
+      renderTabs();
+    }
+
+    function closeTab(id) {
+      const index = tabs.findIndex(t => t.id === id);
+      if (index === -1) return;
+      
+      tabs.splice(index, 1);
+      
+      if (tabs.length === 0) {
+        newTab();
+      } else if (activeTabId === id) {
+        const newIndex = Math.min(index, tabs.length - 1);
+        switchTab(tabs[newIndex].id);
+      } else {
+        renderTabs();
+      }
+    }
+
+    function showEmptyState() {
+      const frame = document.getElementById('browserFrame');
+      const existing = frame.querySelector('iframe');
+      if (existing) existing.remove();
+      document.getElementById('emptyState').style.display = 'flex';
+    }
+
+    function handleUrlInput(e) {
+      if (e.key === 'Enter') {
+        const input = e.target.value.trim();
+        if (!input) return;
+
+        let url;
+        if (input.match(/^https?:\/\//)) {
+          url = input;
+        } else if (input.match(/^[\w-]+\.[a-z]{2,}/i)) {
+          url = 'https://' + input;
+        } else {
+          url = 'https://duckduckgo.com/?q=' + encodeURIComponent(input);
+        }
+
+        loadUrl(url, true);
+      }
+    }
+
+    function loadUrl(url, updateTab = true) {
+      const frame = document.getElementById('browserFrame');
+      const loading = document.getElementById('loadingOverlay');
+      const emptyState = document.getElementById('emptyState');
+
+      emptyState.style.display = 'none';
+      loading.classList.remove('hidden');
+
+      let iframe = frame.querySelector('iframe');
+      if (!iframe) {
+        iframe = document.createElement('iframe');
+        frame.appendChild(iframe);
+      }
+
+      const proxyUrl = getProxyUrl(url);
+      iframe.src = proxyUrl;
+
+      iframe.onload = () => {
+        loading.classList.add('hidden');
+      };
+
+      if (updateTab && activeTabId) {
+        const tab = tabs.find(t => t.id === activeTabId);
+        if (tab) {
+          tab.url = url;
+          tab.title = getTitle(url);
+          tab.favicon = getFavicon(url);
+          document.getElementById('urlInput').value = url;
+          renderTabs();
+        }
+      }
+    }
+
+    function goBack() {
+      const iframe = document.querySelector('#browserFrame iframe');
+      if (iframe) {
+        try { iframe.contentWindow.history.back(); } catch(e) {}
+      }
+    }
+
+    function goForward() {
+      const iframe = document.querySelector('#browserFrame iframe');
+      if (iframe) {
+        try { iframe.contentWindow.history.forward(); } catch(e) {}
+      }
+    }
+
+    function refresh() {
+      const tab = tabs.find(t => t.id === activeTabId);
+      if (tab && tab.url) {
+        loadUrl(tab.url, false);
+      }
+    }
+
+    function goHome() {
+      window.location.href = '/private/proxy.html';
+    }
+
+    // Check for URL parameter
+    const params = new URLSearchParams(window.location.search);
+    const initialUrl = params.get('url') || params.get('q');
+
+    if (initialUrl) {
+      let url = initialUrl;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      
+      const id = generateId();
+      tabs.push({
+        id,
+        url,
+        title: getTitle(url),
+        favicon: getFavicon(url)
+      });
+      activeTabId = id;
+      renderTabs();
+      document.getElementById('urlInput').value = url;
+      loadUrl(url, false);
+    } else {
+      newTab();
+    }
+  </script>
+</body>
+</html>
