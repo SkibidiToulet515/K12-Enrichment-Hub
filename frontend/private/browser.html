@@ -474,29 +474,35 @@
       let iframe = frame.querySelector('iframe');
       if (!iframe) {
         iframe = document.createElement('iframe');
-        iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-pointer-lock allow-presentation allow-top-navigation');
-        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
         iframe.setAttribute('allowfullscreen', 'true');
-        iframe.setAttribute('referrerpolicy', 'no-referrer');
+        iframe.style.border = 'none';
         frame.appendChild(iframe);
       }
 
       const proxyUrl = getProxyUrl(url);
       console.log('Loading proxy URL:', proxyUrl);
-      iframe.src = proxyUrl;
-
-      iframe.onload = () => {
-        console.log('Iframe loaded successfully');
-        loading.classList.add('hidden');
-        loading.classList.remove('phase2');
-      };
       
-      iframe.onerror = (e) => {
-        console.error('Iframe error:', e);
-        loading.classList.add('hidden');
-        loading.classList.remove('phase2');
-        alert('Failed to load page. Check console for details.');
-      };
+      // Fetch content and write directly to iframe to bypass restrictions
+      fetch(proxyUrl)
+        .then(res => {
+          if (!res.ok) throw new Error('Proxy request failed: ' + res.status);
+          return res.text();
+        })
+        .then(html => {
+          // Write content directly to iframe document
+          iframe.srcdoc = html;
+          loading.classList.add('hidden');
+          loading.classList.remove('phase2');
+        })
+        .catch(err => {
+          console.error('Proxy error:', err);
+          // Fallback to src method
+          iframe.src = proxyUrl;
+          iframe.onload = () => {
+            loading.classList.add('hidden');
+            loading.classList.remove('phase2');
+          };
+        });
       
       // Timeout fallback - hide loading after 30 seconds
       setTimeout(() => {
