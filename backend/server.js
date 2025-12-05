@@ -119,29 +119,17 @@ app.use('/api/preferences', preferencesRoutes);
 app.use('/api/proxy', proxyRoutes);
 app.use('/api/bookmarks', bookmarksRoutes);
 
-// XOR decode function for proxy URLs
+// XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {
   return encoded.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
 }
 
-// Fast streaming proxy handler using http-proxy
-const httpProxy = require('http-proxy');
-const proxyServer = httpProxy.createProxyServer({
-  changeOrigin: true,
-  followRedirects: true,
-  selfHandleResponse: false
-});
+function xorEncode(url) {
+  return url.split('').map((c, i) => i % 2 ? String.fromCharCode(c.charCodeAt(0) ^ 2) : c).join('');
+}
 
-proxyServer.on('error', (err, req, res) => {
-  console.error('Proxy error:', err.message);
-  if (!res.headersSent) {
-    res.writeHead(500, { 'Content-Type': 'text/plain' });
-  }
-  res.end('Proxy error: ' + err.message);
-});
-
-// Unified fast proxy handler
-function handleProxy(req, res, prefix) {
+// Fast proxy handler with URL rewriting for proper loading
+async function handleProxyRequest(req, res, prefix) {
   const encodedPath = req.url.slice(prefix.length);
   if (!encodedPath) return res.status(400).send('No URL provided');
   
@@ -154,28 +142,91 @@ function handleProxy(req, res, prefix) {
 
     const targetUrl = new URL(decodedUrl);
     
-    req.url = targetUrl.pathname + targetUrl.search;
-    req.headers.host = targetUrl.host;
-    req.headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
-    
-    proxyServer.web(req, res, { 
-      target: targetUrl.origin,
-      headers: { host: targetUrl.host }
+    const response = await fetch(decodedUrl, {
+      method: req.method,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': req.headers.accept || '*/*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': targetUrl.origin
+      },
+      redirect: 'follow'
     });
+
+    const contentType = response.headers.get('content-type') || '';
+    
+    // Copy response headers
+    res.status(response.status);
+    response.headers.forEach((value, key) => {
+      if (!['content-encoding', 'transfer-encoding', 'content-length'].includes(key.toLowerCase())) {
+        res.setHeader(key, value);
+      }
+    });
+
+    // For HTML, rewrite URLs to go through proxy
+    if (contentType.includes('text/html')) {
+      let html = await response.text();
+      const baseOrigin = targetUrl.origin;
+      
+      // Inject base tag and rewrite absolute URLs
+      const baseTag = `<base href="${baseOrigin}/">`;
+      if (html.includes('<head>')) {
+        html = html.replace('<head>', '<head>' + baseTag);
+      } else if (html.includes('<HEAD>')) {
+        html = html.replace('<HEAD>', '<HEAD>' + baseTag);
+      } else {
+        html = baseTag + html;
+      }
+      
+      // Rewrite links to go through our proxy
+      html = html.replace(/href=["'](https?:\/\/[^"']+)["']/gi, (match, url) => {
+        return `href="${prefix}${encodeURIComponent(xorEncode(url))}"`;
+      });
+      
+      // Rewrite form actions
+      html = html.replace(/action=["'](https?:\/\/[^"']+)["']/gi, (match, url) => {
+        return `action="${prefix}${encodeURIComponent(xorEncode(url))}"`;
+      });
+      
+      res.send(html);
+    } else {
+      // Stream other content types directly
+      const reader = response.body?.getReader();
+      if (reader) {
+        const pump = async () => {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            res.write(Buffer.from(value));
+          }
+          res.end();
+        };
+        pump().catch(err => {
+          console.error('Stream error:', err);
+          if (!res.headersSent) res.status(500);
+          res.end();
+        });
+      } else {
+        const buffer = await response.arrayBuffer();
+        res.send(Buffer.from(buffer));
+      }
+    }
   } catch (error) {
-    console.error('Proxy decode error:', error.message);
-    res.status(500).send('Proxy error: ' + error.message);
+    console.error('Proxy error:', error.message);
+    if (!res.headersSent) {
+      res.status(500).send('Proxy error: ' + error.message);
+    }
   }
 }
 
 app.use('/service', (req, res, next) => {
   if (req.path === '' || req.path === '/') return next();
-  handleProxy(req, res, '/service/');
+  handleProxyRequest(req, res, '/service/');
 });
 
 app.use('/scram/service', (req, res, next) => {
   if (req.path === '' || req.path === '/') return next();
-  handleProxy(req, res, '/scram/service/');
+  handleProxyRequest(req, res, '/scram/service/');
 });
 
 // File upload endpoint
