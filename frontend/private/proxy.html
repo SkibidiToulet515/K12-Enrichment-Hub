@@ -294,10 +294,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
       background: rgba(255,255,255,0.08);
       border-radius: 14px;
       transition: all 0.3s;
+      overflow: hidden;
+    }
+
+    .bookmark-icon img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .bookmark-icon .fallback-icon {
+      font-size: 20px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
     }
 
     .bookmark:hover .bookmark-icon {
@@ -326,12 +343,12 @@
       border-color: rgba(255,255,255,0.2);
     }
 
-    .add-bookmark .bookmark-icon {
+    .add-bookmark .bookmark-icon .fallback-icon {
       font-size: 24px;
       color: rgba(255,255,255,0.5);
     }
 
-    .add-bookmark:hover .bookmark-icon {
+    .add-bookmark:hover .bookmark-icon .fallback-icon {
       color: #6366f1;
     }
 
@@ -698,11 +715,6 @@
         <label>URL</label>
         <input type="text" id="bookmarkUrl" placeholder="e.g. https://youtube.com">
       </div>
-      
-      <div class="modal-field">
-        <label>Icon (emoji)</label>
-        <input type="text" id="bookmarkIcon" placeholder="e.g. 🎬">
-      </div>
 
       <div class="modal-actions" id="modalActions">
         <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
@@ -973,15 +985,24 @@
     }
 
     const defaultBookmarks = [
-      { title: 'CrazyGames', url: 'https://www.crazygames.com', icon: '🎮' },
-      { title: 'YouTube', url: 'https://www.youtube.com', icon: '🎬' },
-      { title: 'SoundCloud', url: 'https://soundcloud.com', icon: '🎵' },
-      { title: 'Cineby', url: 'https://www.cineby.app', icon: '🎥' },
-      { title: 'GitHub', url: 'https://github.com', icon: '💻' },
-      { title: 'Discord', url: 'https://discord.com/app', icon: '💬' },
-      { title: 'Reddit', url: 'https://www.reddit.com', icon: '📰' },
-      { title: 'Twitch', url: 'https://www.twitch.tv', icon: '🎮' }
+      { title: 'CrazyGames', url: 'https://www.crazygames.com' },
+      { title: 'YouTube', url: 'https://www.youtube.com' },
+      { title: 'SoundCloud', url: 'https://soundcloud.com' },
+      { title: 'Cineby', url: 'https://www.cineby.app' },
+      { title: 'GitHub', url: 'https://github.com' },
+      { title: 'Discord', url: 'https://discord.com/app' },
+      { title: 'Reddit', url: 'https://www.reddit.com' },
+      { title: 'Twitch', url: 'https://www.twitch.tv' }
     ];
+
+    function getFaviconUrl(url) {
+      try {
+        const domain = new URL(url).hostname;
+        return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+      } catch {
+        return '';
+      }
+    }
 
     let bookmarks = [];
     let isEditing = false;
@@ -1047,7 +1068,10 @@
       
       let html = bookmarks.map((bm, i) => `
         <div class="bookmark ${isEditing ? 'editing' : ''}" onclick="${isEditing ? `openEditModal(${i})` : `openBookmark(${i})`}">
-          <div class="bookmark-icon">${bm.icon}</div>
+          <div class="bookmark-icon">
+            <img src="${getFaviconUrl(bm.url)}" alt="${bm.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <span class="fallback-icon" style="display:none;">${bm.title.charAt(0).toUpperCase()}</span>
+          </div>
           <div class="bookmark-label">${bm.title}</div>
         </div>
       `).join('');
@@ -1055,7 +1079,7 @@
       if (isEditing) {
         html += `
           <div class="bookmark add-bookmark" onclick="openAddModal()">
-            <div class="bookmark-icon">+</div>
+            <div class="bookmark-icon"><span class="fallback-icon">+</span></div>
             <div class="bookmark-label">Add New</div>
           </div>
         `;
@@ -1110,7 +1134,6 @@
       document.getElementById('modalTitle').textContent = 'Add Bookmark';
       document.getElementById('bookmarkTitle').value = '';
       document.getElementById('bookmarkUrl').value = '';
-      document.getElementById('bookmarkIcon').value = '';
       
       document.getElementById('modalActions').innerHTML = `
         <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
@@ -1127,7 +1150,6 @@
       document.getElementById('modalTitle').textContent = 'Edit Bookmark';
       document.getElementById('bookmarkTitle').value = bm.title;
       document.getElementById('bookmarkUrl').value = bm.url;
-      document.getElementById('bookmarkIcon').value = bm.icon;
       
       document.getElementById('modalActions').innerHTML = `
         <button class="modal-btn danger" onclick="deleteBookmark()">Delete</button>
@@ -1147,7 +1169,6 @@
     function saveBookmark() {
       const title = document.getElementById('bookmarkTitle').value.trim();
       const url = document.getElementById('bookmarkUrl').value.trim();
-      const icon = document.getElementById('bookmarkIcon').value.trim() || '🔗';
 
       if (!title || !url) {
         alert('Please fill in title and URL');
@@ -1155,9 +1176,9 @@
       }
 
       if (editingIndex === -1) {
-        bookmarks.push({ title, url, icon });
+        bookmarks.push({ title, url });
       } else {
-        bookmarks[editingIndex] = { title, url, icon };
+        bookmarks[editingIndex] = { title, url };
       }
 
       saveBookmarksToStorage();
