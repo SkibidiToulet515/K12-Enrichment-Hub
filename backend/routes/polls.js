@@ -217,7 +217,7 @@ router.post('/:pollId/close', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Only creator can close poll' });
     }
     
-    db.run('UPDATE polls SET is_closed = 1 WHERE id = ?', [pollId], function(err) {
+    db.run('UPDATE polls SET is_closed = TRUE WHERE id = ?', [pollId], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to close poll' });
       res.json({ success: true, message: 'Poll closed' });
     });

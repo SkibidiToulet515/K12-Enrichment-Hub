@@ -409,7 +409,7 @@ router.get('/pending-setup/:userId', (req, res) => {
     FROM servers s
     WHERE s.owner_id = ? 
       AND s.id != 1
-      AND s.needs_setup = 1
+      AND s.needs_setup = TRUE
   `, [userId], (err, servers) => {
     res.json(servers || []);
   });
@@ -433,7 +433,7 @@ router.post('/:id/complete-setup', (req, res) => {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     
-    db.run('UPDATE servers SET needs_setup = 0 WHERE id = ?', [serverId], (err) => {
+    db.run('UPDATE servers SET needs_setup = FALSE WHERE id = ?', [serverId], (err) => {
       if (err) {
         return res.status(500).json({ error: 'Failed to complete setup' });
       }

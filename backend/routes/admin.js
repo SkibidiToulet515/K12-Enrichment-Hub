@@ -284,7 +284,7 @@ router.post('/warn/:userId', isAdmin, (req, res) => {
         
         // Auto-permaban after 3 warnings
         if (newWarningCount >= 3) {
-          db.run('UPDATE users SET is_banned = 1, ban_reason = ? WHERE id = ?', 
+          db.run('UPDATE users SET is_banned = TRUE, ban_reason = ? WHERE id = ?', 
             ['Permanently banned: Too many warnings (3/3)', userId], () => {
               // Log the auto-ban
               logModerationAction('permaban', user.username, 'Automatic permanent ban - 3 warnings reached');

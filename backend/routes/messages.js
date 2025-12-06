@@ -20,7 +20,7 @@ router.get('/global', (req, res) => {
     LEFT JOIN messages rm ON m.reply_to_id = rm.id
     LEFT JOIN users ru ON rm.user_id = ru.id
     LEFT JOIN attachments a ON a.message_id = m.id
-    WHERE m.is_global = 1
+    WHERE m.is_global = TRUE
     ORDER BY m.created_at DESC
     LIMIT ? OFFSET ?
   `, [limit, offset], (err, messages) => {
@@ -406,9 +406,9 @@ router.get('/unread/:userId', (req, res) => {
       
       db.get(`
         SELECT COALESCE(mrs.last_read_message_id, 0) as last_read,
-               (SELECT COUNT(*) FROM messages WHERE is_global = 1 AND id > COALESCE(mrs.last_read_message_id, 0)) as unread_count
+               (SELECT COUNT(*) FROM messages WHERE is_global = TRUE AND id > COALESCE(mrs.last_read_message_id, 0)) as unread_count
         FROM message_read_status mrs
-        WHERE mrs.user_id = ? AND mrs.is_global = 1
+        WHERE mrs.user_id = ? AND mrs.is_global = TRUE
       `, [userId], (err, global) => {
         if (global?.unread_count > 0) {
           unreadCounts['global'] = global.unread_count;

@@ -3389,7 +3389,8 @@ let currentShopCategory = null;
 let userCoins = 0;
 
 function initShop() {
-  document.getElementById('openShopBtn').addEventListener('click', openShop);
+  const shopBtn = document.getElementById('openShopBtn');
+  if (shopBtn) shopBtn.addEventListener('click', openShop);
   loadUserCoins();
   loadUserEquipped();
 }
