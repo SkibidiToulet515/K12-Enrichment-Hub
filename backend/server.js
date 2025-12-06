@@ -422,7 +422,7 @@ io.on('connection', (socket) => {
     userSockets[data.userId] = socket.id;
     socket.userId = data.userId;
     socket.join('global-chat');
-    db.run('UPDATE users SET is_online = 1 WHERE id = ?', [data.userId], (err) => {
+    db.run('UPDATE users SET is_online = TRUE WHERE id = ?', [data.userId], (err) => {
       if (!err) {
         io.emit('user_online', { userId: data.userId });
       }
@@ -611,7 +611,7 @@ io.on('connection', (socket) => {
   function insertMessage(channelId, groupChatId, dmPartnerId, userId, content, isGlobal, socket, replyToId, attachment) {
     let query, params;
     if (isGlobal) {
-      query = `INSERT INTO messages (user_id, content, is_global, reply_to_id) VALUES (?, ?, 1, ?)`;
+      query = `INSERT INTO messages (user_id, content, is_global, reply_to_id) VALUES (?, ?, TRUE, ?)`;
       params = [userId, content, replyToId || null];
     } else if (dmPartnerId) {
       query = `INSERT INTO messages (channel_id, group_chat_id, dm_partner_id, user_id, content, reply_to_id)
@@ -752,7 +752,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     for (let userId in userSockets) {
       if (userSockets[userId] === socket.id) {
-        db.run('UPDATE users SET is_online = 0 WHERE id = ?', [userId], (err) => {
+        db.run('UPDATE users SET is_online = FALSE WHERE id = ?', [userId], (err) => {
           if (!err) {
             io.emit('user_offline', { userId });
           }
