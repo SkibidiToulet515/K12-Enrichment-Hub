@@ -134,15 +134,47 @@ router.get('/user/:userId', (req, res) => {
 });
 
 router.get('/online', (req, res) => {
-  db.all(`
-    SELECT u.id, u.username, u.profile_picture, u.is_online, a.activity_type, a.activity_name, a.custom_status, a.custom_emoji
-    FROM users u
-    LEFT JOIN activity_status a ON u.id = a.user_id
-    WHERE u.is_online = true
-    ORDER BY a.updated_at DESC
-  `, [], (err, users) => {
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  
+  db.run(`
+    UPDATE activity_status 
+    SET activity_type = NULL, activity_name = NULL 
+    WHERE updated_at < ?
+  `, [fiveMinutesAgo], () => {
+    db.all(`
+      SELECT u.id, u.username, u.profile_picture, u.is_online, a.activity_type, a.activity_name, a.custom_status, a.custom_emoji
+      FROM users u
+      LEFT JOIN activity_status a ON u.id = a.user_id
+      WHERE u.is_online = true
+      ORDER BY a.updated_at DESC
+    `, [], (err, users) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(users);
+    });
+  });
+});
+
+router.post('/update', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { activity_type, activity_data } = req.body;
+  const validTypes = ['playing_game', 'watching', 'browsing', 'chatting', null];
+  
+  if (!validTypes.includes(activity_type)) {
+    return res.status(400).json({ error: 'Invalid activity type' });
+  }
+
+  db.run(`
+    INSERT INTO activity_status (user_id, activity_type, activity_name)
+    VALUES (?, ?, ?)
+    ON CONFLICT(user_id) DO UPDATE SET
+      activity_type = ?,
+      activity_name = ?,
+      updated_at = CURRENT_TIMESTAMP
+  `, [userId, activity_type, activity_data, activity_type, activity_data], function(err) {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(users);
+    res.json({ success: true });
   });
 });
 

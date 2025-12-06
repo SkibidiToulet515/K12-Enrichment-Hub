@@ -89,10 +89,11 @@ router.post('/:id/complete', (req, res) => {
     if (this.changes === 0) return res.status(404).json({ error: 'Task not found' });
     
     db.run(`
-      UPDATE user_xp SET total_xp = total_xp + 5 WHERE user_id = ?
+      INSERT INTO user_xp (user_id, total_xp) VALUES (?, 10)
+      ON CONFLICT(user_id) DO UPDATE SET total_xp = total_xp + 10
     `, [userId]);
     
-    res.json({ success: true, xp_earned: 5 });
+    res.json({ success: true, xp_earned: 10 });
   });
 });
 

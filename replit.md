@@ -6,6 +6,19 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-06**: Gamification System Implementation
+  - **XP & Leveling**: Users earn XP from activities (messages +5, games +20, logins +10, friends +15)
+  - **Level Progression**: XP formula uses level^2 * 100 for increasing thresholds
+  - **22 Achievements**: Across 5 categories (Social, Activity, Communication, Exploration, Special)
+  - **Global Leaderboards**: Rankings by total XP, messages, games played, and login streaks
+  - **Activity Status**: Shows what users are doing (playing games, browsing, chatting)
+  - **Task System**: Personal to-do list with priorities, due dates, and completion XP
+  - **Cross-Server Announcements**: Admin broadcasts displayed on dashboard with dismiss option
+  - New pages: `/private/stats.html` (XP/achievements/leaderboards), `/private/tasks.html`
+  - New dashboard cards: "Stats & Achievements" and "My Tasks"
+  - New routes: `/api/xp`, `/api/activity`, `/api/tasks`, `/api/announcements`
+  - Database tables: user_xp, user_achievements, achievements, user_activity, tasks, announcements
+
 - **2025-12-06**: Enhanced Friend Management & Invite System
   - Friend context menu with right-click or options button (⋮)
   - Friend actions: View Profile, Send Message, Ignore, Be Invisible, Block, Unfriend

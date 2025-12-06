@@ -61,31 +61,54 @@ router.get('/me', (req, res) => {
   });
 });
 
-router.post('/add', (req, res) => {
+const XP_REWARDS = {
+  message: 5,
+  game: 20,
+  login: 10,
+  friend: 15,
+  task_complete: 10,
+  achievement: 0
+};
+
+const userActivityTimestamps = new Map();
+
+router.post('/activity/:type', (req, res) => {
   const userId = getUserId(req);
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-  const { amount, reason } = req.body;
-  if (!amount || amount <= 0) return res.status(400).json({ error: 'Invalid XP amount' });
+  const { type } = req.params;
+  const reward = XP_REWARDS[type];
+  
+  if (reward === undefined) {
+    return res.status(400).json({ error: 'Invalid activity type' });
+  }
+
+  const now = Date.now();
+  const lastActivity = userActivityTimestamps.get(`${userId}_${type}`) || 0;
+  const cooldowns = { message: 2000, game: 30000, friend: 5000 };
+  const cooldown = cooldowns[type] || 1000;
+  
+  if (now - lastActivity < cooldown) {
+    return res.json({ success: true, xp_added: 0, cooldown: true });
+  }
+  userActivityTimestamps.set(`${userId}_${type}`, now);
+
+  if (reward === 0) {
+    return res.json({ success: true, xp_added: 0 });
+  }
+
+  const updateField = type === 'message' ? 'messages_sent = messages_sent + 1,' : 
+                      type === 'game' ? 'games_played = games_played + 1,' : '';
 
   db.run(`
-    INSERT INTO user_xp (user_id, total_xp) VALUES (?, ?)
+    INSERT INTO user_xp (user_id, total_xp, messages_sent, games_played) VALUES (?, ?, 0, 0)
     ON CONFLICT(user_id) DO UPDATE SET 
       total_xp = total_xp + ?,
+      ${updateField}
       updated_at = CURRENT_TIMESTAMP
-  `, [userId, amount, amount], function(err) {
+  `, [userId, reward, reward], function(err) {
     if (err) return res.status(500).json({ error: err.message });
-    
-    db.get('SELECT total_xp FROM user_xp WHERE user_id = ?', [userId], (err, data) => {
-      const newLevel = calculateLevel(data.total_xp);
-      res.json({ 
-        success: true, 
-        xp_added: amount, 
-        total_xp: data.total_xp,
-        level: newLevel,
-        reason 
-      });
-    });
+    res.json({ success: true, xp_added: reward });
   });
 });
 
