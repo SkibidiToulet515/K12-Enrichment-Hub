@@ -1054,8 +1054,6 @@ function acceptFriendRequest(userId, username) {
   })
     .then(r => r.json())
     .then(() => {
-      seenRequestIds.delete(userId);
-      localStorage.setItem('seenFriendRequests', JSON.stringify([...seenRequestIds]));
       loadPendingRequests();
       loadFriends();
     })
@@ -1069,8 +1067,6 @@ function rejectFriendRequest(userId) {
   })
     .then(r => r.json())
     .then(() => {
-      seenRequestIds.delete(userId);
-      localStorage.setItem('seenFriendRequests', JSON.stringify([...seenRequestIds]));
       loadPendingRequests();
     })
     .catch(() => alert('Failed to reject request'));
