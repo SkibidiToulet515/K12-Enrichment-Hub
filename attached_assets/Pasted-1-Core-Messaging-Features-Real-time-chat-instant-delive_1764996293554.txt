@@ -1,0 +1,226 @@
+1. Core Messaging Features
+
+Real-time chat (instant delivery)
+
+Markdown/formatting (bold, italics, code blocks)
+
+Emoji support
+
+Emoji picker + frequently-used emojis
+
+Message edit & delete history
+
+Typing indicators
+
+Read receipts
+
+Message reactions
+
+Reply threading (reply to specific messages)
+
+Quoting messages
+
+Ping/mention system (@user, @role, @everyone)
+
+2. Chat UI / Experience
+
+Pinned messages per chat or channel
+
+Search system:
+
+search messages
+
+search users
+
+search channels
+
+search attachments
+
+Infinite scroll (load older messages as you scroll up)
+
+Message timestamps + “Edited” tags
+
+Custom chat bubbles / themes
+
+Chat customization:
+
+compact mode
+
+cozy mode
+
+background images
+
+font size slider
+
+3. Friend System Enhancements
+
+Since you already have friend add/remove block/etc, add these:
+
+Friend statuses:
+
+Online
+
+Offline
+
+Idle
+
+Do Not Disturb
+
+Invisible
+
+Custom status messages
+
+Friend notes (private notes about users)
+
+Quick actions:
+
+Start DM
+
+Invite to server
+
+Invite to group chat
+
+Activity: “Last seen X minutes ago”
+
+4. Direct Messages (DMs)
+
+1-on-1 chat
+
+Renamable DM (nickname for the convo)
+
+Shared media tab (shows all images sent in that DM)
+
+Shared files tab
+
+Archive DM
+
+Mute DM
+
+Wallpaper per DM
+
+5. Group Chats
+
+Custom group name + group icon
+
+Add/remove members
+
+Group roles (Owner / Admin / Member)
+
+Mute group
+
+Group announcements channel (optional toggle)
+
+Group invites via:
+
+link
+
+friend list
+
+Shared gallery (images/links/files)
+
+6. Servers (like Discord)
+Server Structure
+
+Multiple channels (text, announcements)
+
+Channel categories
+
+Channel permissions
+
+Server roles with colors
+
+Role hierarchy
+
+Server icon, banner, custom colors
+
+Server discovery page (optional)
+
+Server analytics (messages/day, users online, etc.)
+
+Channel Features
+
+Channel topics / descriptions
+
+Slowmode toggle
+
+Announcement channels with “Follow”
+
+Read-only channels for rules
+
+Webhooks (if you want to be fancy)
+
+Server Settings
+
+Invite management
+
+Audit log (role changes, bans, message deletes)
+
+Server backup & restore
+
+Auto-moderation settings:
+
+bad word filter
+
+spam detection
+
+anti-raid mode
+
+invite link blocking
+
+Watch Together (sync YouTube videos)
+
+8. File & Media Support
+
+File uploads (custom limit)
+
+Drag-and-drop messages
+
+Image previews
+
+Video previews
+
+Audio voice notes (like Instagram DMs)
+
+Media compression (save storage)
+
+9. Notifications
+
+App notifications
+
+Browser push notifications
+
+Smart notifications (only ping for mentions)
+
+Mute per conversation or channel
+
+Snooze notifications
+
+10. Safety / Moderation
+
+Report message/user
+
+Auto-delete violent or NSFW links
+
+Admin message view (if needed)
+
+Chat logs with filters
+
+Moderation queue
+
+IP ban system
+
+Shadowban mode (user thinks messages send but no one sees them)
+
+11. Quality-of-Life
+
+Quick switcher (Ctrl + K) to jump between chats
+
+Slash commands (/giphy, /shrug, /nick, /invite)
+
+Custom keyboard shortcuts
+
+Message drafts saved per chat
+
+Multi-device sync
+
+Offline mode (send queued when connected)

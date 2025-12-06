@@ -281,12 +281,13 @@ const StealthMode = {
         padding: 15px;
         z-index: 99998;
         display: none;
+        pointer-events: none;
         min-width: 280px;
         max-height: 80vh;
         overflow-y: auto;
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       }
-      #stealthSettings.active { display: block; }
+      #stealthSettings.active { display: block; pointer-events: auto; }
       #stealthSettings h4 {
         margin: 0 0 12px;
         color: var(--primary, #89b4fa);
