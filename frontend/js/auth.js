@@ -24,6 +24,11 @@ if (window.location.pathname.includes('/private/')) {
 function logout() {
   localStorage.removeItem('authToken');
   localStorage.removeItem('user');
+  localStorage.removeItem('autoLoginCreds');
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('username');
+  localStorage.removeItem('profilePicture');
   window.location.href = '/public/index.html';
 }
 
