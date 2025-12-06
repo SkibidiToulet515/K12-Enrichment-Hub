@@ -15,9 +15,15 @@ let eventListenersInitialized = false;
 let friendNicknames = {};
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('[CHAT] DOMContentLoaded - starting initialization');
   currentUser = checkAuth();
-  if (!currentUser) return;
+  console.log('[CHAT] currentUser:', currentUser);
+  if (!currentUser) {
+    console.log('[CHAT] No current user, exiting');
+    return;
+  }
 
+  console.log('[CHAT] Calling initSocket...');
   initSocket();
   loadServers();
   loadGroupChats();
@@ -552,7 +558,12 @@ function initSocket() {
   });
 
   socket.on('connect', () => {
+    console.log('[SOCKET] Connected successfully! Socket ID:', socket.id);
     socket.emit('user_join', { userId: currentUser.id });
+  });
+  
+  socket.on('disconnect', (reason) => {
+    console.log('[SOCKET] Disconnected:', reason);
   });
 
   socket.on('new_message', (message) => {
@@ -1656,7 +1667,19 @@ function deleteMessageById(messageId) {
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const content = input.value.trim();
-  if (!content || (!currentChannel && !currentFriend && !currentGroupChat && !isGlobalChat)) return;
+  
+  console.log('[DEBUG] sendMessage called:', { content, currentChannel, currentFriend, currentGroupChat, isGlobalChat });
+  
+  if (!content || (!currentChannel && !currentFriend && !currentGroupChat && !isGlobalChat)) {
+    console.log('[DEBUG] sendMessage blocked - no content or no target');
+    return;
+  }
+  
+  if (!socket || !socket.connected) {
+    console.error('[ERROR] Socket not connected! Attempting to reconnect...');
+    alert('Connection lost. Please refresh the page.');
+    return;
+  }
 
   const messageData = {
     channelId: currentChannel,
@@ -1675,6 +1698,7 @@ function sendMessage() {
     messageData.attachment = pendingAttachment;
   }
   
+  console.log('[DEBUG] Emitting send_message:', messageData);
   socket.emit('send_message', messageData);
 
   input.value = '';
