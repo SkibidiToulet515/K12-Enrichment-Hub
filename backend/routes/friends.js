@@ -179,12 +179,20 @@ router.get('/', (req, res) => {
         return res.json([]);
       }
 
-      // Get friend details
-      const ids = friendIds.map(f => f.friendId).join(',');
+      const ids = friendIds.map(f => f.friendid || f.friendId).filter(id => id);
+      if (ids.length === 0) {
+        return res.json([]);
+      }
+      
+      const placeholders = ids.map(() => '?').join(',');
       db.all(
-        `SELECT id, username, profile_picture, is_online FROM users WHERE id IN (${ids})`,
-        [],
+        `SELECT id, username, profile_picture as "profilePicture", is_online FROM users WHERE id IN (${placeholders})`,
+        ids,
         (err, friends) => {
+          if (err) {
+            console.error('Error fetching friends:', err);
+            return res.json([]);
+          }
           res.json(friends || []);
         }
       );
@@ -192,7 +200,7 @@ router.get('/', (req, res) => {
   );
 });
 
-// Remove friend
+// Remove friend (unfriend)
 router.post('/:friendId/remove', (req, res) => {
   const userId = getUserIdFromToken(req);
   const { friendId } = req.params;
@@ -201,7 +209,6 @@ router.post('/:friendId/remove', (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  // Remove both directions
   db.run(
     `DELETE FROM friends WHERE 
     (user_id = ? AND friend_id = ?) OR 
@@ -212,6 +219,54 @@ router.post('/:friendId/remove', (req, res) => {
         return res.status(500).json({ error: 'Failed to remove friend' });
       }
       res.json({ success: true, message: 'Friend removed' });
+    }
+  );
+});
+
+// Set invisible to specific friend
+router.post('/:friendId/invisible', (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { friendId } = req.params;
+  const { invisible } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  db.run(
+    `UPDATE friends SET invisible = ? WHERE 
+    (user_id = ? AND friend_id = ?) OR 
+    (user_id = ? AND friend_id = ?)`,
+    [invisible ? 1 : 0, userId, friendId, friendId, userId],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to update visibility' });
+      }
+      res.json({ success: true, message: invisible ? 'Now invisible to this friend' : 'Now visible to this friend' });
+    }
+  );
+});
+
+// Ignore friend (hide from DM list but keep friendship)
+router.post('/:friendId/ignore', (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { friendId } = req.params;
+  const { ignored } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  db.run(
+    `UPDATE friends SET ignored = ? WHERE 
+    (user_id = ? AND friend_id = ?) OR 
+    (user_id = ? AND friend_id = ?)`,
+    [ignored ? 1 : 0, userId, friendId, friendId, userId],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to update ignore status' });
+      }
+      res.json({ success: true, message: ignored ? 'Friend ignored' : 'Friend unignored' });
     }
   );
 });

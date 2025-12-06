@@ -985,21 +985,150 @@ function loadFriends() {
           <span>${escapeHtml(friend.username)}</span>
         `;
         btn.addEventListener('click', () => selectFriend(friend));
+        btn.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          showFriendContextMenu(e, friend);
+        });
         
-        const profileBtn = document.createElement('button');
-        profileBtn.textContent = 'i';
-        profileBtn.title = 'View Profile';
-        profileBtn.style.cssText = 'padding:4px 8px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;color:var(--text);';
-        profileBtn.addEventListener('click', (e) => {
+        const optBtn = document.createElement('button');
+        optBtn.textContent = '⋮';
+        optBtn.title = 'Options';
+        optBtn.style.cssText = 'padding:4px 8px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:bold;color:var(--text);';
+        optBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          showUserProfile(friend.id);
+          showFriendContextMenu(e, friend);
         });
         
         container.appendChild(btn);
-        container.appendChild(profileBtn);
+        container.appendChild(optBtn);
         list.appendChild(container);
       });
     });
+}
+
+function showFriendContextMenu(e, friend) {
+  const existingMenu = document.getElementById('friendContextMenu');
+  if (existingMenu) existingMenu.remove();
+  
+  const menu = document.createElement('div');
+  menu.id = 'friendContextMenu';
+  menu.style.cssText = `position:fixed;top:${e.clientY}px;left:${e.clientX}px;background:var(--card);border:1px solid var(--accent);border-radius:8px;padding:8px 0;z-index:9999;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,0.3);`;
+  
+  const options = [
+    { text: '👤 View Profile', action: () => showUserProfile(friend.id) },
+    { text: '💬 Send Message', action: () => selectFriend(friend) },
+    { divider: true },
+    { text: '🔇 Ignore', action: () => ignoreFriend(friend.id, true) },
+    { text: '👻 Be Invisible', action: () => setInvisibleToFriend(friend.id, true) },
+    { divider: true },
+    { text: '🚫 Block', action: () => blockFriend(friend.id), danger: true },
+    { text: '❌ Unfriend', action: () => unfriendUser(friend.id, friend.username), danger: true }
+  ];
+  
+  options.forEach(opt => {
+    if (opt.divider) {
+      const divider = document.createElement('div');
+      divider.style.cssText = 'height:1px;background:var(--accent);margin:4px 0;';
+      menu.appendChild(divider);
+    } else {
+      const item = document.createElement('button');
+      item.textContent = opt.text;
+      item.style.cssText = `display:block;width:100%;padding:8px 16px;background:none;border:none;text-align:left;cursor:pointer;color:${opt.danger ? '#e74c3c' : 'var(--text)'};font-size:13px;`;
+      item.addEventListener('mouseover', () => item.style.background = 'var(--bg)');
+      item.addEventListener('mouseout', () => item.style.background = 'none');
+      item.addEventListener('click', () => {
+        menu.remove();
+        opt.action();
+      });
+      menu.appendChild(item);
+    }
+  });
+  
+  document.body.appendChild(menu);
+  
+  const closeMenu = (e) => {
+    if (!menu.contains(e.target)) {
+      menu.remove();
+      document.removeEventListener('click', closeMenu);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', closeMenu), 10);
+}
+
+function unfriendUser(userId, username) {
+  if (!confirm(`Are you sure you want to unfriend ${username}?`)) return;
+  
+  fetch(`/api/friends/${userId}/remove`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        alert('Friend removed');
+        loadFriends();
+      } else {
+        alert(data.error || 'Failed to remove friend');
+      }
+    })
+    .catch(() => alert('Failed to remove friend'));
+}
+
+function blockFriend(userId) {
+  fetch(`/api/blocks/${userId}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        alert('User blocked');
+        loadFriends();
+      } else {
+        alert(data.error || 'Failed to block user');
+      }
+    })
+    .catch(() => alert('Failed to block user'));
+}
+
+function ignoreFriend(userId, ignored) {
+  fetch(`/api/friends/${userId}/ignore`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}` 
+    },
+    body: JSON.stringify({ ignored })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+      } else {
+        alert(data.error || 'Failed to update ignore status');
+      }
+    })
+    .catch(() => alert('Failed to ignore friend'));
+}
+
+function setInvisibleToFriend(userId, invisible) {
+  fetch(`/api/friends/${userId}/invisible`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}` 
+    },
+    body: JSON.stringify({ invisible })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+      } else {
+        alert(data.error || 'Failed to update visibility');
+      }
+    })
+    .catch(() => alert('Failed to update visibility'));
 }
 
 function selectServer(server) {
