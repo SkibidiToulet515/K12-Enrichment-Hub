@@ -178,7 +178,7 @@ router.post('/channel/:channelId/unarchive', authenticateToken, (req, res) => {
     }
     
     db.run(`
-      UPDATE channels SET is_archived = 0, archived_at = NULL
+      UPDATE channels SET is_archived = FALSE, archived_at = NULL
       WHERE id = ?
     `, [channelId], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to unarchive channel' });

@@ -169,7 +169,7 @@ router.get('/user/:id', (req, res) => {
 
 // Get all online users
 router.get('/users/online', (req, res) => {
-  db.all('SELECT id, username, profile_picture, is_online FROM users WHERE is_online = 1', 
+  db.all('SELECT id, username, profile_picture, is_online FROM users WHERE is_online = TRUE', 
     (err, users) => {
       res.json(users || []);
     });

@@ -30,7 +30,7 @@ router.get('/items', authenticateToken, (req, res) => {
     SELECT si.*, sc.name as category_name, sc.slug as category_slug
     FROM shop_items si
     JOIN shop_categories sc ON si.category_id = sc.id
-    WHERE si.is_available = 1
+    WHERE si.is_available = TRUE
   `;
   const params = [];
   
@@ -91,7 +91,7 @@ router.post('/purchase/:itemId', authenticateToken, (req, res) => {
   const itemId = parseInt(req.params.itemId);
   const userId = req.user.userId;
   
-  db.get('SELECT * FROM shop_items WHERE id = ? AND is_available = 1', [itemId], (err, item) => {
+  db.get('SELECT * FROM shop_items WHERE id = ? AND is_available = TRUE', [itemId], (err, item) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (!item) return res.status(404).json({ error: 'Item not found or unavailable' });
     

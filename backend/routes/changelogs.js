@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
     SELECT c.*, u.username as author_name
     FROM changelogs c
     LEFT JOIN users u ON c.author_id = u.id
-    WHERE c.is_published = 1
+    WHERE c.is_published = TRUE
     ORDER BY c.created_at DESC
   `, [], (err, changelogs) => {
     if (err) return res.status(500).json({ error: 'Database error' });
@@ -54,7 +54,7 @@ router.get('/:id', (req, res) => {
     SELECT c.*, u.username as author_name
     FROM changelogs c
     LEFT JOIN users u ON c.author_id = u.id
-    WHERE c.id = ? AND c.is_published = 1
+    WHERE c.id = ? AND c.is_published = TRUE
   `, [req.params.id], (err, changelog) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (!changelog) return res.status(404).json({ error: 'Changelog not found' });

@@ -4179,7 +4179,7 @@ function executeShortcutAction(action) {
   const actions = {
     'open_chat': () => document.querySelector('.dm-header')?.click(),
     'open_games': () => window.location.href = '/private/games.html',
-    'open_profile': () => window.location.href = '/private/settings.html',
+    'open_profile': () => window.location.href = '/private/profile.html',
     'focus_search': () => document.getElementById('messageSearchInput')?.focus(),
     'return_dashboard': () => window.location.href = '/private/dashboard.html',
     'open_shop': () => openShop(),
