@@ -13,6 +13,8 @@ let userInfoCache = {};
 let isAdmin = false;
 let eventListenersInitialized = false;
 let friendNicknames = {};
+let lastMessageId = 0;
+let messagePollingInterval = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[CHAT] DOMContentLoaded - starting initialization');
@@ -42,9 +44,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  // Poll for new messages every 3 seconds
+  startMessagePolling();
+  
   // Refresh pending requests every 10 seconds
   setInterval(loadPendingRequests, 10000);
 });
+
+// Message polling for new messages every 3 seconds
+function startMessagePolling() {
+  if (messagePollingInterval) clearInterval(messagePollingInterval);
+  messagePollingInterval = setInterval(pollNewMessages, 3000);
+}
+
+function pollNewMessages() {
+  if (!currentMessageEndpoint || isLoadingMessages) return;
+  
+  fetch(`${currentMessageEndpoint}?after=${lastMessageId}`, {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(messages => {
+      if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+          if (msg.id > lastMessageId) {
+            // Check if message already exists in DOM
+            if (!document.querySelector(`[data-msg-id="${msg.id}"]`)) {
+              displayMessage(msg, true);
+            }
+            lastMessageId = Math.max(lastMessageId, msg.id);
+          }
+        });
+      }
+    })
+    .catch(() => {});
+}
 
 // Check if current user is admin
 function checkAdminStatus() {
@@ -1535,6 +1569,10 @@ function loadMessages(loadOlder = false) {
         // New load - add messages normally
         messages.forEach((msg, idx) => {
           displayMessage(msg, idx === messages.length - 1);
+          // Track last message ID for polling
+          if (msg.id > lastMessageId) {
+            lastMessageId = msg.id;
+          }
         });
         messageOffset = messages.length;
       }
