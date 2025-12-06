@@ -1675,9 +1675,22 @@ function sendMessage() {
     return;
   }
   
-  if (!socket || !socket.connected) {
-    console.error('[ERROR] Socket not connected! Attempting to reconnect...');
-    alert('Connection lost. Please refresh the page.');
+  if (!socket) {
+    console.error('[ERROR] Socket not initialized');
+    initSocket();
+    return;
+  }
+  
+  if (!socket.connected) {
+    console.log('[WARN] Socket disconnected, reconnecting...');
+    socket.connect();
+    setTimeout(() => {
+      if (socket.connected) {
+        sendMessage();
+      } else {
+        console.error('[ERROR] Could not reconnect');
+      }
+    }, 1000);
     return;
   }
 
