@@ -68,6 +68,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Delete Account
+  const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', async () => {
+      const confirmFirst = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+      if (!confirmFirst) return;
+      
+      const confirmSecond = confirm('This will permanently delete all your messages, friends, and data. Type "DELETE" in the next prompt to confirm.');
+      if (!confirmSecond) return;
+      
+      const typed = prompt('Type DELETE to confirm account deletion:');
+      if (typed !== 'DELETE') {
+        alert('Account deletion cancelled.');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/auth/delete-account', {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          alert('Your account has been deleted. Goodbye!');
+          localStorage.clear();
+          window.location.href = '/public/index.html';
+        } else {
+          alert(`Failed to delete account: ${data.error || 'Unknown error'}`);
+        }
+      } catch (err) {
+        console.error('Delete account error:', err);
+        alert('Failed to delete account: ' + err.message);
+      }
+    });
+  }
+
   // Change username
   const changeUsernameBtn = document.getElementById('changeUsernameBtn');
   const newUsernameInput = document.getElementById('newUsernameInput');

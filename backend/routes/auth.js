@@ -215,4 +215,59 @@ router.post('/change-username', (req, res) => {
   });
 });
 
+// Delete account
+router.delete('/delete-account', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  let userId;
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    userId = decoded.userId;
+  } catch {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  // Delete user data from all related tables
+  const deletions = [
+    'DELETE FROM messages WHERE user_id = ?',
+    'DELETE FROM friends WHERE user_id = ? OR friend_id = ?',
+    'DELETE FROM user_xp WHERE user_id = ?',
+    'DELETE FROM achievements WHERE user_id = ?',
+    'DELETE FROM user_activity WHERE user_id = ?',
+    'DELETE FROM tasks WHERE user_id = ?',
+    'DELETE FROM friend_notes WHERE user_id = ? OR target_user_id = ?',
+    'DELETE FROM poll_votes WHERE user_id = ?',
+    'DELETE FROM user_preferences WHERE user_id = ?',
+    'DELETE FROM user_shortcuts WHERE user_id = ?',
+    'DELETE FROM user_purchases WHERE user_id = ?',
+    'DELETE FROM user_equipped WHERE user_id = ?',
+    'DELETE FROM coin_transactions WHERE user_id = ?',
+    'DELETE FROM daily_rewards WHERE user_id = ?',
+    'DELETE FROM archived_chats WHERE user_id = ?',
+    'DELETE FROM bookmarks WHERE user_id = ?',
+    'DELETE FROM users WHERE id = ?'
+  ];
+
+  let completed = 0;
+  let hasError = false;
+
+  deletions.forEach(sql => {
+    const params = sql.includes('friend_id') || sql.includes('target_user_id') 
+      ? [userId, userId] 
+      : [userId];
+    
+    db.run(sql, params, (err) => {
+      if (err && !hasError) {
+        console.error('Delete error:', err.message, sql);
+      }
+      completed++;
+      
+      if (completed === deletions.length && !hasError) {
+        logger.auth('User deleted account', { userId }, userId);
+        res.json({ success: true, message: 'Account deleted successfully' });
+      }
+    });
+  });
+});
+
 module.exports = router;
