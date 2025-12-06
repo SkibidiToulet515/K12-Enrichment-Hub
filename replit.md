@@ -6,6 +6,19 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-06**: Enhanced Friend Management & Invite System
+  - Friend context menu with right-click or options button (⋮)
+  - Friend actions: View Profile, Send Message, Ignore, Be Invisible, Block, Unfriend
+  - Ignore: Hide friend from DM list while keeping friendship
+  - Be Invisible: Appear offline to specific friend
+  - Direct invite friends to servers and group chats via modal UI
+  - Server options now include "Invite Friends" (option 6 for owners, 2 for members)
+  - Group chat options include "Invite Friends" option
+  - New database columns: friends.invisible, friends.ignored
+  - New API endpoints: POST /api/friends/:id/invisible, /api/friends/:id/ignore
+  - New invite endpoints: POST /api/invites/server/:id/direct/:userId, POST /api/invites/group/:id/add/:userId
+  - Friends-to-invite endpoints: GET /api/invites/friends-to-invite/server/:id, GET /api/invites/friends-to-invite/group/:id
+
 - **2025-12-06**: Implemented Discord-Style Permission System
   - Channel-level permission overrides for roles and users
   - Permission hierarchy: User overrides > Channel role overrides > Server role permissions > Defaults
