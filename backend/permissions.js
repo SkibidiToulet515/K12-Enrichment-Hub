@@ -161,21 +161,35 @@ async function checkPermission(serverId, channelId, userId, permission) {
       return userOverride.value === 1;
     }
 
+    let hasDeny = false;
+    let hasAllow = false;
+    
     for (const role of userRoles) {
       const roleOverride = channelPerms.find(
         p => p.target_type === 'role' && p.target_id === role.id && p.permission === permission
       );
       if (roleOverride) {
-        return roleOverride.value === 1;
+        if (roleOverride.value === 0) hasDeny = true;
+        if (roleOverride.value === 1) hasAllow = true;
       }
     }
+    
+    if (hasDeny) return false;
+    if (hasAllow) return true;
 
+    let roleHasDeny = false;
+    let roleHasAllow = false;
+    
     for (const role of userRoles) {
       const rolePerms = parseRolePermissions(role);
       if (rolePerms[permission] !== undefined) {
-        return rolePerms[permission] === true || rolePerms[permission] === 1;
+        if (rolePerms[permission] === false || rolePerms[permission] === 0) roleHasDeny = true;
+        if (rolePerms[permission] === true || rolePerms[permission] === 1) roleHasAllow = true;
       }
     }
+    
+    if (roleHasDeny) return false;
+    if (roleHasAllow) return true;
 
     return DEFAULT_ROLE_PERMISSIONS.member[permission] || false;
   } catch (err) {
@@ -210,31 +224,49 @@ async function getEffectivePermissions(serverId, channelId, userId) {
         continue;
       }
 
-      let foundRoleOverride = false;
+      let hasDeny = false;
+      let hasAllow = false;
+      
       for (const role of userRoles) {
         const roleOverride = channelPerms.find(
           p => p.target_type === 'role' && p.target_id === role.id && p.permission === permission
         );
         if (roleOverride) {
-          result[permission] = roleOverride.value === 1;
-          foundRoleOverride = true;
-          break;
+          if (roleOverride.value === 0) hasDeny = true;
+          if (roleOverride.value === 1) hasAllow = true;
         }
       }
-      if (foundRoleOverride) continue;
+      
+      if (hasDeny) {
+        result[permission] = false;
+        continue;
+      }
+      if (hasAllow) {
+        result[permission] = true;
+        continue;
+      }
 
-      let foundInRole = false;
+      let roleHasDeny = false;
+      let roleHasAllow = false;
+      
       for (const role of userRoles) {
         const rolePerms = parseRolePermissions(role);
         if (rolePerms[permission] !== undefined) {
-          result[permission] = rolePerms[permission] === true || rolePerms[permission] === 1;
-          foundInRole = true;
-          break;
+          if (rolePerms[permission] === false || rolePerms[permission] === 0) roleHasDeny = true;
+          if (rolePerms[permission] === true || rolePerms[permission] === 1) roleHasAllow = true;
         }
       }
-      if (!foundInRole) {
-        result[permission] = DEFAULT_ROLE_PERMISSIONS.member[permission] || false;
+      
+      if (roleHasDeny) {
+        result[permission] = false;
+        continue;
       }
+      if (roleHasAllow) {
+        result[permission] = true;
+        continue;
+      }
+
+      result[permission] = DEFAULT_ROLE_PERMISSIONS.member[permission] || false;
     }
   } catch (err) {
     console.error('Get effective permissions error:', err);

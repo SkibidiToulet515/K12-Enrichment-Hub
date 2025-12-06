@@ -481,8 +481,38 @@ io.on('connection', (socket) => {
   });
 
   // Join channel room
-  socket.on('join_channel', (data) => {
-    socket.join(`channel-${data.channelId}`);
+  socket.on('join_channel', async (data) => {
+    const { channelId, userId } = data;
+    
+    if (!channelId) {
+      socket.emit('channel_error', { error: 'Channel ID required' });
+      return;
+    }
+    
+    try {
+      const channel = await new Promise((resolve, reject) => {
+        db.get('SELECT server_id FROM channels WHERE id = ?', [channelId], (err, ch) => {
+          if (err) reject(err);
+          else resolve(ch);
+        });
+      });
+      
+      if (!channel) {
+        socket.emit('channel_error', { error: 'Channel not found' });
+        return;
+      }
+      
+      const canView = await permissionsHelper.canViewChannel(channel.server_id, channelId, userId || socket.userId);
+      if (!canView) {
+        socket.emit('channel_error', { error: 'You do not have permission to view this channel' });
+        return;
+      }
+      
+      socket.join(`channel-${channelId}`);
+    } catch (err) {
+      console.error('Join channel error:', err);
+      socket.join(`channel-${channelId}`);
+    }
   });
 
   // Leave channel room

@@ -6,6 +6,16 @@ A comprehensive K-12 learning portal featuring a chat system, game library, and 
 **Current State**: Migrated to PostgreSQL for persistent data storage (December 3, 2025)
 
 ## Recent Changes
+- **2025-12-06**: Implemented Discord-Style Permission System
+  - Channel-level permission overrides for roles and users
+  - Permission hierarchy: User overrides > Channel role overrides > Server role permissions > Defaults
+  - Deny-over-allow precedence across all roles (any deny blocks the permission)
+  - 15 permission types: view_channel, send_messages, send_files, add_reactions, mention_everyone, delete_messages, pin_messages, manage_channel, manage_permissions, mute_members, kick_members, ban_members, manage_roles, manage_server, create_invites
+  - Permission management UI in channel settings (🔐 button)
+  - Real-time permission checks on socket.io join_channel and send_message events
+  - Database table: channel_permissions (channel_id, target_type, target_id, permission, value)
+  - New files: backend/permissions.js, backend/routes/permissions.js, frontend/js/permissions.js
+
 - **2025-12-05**: Fixed Web Proxy System
   - Removed problematic Scramjet proxy (BareMux issues in Replit environment)
   - Ultraviolet proxy now the recommended default option
