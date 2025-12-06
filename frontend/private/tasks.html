@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Tasks - NebulaCore</title>
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 0; border-bottom: 1px solid var(--accent);
+      margin-bottom: 30px;
+    }
+    .header h1 { font-size: 28px; }
+    .back-btn {
+      padding: 10px 20px; background: var(--accent); border: none;
+      border-radius: 8px; color: var(--text); cursor: pointer;
+      text-decoration: none; font-weight: 600;
+    }
+
+    .stats-row {
+      display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--card); border-radius: 12px; padding: 20px;
+      flex: 1; min-width: 120px; text-align: center;
+    }
+    .stat-value { font-size: 28px; font-weight: bold; color: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+    .stat-card.overdue .stat-value { color: #e74c3c; }
+
+    .add-task-form {
+      background: var(--card); border-radius: 12px; padding: 20px;
+      margin-bottom: 30px;
+    }
+    .form-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    .form-input {
+      flex: 1; min-width: 200px; padding: 12px 15px;
+      background: var(--bg); border: 1px solid var(--accent);
+      border-radius: 8px; color: var(--text); font-size: 14px;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-select {
+      padding: 12px 15px; background: var(--bg); border: 1px solid var(--accent);
+      border-radius: 8px; color: var(--text); font-size: 14px; cursor: pointer;
+    }
+    .add-btn {
+      padding: 12px 25px; background: var(--accent); border: none;
+      border-radius: 8px; color: var(--text); cursor: pointer;
+      font-weight: 600; font-size: 14px;
+    }
+    .add-btn:hover { filter: brightness(1.1); }
+
+    .filter-row {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 16px; background: var(--card); border: none;
+      border-radius: 20px; color: var(--text-light); cursor: pointer;
+    }
+    .filter-btn.active { background: var(--accent); color: var(--text); }
+
+    .tasks-list { display: flex; flex-direction: column; gap: 10px; }
+    .task-item {
+      background: var(--card); border-radius: 12px; padding: 15px 20px;
+      display: flex; align-items: center; gap: 15px;
+      transition: all 0.2s;
+    }
+    .task-item.completed { opacity: 0.6; }
+    .task-item.overdue { border-left: 4px solid #e74c3c; }
+    .task-checkbox {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--accent); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .task-checkbox.checked { background: var(--accent); }
+    .task-checkbox.checked::after { content: '✓'; color: white; font-size: 14px; }
+    .task-content { flex: 1; }
+    .task-title { font-weight: 600; margin-bottom: 4px; }
+    .task-item.completed .task-title { text-decoration: line-through; }
+    .task-desc { font-size: 13px; color: var(--text-light); }
+    .task-meta { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .task-badge {
+      padding: 3px 10px; border-radius: 12px; font-size: 11px;
+    }
+    .priority-low { background: #27ae60; }
+    .priority-medium { background: #f39c12; }
+    .priority-high { background: #e74c3c; }
+    .due-badge { background: var(--bg); color: var(--text-light); }
+    .task-actions { display: flex; gap: 8px; }
+    .task-action-btn {
+      padding: 6px 10px; background: var(--bg); border: none;
+      border-radius: 6px; cursor: pointer; font-size: 12px; color: var(--text-light);
+    }
+    .task-action-btn:hover { background: var(--accent); color: var(--text); }
+    .task-action-btn.delete:hover { background: #e74c3c; }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text-light);
+    }
+    .empty-state-icon { font-size: 60px; margin-bottom: 15px; opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>My Tasks</h1>
+      <a href="/private/dashboard.html" class="back-btn">Back to Dashboard</a>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="totalTasks">0</div>
+        <div class="stat-label">Total Tasks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="completedTasks">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="pendingTasks">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card overdue">
+        <div class="stat-value" id="overdueTasks">0</div>
+        <div class="stat-label">Overdue</div>
+      </div>
+    </div>
+
+    <div class="add-task-form">
+      <div class="form-row">
+        <input type="text" id="taskTitle" class="form-input" placeholder="What do you need to do?">
+        <select id="taskPriority" class="form-select">
+          <option value="low">Low Priority</option>
+          <option value="medium" selected>Medium Priority</option>
+          <option value="high">High Priority</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="text" id="taskDesc" class="form-input" placeholder="Description (optional)">
+        <input type="datetime-local" id="taskDue" class="form-input" style="max-width: 220px;">
+        <button class="add-btn" onclick="addTask()">Add Task</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="pending">Pending</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+      <button class="filter-btn" data-filter="high">High Priority</button>
+    </div>
+
+    <div class="tasks-list" id="tasksList"></div>
+  </div>
+
+  <script>
+    function getAuthToken() {
+      return localStorage.getItem('token');
+    }
+
+    let currentFilter = 'all';
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        loadTasks();
+      });
+    });
+
+    async function loadStats() {
+      const res = await fetch('/api/tasks/stats', {
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+      const stats = await res.json();
+      
+      document.getElementById('totalTasks').textContent = stats.total || 0;
+      document.getElementById('completedTasks').textContent = stats.completed || 0;
+      document.getElementById('pendingTasks').textContent = stats.pending || 0;
+      document.getElementById('overdueTasks').textContent = stats.overdue || 0;
+    }
+
+    async function loadTasks() {
+      let url = '/api/tasks';
+      if (currentFilter === 'pending') url += '?completed=false';
+      else if (currentFilter === 'completed') url += '?completed=true';
+      else if (currentFilter === 'high') url += '?priority=high';
+
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+      const tasks = await res.json();
+      
+      const list = document.getElementById('tasksList');
+      
+      if (tasks.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <p>No tasks yet. Add your first task above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      const now = new Date();
+      list.innerHTML = tasks.map(task => {
+        const isOverdue = task.due_date && new Date(task.due_date) < now && !task.completed;
+        const dueDate = task.due_date ? new Date(task.due_date).toLocaleString() : null;
+        
+        return `
+          <div class="task-item ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}">
+            <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id}, ${task.completed})"></div>
+            <div class="task-content">
+              <div class="task-title">${escapeHtml(task.title)}</div>
+              ${task.description ? `<div class="task-desc">${escapeHtml(task.description)}</div>` : ''}
+              <div class="task-meta">
+                <span class="task-badge priority-${task.priority}">${task.priority}</span>
+                ${dueDate ? `<span class="task-badge due-badge">${dueDate}</span>` : ''}
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="task-action-btn delete" onclick="deleteTask(${task.id})">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function addTask() {
+      const title = document.getElementById('taskTitle').value.trim();
+      if (!title) return alert('Please enter a task title');
+
+      const priority = document.getElementById('taskPriority').value;
+      const description = document.getElementById('taskDesc').value.trim();
+      const dueDate = document.getElementById('taskDue').value;
+
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`
+        },
+        body: JSON.stringify({
+          title,
+          description: description || null,
+          priority,
+          due_date: dueDate || null
+        })
+      });
+
+      if (res.ok) {
+        document.getElementById('taskTitle').value = '';
+        document.getElementById('taskDesc').value = '';
+        document.getElementById('taskDue').value = '';
+        loadTasks();
+        loadStats();
+      } else {
+        alert('Failed to add task');
+      }
+    }
+
+    async function toggleTask(id, isCompleted) {
+      const endpoint = isCompleted ? 'uncomplete' : 'complete';
+      const res = await fetch(`/api/tasks/${id}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.xp_earned) {
+          showNotification(`+${data.xp_earned} XP earned!`);
+        }
+        loadTasks();
+        loadStats();
+      }
+    }
+
+    async function deleteTask(id) {
+      if (!confirm('Delete this task?')) return;
+
+      const res = await fetch(`/api/tasks/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+
+      if (res.ok) {
+        loadTasks();
+        loadStats();
+      }
+    }
+
+    function showNotification(message) {
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 15px 25px;
+        background: var(--accent); color: var(--text); border-radius: 10px;
+        font-weight: 600; z-index: 9999; animation: slideIn 0.3s ease;
+      `;
+      notif.textContent = message;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+
+    document.getElementById('taskTitle').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    loadStats();
+    loadTasks();
+  </script>
+</body>
+</html>

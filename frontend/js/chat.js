@@ -1483,6 +1483,11 @@ function sendMessage() {
   cancelReply();
   pendingAttachment = null;
   stopTyping();
+  
+  fetch('/api/xp/activity/message', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  }).catch(() => {});
 }
 
 function createServerRequest() {

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats & Achievements - NebulaCore</title>
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 0; border-bottom: 1px solid var(--accent);
+      margin-bottom: 30px;
+    }
+    .header h1 { font-size: 28px; }
+    .back-btn {
+      padding: 10px 20px; background: var(--accent); border: none;
+      border-radius: 8px; color: var(--text); cursor: pointer;
+      text-decoration: none; font-weight: 600;
+    }
+    .tabs {
+      display: flex; gap: 10px; margin-bottom: 30px;
+      border-bottom: 2px solid var(--card);
+    }
+    .tab {
+      padding: 12px 24px; background: none; border: none;
+      color: var(--text-light); cursor: pointer; font-size: 15px;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab:hover { color: var(--text); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .xp-card {
+      background: var(--card); border-radius: 16px; padding: 30px;
+      margin-bottom: 30px; text-align: center;
+    }
+    .level-display {
+      font-size: 72px; font-weight: bold;
+      background: linear-gradient(135deg, var(--accent), #9b59b6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .level-label { font-size: 18px; color: var(--text-light); margin-top: 5px; }
+    .xp-bar-container {
+      background: var(--bg); border-radius: 12px; height: 24px;
+      margin: 20px 0; overflow: hidden;
+    }
+    .xp-bar {
+      height: 100%; background: linear-gradient(90deg, var(--accent), #9b59b6);
+      border-radius: 12px; transition: width 0.5s ease;
+    }
+    .xp-text { font-size: 14px; color: var(--text-light); }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px; margin-top: 20px;
+    }
+    .stat-box {
+      background: var(--bg); border-radius: 12px; padding: 20px;
+      text-align: center;
+    }
+    .stat-value { font-size: 32px; font-weight: bold; color: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--text-light); margin-top: 5px; }
+    .daily-btn {
+      padding: 15px 40px; background: linear-gradient(135deg, var(--accent), #9b59b6);
+      border: none; border-radius: 12px; color: white; cursor: pointer;
+      font-size: 16px; font-weight: bold; margin-top: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .daily-btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+    .daily-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .leaderboard-card {
+      background: var(--card); border-radius: 16px; overflow: hidden;
+    }
+    .lb-header {
+      display: flex; gap: 10px; padding: 20px;
+      background: var(--bg); flex-wrap: wrap;
+    }
+    .lb-type-btn {
+      padding: 8px 16px; background: var(--card); border: none;
+      border-radius: 8px; color: var(--text-light); cursor: pointer;
+    }
+    .lb-type-btn.active { background: var(--accent); color: var(--text); }
+    .lb-list { padding: 10px 20px 20px; }
+    .lb-item {
+      display: flex; align-items: center; gap: 15px;
+      padding: 12px; border-radius: 10px; margin-bottom: 8px;
+      background: var(--bg);
+    }
+    .lb-rank {
+      width: 35px; height: 35px; display: flex; align-items: center;
+      justify-content: center; border-radius: 50%; font-weight: bold;
+      background: var(--accent);
+    }
+    .lb-rank.gold { background: linear-gradient(135deg, #f1c40f, #e67e22); }
+    .lb-rank.silver { background: linear-gradient(135deg, #bdc3c7, #95a5a6); }
+    .lb-rank.bronze { background: linear-gradient(135deg, #e67e22, #d35400); }
+    .lb-avatar { width: 40px; height: 40px; border-radius: 50%; }
+    .lb-info { flex: 1; }
+    .lb-name { font-weight: 600; }
+    .lb-level { font-size: 12px; color: var(--text-light); }
+    .lb-value { font-weight: bold; color: var(--accent); }
+
+    .achievements-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    .achievement-card {
+      background: var(--card); border-radius: 12px; padding: 20px;
+      display: flex; gap: 15px; align-items: center;
+      opacity: 0.5; transition: all 0.3s;
+    }
+    .achievement-card.earned { opacity: 1; border: 2px solid var(--accent); }
+    .achievement-icon { font-size: 40px; }
+    .achievement-info { flex: 1; }
+    .achievement-name { font-weight: 600; margin-bottom: 4px; }
+    .achievement-desc { font-size: 13px; color: var(--text-light); }
+    .achievement-reward { font-size: 12px; color: var(--accent); margin-top: 4px; }
+    .achievement-badge {
+      padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .achievement-badge.common { background: #95a5a6; }
+    .achievement-badge.uncommon { background: #27ae60; }
+    .achievement-badge.rare { background: #3498db; }
+    .achievement-badge.epic { background: #9b59b6; }
+    .achievement-badge.legendary { background: linear-gradient(135deg, #f1c40f, #e67e22); }
+
+    .category-filter {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .category-btn {
+      padding: 8px 16px; background: var(--card); border: none;
+      border-radius: 20px; color: var(--text-light); cursor: pointer;
+    }
+    .category-btn.active { background: var(--accent); color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Stats & Achievements</h1>
+      <a href="/private/dashboard.html" class="back-btn">Back to Dashboard</a>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="profile">My Profile</button>
+      <button class="tab" data-tab="leaderboard">Leaderboard</button>
+      <button class="tab" data-tab="achievements">Achievements</button>
+    </div>
+
+    <div id="profile" class="tab-content active">
+      <div class="xp-card">
+        <div class="level-display" id="levelDisplay">1</div>
+        <div class="level-label">Level</div>
+        <div class="xp-bar-container">
+          <div class="xp-bar" id="xpBar" style="width: 0%"></div>
+        </div>
+        <div class="xp-text">
+          <span id="currentXp">0</span> / <span id="nextLevelXp">100</span> XP
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-value" id="totalXp">0</div>
+            <div class="stat-label">Total XP</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="messagesSent">0</div>
+            <div class="stat-label">Messages</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="gamesPlayed">0</div>
+            <div class="stat-label">Games Played</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="loginStreak">0</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+        </div>
+        <button class="daily-btn" id="dailyBtn" onclick="claimDaily()">
+          Claim Daily XP
+        </button>
+      </div>
+    </div>
+
+    <div id="leaderboard" class="tab-content">
+      <div class="leaderboard-card">
+        <div class="lb-header">
+          <button class="lb-type-btn active" data-type="xp">Total XP</button>
+          <button class="lb-type-btn" data-type="messages">Messages</button>
+          <button class="lb-type-btn" data-type="games">Games Played</button>
+          <button class="lb-type-btn" data-type="streak">Login Streak</button>
+        </div>
+        <div class="lb-list" id="leaderboardList"></div>
+      </div>
+    </div>
+
+    <div id="achievements" class="tab-content">
+      <div class="category-filter" id="categoryFilter"></div>
+      <div class="achievements-grid" id="achievementsGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    function getAuthToken() {
+      return localStorage.getItem('token');
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    async function loadProfile() {
+      const res = await fetch('/api/xp/me', {
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+      const data = await res.json();
+      
+      document.getElementById('levelDisplay').textContent = data.level || 1;
+      document.getElementById('totalXp').textContent = data.total_xp || 0;
+      document.getElementById('messagesSent').textContent = data.messages_sent || 0;
+      document.getElementById('gamesPlayed').textContent = data.games_played || 0;
+      document.getElementById('loginStreak').textContent = data.login_streak || 0;
+      
+      const progress = data.progress_percent || 0;
+      document.getElementById('xpBar').style.width = `${progress}%`;
+      
+      const currentLevelXp = Math.pow(data.level - 1, 2) * 100;
+      document.getElementById('currentXp').textContent = data.total_xp - currentLevelXp;
+      document.getElementById('nextLevelXp').textContent = data.xp_for_next_level - currentLevelXp;
+
+      checkAchievements();
+    }
+
+    async function claimDaily() {
+      const btn = document.getElementById('dailyBtn');
+      btn.disabled = true;
+      
+      try {
+        const res = await fetch('/api/xp/claim-daily', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          alert(`Claimed ${data.xp_earned} XP! Streak: ${data.streak} days`);
+          loadProfile();
+        } else {
+          alert(data.error || 'Already claimed today!');
+        }
+      } catch (e) {
+        alert('Failed to claim daily XP');
+      }
+      
+      btn.disabled = false;
+    }
+
+    async function loadLeaderboard(type = 'xp') {
+      const res = await fetch(`/api/xp/leaderboard?type=${type}&limit=20`, {
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+      const data = await res.json();
+      
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = data.map((user, i) => {
+        let rankClass = '';
+        if (i === 0) rankClass = 'gold';
+        else if (i === 1) rankClass = 'silver';
+        else if (i === 2) rankClass = 'bronze';
+        
+        let value = user.total_xp;
+        if (type === 'messages') value = user.messages_sent;
+        else if (type === 'games') value = user.games_played;
+        else if (type === 'streak') value = user.login_streak;
+        
+        return `
+          <div class="lb-item">
+            <div class="lb-rank ${rankClass}">${user.rank}</div>
+            <img src="${user.profile_picture || 'https://via.placeholder.com/40'}" class="lb-avatar">
+            <div class="lb-info">
+              <div class="lb-name">${user.username}</div>
+              <div class="lb-level">Level ${user.level}</div>
+            </div>
+            <div class="lb-value">${value.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.querySelectorAll('.lb-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.lb-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadLeaderboard(btn.dataset.type);
+      });
+    });
+
+    async function loadAchievements(category = null) {
+      const res = await fetch('/api/xp/my-achievements', {
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+      const achievements = await res.json();
+      
+      const categories = [...new Set(achievements.map(a => a.category))];
+      const filterContainer = document.getElementById('categoryFilter');
+      filterContainer.innerHTML = `
+        <button class="category-btn ${!category ? 'active' : ''}" onclick="loadAchievements()">All</button>
+        ${categories.map(c => `
+          <button class="category-btn ${category === c ? 'active' : ''}" onclick="loadAchievements('${c}')">${c}</button>
+        `).join('')}
+      `;
+      
+      const filtered = category ? achievements.filter(a => a.category === category) : achievements;
+      
+      const grid = document.getElementById('achievementsGrid');
+      grid.innerHTML = filtered.map(ach => `
+        <div class="achievement-card ${ach.earned_at ? 'earned' : ''}">
+          <div class="achievement-icon">${ach.icon}</div>
+          <div class="achievement-info">
+            <div class="achievement-name">${ach.name}</div>
+            <div class="achievement-desc">${ach.description}</div>
+            <div class="achievement-reward">+${ach.xp_reward} XP</div>
+          </div>
+          <span class="achievement-badge ${ach.rarity}">${ach.rarity}</span>
+        </div>
+      `).join('');
+    }
+
+    async function checkAchievements() {
+      const res = await fetch('/api/xp/check-achievements', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+      const data = await res.json();
+      
+      if (data.new_achievements && data.new_achievements.length > 0) {
+        data.new_achievements.forEach(ach => {
+          alert(`Achievement Unlocked! ${ach.icon} ${ach.name} (+${ach.xp_reward} XP)`);
+        });
+        loadProfile();
+      }
+    }
+
+    loadProfile();
+    loadLeaderboard();
+    loadAchievements();
+  </script>
+</body>
+</html>

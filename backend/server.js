@@ -32,6 +32,10 @@ const proxyRoutes = require('./routes/proxy');
 const bookmarksRoutes = require('./routes/bookmarks');
 const permissionsRoutes = require('./routes/permissions');
 const permissionsHelper = require('./permissions');
+const xpRoutes = require('./routes/xp');
+const activityRoutes = require('./routes/activity');
+const tasksRoutes = require('./routes/tasks');
+const announcementsRoutes = require('./routes/announcements');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../frontend/uploads')),
@@ -146,6 +150,10 @@ app.use('/api/preferences', preferencesRoutes);
 app.use('/api/proxy', proxyRoutes);
 app.use('/api/bookmarks', bookmarksRoutes);
 app.use('/api/permissions', permissionsRoutes);
+app.use('/api/xp', xpRoutes);
+app.use('/api/activity', activityRoutes);
+app.use('/api/tasks', tasksRoutes);
+app.use('/api/announcements', announcementsRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {
