@@ -149,4 +149,108 @@ router.delete('/:inviteId', (req, res) => {
   });
 });
 
+router.post('/server/:serverId/direct/:userId', (req, res) => {
+  const inviterId = getUserId(req);
+  if (!inviterId) return res.status(401).json({ error: 'Unauthorized' });
+  
+  const { serverId, userId } = req.params;
+  
+  db.get('SELECT * FROM server_members WHERE server_id = ? AND user_id = ?',
+    [serverId, inviterId], (err, member) => {
+      if (!member) return res.status(403).json({ error: 'Not a member of this server' });
+      
+      db.get('SELECT * FROM users WHERE id = ?', [userId], (err, targetUser) => {
+        if (!targetUser) return res.status(404).json({ error: 'User not found' });
+        
+        db.get('SELECT * FROM server_members WHERE server_id = ? AND user_id = ?',
+          [serverId, userId], (err, existing) => {
+            if (existing) {
+              return res.json({ success: true, message: 'User is already a member' });
+            }
+            
+            db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?)',
+              [serverId, userId], (err) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({ success: true, message: `${targetUser.username} has been added to the server` });
+              });
+          });
+      });
+    });
+});
+
+router.post('/group/:groupId/add/:userId', (req, res) => {
+  const inviterId = getUserId(req);
+  if (!inviterId) return res.status(401).json({ error: 'Unauthorized' });
+  
+  const { groupId, userId } = req.params;
+  
+  db.get('SELECT * FROM group_chat_members WHERE group_id = ? AND user_id = ?',
+    [groupId, inviterId], (err, member) => {
+      if (!member) return res.status(403).json({ error: 'Not a member of this group' });
+      
+      db.get('SELECT * FROM users WHERE id = ?', [userId], (err, targetUser) => {
+        if (!targetUser) return res.status(404).json({ error: 'User not found' });
+        
+        db.get('SELECT * FROM group_chat_members WHERE group_id = ? AND user_id = ?',
+          [groupId, userId], (err, existing) => {
+            if (existing) {
+              return res.json({ success: true, message: 'User is already a member' });
+            }
+            
+            db.run('INSERT INTO group_chat_members (group_id, user_id) VALUES (?, ?)',
+              [groupId, userId], (err) => {
+                if (err) return res.status(500).json({ error: err.message });
+                res.json({ success: true, message: `${targetUser.username} has been added to the group` });
+              });
+          });
+      });
+    });
+});
+
+router.get('/friends-to-invite/server/:serverId', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  
+  const { serverId } = req.params;
+  
+  db.all(`
+    SELECT DISTINCT u.id, u.username, u.profile_picture as "profilePicture"
+    FROM users u
+    JOIN friends f ON (
+      (f.user_id = ? AND f.friend_id = u.id) OR 
+      (f.friend_id = ? AND f.user_id = u.id)
+    )
+    WHERE f.status = 'accepted'
+    AND u.id NOT IN (
+      SELECT user_id FROM server_members WHERE server_id = ?
+    )
+  `, [userId, userId, serverId], (err, friends) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(friends || []);
+  });
+});
+
+router.get('/friends-to-invite/group/:groupId', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  
+  const { groupId } = req.params;
+  
+  db.all(`
+    SELECT DISTINCT u.id, u.username, u.profile_picture as "profilePicture"
+    FROM users u
+    JOIN friends f ON (
+      (f.user_id = ? AND f.friend_id = u.id) OR 
+      (f.friend_id = ? AND f.user_id = u.id)
+    )
+    WHERE f.status = 'accepted'
+    AND u.id NOT IN (
+      SELECT user_id FROM group_chat_members WHERE group_id = ?
+    )
+  `, [userId, userId, groupId], (err, friends) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(friends || []);
+  });
+});
+
 module.exports = router;

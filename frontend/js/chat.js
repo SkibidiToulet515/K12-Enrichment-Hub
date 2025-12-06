@@ -318,17 +318,24 @@ function selectGroupChat(group) {
 
 function showGroupChatOptions(group, isOwner) {
   if (isOwner) {
-    const action = prompt(`Manage "${group.name}":\n\n1 - View/Kick Members\n2 - Delete Group Chat\n\nEnter 1 or 2:`);
+    const action = prompt(`Manage "${group.name}":\n\n1 - View/Kick Members\n2 - Invite Friends\n3 - Delete Group Chat\n\nEnter 1-3:`);
     if (action === '1') {
       manageGroupChatMembers(group);
     } else if (action === '2') {
+      showInviteFriendsModal('group', group.id, group.name);
+    } else if (action === '3') {
       if (confirm(`Are you sure you want to DELETE "${group.name}"? This cannot be undone.`)) {
         deleteGroupChat(group.id);
       }
     }
   } else {
-    if (confirm(`Leave "${group.name}"?`)) {
-      leaveGroupChat(group.id);
+    const action = prompt(`"${group.name}" Options:\n\n1 - Invite Friends\n2 - Leave Group Chat\n\nEnter 1 or 2:`);
+    if (action === '1') {
+      showInviteFriendsModal('group', group.id, group.name);
+    } else if (action === '2') {
+      if (confirm(`Leave "${group.name}"?`)) {
+        leaveGroupChat(group.id);
+      }
     }
   }
 }
@@ -784,7 +791,7 @@ function loadServers() {
 
 function showServerOptions(server, isOwner) {
   if (isOwner) {
-    const action = prompt(`Manage "${server.name}":\n\n1 - Edit Server/Channels\n2 - View/Kick Members\n3 - Roles & Permissions\n4 - Create Invite Link\n5 - View Invites\n6 - Delete Server\n\nEnter 1-6:`);
+    const action = prompt(`Manage "${server.name}":\n\n1 - Edit Server/Channels\n2 - View/Kick Members\n3 - Roles & Permissions\n4 - Create Invite Link\n5 - View Invites\n6 - Invite Friends\n7 - Delete Server\n\nEnter 1-7:`);
     if (action === '1') {
       openServerManageModal(server.id, server.name);
     } else if (action === '2') {
@@ -796,15 +803,19 @@ function showServerOptions(server, isOwner) {
     } else if (action === '5') {
       showServerInvites(server.id, server.name);
     } else if (action === '6') {
+      showInviteFriendsModal('server', server.id, server.name);
+    } else if (action === '7') {
       if (confirm(`Are you sure you want to DELETE "${server.name}"? This will delete all channels and messages. This cannot be undone.`)) {
         deleteServer(server.id);
       }
     }
   } else {
-    const action = prompt(`"${server.name}" Options:\n\n1 - Create Invite Link\n2 - Leave Server\n\nEnter 1 or 2:`);
+    const action = prompt(`"${server.name}" Options:\n\n1 - Create Invite Link\n2 - Invite Friends\n3 - Leave Server\n\nEnter 1-3:`);
     if (action === '1') {
       showCreateInviteModal(server.id);
     } else if (action === '2') {
+      showInviteFriendsModal('server', server.id, server.name);
+    } else if (action === '3') {
       if (confirm(`Leave "${server.name}"?`)) {
         leaveServer(server.id);
       }
@@ -1129,6 +1140,95 @@ function setInvisibleToFriend(userId, invisible) {
       }
     })
     .catch(() => alert('Failed to update visibility'));
+}
+
+function showInviteFriendsModal(type, targetId, targetName) {
+  const endpoint = type === 'server' 
+    ? `/api/invites/friends-to-invite/server/${targetId}`
+    : `/api/invites/friends-to-invite/group/${targetId}`;
+  
+  fetch(endpoint, {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(friends => {
+      const existingModal = document.getElementById('inviteFriendsModal');
+      if (existingModal) existingModal.remove();
+      
+      const modal = document.createElement('div');
+      modal.id = 'inviteFriendsModal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
+      
+      const typeLabel = type === 'server' ? 'Server' : 'Group Chat';
+      
+      let content = `
+        <div style="background:var(--card);border-radius:12px;padding:24px;max-width:400px;width:90%;max-height:80vh;overflow-y:auto;">
+          <h3 style="margin:0 0 16px;color:var(--text);">Invite Friends to ${escapeHtml(targetName)}</h3>
+      `;
+      
+      if (friends.length === 0) {
+        content += `<p style="color:var(--text-light);margin:20px 0;">No friends available to invite. All your friends are already members or you have no friends yet.</p>`;
+      } else {
+        content += `<div style="display:flex;flex-direction:column;gap:8px;">`;
+        friends.forEach(friend => {
+          content += `
+            <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg);border-radius:8px;">
+              <img src="${friend.profilePicture || 'https://via.placeholder.com/32'}" style="width:32px;height:32px;border-radius:50%;">
+              <span style="flex:1;color:var(--text);">${escapeHtml(friend.username)}</span>
+              <button onclick="inviteFriendTo('${type}', ${targetId}, ${friend.id}, '${escapeHtml(friend.username)}')" 
+                style="padding:6px 12px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;color:var(--text);font-weight:600;">
+                Invite
+              </button>
+            </div>
+          `;
+        });
+        content += `</div>`;
+      }
+      
+      content += `
+        <button onclick="document.getElementById('inviteFriendsModal').remove()" 
+          style="margin-top:16px;padding:10px 20px;background:var(--accent);border:none;border-radius:6px;cursor:pointer;color:var(--text);width:100%;">
+          Close
+        </button>
+      </div>`;
+      
+      modal.innerHTML = content;
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+      
+      document.body.appendChild(modal);
+    })
+    .catch(err => {
+      console.error('Failed to load friends:', err);
+      alert('Failed to load friends list');
+    });
+}
+
+function inviteFriendTo(type, targetId, friendId, friendName) {
+  const endpoint = type === 'server'
+    ? `/api/invites/server/${targetId}/direct/${friendId}`
+    : `/api/invites/group/${targetId}/add/${friendId}`;
+  
+  fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        document.getElementById('inviteFriendsModal').remove();
+        if (type === 'server') {
+          loadServers();
+        } else {
+          loadGroupChats();
+        }
+      } else {
+        alert(data.error || 'Failed to invite friend');
+      }
+    })
+    .catch(() => alert('Failed to invite friend'));
 }
 
 function selectServer(server) {
