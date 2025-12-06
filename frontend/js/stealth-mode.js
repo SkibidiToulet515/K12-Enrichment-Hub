@@ -2,18 +2,20 @@ const StealthMode = {
   originalTitle: document.title,
   originalFavicon: null,
   isActive: false,
-  redirectMode: true,
   
-  disguises: [
-    { name: 'ClassLink (Redirect)', title: 'ClassLink Launchpad', favicon: 'https://launchpad.classlink.com/favicon.ico', url: 'https://myapps.classlink.com/home', redirect: true },
-    { name: 'Google Docs', title: 'Untitled document - Google Docs', favicon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico', url: 'https://docs.google.com', redirect: false },
-    { name: 'Google Classroom', title: 'Google Classroom', favicon: 'https://ssl.gstatic.com/classroom/favicon.png', url: 'https://classroom.google.com', redirect: false },
-    { name: 'Khan Academy', title: 'Khan Academy | Free Online Courses', favicon: 'https://cdn.kastatic.org/images/favicon.ico', url: 'https://khanacademy.org', redirect: false },
-    { name: 'Google Drive', title: 'My Drive - Google Drive', favicon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png', url: 'https://drive.google.com', redirect: false },
-    { name: 'Wikipedia', title: 'Wikipedia', favicon: 'https://en.wikipedia.org/static/favicon/wikipedia.ico', url: 'https://wikipedia.org', redirect: false },
-    { name: 'Quizlet', title: 'Quizlet: Learn & Study', favicon: 'https://quizlet.com/favicon.ico', url: 'https://quizlet.com', redirect: false }
+  panicTargets: [
+    { name: 'ClassLink', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'https://launchpad.classlink.com/favicon.ico' },
+    { name: 'OneNote', url: 'https://www.onenote.com/notebooks', title: 'OneNote', favicon: 'https://www.onenote.com/favicon.ico' }
   ],
   
+  disguises: [
+    { name: 'Google Docs', title: 'Untitled document - Google Docs', favicon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico', url: 'https://docs.google.com' },
+    { name: 'Google Classroom', title: 'Google Classroom', favicon: 'https://ssl.gstatic.com/classroom/favicon.png', url: 'https://classroom.google.com' },
+    { name: 'Khan Academy', title: 'Khan Academy | Free Online Courses', favicon: 'https://cdn.kastatic.org/images/favicon.ico', url: 'https://khanacademy.org' },
+    { name: 'Google Drive', title: 'My Drive - Google Drive', favicon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png', url: 'https://drive.google.com' }
+  ],
+  
+  currentPanicTarget: null,
   currentDisguise: null,
   
   init() {
@@ -22,10 +24,7 @@ const StealthMode = {
     this.createPanicButton();
     this.setupKeyboardShortcut();
     this.createSettingsUI();
-    
-    if (localStorage.getItem('stealthAutoEnabled') === 'true') {
-      this.activate();
-    }
+    this.applyTabCloak();
   },
   
   getFavicon() {
@@ -44,19 +43,18 @@ const StealthMode = {
   },
   
   loadSettings() {
+    const savedPanic = localStorage.getItem('panicTarget');
+    this.currentPanicTarget = this.panicTargets.find(p => p.name === savedPanic) || this.panicTargets[0];
+    
     const savedDisguise = localStorage.getItem('stealthDisguise');
-    if (savedDisguise) {
-      this.currentDisguise = this.disguises.find(d => d.name === savedDisguise) || this.disguises[0];
-    } else {
-      this.currentDisguise = this.disguises[0];
-    }
+    this.currentDisguise = this.disguises.find(d => d.name === savedDisguise) || this.disguises[0];
   },
   
   createPanicButton() {
     const btn = document.createElement('button');
     btn.id = 'panicButton';
     btn.innerHTML = '🛡️';
-    btn.title = 'Panic Button (` or ESC twice)';
+    btn.title = 'Panic Button (` or ESC twice) - Right-click for settings';
     btn.style.cssText = `
       position: fixed;
       bottom: 20px;
@@ -77,7 +75,7 @@ const StealthMode = {
     `;
     btn.onmouseenter = () => btn.style.transform = 'scale(1.1)';
     btn.onmouseleave = () => btn.style.transform = 'scale(1)';
-    btn.onclick = () => this.activate();
+    btn.onclick = () => this.panic();
     document.body.appendChild(btn);
   },
   
@@ -88,13 +86,13 @@ const StealthMode = {
     document.addEventListener('keydown', (e) => {
       if (e.key === '`' && !e.target.matches('input, textarea, [contenteditable]')) {
         e.preventDefault();
-        this.activate();
+        this.panic();
       }
       
       if (e.key === 'Escape') {
         escCount++;
         if (escCount >= 2) {
-          this.activate();
+          this.panic();
           escCount = 0;
         }
         clearTimeout(escTimer);
@@ -103,14 +101,81 @@ const StealthMode = {
     });
   },
   
-  activate() {
-    if (this.isActive) return;
-    
-    if (this.currentDisguise.redirect) {
-      window.location.href = this.currentDisguise.url;
-      return;
+  panic() {
+    window.location.href = this.currentPanicTarget.url;
+  },
+  
+  openInAboutBlank() {
+    const newWindow = window.open('about:blank', '_blank');
+    if (newWindow) {
+      const currentUrl = window.location.href;
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${this.currentPanicTarget.title}</title>
+          <link rel="icon" href="${this.currentPanicTarget.favicon}">
+          <style>
+            * { margin: 0; padding: 0; }
+            body { overflow: hidden; }
+            iframe { width: 100vw; height: 100vh; border: none; }
+          </style>
+        </head>
+        <body>
+          <iframe src="${currentUrl}"></iframe>
+        </body>
+        </html>
+      `);
+      newWindow.document.close();
+      window.location.href = this.currentPanicTarget.url;
     }
+  },
+  
+  floodHistory(count = 50) {
+    const urls = [
+      'https://myapps.classlink.com/home',
+      'https://myapps.classlink.com/home#dashboard',
+      'https://myapps.classlink.com/home#apps',
+      'https://classroom.google.com',
+      'https://classroom.google.com/u/0/h',
+      'https://docs.google.com/document',
+      'https://drive.google.com/drive/my-drive',
+      'https://www.khanacademy.org',
+      'https://www.onenote.com/notebooks',
+      'https://outlook.office.com/mail'
+    ];
     
+    for (let i = 0; i < count; i++) {
+      const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+      history.pushState({}, '', window.location.pathname + '?t=' + Date.now() + i);
+    }
+    history.replaceState({}, '', window.location.pathname);
+    
+    return `Flooded history with ${count} entries`;
+  },
+  
+  manipulateHistory() {
+    const fakeEntries = [
+      { title: 'ClassLink Launchpad', url: 'https://myapps.classlink.com/home' },
+      { title: 'Google Classroom', url: 'https://classroom.google.com' },
+      { title: 'OneNote', url: 'https://www.onenote.com/notebooks' }
+    ];
+    
+    fakeEntries.forEach((entry, i) => {
+      setTimeout(() => {
+        history.pushState({ fake: true }, entry.title, window.location.pathname);
+      }, i * 10);
+    });
+    
+    setTimeout(() => {
+      history.replaceState({}, document.title, window.location.pathname);
+    }, fakeEntries.length * 10 + 50);
+    
+    return 'History manipulated successfully';
+  },
+  
+  activateDisguise() {
+    if (this.isActive) return;
     this.isActive = true;
     
     document.title = this.currentDisguise.title;
@@ -142,11 +207,11 @@ const StealthMode = {
   
   deactivateHandler: function(e) {
     if (e.key === 'Escape' || e.key === '`') {
-      StealthMode.deactivate();
+      StealthMode.deactivateDisguise();
     }
   },
   
-  deactivate() {
+  deactivateDisguise() {
     this.isActive = false;
     document.title = this.originalTitle;
     this.setFavicon(this.originalFavicon);
@@ -195,37 +260,6 @@ const StealthMode = {
       `;
     }
     
-    if (name === 'Khan Academy') {
-      return `
-        <div style="height: 60px; background: #1865f2; display: flex; align-items: center; padding: 0 20px;">
-          <span style="color: white; font-size: 20px; font-weight: bold;">Khan Academy</span>
-        </div>
-        <div style="flex: 1; background: #f7f8fa; padding: 40px; text-align: center;">
-          <h1 style="color: #21242c; margin-bottom: 20px;">You can learn anything.</h1>
-          <p style="color: #6b6e73;">For free. For everyone. Forever.</p>
-          <p style="color: #999; font-size: 12px; margin-top: 40px;">Press ESC or \` to return</p>
-        </div>
-      `;
-    }
-    
-    if (name === 'Google Drive') {
-      return `
-        <div style="height: 64px; background: white; border-bottom: 1px solid #ddd; display: flex; align-items: center; padding: 0 20px;">
-          <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" style="width: 32px; margin-right: 10px;">
-          <span style="font-size: 22px; color: #5f6368;">Drive</span>
-        </div>
-        <div style="flex: 1; background: #f8f9fa; display: flex;">
-          <div style="width: 240px; background: white; padding: 20px; border-right: 1px solid #ddd;">
-            <button style="background: white; border: 1px solid #ddd; padding: 10px 20px; border-radius: 24px; cursor: pointer;">+ New</button>
-          </div>
-          <div style="flex: 1; padding: 20px;">
-            <p style="color: #5f6368;">My Drive is empty</p>
-            <p style="color: #999; font-size: 12px; margin-top: 20px;">Press ESC or \` to return</p>
-          </div>
-        </div>
-      `;
-    }
-    
     return `
       <div style="flex: 1; background: #f8f9fa; display: flex; align-items: center; justify-content: center; flex-direction: column;">
         <h1 style="color: #333;">${this.currentDisguise.name}</h1>
@@ -248,7 +282,9 @@ const StealthMode = {
         padding: 15px;
         z-index: 99998;
         display: none;
-        min-width: 220px;
+        min-width: 280px;
+        max-height: 80vh;
+        overflow-y: auto;
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       }
       #stealthSettings.active { display: block; }
@@ -256,6 +292,8 @@ const StealthMode = {
         margin: 0 0 12px;
         color: var(--primary, #89b4fa);
         font-size: 14px;
+        border-bottom: 1px solid var(--accent, #45475a);
+        padding-bottom: 8px;
       }
       .stealth-option {
         display: flex;
@@ -278,28 +316,128 @@ const StealthMode = {
       .stealth-option input {
         margin-right: 8px;
       }
+      .stealth-btn {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .stealth-btn.primary {
+        background: linear-gradient(135deg, var(--primary, #89b4fa), var(--accent, #cba6f7));
+        color: var(--bg, #11111b);
+      }
+      .stealth-btn.secondary {
+        background: var(--bg, #11111b);
+        color: var(--text, #cdd6f4);
+        border: 1px solid var(--accent, #45475a);
+      }
+      .stealth-btn:hover {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+      }
+      .stealth-section {
+        margin-bottom: 15px;
+      }
+      .stealth-divider {
+        height: 1px;
+        background: var(--accent, #45475a);
+        margin: 12px 0;
+      }
     `;
     document.head.appendChild(style);
     
     const settings = document.createElement('div');
     settings.id = 'stealthSettings';
     settings.innerHTML = `
-      <h4>Disguise Mode</h4>
-      ${this.disguises.map(d => `
-        <label class="stealth-option ${d.name === this.currentDisguise.name ? 'selected' : ''}">
-          <input type="radio" name="disguise" value="${d.name}" ${d.name === this.currentDisguise.name ? 'checked' : ''}>
-          ${d.name}
+      <div class="stealth-section">
+        <h4>🚨 Panic Target (Redirect To)</h4>
+        ${this.panicTargets.map(p => `
+          <label class="stealth-option ${p.name === this.currentPanicTarget.name ? 'selected' : ''}">
+            <input type="radio" name="panicTarget" value="${p.name}" ${p.name === this.currentPanicTarget.name ? 'checked' : ''}>
+            ${p.name}
+          </label>
+        `).join('')}
+      </div>
+      
+      <div class="stealth-divider"></div>
+      
+      <div class="stealth-section">
+        <h4>🎭 Tab Cloak (Disguise Tab)</h4>
+        <label class="stealth-option ${!localStorage.getItem('tabCloakEnabled') ? 'selected' : ''}">
+          <input type="radio" name="tabCloak" value="none" ${!localStorage.getItem('tabCloakEnabled') ? 'checked' : ''}>
+          None (Original)
         </label>
-      `).join('')}
+        ${this.panicTargets.map(p => `
+          <label class="stealth-option ${localStorage.getItem('tabCloakName') === p.name ? 'selected' : ''}">
+            <input type="radio" name="tabCloak" value="${p.name}" ${localStorage.getItem('tabCloakName') === p.name ? 'checked' : ''}>
+            ${p.name}
+          </label>
+        `).join('')}
+      </div>
+      
+      <div class="stealth-divider"></div>
+      
+      <div class="stealth-section">
+        <h4>🔧 Stealth Tools</h4>
+        <button class="stealth-btn primary" onclick="StealthMode.openInAboutBlank()">
+          📄 Open in about:blank
+        </button>
+        <button class="stealth-btn secondary" onclick="StealthMode.floodHistory(); alert('History flooded!')">
+          📚 Flood History (50 entries)
+        </button>
+        <button class="stealth-btn secondary" onclick="StealthMode.manipulateHistory(); alert('History manipulated!')">
+          🔄 Manipulate History
+        </button>
+      </div>
+      
+      <div class="stealth-divider"></div>
+      
+      <div class="stealth-section">
+        <h4>🎨 Quick Disguise (Overlay)</h4>
+        ${this.disguises.map(d => `
+          <label class="stealth-option" onclick="StealthMode.currentDisguise = StealthMode.disguises.find(x => x.name === '${d.name}'); StealthMode.activateDisguise();">
+            ${d.name}
+          </label>
+        `).join('')}
+      </div>
     `;
     document.body.appendChild(settings);
     
-    settings.querySelectorAll('input[name="disguise"]').forEach(input => {
+    settings.querySelectorAll('input[name="panicTarget"]').forEach(input => {
       input.addEventListener('change', (e) => {
-        this.currentDisguise = this.disguises.find(d => d.name === e.target.value);
-        localStorage.setItem('stealthDisguise', e.target.value);
-        settings.querySelectorAll('.stealth-option').forEach(opt => opt.classList.remove('selected'));
-        e.target.parentElement.classList.add('selected');
+        this.currentPanicTarget = this.panicTargets.find(p => p.name === e.target.value);
+        localStorage.setItem('panicTarget', e.target.value);
+        settings.querySelectorAll('input[name="panicTarget"]').forEach(i => {
+          i.parentElement.classList.toggle('selected', i.checked);
+        });
+      });
+    });
+    
+    settings.querySelectorAll('input[name="tabCloak"]').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const value = e.target.value;
+        if (value === 'none') {
+          localStorage.removeItem('tabCloakEnabled');
+          localStorage.removeItem('tabCloakName');
+          document.title = this.originalTitle;
+          this.setFavicon(this.originalFavicon);
+        } else {
+          const target = this.panicTargets.find(p => p.name === value);
+          if (target) {
+            localStorage.setItem('tabCloakEnabled', 'true');
+            localStorage.setItem('tabCloakName', value);
+            document.title = target.title;
+            this.setFavicon(target.favicon);
+          }
+        }
+        settings.querySelectorAll('input[name="tabCloak"]').forEach(i => {
+          i.parentElement.classList.toggle('selected', i.checked);
+        });
       });
     });
     
@@ -318,20 +456,15 @@ const StealthMode = {
     }
   },
   
-  setTabCloak(title, faviconUrl) {
-    document.title = title || this.originalTitle;
-    if (faviconUrl) {
-      this.setFavicon(faviconUrl);
+  applyTabCloak() {
+    if (localStorage.getItem('tabCloakEnabled') === 'true') {
+      const cloakName = localStorage.getItem('tabCloakName');
+      const target = this.panicTargets.find(p => p.name === cloakName);
+      if (target) {
+        document.title = target.title;
+        this.setFavicon(target.favicon);
+      }
     }
-    localStorage.setItem('cloakTitle', title || '');
-    localStorage.setItem('cloakFavicon', faviconUrl || '');
-  },
-  
-  clearTabCloak() {
-    document.title = this.originalTitle;
-    this.setFavicon(this.originalFavicon);
-    localStorage.removeItem('cloakTitle');
-    localStorage.removeItem('cloakFavicon');
   }
 };
 
