@@ -624,79 +624,81 @@ io.on('connection', (socket) => {
     }
     
     db.run(query, params, function(err) {
-      if (!err) {
-        const messageId = this.lastID;
-        
-        if (attachment) {
-          db.run(`INSERT INTO attachments (message_id, filename, original_name, file_type, file_size, url) 
-                  VALUES (?, ?, ?, ?, ?, ?)`,
-            [messageId, attachment.filename, attachment.originalName, attachment.type, attachment.size, attachment.url]);
-        }
-        
-        db.get(
-          `SELECT m.*, u.username, u.profile_picture,
-                  rm.content as reply_content, ru.username as reply_username
-           FROM messages m 
-           JOIN users u ON m.user_id = u.id 
-           LEFT JOIN messages rm ON m.reply_to_id = rm.id
-           LEFT JOIN users ru ON rm.user_id = ru.id
-           WHERE m.id = ?`,
-          [messageId],
-          (err, message) => {
-            if (!err && message) {
-              if (attachment) {
-                message.attachment = attachment;
-              }
-              
-              if (message.reply_to_id) {
-                message.replyTo = {
-                  id: message.reply_to_id,
-                  content: message.reply_content,
-                  username: message.reply_username
-                };
-              }
-              
-              if (isGlobal) {
-                message.isGlobal = true;
-                message.createdAt = new Date(message.created_at).toISOString();
-                io.to('global-chat').emit('new_message', message);
-              } else if (channelId) {
-                message.channelId = channelId;
-                io.to(`channel-${channelId}`).emit('new_message', message);
-              } else if (groupChatId) {
-                message.groupChatId = groupChatId;
-                io.to(`group-${groupChatId}`).emit('new_message', message);
-              } else if (dmPartnerId) {
-                message.dmPartnerId = dmPartnerId;
-                message.createdAt = new Date(message.created_at).toISOString();
-                const roomId = `dm-${Math.min(userId, dmPartnerId)}-${Math.max(userId, dmPartnerId)}`;
-                io.to(roomId).emit('new_message', message);
-              }
-              
-              // Check for @mentions and notify
-              const mentions = content.match(/@(\w+)/g);
-              if (mentions) {
-                mentions.forEach(mention => {
-                  const mentionedUsername = mention.slice(1);
-                  db.get('SELECT id FROM users WHERE username = ?', [mentionedUsername], (err, mentionedUser) => {
-                    if (mentionedUser && userSockets[mentionedUser.id]) {
-                      io.to(userSockets[mentionedUser.id]).emit('mention_notification', {
-                        messageId,
-                        fromUsername: message.username,
-                        content: content.substring(0, 100),
-                        channelId,
-                        groupChatId,
-                        dmPartnerId,
-                        isGlobal
-                      });
-                    }
-                  });
+      if (err) {
+        console.error('Message insert error:', err);
+        return;
+      }
+      const messageId = this.lastID;
+      
+      if (attachment) {
+        db.run(`INSERT INTO attachments (message_id, filename, original_name, file_type, file_size, url) 
+                VALUES (?, ?, ?, ?, ?, ?)`,
+          [messageId, attachment.filename, attachment.originalName, attachment.type, attachment.size, attachment.url]);
+      }
+      
+      db.get(
+        `SELECT m.*, u.username, u.profile_picture,
+                rm.content as reply_content, ru.username as reply_username
+         FROM messages m 
+         JOIN users u ON m.user_id = u.id 
+         LEFT JOIN messages rm ON m.reply_to_id = rm.id
+         LEFT JOIN users ru ON rm.user_id = ru.id
+         WHERE m.id = ?`,
+        [messageId],
+        (err, message) => {
+          if (!err && message) {
+            if (attachment) {
+              message.attachment = attachment;
+            }
+            
+            if (message.reply_to_id) {
+              message.replyTo = {
+                id: message.reply_to_id,
+                content: message.reply_content,
+                username: message.reply_username
+              };
+            }
+            
+            if (isGlobal) {
+              message.isGlobal = true;
+              message.createdAt = new Date(message.created_at).toISOString();
+              io.to('global-chat').emit('new_message', message);
+            } else if (channelId) {
+              message.channelId = channelId;
+              io.to(`channel-${channelId}`).emit('new_message', message);
+            } else if (groupChatId) {
+              message.groupChatId = groupChatId;
+              io.to(`group-${groupChatId}`).emit('new_message', message);
+            } else if (dmPartnerId) {
+              message.dmPartnerId = dmPartnerId;
+              message.createdAt = new Date(message.created_at).toISOString();
+              const roomId = `dm-${Math.min(userId, dmPartnerId)}-${Math.max(userId, dmPartnerId)}`;
+              io.to(roomId).emit('new_message', message);
+            }
+            
+            // Check for @mentions and notify
+            const mentions = content.match(/@(\w+)/g);
+            if (mentions) {
+              mentions.forEach(mention => {
+                const mentionedUsername = mention.slice(1);
+                db.get('SELECT id FROM users WHERE username = ?', [mentionedUsername], (err, mentionedUser) => {
+                  if (mentionedUser && userSockets[mentionedUser.id]) {
+                    io.to(userSockets[mentionedUser.id]).emit('mention_notification', {
+                      messageId,
+                      fromUsername: message.username,
+                      content: content.substring(0, 100),
+                      channelId,
+                      groupChatId,
+                      dmPartnerId,
+                      isGlobal
+                    });
+                  }
                 });
-              }
+              });
             }
           }
-        );
-      }
+        }
+      );
     });
   }
 

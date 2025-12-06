@@ -487,7 +487,7 @@ function initSocket() {
                        (message.groupChatId === currentGroupChat) ||
                        (message.isGlobal && isGlobalChat);
     if (isRelevant) {
-      displayMessage(message);
+      displayMessage(message, true);
     }
   });
 
@@ -747,6 +747,7 @@ function selectGlobalChat() {
   isGlobalChat = true;
   messageOffset = 0;
   hasMoreMessages = true;
+  isLoadingMessages = false; // Reset loading state
   
   // Update UI
   document.getElementById('chatTitle').textContent = 'Global Chat - Everyone\'s Hangout';
@@ -1350,6 +1351,10 @@ function loadMessages(loadOlder = false) {
         messageOffset = messages.length;
       }
       
+      isLoadingMessages = false;
+    })
+    .catch(err => {
+      console.error('[ERROR] Failed to load messages:', err);
       isLoadingMessages = false;
     });
 }
