@@ -438,14 +438,9 @@ function createGroupChat() {
   isGlobalChat = false;
   
   const container = document.getElementById('messagesContainer');
-  const header = document.getElementById('chatHeader');
+  const header = document.getElementById('chatTitle');
   
-  header.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:20px;">💬</span>
-      <span style="font-weight:600;font-size:16px;">Create Group Chat</span>
-    </div>
-  `;
+  if (header) header.textContent = 'Create Group Chat';
   
   container.innerHTML = `
     <div style="padding:40px;max-width:600px;margin:0 auto;">
@@ -1691,14 +1686,9 @@ function createServerRequest() {
   isGlobalChat = false;
   
   const container = document.getElementById('messagesContainer');
-  const header = document.getElementById('chatHeader');
+  const header = document.getElementById('chatTitle');
   
-  header.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:20px;">🏠</span>
-      <span style="font-weight:600;font-size:16px;">Create Server</span>
-    </div>
-  `;
+  if (header) header.textContent = 'Create Server';
   
   container.innerHTML = `
     <div style="padding:40px;max-width:600px;margin:0 auto;">
@@ -1786,14 +1776,9 @@ function addFriend() {
   isGlobalChat = false;
   
   const container = document.getElementById('messagesContainer');
-  const header = document.getElementById('chatHeader');
+  const header = document.getElementById('chatTitle');
   
-  header.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:20px;">👥</span>
-      <span style="font-weight:600;font-size:16px;">Add Friend</span>
-    </div>
-  `;
+  if (header) header.textContent = 'Add Friend';
   
   container.innerHTML = `
     <div style="padding:40px;max-width:600px;margin:0 auto;">
