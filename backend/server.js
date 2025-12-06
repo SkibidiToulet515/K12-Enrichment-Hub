@@ -118,6 +118,9 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 // Routes - REAL user system (no token needed for signup/login)
 app.use('/api/users', usersRoutes);
 
+// Auth routes - NO middleware (users need to login first to get a token)
+app.use('/api/auth', authRoutes);
+
 // Auth middleware for protected API routes
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
@@ -126,7 +129,6 @@ const authMiddleware = (req, res, next) => {
 };
 
 // Protected routes
-app.use('/api/auth', authMiddleware, authRoutes);
 app.use('/api/servers', authMiddleware, serverRoutes);
 app.use('/api/messages', authMiddleware, messageRoutes);
 app.use('/api/admin', authMiddleware, adminRoutes);
