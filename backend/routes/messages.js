@@ -1,7 +1,10 @@
 const express = require('express');
 const db = require('../db');
+const permissions = require('../permissions');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';
 
 // Get global chat messages with pagination (includes replies, reactions, attachments)
 router.get('/global', (req, res) => {
@@ -37,30 +40,61 @@ router.get('/global', (req, res) => {
 });
 
 // Get channel messages with pagination (includes replies, attachments)
-router.get('/channel/:channelId', (req, res) => {
+router.get('/channel/:channelId', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  let userId;
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    userId = decoded.userId;
+  } catch {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { channelId } = req.params;
   const offset = parseInt(req.query.offset) || 0;
   const limit = parseInt(req.query.limit) || 50;
   
-  db.all(`
-    SELECT m.*, u.username, u.profile_picture,
-           rm.content as reply_content, ru.username as reply_username,
-           a.url as attachment_url, a.original_name as attachment_name, a.file_type as attachment_type
-    FROM messages m
-    JOIN users u ON m.user_id = u.id
-    LEFT JOIN messages rm ON m.reply_to_id = rm.id
-    LEFT JOIN users ru ON rm.user_id = ru.id
-    LEFT JOIN attachments a ON a.message_id = m.id
-    WHERE m.channel_id = ?
-    ORDER BY m.created_at DESC
-    LIMIT ? OFFSET ?
-  `, [req.params.channelId, limit, offset], (err, messages) => {
-    const formatted = (messages || []).reverse().map(m => ({
-      ...m,
-      replyTo: m.reply_to_id ? { id: m.reply_to_id, content: m.reply_content, username: m.reply_username } : null,
-      attachment: m.attachment_url ? { url: m.attachment_url, originalName: m.attachment_name, type: m.attachment_type } : null
-    }));
-    res.json(formatted);
-  });
+  try {
+    const channel = await new Promise((resolve, reject) => {
+      db.get('SELECT server_id FROM channels WHERE id = ?', [channelId], (err, ch) => {
+        if (err) reject(err);
+        else resolve(ch);
+      });
+    });
+
+    if (!channel) {
+      return res.status(404).json({ error: 'Channel not found' });
+    }
+
+    const canView = await permissions.canViewChannel(channel.server_id, channelId, userId);
+    if (!canView) {
+      return res.status(403).json({ error: 'You do not have permission to view this channel' });
+    }
+  
+    db.all(`
+      SELECT m.*, u.username, u.profile_picture,
+             rm.content as reply_content, ru.username as reply_username,
+             a.url as attachment_url, a.original_name as attachment_name, a.file_type as attachment_type
+      FROM messages m
+      JOIN users u ON m.user_id = u.id
+      LEFT JOIN messages rm ON m.reply_to_id = rm.id
+      LEFT JOIN users ru ON rm.user_id = ru.id
+      LEFT JOIN attachments a ON a.message_id = m.id
+      WHERE m.channel_id = ?
+      ORDER BY m.created_at DESC
+      LIMIT ? OFFSET ?
+    `, [channelId, limit, offset], (err, messages) => {
+      const formatted = (messages || []).reverse().map(m => ({
+        ...m,
+        replyTo: m.reply_to_id ? { id: m.reply_to_id, content: m.reply_content, username: m.reply_username } : null,
+        attachment: m.attachment_url ? { url: m.attachment_url, originalName: m.attachment_name, type: m.attachment_type } : null
+      }));
+      res.json(formatted);
+    });
+  } catch (err) {
+    console.error('Error checking channel permissions:', err);
+    res.status(500).json({ error: 'Failed to check permissions' });
+  }
 });
 
 // Get group chat messages with pagination (includes replies, attachments)

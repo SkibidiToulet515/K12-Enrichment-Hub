@@ -1865,6 +1865,7 @@ function loadManageChannels() {
             value="${escapeHtml(ch.name)}" 
             style="flex:1;padding:8px;background:var(--card);border:1px solid var(--accent);border-radius:4px;color:var(--text);font-size:13px;">
           <button onclick="renameChannel(${ch.id})" style="padding:6px 12px;background:var(--primary);color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;">Save</button>
+          <button onclick="openPermissionsModal(${ch.id})" style="padding:6px 12px;background:#9b59b6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;" title="Manage Permissions">🔐</button>
           <button onclick="deleteChannel(${ch.id})" style="padding:6px 12px;background:#e74c3c;color:white;border:none;border-radius:4px;cursor:pointer;font-size:12px;">×</button>
         </div>
       `).join('');

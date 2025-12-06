@@ -31,6 +31,7 @@ const preferencesRoutes = require('./routes/preferences');
 const proxyRoutes = require('./routes/proxy');
 const bookmarksRoutes = require('./routes/bookmarks');
 const permissionsRoutes = require('./routes/permissions');
+const permissionsHelper = require('./permissions');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../frontend/uploads')),
@@ -512,18 +513,33 @@ io.on('connection', (socket) => {
         }
       }
       
-      // Check if trying to message in Welcome server (ID: 1) - admin only
+      // Check if trying to message in a channel
       if (channelId) {
-        db.get('SELECT server_id FROM channels WHERE id = ?', [channelId], (err, channel) => {
-          if (channel && channel.server_id === 1) {
-            // Only admins can message in Welcome server
-            if (user.role !== 'admin') {
-              socket.emit('message_error', { error: 'Only admins can send messages in this server' });
+        db.get('SELECT server_id FROM channels WHERE id = ?', [channelId], async (err, channel) => {
+          if (!channel) {
+            socket.emit('message_error', { error: 'Channel not found' });
+            return;
+          }
+          
+          // Welcome server (ID: 1) - admin only
+          if (channel.server_id === 1 && user.role !== 'admin') {
+            socket.emit('message_error', { error: 'Only admins can send messages in this server' });
+            return;
+          }
+          
+          // Check permission to send messages in channel
+          try {
+            const canSend = await permissionsHelper.canSendMessages(channel.server_id, channelId, userId);
+            if (!canSend) {
+              socket.emit('message_error', { error: 'You do not have permission to send messages in this channel' });
               return;
             }
+            // Proceed with sending message
+            sendMessageToDb(channelId, groupChatId, dmPartnerId, userId, content, isGlobal, socket, replyToId, attachment);
+          } catch (permErr) {
+            console.error('Permission check error:', permErr);
+            socket.emit('message_error', { error: 'Failed to check permissions' });
           }
-          // Proceed with sending message
-          sendMessageToDb(channelId, groupChatId, dmPartnerId, userId, content, isGlobal, socket, replyToId, attachment);
         });
       } else {
         // Not a channel message, proceed
@@ -654,11 +670,34 @@ io.on('connection', (socket) => {
   });
 
   // Delete message
-  socket.on('delete_message', (data) => {
+  socket.on('delete_message', async (data) => {
     const { messageId, userId, isAdmin } = data;
     
-    db.get('SELECT user_id FROM messages WHERE id = ?', [messageId], (err, msg) => {
-      if (msg && (msg.user_id === userId || isAdmin)) {
+    db.get('SELECT m.user_id, m.channel_id, c.server_id FROM messages m LEFT JOIN channels c ON m.channel_id = c.id WHERE m.id = ?', [messageId], async (err, msg) => {
+      if (!msg) return;
+      
+      // User can always delete their own messages
+      if (msg.user_id === userId) {
+        db.run('DELETE FROM messages WHERE id = ?', [messageId], () => {
+          io.emit('message_deleted', { messageId });
+        });
+        return;
+      }
+      
+      // For channel messages, check DELETE_MESSAGES permission
+      if (msg.channel_id && msg.server_id) {
+        try {
+          const canDelete = await permissionsHelper.canDeleteMessages(msg.server_id, msg.channel_id, userId);
+          if (canDelete || isAdmin) {
+            db.run('DELETE FROM messages WHERE id = ?', [messageId], () => {
+              io.emit('message_deleted', { messageId });
+            });
+          }
+        } catch (permErr) {
+          console.error('Permission check error:', permErr);
+        }
+      } else if (isAdmin) {
+        // For non-channel messages, only admin can delete
         db.run('DELETE FROM messages WHERE id = ?', [messageId], () => {
           io.emit('message_deleted', { messageId });
         });

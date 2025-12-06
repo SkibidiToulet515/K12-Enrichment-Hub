@@ -656,11 +656,35 @@
     <div id="archiveContent" style="padding:20px;overflow-y:auto;max-height:calc(80vh - 80px);"></div>
   </div>
 
+  <!-- Channel Permissions Modal -->
+  <div class="modal-overlay" id="permissionsOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1200;" onclick="closePermissionsModal()"></div>
+  <div id="permissionsModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border-radius:16px;z-index:1201;width:95%;max-width:700px;max-height:85vh;overflow:hidden;">
+    <div style="padding:20px;border-bottom:1px solid var(--accent);display:flex;justify-content:space-between;align-items:center;">
+      <h2 style="margin:0;color:var(--text);">🔐 Channel Permissions</h2>
+      <button onclick="closePermissionsModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text);">&times;</button>
+    </div>
+    <div style="padding:15px;border-bottom:1px solid var(--accent);">
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <button id="permRolesTab" onclick="switchPermTab('roles')" style="flex:1;padding:10px;background:var(--primary);border:none;border-radius:8px;cursor:pointer;color:var(--bg);font-weight:600;">Roles</button>
+        <button id="permUsersTab" onclick="switchPermTab('users')" style="flex:1;padding:10px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;cursor:pointer;color:var(--text);font-weight:600;">Users</button>
+      </div>
+      <select id="permTargetSelect" style="width:100%;padding:10px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;"></select>
+    </div>
+    <div id="permissionsContent" style="padding:20px;overflow-y:auto;max-height:calc(85vh - 200px);">
+      <div id="permissionsGrid" style="display:grid;gap:12px;"></div>
+    </div>
+    <div style="padding:15px;border-top:1px solid var(--accent);display:flex;justify-content:flex-end;gap:10px;">
+      <button onclick="closePermissionsModal()" style="padding:10px 20px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;cursor:pointer;color:var(--text);">Cancel</button>
+      <button onclick="savePermissions()" style="padding:10px 20px;background:var(--primary);border:none;border-radius:8px;cursor:pointer;color:var(--bg);font-weight:600;">Save Changes</button>
+    </div>
+  </div>
+
   <script src="/js/themes.js"></script>
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
   <script src="/js/quick-switcher.js"></script>
   <script src="/js/auto-theme.js"></script>
+  <script src="/js/permissions.js"></script>
   <script>
     function getAuthToken() {
       return localStorage.getItem('authToken');
