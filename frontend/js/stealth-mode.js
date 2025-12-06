@@ -4,8 +4,7 @@ const StealthMode = {
   isActive: false,
   
   panicTargets: [
-    { name: 'ClassLink', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'https://launchpad.classlink.com/favicon.ico' },
-    { name: 'OneNote', url: 'https://www.onenote.com/notebooks', title: 'OneNote', favicon: 'https://www.onenote.com/favicon.ico' }
+    { name: 'ClassLink', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'https://launchpad.classlink.com/favicon.ico' }
   ],
   
   disguises: [
