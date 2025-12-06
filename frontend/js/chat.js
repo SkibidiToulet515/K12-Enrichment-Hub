@@ -11,6 +11,7 @@ let hasMoreMessages = true;
 let currentMessageEndpoint = null;
 let userInfoCache = {};
 let isAdmin = false;
+let eventListenersInitialized = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   currentUser = checkAuth();
@@ -53,7 +54,11 @@ function checkAdminStatus() {
 }
 
 // Setup admin panel
+let adminPanelInitialized = false;
 function setupAdminPanel() {
+  if (adminPanelInitialized) return;
+  adminPanelInitialized = true;
+  
   const openBtn = document.getElementById('openAdminBtn');
   const closeBtn = document.getElementById('closeAdminBtn');
   const overlay = document.getElementById('adminOverlay');
@@ -464,7 +469,11 @@ function createGroupChat() {
     .catch(() => alert('Failed to create group chat'));
 }
 
+let socketInitialized = false;
 function initSocket() {
+  if (socketInitialized) return;
+  socketInitialized = true;
+  
   socket = io({ transports: ['websocket'] });
 
   socket.on('connect', () => {
@@ -704,6 +713,9 @@ function getTimeRemaining(banUntil) {
 }
 
 function setupEventListeners() {
+  if (eventListenersInitialized) return;
+  eventListenersInitialized = true;
+  
   document.getElementById('sendBtn').addEventListener('click', sendMessage);
   document.getElementById('messageInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
@@ -715,7 +727,11 @@ function setupEventListeners() {
 }
 
 // Setup Global Chat
+let globalChatInitialized = false;
 function setupGlobalChat() {
+  if (globalChatInitialized) return;
+  globalChatInitialized = true;
+  
   const globalBtn = document.getElementById('globalChatBtn');
   if (globalBtn) {
     globalBtn.addEventListener('click', selectGlobalChat);
@@ -1598,7 +1614,11 @@ const statusConfig = {
   offline: { label: 'Offline', color: '#7f8c8d', icon: '⚪' }
 };
 
+let statusPickerInitialized = false;
 function initStatusPicker() {
+  if (statusPickerInitialized) return;
+  statusPickerInitialized = true;
+  
   const statusBtn = document.getElementById('statusBtn');
   if (!statusBtn) return;
   
@@ -2928,8 +2948,11 @@ function formatMentions(content) {
 }
 
 // Socket listeners for Discord features
+let discordSocketListenersInitialized = false;
 function setupDiscordSocketListeners() {
   if (!socket) return;
+  if (discordSocketListenersInitialized) return;
+  discordSocketListenersInitialized = true;
   
   socket.on('user_typing', (data) => {
     if (data.userId === currentUser?.id) return;
@@ -3388,7 +3411,11 @@ let userEquipped = {};
 let currentShopCategory = null;
 let userCoins = 0;
 
+let shopInitialized = false;
 function initShop() {
+  if (shopInitialized) return;
+  shopInitialized = true;
+  
   const shopBtn = document.getElementById('openShopBtn');
   if (shopBtn) shopBtn.addEventListener('click', openShop);
   loadUserCoins();
