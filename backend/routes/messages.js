@@ -419,4 +419,54 @@ router.get('/unread/:userId', (req, res) => {
   });
 });
 
+// HTTP fallback for sending messages when socket is disconnected
+router.post('/send', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  let userId;
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    userId = decoded.userId;
+  } catch {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const { channelId, groupChatId, dmPartnerId, isGlobal, content, replyToId } = req.body;
+  
+  if (!content || (!channelId && !groupChatId && !dmPartnerId && !isGlobal)) {
+    return res.status(400).json({ error: 'Missing content or target' });
+  }
+  
+  db.run(`
+    INSERT INTO messages (channel_id, group_chat_id, dm_partner_id, user_id, content, is_global, reply_to_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `, [channelId || null, groupChatId || null, dmPartnerId || null, userId, content, isGlobal ? true : false, replyToId || null],
+  function(err) {
+    if (err) {
+      console.error('Send message error:', err);
+      return res.status(500).json({ error: 'Failed to send message' });
+    }
+    
+    const messageId = this.lastID;
+    
+    db.get(`
+      SELECT m.*, u.username, u.profile_picture
+      FROM messages m
+      JOIN users u ON m.user_id = u.id
+      WHERE m.id = ?
+    `, [messageId], (err, message) => {
+      if (err || !message) {
+        return res.status(500).json({ error: 'Failed to fetch message' });
+      }
+      
+      message.isGlobal = isGlobal;
+      message.channelId = channelId;
+      message.groupChatId = groupChatId;
+      message.dmPartnerId = dmPartnerId;
+      message.createdAt = new Date(message.created_at).toISOString();
+      
+      res.json({ success: true, message });
+    });
+  });
+});
+
 module.exports = router;

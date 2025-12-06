@@ -1668,29 +1668,7 @@ function sendMessage() {
   const input = document.getElementById('messageInput');
   const content = input.value.trim();
   
-  console.log('[DEBUG] sendMessage called:', { content, currentChannel, currentFriend, currentGroupChat, isGlobalChat });
-  
   if (!content || (!currentChannel && !currentFriend && !currentGroupChat && !isGlobalChat)) {
-    console.log('[DEBUG] sendMessage blocked - no content or no target');
-    return;
-  }
-  
-  if (!socket) {
-    console.error('[ERROR] Socket not initialized');
-    initSocket();
-    return;
-  }
-  
-  if (!socket.connected) {
-    console.log('[WARN] Socket disconnected, reconnecting...');
-    socket.connect();
-    setTimeout(() => {
-      if (socket.connected) {
-        sendMessage();
-      } else {
-        console.error('[ERROR] Could not reconnect');
-      }
-    }, 1000);
     return;
   }
 
@@ -1711,8 +1689,23 @@ function sendMessage() {
     messageData.attachment = pendingAttachment;
   }
   
-  console.log('[DEBUG] Emitting send_message:', messageData);
-  socket.emit('send_message', messageData);
+  if (socket && socket.connected) {
+    socket.emit('send_message', messageData);
+  } else {
+    // Fallback: send via HTTP POST
+    fetch('/api/messages/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      body: JSON.stringify(messageData)
+    }).then(r => r.json()).then(data => {
+      if (data.success) {
+        displayMessage(data.message, true);
+      }
+    }).catch(err => console.error('Failed to send message:', err));
+  }
 
   input.value = '';
   cancelReply();
