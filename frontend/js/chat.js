@@ -740,6 +740,8 @@ function setupGlobalChat() {
 
 // Select Global Chat
 function selectGlobalChat() {
+  console.log('[DEBUG] selectGlobalChat called');
+  
   // Reset other chat contexts
   currentChannel = null;
   currentFriend = null;
@@ -758,8 +760,12 @@ function selectGlobalChat() {
     btn.classList.remove('active');
   });
   
+  // Clear messages container first
+  document.getElementById('messagesContainer').innerHTML = '<div class="loading">Loading messages...</div>';
+  
   // Set endpoint and load messages
   currentMessageEndpoint = '/api/messages/global';
+  console.log('[DEBUG] About to call loadMessages for global chat');
   loadMessages();
 }
 
@@ -914,6 +920,8 @@ function kickFromServer(serverId, userId) {
     });
 }
 
+let seenRequestIds = new Set(JSON.parse(localStorage.getItem('seenFriendRequests') || '[]'));
+
 function loadPendingRequests() {
   fetch('/api/friends/pending', {
     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
@@ -929,6 +937,16 @@ function loadPendingRequests() {
       }
       
       requests.forEach(req => {
+        if (!seenRequestIds.has(req.userId)) {
+          seenRequestIds.add(req.userId);
+          localStorage.setItem('seenFriendRequests', JSON.stringify([...seenRequestIds]));
+          queueInvitePopup('friend_request', {
+            userId: req.userId,
+            username: req.username,
+            profilePicture: req.profile_picture || req.profilePicture
+          });
+        }
+        
         const container = document.createElement('div');
         container.style.cssText = 'padding: 8px; border-bottom: 1px solid var(--accent); display: flex; gap: 8px; align-items: center;';
         
@@ -969,7 +987,8 @@ function acceptFriendRequest(userId, username) {
   })
     .then(r => r.json())
     .then(() => {
-      alert(`You're now friends with ${username}!`);
+      seenRequestIds.delete(userId);
+      localStorage.setItem('seenFriendRequests', JSON.stringify([...seenRequestIds]));
       loadPendingRequests();
       loadFriends();
     })
@@ -983,6 +1002,8 @@ function rejectFriendRequest(userId) {
   })
     .then(r => r.json())
     .then(() => {
+      seenRequestIds.delete(userId);
+      localStorage.setItem('seenFriendRequests', JSON.stringify([...seenRequestIds]));
       loadPendingRequests();
     })
     .catch(() => alert('Failed to reject request'));
@@ -1297,16 +1318,29 @@ function selectFriend(friend) {
 }
 
 function loadMessages(loadOlder = false) {
-  if (isLoadingMessages || !currentMessageEndpoint) return;
+  if (isLoadingMessages || !currentMessageEndpoint) {
+    console.log('[DEBUG] loadMessages blocked:', { isLoadingMessages, currentMessageEndpoint });
+    return;
+  }
   isLoadingMessages = true;
+  console.log('[DEBUG] loadMessages called:', { loadOlder, endpoint: currentMessageEndpoint });
 
   const offset = loadOlder ? messageOffset : 0;
   
   fetch(`${currentMessageEndpoint}?offset=${offset}&limit=50`, {
     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
   })
-    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
     .then(messages => {
+      console.log('[DEBUG] Messages received:', messages?.length || 0, messages);
+      if (!Array.isArray(messages)) {
+        console.error('[ERROR] Expected array, got:', messages);
+        isLoadingMessages = false;
+        return;
+      }
       const container = document.getElementById('messagesContainer');
       
       if (!loadOlder) {
@@ -4319,3 +4353,155 @@ function unarchiveChat(chatType, chatId) {
 }
 
 setTimeout(initKeyboardShortcuts, 1000);
+
+// ========== DISCORD-STYLE INVITE POPUP ==========
+let pendingInviteQueue = [];
+let invitePopupVisible = false;
+let lastSeenRequests = new Set(JSON.parse(localStorage.getItem('seenFriendRequests') || '[]'));
+
+function showInvitePopup(type, data) {
+  const overlay = document.getElementById('invitePopupOverlay');
+  const modal = document.getElementById('invitePopupModal');
+  const icon = document.getElementById('invitePopupIcon');
+  const title = document.getElementById('invitePopupTitle');
+  const subtitle = document.getElementById('invitePopupSubtitle');
+  const details = document.getElementById('invitePopupDetails');
+  const acceptBtn = document.getElementById('inviteAcceptBtn');
+  const declineBtn = document.getElementById('inviteDeclineBtn');
+  
+  if (type === 'friend_request') {
+    icon.textContent = '👋';
+    icon.style.background = 'linear-gradient(135deg, #5865F2 0%, #7289DA 100%)';
+    title.textContent = 'Friend Request';
+    subtitle.textContent = 'Someone wants to be your friend!';
+    details.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="${data.profilePicture || 'https://via.placeholder.com/48'}" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--primary);">
+        <div>
+          <div style="font-weight:700;color:var(--text);font-size:16px;">${escapeHtml(data.username)}</div>
+          <div style="color:var(--text-light);font-size:12px;">wants to add you as a friend</div>
+        </div>
+      </div>
+    `;
+    acceptBtn.textContent = 'Accept';
+    acceptBtn.onclick = () => {
+      acceptFriendRequest(data.userId, data.username);
+      closeInvitePopup();
+    };
+  } else if (type === 'server_invite') {
+    icon.textContent = '🏰';
+    icon.style.background = 'linear-gradient(135deg, #57F287 0%, #3BA55C 100%)';
+    title.textContent = 'Server Invite';
+    subtitle.textContent = 'You\'ve been invited to join a server!';
+    details.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;">${(data.serverName || 'S')[0].toUpperCase()}</div>
+        <div>
+          <div style="font-weight:700;color:var(--text);font-size:16px;">${escapeHtml(data.serverName)}</div>
+          <div style="color:var(--text-light);font-size:12px;">Invited by ${escapeHtml(data.inviterName || 'a friend')}</div>
+        </div>
+      </div>
+    `;
+    acceptBtn.textContent = 'Join Server';
+    acceptBtn.onclick = () => {
+      joinServerByInvite(data.inviteCode);
+      closeInvitePopup();
+    };
+  } else if (type === 'group_invite') {
+    icon.textContent = '👥';
+    icon.style.background = 'linear-gradient(135deg, #FEE75C 0%, #F0B232 100%)';
+    title.textContent = 'Group Chat Invite';
+    subtitle.textContent = 'You\'ve been invited to a group chat!';
+    details.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--secondary);display:flex;align-items:center;justify-content:center;font-size:20px;">👥</div>
+        <div>
+          <div style="font-weight:700;color:var(--text);font-size:16px;">${escapeHtml(data.groupName)}</div>
+          <div style="color:var(--text-light);font-size:12px;">Invited by ${escapeHtml(data.inviterName || 'a friend')}</div>
+        </div>
+      </div>
+    `;
+    acceptBtn.textContent = 'Join Group';
+    acceptBtn.onclick = () => {
+      joinGroupByInvite(data.inviteCode);
+      closeInvitePopup();
+    };
+  }
+  
+  declineBtn.onclick = () => {
+    if (type === 'friend_request') {
+      rejectFriendRequest(data.userId);
+    }
+    closeInvitePopup();
+  };
+  
+  overlay.style.display = 'flex';
+  modal.style.display = 'block';
+  invitePopupVisible = true;
+  
+  modal.style.animation = 'popIn 0.3s ease-out';
+}
+
+function closeInvitePopup() {
+  const overlay = document.getElementById('invitePopupOverlay');
+  const modal = document.getElementById('invitePopupModal');
+  overlay.style.display = 'none';
+  modal.style.display = 'none';
+  invitePopupVisible = false;
+  
+  if (pendingInviteQueue.length > 0) {
+    const next = pendingInviteQueue.shift();
+    setTimeout(() => showInvitePopup(next.type, next.data), 300);
+  }
+}
+
+function queueInvitePopup(type, data) {
+  if (invitePopupVisible) {
+    pendingInviteQueue.push({ type, data });
+  } else {
+    showInvitePopup(type, data);
+  }
+}
+
+function joinServerByInvite(code) {
+  fetch(`/api/invites/join/${code}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+      } else {
+        loadServers();
+      }
+    });
+}
+
+function joinGroupByInvite(code) {
+  fetch(`/api/invites/join/${code}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+      } else {
+        loadGroupChats();
+      }
+    });
+}
+
+document.getElementById('invitePopupOverlay')?.addEventListener('click', closeInvitePopup);
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+  #inviteAcceptBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+  #inviteDeclineBtn:hover { background: var(--accent); }
+`;
+document.head.appendChild(style);

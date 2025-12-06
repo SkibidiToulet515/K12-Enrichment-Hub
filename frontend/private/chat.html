@@ -590,6 +590,21 @@
     </div>
   </div>
 
+  <!-- Discord-Style Invite Modal -->
+  <div id="invitePopupOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:none;align-items:center;justify-content:center;"></div>
+  <div id="invitePopupModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg, var(--card) 0%, var(--bg-secondary) 100%);border-radius:16px;z-index:2001;width:90%;max-width:440px;box-shadow:0 8px 32px rgba(0,0,0,0.4);border:1px solid var(--accent);overflow:hidden;">
+    <div style="padding:24px;text-align:center;">
+      <div id="invitePopupIcon" style="width:80px;height:80px;border-radius:50%;background:var(--primary);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:36px;">👋</div>
+      <h2 id="invitePopupTitle" style="margin:0 0 8px;color:var(--text);font-size:24px;font-weight:700;"></h2>
+      <p id="invitePopupSubtitle" style="margin:0 0 24px;color:var(--text-light);font-size:14px;"></p>
+      <div id="invitePopupDetails" style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:24px;text-align:left;"></div>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button id="inviteDeclineBtn" style="flex:1;max-width:150px;padding:12px 24px;background:transparent;border:2px solid var(--accent);color:var(--text);border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s;">Ignore</button>
+        <button id="inviteAcceptBtn" style="flex:1;max-width:150px;padding:12px 24px;background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);border:none;color:white;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.3);">Accept</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/js/themes.js"></script>
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
