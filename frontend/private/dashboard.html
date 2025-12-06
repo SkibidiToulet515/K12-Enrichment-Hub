@@ -183,6 +183,41 @@
       text-align: center;
       color: var(--text-secondary);
     }
+    
+    .announcement-banner {
+      background: linear-gradient(135deg, var(--accent), #9b59b6);
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .announcement-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .announcement-icon { font-size: 24px; }
+    .announcement-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 18px;
+      cursor: pointer;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .announcement-close:hover { background: rgba(255,255,255,0.3); }
   </style>
 </head>
 <body class="private-page">
@@ -207,6 +242,14 @@
       <div class="welcome-header">
         <h2 id="welcomeGreeting">Welcome back</h2>
         <p>Choose where you want to explore today</p>
+      </div>
+      
+      <div id="announcementBanner" class="announcement-banner" style="display: none;">
+        <div class="announcement-content">
+          <span class="announcement-icon">📢</span>
+          <span id="announcementText"></span>
+        </div>
+        <button class="announcement-close" onclick="dismissAnnouncement()">×</button>
       </div>
       
       <!-- Universal Search -->
@@ -313,6 +356,43 @@
       localStorage.removeItem('userId');
       window.location.href = '/private/auth.html';
     }
+
+    let currentAnnouncementId = null;
+    async function loadAnnouncements() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      try {
+        const res = await fetch('/api/announcements/active', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const announcements = await res.json();
+        
+        if (announcements.length > 0) {
+          const dismissed = JSON.parse(localStorage.getItem('dismissedAnnouncements') || '[]');
+          const active = announcements.find(a => !dismissed.includes(a.id));
+          
+          if (active) {
+            currentAnnouncementId = active.id;
+            document.getElementById('announcementText').textContent = active.content;
+            document.getElementById('announcementBanner').style.display = 'flex';
+          }
+        }
+      } catch (e) {
+        console.log('Could not load announcements');
+      }
+    }
+    
+    function dismissAnnouncement() {
+      if (currentAnnouncementId) {
+        const dismissed = JSON.parse(localStorage.getItem('dismissedAnnouncements') || '[]');
+        dismissed.push(currentAnnouncementId);
+        localStorage.setItem('dismissedAnnouncements', JSON.stringify(dismissed));
+      }
+      document.getElementById('announcementBanner').style.display = 'none';
+    }
+    
+    loadAnnouncements();
 
     // Universal Search
     let gamesData = [];

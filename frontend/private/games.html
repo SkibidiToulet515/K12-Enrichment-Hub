@@ -537,6 +537,21 @@
       document.getElementById('gameFrame').src = gameUrl;
       document.getElementById('gameViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
+      
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetch('/api/activity/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ activity_type: 'playing_game', activity_data: gameName })
+        }).catch(() => {});
+        
+        fetch('/api/xp/activity/game', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ game_name: gameName })
+        }).catch(() => {});
+      }
     }
 
     function closeGameViewer() {
