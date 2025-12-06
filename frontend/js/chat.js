@@ -541,7 +541,15 @@ function initSocket() {
   if (socketInitialized) return;
   socketInitialized = true;
   
-  socket = io({ transports: ['websocket'] });
+  socket = io({ 
+    transports: ['websocket', 'polling'],
+    reconnection: true,
+    reconnectionAttempts: 5
+  });
+  
+  socket.on('connect_error', (err) => {
+    console.error('[SOCKET] Connection error:', err.message);
+  });
 
   socket.on('connect', () => {
     socket.emit('user_join', { userId: currentUser.id });

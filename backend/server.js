@@ -415,7 +415,7 @@ const userSockets = {};
 const typingUsers = {};
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  console.log('[SOCKET] User connected:', socket.id, new Date().toISOString());
 
   // User joins
   socket.on('user_join', (data) => {
