@@ -535,6 +535,7 @@ io.on('connection', (socket) => {
 
   // Send message (channel, group chat, DM, or global) with reply and attachment support
   socket.on('send_message', (data) => {
+    console.log('[DEBUG] send_message received:', JSON.stringify(data));
     const { channelId, groupChatId, dmPartnerId, userId, content, isGlobal, replyToId, attachment } = data;
     
     // First check if user is banned from chatting
