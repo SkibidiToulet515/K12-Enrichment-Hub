@@ -549,8 +549,13 @@ function initSocket() {
 
   socket.on('new_message', (message) => {
     // Check if message is for current channel/friend/group/global
+    // For DMs, check both directions: I sent to friend OR friend sent to me
+    const isDMRelevant = currentFriend && (
+      (message.dmPartnerId === currentFriend && message.user_id === currentUser.id) ||
+      (message.user_id === currentFriend)
+    );
     const isRelevant = (message.channel_id === currentChannel) || 
-                       (message.dmPartnerId === currentFriend) || 
+                       isDMRelevant || 
                        (message.groupChatId === currentGroupChat) ||
                        (message.isGlobal && isGlobalChat);
     if (isRelevant) {
