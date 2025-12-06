@@ -12,6 +12,7 @@ let currentMessageEndpoint = null;
 let userInfoCache = {};
 let isAdmin = false;
 let eventListenersInitialized = false;
+let friendNicknames = {};
 
 document.addEventListener('DOMContentLoaded', () => {
   currentUser = checkAuth();
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadServers();
   loadGroupChats();
   loadPendingRequests();
+  loadFriendNicknames();
   loadFriends();
   setupEventListeners();
   setupGlobalChat();
@@ -1009,6 +1011,20 @@ function rejectFriendRequest(userId) {
     .catch(() => alert('Failed to reject request'));
 }
 
+function loadFriendNicknames() {
+  fetch('/api/friends/nicknames/all', {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(nicknames => {
+      friendNicknames = {};
+      nicknames.forEach(n => {
+        friendNicknames[n.friendId] = n.nickname;
+      });
+    })
+    .catch(() => {});
+}
+
 function loadFriends() {
   fetch('/api/friends', {
     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
@@ -1026,12 +1042,16 @@ function loadFriends() {
         btn.style.cssText = 'flex:1;display:flex;align-items:center;gap:8px;';
         
         const statusColor = friend.is_online ? '#2ecc71' : '#7f8c8d';
+        const nickname = friendNicknames[friend.id];
+        const displayName = nickname ? `${nickname} (${friend.username})` : friend.username;
+        
         btn.innerHTML = `
           <div style="position:relative;">
             <img src="${friend.profilePicture || 'https://via.placeholder.com/24'}" style="width:24px;height:24px;border-radius:50%;">
             <span style="position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:${statusColor};border:2px solid var(--bg-secondary);"></span>
           </div>
-          <span>${escapeHtml(friend.username)}</span>
+          <span>${escapeHtml(displayName)}</span>
+          ${nickname ? '<span style="font-size:10px;color:var(--text-light);">✏️</span>' : ''}
         `;
         btn.addEventListener('click', () => selectFriend(friend));
         btn.addEventListener('contextmenu', (e) => {
@@ -1063,9 +1083,13 @@ function showFriendContextMenu(e, friend) {
   menu.id = 'friendContextMenu';
   menu.style.cssText = `position:fixed;top:${e.clientY}px;left:${e.clientX}px;background:var(--card);border:1px solid var(--accent);border-radius:8px;padding:8px 0;z-index:9999;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,0.3);`;
   
+  const currentNickname = friendNicknames[friend.id];
+  const nicknameText = currentNickname ? '✏️ Edit Nickname' : '✏️ Set Nickname';
+  
   const options = [
     { text: '👤 View Profile', action: () => showUserProfile(friend.id) },
     { text: '💬 Send Message', action: () => selectFriend(friend) },
+    { text: nicknameText, action: () => setFriendNickname(friend.id, friend.username, currentNickname) },
     { divider: true },
     { text: '🔇 Ignore', action: () => ignoreFriend(friend.id, true) },
     { text: '👻 Be Invisible', action: () => setInvisibleToFriend(friend.id, true) },
@@ -1121,6 +1145,40 @@ function unfriendUser(userId, username) {
       }
     })
     .catch(() => alert('Failed to remove friend'));
+}
+
+function setFriendNickname(userId, username, currentNickname) {
+  const nickname = prompt(
+    `Set a nickname for ${username}\n(Only you will see this)\n\nLeave empty to remove the nickname:`,
+    currentNickname || ''
+  );
+  
+  if (nickname === null) return;
+  
+  fetch(`/api/friends/${userId}/nickname`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAuthToken()}` 
+    },
+    body: JSON.stringify({ nickname: nickname.trim() })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        if (nickname.trim()) {
+          friendNicknames[userId] = nickname.trim();
+          alert(`Nickname set to "${nickname.trim()}"`);
+        } else {
+          delete friendNicknames[userId];
+          alert('Nickname removed');
+        }
+        loadFriends();
+      } else {
+        alert(data.error || 'Failed to set nickname');
+      }
+    })
+    .catch(() => alert('Failed to set nickname'));
 }
 
 function blockFriend(userId) {

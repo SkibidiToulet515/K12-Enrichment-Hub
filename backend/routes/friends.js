@@ -223,6 +223,86 @@ router.post('/:friendId/remove', (req, res) => {
   );
 });
 
+// Set nickname for a friend (only visible to you)
+router.post('/:friendId/nickname', (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { friendId } = req.params;
+  const { nickname } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!nickname || nickname.trim() === '') {
+    // Remove nickname if empty
+    db.run(
+      'DELETE FROM friend_nicknames WHERE user_id = ? AND friend_id = ?',
+      [userId, friendId],
+      (err) => {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to remove nickname' });
+        }
+        res.json({ success: true, message: 'Nickname removed' });
+      }
+    );
+  } else {
+    // Set or update nickname
+    db.run(
+      `INSERT INTO friend_nicknames (user_id, friend_id, nickname)
+       VALUES (?, ?, ?)
+       ON CONFLICT (user_id, friend_id) DO UPDATE SET nickname = ?, updated_at = CURRENT_TIMESTAMP`,
+      [userId, friendId, nickname.trim(), nickname.trim()],
+      (err) => {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to set nickname' });
+        }
+        res.json({ success: true, message: 'Nickname set', nickname: nickname.trim() });
+      }
+    );
+  }
+});
+
+// Get nickname for a friend
+router.get('/:friendId/nickname', (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { friendId } = req.params;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  db.get(
+    'SELECT nickname FROM friend_nicknames WHERE user_id = ? AND friend_id = ?',
+    [userId, friendId],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to get nickname' });
+      }
+      res.json({ nickname: row?.nickname || null });
+    }
+  );
+});
+
+// Get all nicknames for current user
+router.get('/nicknames/all', (req, res) => {
+  const userId = getUserIdFromToken(req);
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  db.all(
+    'SELECT friend_id as friendId, nickname FROM friend_nicknames WHERE user_id = ?',
+    [userId],
+    (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to get nicknames' });
+      }
+      res.json(rows || []);
+    }
+  );
+});
+
 // Set invisible to specific friend
 router.post('/:friendId/invisible', (req, res) => {
   const userId = getUserIdFromToken(req);
