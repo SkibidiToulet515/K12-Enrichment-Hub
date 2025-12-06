@@ -34,8 +34,10 @@ const permissionsRoutes = require('./routes/permissions');
 const permissionsHelper = require('./permissions');
 const xpRoutes = require('./routes/xp');
 const activityRoutes = require('./routes/activity');
+const activityLogRoutes = require('./routes/activity-log');
 const tasksRoutes = require('./routes/tasks');
 const announcementsRoutes = require('./routes/announcements');
+const logger = require('./logger');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../frontend/uploads')),
@@ -154,6 +156,7 @@ app.use('/api/bookmarks', bookmarksRoutes);
 app.use('/api/permissions', permissionsRoutes);
 app.use('/api/xp', xpRoutes);
 app.use('/api/activity', activityRoutes);
+app.use('/api/activity-log', activityLogRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/announcements', announcementsRoutes);
 

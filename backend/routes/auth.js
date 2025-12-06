@@ -5,6 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const db = require('../db');
+const logger = require('../logger');
 
 const router = express.Router();
 const upload = multer({ dest: 'frontend/uploads/' });
@@ -37,6 +38,7 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
       }
 
       const token = jwt.sign({ userId: this.lastID, username }, SECRET_KEY);
+      logger.auth('User registered', { username, userId: this.lastID }, this.lastID);
       res.json({ 
         success: true, 
         userId: this.lastID, 
@@ -66,6 +68,7 @@ router.post('/login', (req, res) => {
     }
 
     const token = jwt.sign({ userId: user.id, username: user.username, role: user.role }, SECRET_KEY);
+    logger.auth('User logged in', { username: user.username, userId: user.id, role: user.role }, user.id);
     res.json({ 
       success: true, 
       userId: user.id, 

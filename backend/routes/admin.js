@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const jwt = require('jsonwebtoken');
+const logger = require('../logger');
 
 const router = express.Router();
 const SECRET_KEY = 'real_user_auth_secret_2025';

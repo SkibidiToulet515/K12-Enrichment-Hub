@@ -517,6 +517,18 @@ async function initDatabase() {
       UNIQUE(poll_id, user_id, option_id)
     )`);
 
+    await client.query(`CREATE TABLE IF NOT EXISTS activity_log (
+      id SERIAL PRIMARY KEY,
+      category TEXT NOT NULL,
+      action TEXT NOT NULL,
+      details TEXT,
+      user_id INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_activity_log_category ON activity_log(category)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_activity_log_created ON activity_log(created_at DESC)`);
+
     await client.query(`CREATE TABLE IF NOT EXISTS user_preferences (
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL UNIQUE,
