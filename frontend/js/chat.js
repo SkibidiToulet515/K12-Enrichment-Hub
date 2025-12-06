@@ -3003,22 +3003,7 @@ let currentSelectedRole = null;
 let serverRoles = [];
 let serverMembers = [];
 
-const PERMISSION_LABELS = {
-  administrator: 'Administrator (Full Access)',
-  manage_server: 'Manage Server',
-  manage_roles: 'Manage Roles',
-  manage_channels: 'Manage Channels',
-  kick_members: 'Kick Members',
-  ban_members: 'Ban Members',
-  create_invites: 'Create Invites',
-  manage_messages: 'Manage Messages',
-  send_messages: 'Send Messages',
-  view_channels: 'View Channels',
-  read_history: 'Read Message History',
-  mention_everyone: 'Mention @everyone',
-  add_reactions: 'Add Reactions',
-  attach_files: 'Attach Files'
-};
+// PERMISSION_LABELS is defined in permissions.js
 
 function openServerSettings(serverId) {
   currentSettingsServerId = serverId;
