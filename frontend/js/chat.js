@@ -432,13 +432,73 @@ function kickFromGroupChat(groupChatId, userId) {
 }
 
 function createGroupChat() {
-  const name = prompt('Group chat name:');
-  if (!name) return;
+  currentChannel = null;
+  currentFriend = null;
+  currentGroupChat = null;
+  isGlobalChat = false;
   
-  const memberIdsStr = prompt('Enter member usernames (comma-separated):');
-  if (!memberIdsStr) return;
+  const container = document.getElementById('messagesContainer');
+  const header = document.getElementById('chatHeader');
   
-  const memberNames = memberIdsStr.split(',').map(s => s.trim());
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">💬</span>
+      <span style="font-weight:600;font-size:16px;">Create Group Chat</span>
+    </div>
+  `;
+  
+  container.innerHTML = `
+    <div style="padding:40px;max-width:600px;margin:0 auto;">
+      <h2 style="color:var(--text);margin-bottom:10px;font-size:20px;">CREATE A GROUP CHAT</h2>
+      <p style="color:var(--text-light);margin-bottom:20px;font-size:14px;">Start a group conversation with multiple friends!</p>
+      
+      <div style="margin-bottom:15px;">
+        <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;font-size:13px;">GROUP NAME</label>
+        <input type="text" id="createGroupNameInput" placeholder="My Group Chat" 
+          style="width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;">
+      </div>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;font-size:13px;">MEMBERS (comma-separated usernames)</label>
+        <input type="text" id="createGroupMembersInput" placeholder="friend1, friend2, friend3" 
+          style="width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;">
+      </div>
+      
+      <button onclick="submitGroupChat()" 
+        style="width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:15px;">
+        Create Group Chat
+      </button>
+      
+      <div id="createGroupResult" style="padding:12px;border-radius:8px;display:none;margin-top:15px;"></div>
+    </div>
+  `;
+  
+  document.getElementById('createGroupNameInput').focus();
+}
+
+function submitGroupChat() {
+  const nameInput = document.getElementById('createGroupNameInput');
+  const membersInput = document.getElementById('createGroupMembersInput');
+  const resultDiv = document.getElementById('createGroupResult');
+  
+  const name = nameInput.value.trim();
+  const memberNames = membersInput.value.split(',').map(s => s.trim()).filter(s => s);
+  
+  if (!name) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+    resultDiv.style.color = '#e74c3c';
+    resultDiv.textContent = 'Please enter a group name';
+    return;
+  }
+  
+  if (memberNames.length === 0) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+    resultDiv.style.color = '#e74c3c';
+    resultDiv.textContent = 'Please add at least one member';
+    return;
+  }
   
   // Get user IDs from usernames
   Promise.all(memberNames.map(username => 
@@ -464,11 +524,21 @@ function createGroupChat() {
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        alert('Group chat created!');
+        resultDiv.style.display = 'block';
+        resultDiv.style.background = 'rgba(46, 204, 113, 0.2)';
+        resultDiv.style.color = '#2ecc71';
+        resultDiv.textContent = '✅ Group chat created!';
+        nameInput.value = '';
+        membersInput.value = '';
         loadGroupChats();
       }
     })
-    .catch(() => alert('Failed to create group chat'));
+    .catch(() => {
+      resultDiv.style.display = 'block';
+      resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+      resultDiv.style.color = '#e74c3c';
+      resultDiv.textContent = '❌ Failed to create group chat';
+    });
 }
 
 let socketInitialized = false;
@@ -1035,23 +1105,22 @@ function loadFriends() {
       list.innerHTML = '';
       friends.forEach(friend => {
         const container = document.createElement('div');
-        container.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px;';
+        container.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px;';
         
         const btn = document.createElement('button');
         btn.className = 'friend-btn';
-        btn.style.cssText = 'flex:1;display:flex;align-items:center;gap:8px;';
+        btn.style.cssText = 'flex:1;display:flex;align-items:center;gap:8px;min-width:0;';
         
         const statusColor = friend.is_online ? '#2ecc71' : '#7f8c8d';
         const nickname = friendNicknames[friend.id];
-        const displayName = nickname ? `${nickname} (${friend.username})` : friend.username;
+        const displayName = nickname ? `${nickname}` : friend.username;
         
         btn.innerHTML = `
-          <div style="position:relative;">
+          <div style="position:relative;flex-shrink:0;">
             <img src="${friend.profilePicture || 'https://via.placeholder.com/24'}" style="width:24px;height:24px;border-radius:50%;">
             <span style="position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:${statusColor};border:2px solid var(--bg-secondary);"></span>
           </div>
-          <span>${escapeHtml(displayName)}</span>
-          ${nickname ? '<span style="font-size:10px;color:var(--text-light);">✏️</span>' : ''}
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(friend.username)}${nickname ? ' (' + escapeHtml(nickname) + ')' : ''}">${escapeHtml(displayName)}</span>
         `;
         btn.addEventListener('click', () => selectFriend(friend));
         btn.addEventListener('contextmenu', (e) => {
@@ -1059,16 +1128,28 @@ function loadFriends() {
           showFriendContextMenu(e, friend);
         });
         
+        const unfriendBtn = document.createElement('button');
+        unfriendBtn.textContent = '✕';
+        unfriendBtn.title = 'Unfriend';
+        unfriendBtn.style.cssText = 'padding:4px 6px;background:#e74c3c;border:none;border-radius:4px;cursor:pointer;font-size:10px;font-weight:bold;color:white;opacity:0.7;transition:opacity 0.2s;';
+        unfriendBtn.addEventListener('mouseenter', () => unfriendBtn.style.opacity = '1');
+        unfriendBtn.addEventListener('mouseleave', () => unfriendBtn.style.opacity = '0.7');
+        unfriendBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          unfriendUser(friend.id, friend.username);
+        });
+        
         const optBtn = document.createElement('button');
         optBtn.textContent = '⋮';
         optBtn.title = 'Options';
-        optBtn.style.cssText = 'padding:4px 8px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:bold;color:var(--text);';
+        optBtn.style.cssText = 'padding:4px 6px;background:var(--accent);border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:bold;color:var(--text);';
         optBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           showFriendContextMenu(e, friend);
         });
         
         container.appendChild(btn);
+        container.appendChild(unfriendBtn);
         container.appendChild(optBtn);
         list.appendChild(container);
       });
@@ -1604,10 +1685,69 @@ function sendMessage() {
 }
 
 function createServerRequest() {
-  const name = prompt('Server name:');
-  if (!name) return;
+  currentChannel = null;
+  currentFriend = null;
+  currentGroupChat = null;
+  isGlobalChat = false;
   
-  const description = prompt('Server description (optional):') || '';
+  const container = document.getElementById('messagesContainer');
+  const header = document.getElementById('chatHeader');
+  
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">🏠</span>
+      <span style="font-weight:600;font-size:16px;">Create Server</span>
+    </div>
+  `;
+  
+  container.innerHTML = `
+    <div style="padding:40px;max-width:600px;margin:0 auto;">
+      <h2 style="color:var(--text);margin-bottom:10px;font-size:20px;">CREATE A SERVER</h2>
+      <p style="color:var(--text-light);margin-bottom:20px;font-size:14px;">Servers are where you and your friends hang out. Create yours and start chatting!</p>
+      
+      <div style="margin-bottom:15px;">
+        <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;font-size:13px;">SERVER NAME</label>
+        <input type="text" id="createServerNameInput" placeholder="My Awesome Server" 
+          style="width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;">
+      </div>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;font-size:13px;">DESCRIPTION (optional)</label>
+        <textarea id="createServerDescInput" placeholder="What's your server about?" 
+          style="width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;min-height:80px;resize:vertical;"></textarea>
+      </div>
+      
+      <button onclick="submitServerRequest()" 
+        style="width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:15px;">
+        Submit Server Request
+      </button>
+      
+      <div id="createServerResult" style="padding:12px;border-radius:8px;display:none;margin-top:15px;"></div>
+      
+      <p style="color:var(--text-light);font-size:12px;margin-top:15px;text-align:center;">
+        Note: Server requests require admin approval
+      </p>
+    </div>
+  `;
+  
+  document.getElementById('createServerNameInput').focus();
+}
+
+function submitServerRequest() {
+  const nameInput = document.getElementById('createServerNameInput');
+  const descInput = document.getElementById('createServerDescInput');
+  const resultDiv = document.getElementById('createServerResult');
+  
+  const name = nameInput.value.trim();
+  const description = descInput.value.trim();
+  
+  if (!name) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+    resultDiv.style.color = '#e74c3c';
+    resultDiv.textContent = 'Please enter a server name';
+    return;
+  }
 
   fetch('/api/servers/request', {
     method: 'POST',
@@ -1623,19 +1763,86 @@ function createServerRequest() {
   })
     .then(r => r.json())
     .then(data => {
-      alert('Server request submitted! Waiting for admin approval.');
+      resultDiv.style.display = 'block';
+      resultDiv.style.background = 'rgba(46, 204, 113, 0.2)';
+      resultDiv.style.color = '#2ecc71';
+      resultDiv.textContent = '✅ Server request submitted! Waiting for admin approval.';
+      nameInput.value = '';
+      descInput.value = '';
       loadServers();
     })
-    .catch(() => alert('Failed to submit request'));
+    .catch(() => {
+      resultDiv.style.display = 'block';
+      resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+      resultDiv.style.color = '#e74c3c';
+      resultDiv.textContent = '❌ Failed to submit request';
+    });
 }
 
 function addFriend() {
-  const username = prompt('Username to add:');
-  if (!username) return;
+  currentChannel = null;
+  currentFriend = null;
+  currentGroupChat = null;
+  isGlobalChat = false;
+  
+  const container = document.getElementById('messagesContainer');
+  const header = document.getElementById('chatHeader');
+  
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">👥</span>
+      <span style="font-weight:600;font-size:16px;">Add Friend</span>
+    </div>
+  `;
+  
+  container.innerHTML = `
+    <div style="padding:40px;max-width:600px;margin:0 auto;">
+      <h2 style="color:var(--text);margin-bottom:10px;font-size:20px;">ADD FRIEND</h2>
+      <p style="color:var(--text-light);margin-bottom:20px;font-size:14px;">You can add a friend with their username. It's cAsE sEnSiTiVe!</p>
+      
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <input type="text" id="addFriendInput" placeholder="Enter a Username" 
+          style="flex:1;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;">
+        <button id="sendFriendRequestBtn" onclick="sendFriendRequest()" 
+          style="padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;white-space:nowrap;">
+          Send Friend Request
+        </button>
+      </div>
+      
+      <div id="addFriendResult" style="padding:12px;border-radius:8px;display:none;"></div>
+      
+      <div style="margin-top:40px;padding:40px;text-align:center;color:var(--text-light);">
+        <div style="font-size:60px;margin-bottom:20px;">🤝</div>
+        <p>Wumpus is waiting for friends. You don't have to though!</p>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('addFriendInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendFriendRequest();
+  });
+  document.getElementById('addFriendInput').focus();
+}
+
+function sendFriendRequest() {
+  const input = document.getElementById('addFriendInput');
+  const resultDiv = document.getElementById('addFriendResult');
+  const username = input.value.trim();
+  
+  if (!username) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+    resultDiv.style.color = '#e74c3c';
+    resultDiv.textContent = 'Please enter a username';
+    return;
+  }
 
   const token = getAuthToken();
   if (!token) {
-    alert('You must be logged in');
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+    resultDiv.style.color = '#e74c3c';
+    resultDiv.textContent = 'You must be logged in';
     return;
   }
 
@@ -1649,19 +1856,29 @@ function addFriend() {
   })
     .then(r => r.json())
     .then(data => {
+      resultDiv.style.display = 'block';
       if (data.success || data.message) {
-        alert('✅ Friend request sent to ' + username + '!');
+        resultDiv.style.background = 'rgba(46, 204, 113, 0.2)';
+        resultDiv.style.color = '#2ecc71';
+        resultDiv.textContent = '✅ Friend request sent to ' + username + '!';
+        input.value = '';
         loadPendingRequests();
         loadFriends();
       } else if (data.error && data.error.includes('not found')) {
-        alert('❌ User "' + username + '" not found. Make sure the account exists!');
+        resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+        resultDiv.style.color = '#e74c3c';
+        resultDiv.textContent = '❌ User "' + username + '" not found. Make sure the account exists!';
       } else {
-        alert('❌ ' + (data.error || 'Failed to send request'));
+        resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+        resultDiv.style.color = '#e74c3c';
+        resultDiv.textContent = '❌ ' + (data.error || 'Failed to send request');
       }
     })
     .catch(err => {
-      console.error('Friend request error:', err);
-      alert('❌ Failed to send request: ' + err.message);
+      resultDiv.style.display = 'block';
+      resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+      resultDiv.style.color = '#e74c3c';
+      resultDiv.textContent = '❌ Failed to send request';
     });
 }
 
