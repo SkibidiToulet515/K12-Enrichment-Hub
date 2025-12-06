@@ -2,14 +2,16 @@ const StealthMode = {
   originalTitle: document.title,
   originalFavicon: null,
   isActive: false,
+  redirectMode: true,
   
   disguises: [
-    { name: 'Google Docs', title: 'Untitled document - Google Docs', favicon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico', url: 'https://docs.google.com' },
-    { name: 'Google Classroom', title: 'Google Classroom', favicon: 'https://ssl.gstatic.com/classroom/favicon.png', url: 'https://classroom.google.com' },
-    { name: 'Khan Academy', title: 'Khan Academy | Free Online Courses', favicon: 'https://cdn.kastatic.org/images/favicon.ico', url: 'https://khanacademy.org' },
-    { name: 'Google Drive', title: 'My Drive - Google Drive', favicon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png', url: 'https://drive.google.com' },
-    { name: 'Wikipedia', title: 'Wikipedia', favicon: 'https://en.wikipedia.org/static/favicon/wikipedia.ico', url: 'https://wikipedia.org' },
-    { name: 'Quizlet', title: 'Quizlet: Learn & Study', favicon: 'https://quizlet.com/favicon.ico', url: 'https://quizlet.com' }
+    { name: 'ClassLink (Redirect)', title: 'ClassLink Launchpad', favicon: 'https://launchpad.classlink.com/favicon.ico', url: 'https://myapps.classlink.com/home', redirect: true },
+    { name: 'Google Docs', title: 'Untitled document - Google Docs', favicon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico', url: 'https://docs.google.com', redirect: false },
+    { name: 'Google Classroom', title: 'Google Classroom', favicon: 'https://ssl.gstatic.com/classroom/favicon.png', url: 'https://classroom.google.com', redirect: false },
+    { name: 'Khan Academy', title: 'Khan Academy | Free Online Courses', favicon: 'https://cdn.kastatic.org/images/favicon.ico', url: 'https://khanacademy.org', redirect: false },
+    { name: 'Google Drive', title: 'My Drive - Google Drive', favicon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png', url: 'https://drive.google.com', redirect: false },
+    { name: 'Wikipedia', title: 'Wikipedia', favicon: 'https://en.wikipedia.org/static/favicon/wikipedia.ico', url: 'https://wikipedia.org', redirect: false },
+    { name: 'Quizlet', title: 'Quizlet: Learn & Study', favicon: 'https://quizlet.com/favicon.ico', url: 'https://quizlet.com', redirect: false }
   ],
   
   currentDisguise: null,
@@ -103,6 +105,12 @@ const StealthMode = {
   
   activate() {
     if (this.isActive) return;
+    
+    if (this.currentDisguise.redirect) {
+      window.location.href = this.currentDisguise.url;
+      return;
+    }
+    
     this.isActive = true;
     
     document.title = this.currentDisguise.title;
