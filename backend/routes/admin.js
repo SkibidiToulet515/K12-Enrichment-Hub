@@ -342,4 +342,180 @@ router.delete('/messages/:messageId', isAdmin, (req, res) => {
   });
 });
 
+// Get dashboard metrics
+router.get('/metrics', isAdmin, (req, res) => {
+  const metrics = {};
+  
+  db.get('SELECT COUNT(*) as count FROM users', [], (err, row) => {
+    metrics.total_users = row?.count || 0;
+    
+    db.get('SELECT COUNT(*) as count FROM users WHERE is_online = true', [], (err, row) => {
+      metrics.online_users = row?.count || 0;
+      
+      db.get('SELECT COUNT(*) as count FROM messages', [], (err, row) => {
+        metrics.total_messages = row?.count || 0;
+        
+        db.get('SELECT COUNT(*) as count FROM servers', [], (err, row) => {
+          metrics.total_servers = row?.count || 0;
+          
+          db.get('SELECT COUNT(*) as count FROM server_requests WHERE status = ?', ['pending'], (err, row) => {
+            metrics.pending_requests = row?.count || 0;
+            res.json(metrics);
+          });
+        });
+      });
+    });
+  });
+});
+
+// Get alerts
+router.get('/alerts', isAdmin, (req, res) => {
+  const alerts = [];
+  
+  db.get('SELECT COUNT(*) as count FROM server_requests WHERE status = ?', ['pending'], (err, row) => {
+    if (row?.count > 0) {
+      alerts.push({
+        type: 'info',
+        title: 'Pending Server Requests',
+        description: `${row.count} server request(s) awaiting approval`,
+        created_at: new Date().toISOString()
+      });
+    }
+    
+    db.get('SELECT COUNT(*) as count FROM users WHERE warning_count >= 2', [], (err, row) => {
+      if (row?.count > 0) {
+        alerts.push({
+          type: 'warning',
+          title: 'Users at Risk',
+          description: `${row.count} user(s) have 2+ warnings`,
+          created_at: new Date().toISOString()
+        });
+      }
+      
+      res.json(alerts);
+    });
+  });
+});
+
+// Get all users with filters
+router.get('/users', isAdmin, (req, res) => {
+  const { search, role, status } = req.query;
+  let query = 'SELECT id, username, email, role, is_online, is_banned, created_at, last_seen, profile_picture FROM users WHERE 1=1';
+  const params = [];
+  
+  if (search) {
+    query += ' AND (username LIKE ? OR email LIKE ?)';
+    params.push(`%${search}%`, `%${search}%`);
+  }
+  if (role) {
+    query += ' AND role = ?';
+    params.push(role);
+  }
+  if (status === 'online') {
+    query += ' AND is_online = true';
+  } else if (status === 'offline') {
+    query += ' AND is_online = false';
+  } else if (status === 'banned') {
+    query += ' AND is_banned = true';
+  }
+  
+  query += ' ORDER BY created_at DESC LIMIT 100';
+  
+  db.all(query, params, (err, users) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(users || []);
+  });
+});
+
+// Get single user
+router.get('/users/:userId', isAdmin, (req, res) => {
+  db.get('SELECT * FROM users WHERE id = ?', [req.params.userId], (err, user) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  });
+});
+
+// Update user
+router.patch('/users/:userId', isAdmin, (req, res) => {
+  const { userId } = req.params;
+  const { username, role, email } = req.body;
+  
+  db.run('UPDATE users SET username = COALESCE(?, username), role = COALESCE(?, role), email = COALESCE(?, email) WHERE id = ?',
+    [username, role, email, userId], function(err) {
+      if (err) return res.status(500).json({ error: err.message });
+      
+      logAuditAction(req.userId, 'update_user', userId, `Updated user: role=${role}`);
+      res.json({ success: true });
+    });
+});
+
+// Get recent messages
+router.get('/messages', isAdmin, (req, res) => {
+  const limit = parseInt(req.query.limit) || 50;
+  
+  db.all(`
+    SELECT m.*, u.username, c.name as channel_name, g.name as group_name
+    FROM messages m
+    LEFT JOIN users u ON m.user_id = u.id
+    LEFT JOIN channels c ON m.channel_id = c.id
+    LEFT JOIN group_chats g ON m.group_chat_id = g.id
+    ORDER BY m.created_at DESC
+    LIMIT ?
+  `, [limit], (err, messages) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(messages || []);
+  });
+});
+
+// Get audit logs
+router.get('/audit-logs', isAdmin, (req, res) => {
+  const limit = parseInt(req.query.limit) || 100;
+  
+  db.all(`
+    SELECT al.*, 
+           admin.username as admin_username,
+           target.username as target_username
+    FROM audit_logs al
+    LEFT JOIN users admin ON al.admin_id = admin.id
+    LEFT JOIN users target ON al.target_id = target.id
+    ORDER BY al.created_at DESC
+    LIMIT ?
+  `, [limit], (err, logs) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(logs || []);
+  });
+});
+
+// Get analytics
+router.get('/analytics', isAdmin, (req, res) => {
+  const analytics = {};
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  
+  db.get('SELECT COUNT(DISTINCT user_id) as count FROM messages WHERE created_at > ?', [oneDayAgo], (err, row) => {
+    analytics.daily_active = row?.count || 0;
+    
+    db.get('SELECT COUNT(DISTINCT user_id) as count FROM messages WHERE created_at > ?', [oneWeekAgo], (err, row) => {
+      analytics.weekly_active = row?.count || 0;
+      
+      db.get('SELECT COUNT(*) as count FROM messages WHERE created_at > ?', [oneDayAgo], (err, row) => {
+        analytics.avg_messages = row?.count || 0;
+        
+        db.get('SELECT SUM(games_played) as count FROM user_xp', [], (err, row) => {
+          analytics.games_played_today = row?.count || 0;
+          res.json(analytics);
+        });
+      });
+    });
+  });
+});
+
+function logAuditAction(adminId, action, targetId, details) {
+  db.run(`
+    INSERT INTO audit_logs (admin_id, action, target_id, details, created_at)
+    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+  `, [adminId, action, targetId, details]);
+}
+
 module.exports = router;

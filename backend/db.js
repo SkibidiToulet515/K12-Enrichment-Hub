@@ -363,6 +363,15 @@ async function initDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`);
 
+    await client.query(`CREATE TABLE IF NOT EXISTS audit_logs (
+      id SERIAL PRIMARY KEY,
+      admin_id INTEGER NOT NULL,
+      action TEXT NOT NULL,
+      target_id INTEGER,
+      details TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+
     await client.query(`CREATE TABLE IF NOT EXISTS shop_categories (
       id SERIAL PRIMARY KEY,
       name TEXT UNIQUE NOT NULL,

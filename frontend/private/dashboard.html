@@ -319,6 +319,12 @@
           <h3>My Tasks</h3>
           <p>Personal to-do list with reminders</p>
         </a>
+
+        <a href="/private/admin.html" class="dashboard-card admin-card" id="adminCard" style="display: none; background: linear-gradient(135deg, #9b59b6, #e74c3c);">
+          <span class="card-icon">🛡️</span>
+          <h3>Admin Panel</h3>
+          <p>Manage users, content, and settings</p>
+        </a>
       </div>
     </main>
   </div>
@@ -393,6 +399,22 @@
     }
     
     loadAnnouncements();
+    
+    async function checkAdminAccess() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      try {
+        const res = await fetch('/api/admin/check', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.isAdmin) {
+          document.getElementById('adminCard').style.display = 'flex';
+        }
+      } catch (e) {}
+    }
+    checkAdminAccess();
 
     // Universal Search
     let gamesData = [];

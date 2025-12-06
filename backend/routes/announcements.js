@@ -129,4 +129,18 @@ router.get('/all', (req, res) => {
   });
 });
 
+router.get('/active', (req, res) => {
+  db.all(`
+    SELECT a.*, u.username as author_name
+    FROM announcements a
+    LEFT JOIN users u ON a.author_id = u.id
+    WHERE a.is_active = true 
+    AND (a.expires_at IS NULL OR a.expires_at > CURRENT_TIMESTAMP)
+    ORDER BY a.created_at DESC
+  `, [], (err, announcements) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(announcements || []);
+  });
+});
+
 module.exports = router;

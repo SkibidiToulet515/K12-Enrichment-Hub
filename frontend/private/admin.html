@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Center - NebulaCore</title>
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
+    .admin-container { display: flex; min-height: 100vh; }
+    
+    .sidebar {
+      width: 260px; background: var(--card); padding: 20px;
+      display: flex; flex-direction: column; border-right: 1px solid var(--accent);
+      position: fixed; height: 100vh; overflow-y: auto;
+    }
+    .sidebar-header { padding: 10px 0 20px; border-bottom: 1px solid var(--accent); margin-bottom: 20px; }
+    .sidebar-header h1 { font-size: 20px; color: var(--accent); }
+    .sidebar-header p { font-size: 12px; color: var(--text-light); }
+    .nav-section { margin-bottom: 20px; }
+    .nav-section-title { font-size: 11px; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; letter-spacing: 1px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 15px;
+      border-radius: 8px; cursor: pointer; transition: all 0.2s;
+      margin-bottom: 4px; color: var(--text);
+    }
+    .nav-item:hover { background: var(--bg); }
+    .nav-item.active { background: var(--accent); color: white; }
+    .nav-item-icon { font-size: 18px; }
+    .nav-item-badge { margin-left: auto; background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+    .back-link { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--accent); }
+    
+    .main-content { flex: 1; margin-left: 260px; padding: 30px; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .page-title { font-size: 28px; }
+    .header-actions { display: flex; gap: 10px; }
+    .header-btn { padding: 10px 20px; background: var(--accent); border: none; border-radius: 8px; color: var(--text); cursor: pointer; font-weight: 600; }
+    .header-btn:hover { filter: brightness(1.1); }
+    .header-btn.secondary { background: var(--card); }
+    
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .metric-card { background: var(--card); border-radius: 12px; padding: 25px; }
+    .metric-value { font-size: 36px; font-weight: bold; color: var(--accent); }
+    .metric-label { font-size: 14px; color: var(--text-light); margin-top: 5px; }
+    .metric-change { font-size: 12px; margin-top: 8px; }
+    .metric-change.positive { color: #27ae60; }
+    .metric-change.negative { color: #e74c3c; }
+    
+    .panel { background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .panel-title { font-size: 18px; font-weight: 600; }
+    .panel-actions { display: flex; gap: 10px; }
+    
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--bg); }
+    .data-table th { font-size: 12px; text-transform: uppercase; color: var(--text-light); font-weight: 600; }
+    .data-table tr:hover { background: var(--bg); }
+    .user-cell { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; }
+    .user-info .name { font-weight: 600; }
+    .user-info .email { font-size: 12px; color: var(--text-light); }
+    .role-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .role-admin { background: #9b59b6; color: white; }
+    .role-moderator { background: #3498db; color: white; }
+    .role-member { background: #27ae60; color: white; }
+    .role-guest { background: #95a5a6; color: white; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .status-online { background: #27ae60; }
+    .status-offline { background: #95a5a6; }
+    .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin-right: 5px; }
+    .action-btn.edit { background: var(--accent); color: white; }
+    .action-btn.warn { background: #f39c12; color: white; }
+    .action-btn.ban { background: #e74c3c; color: white; }
+    
+    .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+    .quick-action-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 25px; background: var(--bg); border-radius: 12px; border: none; cursor: pointer; transition: all 0.2s; color: var(--text); }
+    .quick-action-btn:hover { background: var(--accent); transform: translateY(-2px); }
+    .quick-action-icon { font-size: 28px; }
+    .quick-action-label { font-size: 13px; font-weight: 600; }
+    
+    .alerts-list { display: flex; flex-direction: column; gap: 10px; }
+    .alert-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg); border-radius: 10px; }
+    .alert-icon { font-size: 24px; }
+    .alert-content { flex: 1; }
+    .alert-title { font-weight: 600; margin-bottom: 3px; }
+    .alert-desc { font-size: 13px; color: var(--text-light); }
+    .alert-time { font-size: 11px; color: var(--text-light); }
+    .alert-item.warning { border-left: 4px solid #f39c12; }
+    .alert-item.error { border-left: 4px solid #e74c3c; }
+    .alert-item.info { border-left: 4px solid #3498db; }
+    
+    .section { display: none; }
+    .section.active { display: block; }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 15px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); font-size: 14px; }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    
+    .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+    .search-input { flex: 1; padding: 12px 15px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); }
+    .filter-select { padding: 12px 15px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); }
+    
+    .tabs { display: flex; gap: 5px; margin-bottom: 20px; background: var(--bg); padding: 5px; border-radius: 10px; }
+    .tab-btn { padding: 10px 20px; background: none; border: none; border-radius: 8px; color: var(--text-light); cursor: pointer; font-weight: 600; }
+    .tab-btn.active { background: var(--accent); color: white; }
+    
+    .stats-chart { height: 300px; background: var(--bg); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-light); }
+    
+    .permission-grid { display: grid; gap: 15px; }
+    .permission-row { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: var(--bg); border-radius: 10px; }
+    .permission-name { font-weight: 600; }
+    .permission-desc { font-size: 12px; color: var(--text-light); }
+    .permission-toggle { display: flex; gap: 10px; }
+    .toggle-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .toggle-btn.allow { background: #27ae60; color: white; }
+    .toggle-btn.deny { background: #e74c3c; color: white; }
+    .toggle-btn.neutral { background: var(--card); color: var(--text-light); }
+    
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: var(--card); border-radius: 16px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-size: 20px; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-light); }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px; }
+    
+    .log-entry { padding: 12px 15px; background: var(--bg); border-radius: 8px; margin-bottom: 10px; font-family: monospace; font-size: 13px; }
+    .log-time { color: var(--text-light); }
+    .log-action { color: var(--accent); font-weight: 600; }
+    .log-user { color: #3498db; }
+    
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; height: auto; position: relative; }
+      .main-content { margin-left: 0; }
+      .admin-container { flex-direction: column; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h1>Admin Panel</h1>
+        <p>NebulaCore Control Center</p>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Overview</div>
+        <div class="nav-item active" data-section="dashboard">
+          <span class="nav-item-icon">📊</span>
+          <span>Dashboard</span>
+        </div>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Management</div>
+        <div class="nav-item" data-section="users">
+          <span class="nav-item-icon">👥</span>
+          <span>Users</span>
+        </div>
+        <div class="nav-item" data-section="content">
+          <span class="nav-item-icon">📝</span>
+          <span>Content</span>
+        </div>
+        <div class="nav-item" data-section="servers">
+          <span class="nav-item-icon">🖥️</span>
+          <span>Servers</span>
+          <span class="nav-item-badge" id="pendingServers">0</span>
+        </div>
+        <div class="nav-item" data-section="permissions">
+          <span class="nav-item-icon">🔐</span>
+          <span>Permissions</span>
+        </div>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Insights</div>
+        <div class="nav-item" data-section="analytics">
+          <span class="nav-item-icon">📈</span>
+          <span>Analytics</span>
+        </div>
+        <div class="nav-item" data-section="logs">
+          <span class="nav-item-icon">📋</span>
+          <span>Audit Logs</span>
+        </div>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">System</div>
+        <div class="nav-item" data-section="settings">
+          <span class="nav-item-icon">⚙️</span>
+          <span>Settings</span>
+        </div>
+        <div class="nav-item" data-section="security">
+          <span class="nav-item-icon">🛡️</span>
+          <span>Security</span>
+        </div>
+        <div class="nav-item" data-section="announcements">
+          <span class="nav-item-icon">📢</span>
+          <span>Announcements</span>
+        </div>
+      </div>
+      
+      <div class="back-link">
+        <a href="/private/dashboard.html" class="nav-item">
+          <span class="nav-item-icon">←</span>
+          <span>Back to Portal</span>
+        </a>
+      </div>
+    </nav>
+    
+    <main class="main-content">
+      <section id="dashboard" class="section active">
+        <div class="page-header">
+          <h2 class="page-title">Dashboard</h2>
+          <div class="header-actions">
+            <button class="header-btn secondary" onclick="refreshMetrics()">Refresh</button>
+          </div>
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="totalUsers">0</div>
+            <div class="metric-label">Total Users</div>
+            <div class="metric-change positive" id="usersChange">+0 this week</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="onlineUsers">0</div>
+            <div class="metric-label">Online Now</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="totalMessages">0</div>
+            <div class="metric-label">Total Messages</div>
+            <div class="metric-change positive" id="messagesChange">+0 today</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="totalServers">0</div>
+            <div class="metric-label">Active Servers</div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Quick Actions</h3>
+          </div>
+          <div class="quick-actions">
+            <button class="quick-action-btn" onclick="showSection('announcements')">
+              <span class="quick-action-icon">📢</span>
+              <span class="quick-action-label">Send Announcement</span>
+            </button>
+            <button class="quick-action-btn" onclick="showSection('users')">
+              <span class="quick-action-icon">👤</span>
+              <span class="quick-action-label">Manage Users</span>
+            </button>
+            <button class="quick-action-btn" onclick="showSection('servers')">
+              <span class="quick-action-icon">✅</span>
+              <span class="quick-action-label">Review Requests</span>
+            </button>
+            <button class="quick-action-btn" onclick="showSection('logs')">
+              <span class="quick-action-icon">📋</span>
+              <span class="quick-action-label">View Logs</span>
+            </button>
+            <button class="quick-action-btn" onclick="showSection('settings')">
+              <span class="quick-action-icon">⚙️</span>
+              <span class="quick-action-label">Site Settings</span>
+            </button>
+            <button class="quick-action-btn" onclick="showSection('security')">
+              <span class="quick-action-icon">🔒</span>
+              <span class="quick-action-label">Security Check</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Alerts & Notifications</h3>
+          </div>
+          <div class="alerts-list" id="alertsList">
+            <div class="alert-item info">
+              <span class="alert-icon">ℹ️</span>
+              <div class="alert-content">
+                <div class="alert-title">Loading alerts...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section id="users" class="section">
+        <div class="page-header">
+          <h2 class="page-title">User Management</h2>
+        </div>
+        
+        <div class="search-box">
+          <input type="text" class="search-input" id="userSearch" placeholder="Search users by name or email...">
+          <select class="filter-select" id="roleFilter">
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="moderator">Moderator</option>
+            <option value="member">Member</option>
+            <option value="guest">Guest</option>
+          </select>
+          <select class="filter-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="online">Online</option>
+            <option value="offline">Offline</option>
+            <option value="banned">Banned</option>
+          </select>
+        </div>
+        
+        <div class="panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Last Active</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </section>
+      
+      <section id="content" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Content Management</h2>
+        </div>
+        
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="messages">Messages</button>
+          <button class="tab-btn" data-tab="media">Media</button>
+          <button class="tab-btn" data-tab="reports">Reports</button>
+        </div>
+        
+        <div class="panel" id="contentPanel">
+          <div class="panel-header">
+            <h3 class="panel-title">Recent Messages</h3>
+            <div class="panel-actions">
+              <button class="action-btn edit" onclick="loadMessages()">Refresh</button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Content</th>
+                <th>Channel</th>
+                <th>Time</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="messagesTable"></tbody>
+          </table>
+        </div>
+      </section>
+      
+      <section id="servers" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Server Management</h2>
+        </div>
+        
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="pending">Pending Requests</button>
+          <button class="tab-btn" data-tab="active">Active Servers</button>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Pending Server Requests</h3>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Server Name</th>
+                <th>Requested By</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="serverRequestsTable"></tbody>
+          </table>
+        </div>
+      </section>
+      
+      <section id="permissions" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Permissions & Roles</h2>
+        </div>
+        
+        <div class="tabs">
+          <button class="tab-btn active" onclick="loadRolePermissions('admin')">Admin</button>
+          <button class="tab-btn" onclick="loadRolePermissions('moderator')">Moderator</button>
+          <button class="tab-btn" onclick="loadRolePermissions('member')">Member</button>
+          <button class="tab-btn" onclick="loadRolePermissions('guest')">Guest</button>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Role Permissions</h3>
+          </div>
+          <div class="permission-grid" id="permissionsGrid"></div>
+        </div>
+      </section>
+      
+      <section id="analytics" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Analytics & Reports</h2>
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="dailyActive">0</div>
+            <div class="metric-label">Daily Active Users</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="weeklyActive">0</div>
+            <div class="metric-label">Weekly Active Users</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="avgMessages">0</div>
+            <div class="metric-label">Avg Messages/Day</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="gamesPlayedTotal">0</div>
+            <div class="metric-label">Games Played Today</div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Activity Trends</h3>
+          </div>
+          <div class="stats-chart">Chart visualization coming soon</div>
+        </div>
+      </section>
+      
+      <section id="logs" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Audit Logs</h2>
+          <div class="header-actions">
+            <button class="header-btn secondary" onclick="loadAuditLogs()">Refresh</button>
+            <button class="header-btn" onclick="exportLogs()">Export</button>
+          </div>
+        </div>
+        
+        <div class="search-box">
+          <input type="text" class="search-input" id="logSearch" placeholder="Search logs...">
+          <select class="filter-select" id="logTypeFilter">
+            <option value="">All Types</option>
+            <option value="user">User Actions</option>
+            <option value="moderation">Moderation</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+        
+        <div class="panel">
+          <div id="auditLogsList"></div>
+        </div>
+      </section>
+      
+      <section id="settings" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Site Settings</h2>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">General Settings</h3>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Site Name</label>
+            <input type="text" class="form-input" id="siteName" value="NebulaCore">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Site Description</label>
+            <textarea class="form-textarea" id="siteDescription">K-12 Learning Portal</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Default Theme</label>
+            <select class="form-select" id="defaultTheme">
+              <option value="nebulacore">NebulaCore (Default)</option>
+              <option value="midnight">Midnight Blue</option>
+              <option value="forest">Forest Green</option>
+            </select>
+          </div>
+          <button class="header-btn" onclick="saveSettings()">Save Settings</button>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Feature Toggles</h3>
+          </div>
+          <div class="permission-grid">
+            <div class="permission-row">
+              <div>
+                <div class="permission-name">Chat System</div>
+                <div class="permission-desc">Enable/disable the chat feature</div>
+              </div>
+              <label><input type="checkbox" id="featureChat" checked> Enabled</label>
+            </div>
+            <div class="permission-row">
+              <div>
+                <div class="permission-name">Games</div>
+                <div class="permission-desc">Enable/disable the games library</div>
+              </div>
+              <label><input type="checkbox" id="featureGames" checked> Enabled</label>
+            </div>
+            <div class="permission-row">
+              <div>
+                <div class="permission-name">Web Proxy</div>
+                <div class="permission-desc">Enable/disable the web proxy</div>
+              </div>
+              <label><input type="checkbox" id="featureProxy" checked> Enabled</label>
+            </div>
+            <div class="permission-row">
+              <div>
+                <div class="permission-name">Movies</div>
+                <div class="permission-desc">Enable/disable movies section</div>
+              </div>
+              <label><input type="checkbox" id="featureMovies" checked> Enabled</label>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section id="security" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Security & Maintenance</h2>
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="failedLogins">0</div>
+            <div class="metric-label">Failed Logins (24h)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="bannedUsers">0</div>
+            <div class="metric-label">Banned Users</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="activeTokens">0</div>
+            <div class="metric-label">Active Sessions</div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Recent Login Activity</h3>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>IP Address</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="loginHistoryTable"></tbody>
+          </table>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Security Actions</h3>
+          </div>
+          <div class="quick-actions">
+            <button class="quick-action-btn" onclick="invalidateAllSessions()">
+              <span class="quick-action-icon">🔄</span>
+              <span class="quick-action-label">Invalidate All Sessions</span>
+            </button>
+            <button class="quick-action-btn" onclick="clearRateLimits()">
+              <span class="quick-action-icon">⏱️</span>
+              <span class="quick-action-label">Clear Rate Limits</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <section id="announcements" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Announcements</h2>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Create Announcement</h3>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-input" id="announcementTitle" placeholder="Announcement title">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <textarea class="form-textarea" id="announcementContent" placeholder="Write your announcement here..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="announcementPriority">
+              <option value="info">Info</option>
+              <option value="warning">Warning</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <button class="header-btn" onclick="sendAnnouncement()">Send Announcement</button>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Active Announcements</h3>
+          </div>
+          <div id="activeAnnouncements"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <div class="modal" id="userModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit User</h3>
+        <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-input" id="editUsername">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="editRole">
+          <option value="guest">Guest</option>
+          <option value="member">Member</option>
+          <option value="moderator">Moderator</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="header-btn secondary" onclick="closeModal('userModal')">Cancel</button>
+        <button class="header-btn" onclick="saveUserEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/private/auth.html';
+    
+    let currentEditUserId = null;
+    
+    async function checkAdmin() {
+      const res = await fetch('/api/admin/check', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!data.isAdmin) {
+        alert('Access denied. Admin only.');
+        window.location.href = '/private/dashboard.html';
+      }
+    }
+    checkAdmin();
+    
+    document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+      item.addEventListener('click', () => {
+        showSection(item.dataset.section);
+      });
+    });
+    
+    function showSection(section) {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelector(`[data-section="${section}"]`)?.classList.add('active');
+      document.getElementById(section)?.classList.add('active');
+      
+      if (section === 'users') loadUsers();
+      else if (section === 'servers') loadServerRequests();
+      else if (section === 'logs') loadAuditLogs();
+      else if (section === 'announcements') loadAnnouncements();
+      else if (section === 'analytics') loadAnalytics();
+      else if (section === 'content') loadMessages();
+    }
+    
+    async function refreshMetrics() {
+      try {
+        const res = await fetch('/api/admin/metrics', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        document.getElementById('totalUsers').textContent = data.total_users || 0;
+        document.getElementById('onlineUsers').textContent = data.online_users || 0;
+        document.getElementById('totalMessages').textContent = data.total_messages || 0;
+        document.getElementById('totalServers').textContent = data.total_servers || 0;
+        document.getElementById('pendingServers').textContent = data.pending_requests || 0;
+        
+        loadAlerts();
+      } catch (e) {
+        console.error('Failed to load metrics', e);
+      }
+    }
+    
+    async function loadAlerts() {
+      try {
+        const res = await fetch('/api/admin/alerts', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const alerts = await res.json();
+        
+        const container = document.getElementById('alertsList');
+        if (alerts.length === 0) {
+          container.innerHTML = '<div class="alert-item info"><span class="alert-icon">✅</span><div class="alert-content"><div class="alert-title">No pending alerts</div><div class="alert-desc">Everything is running smoothly</div></div></div>';
+          return;
+        }
+        
+        container.innerHTML = alerts.map(a => `
+          <div class="alert-item ${a.type}">
+            <span class="alert-icon">${a.type === 'warning' ? '⚠️' : a.type === 'error' ? '❌' : 'ℹ️'}</span>
+            <div class="alert-content">
+              <div class="alert-title">${escapeHtml(a.title)}</div>
+              <div class="alert-desc">${escapeHtml(a.description)}</div>
+            </div>
+            <span class="alert-time">${new Date(a.created_at).toLocaleString()}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load alerts', e);
+      }
+    }
+    
+    async function loadUsers() {
+      try {
+        const search = document.getElementById('userSearch').value;
+        const role = document.getElementById('roleFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        
+        let url = '/api/admin/users?';
+        if (search) url += `search=${encodeURIComponent(search)}&`;
+        if (role) url += `role=${role}&`;
+        if (status) url += `status=${status}&`;
+        
+        const res = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const users = await res.json();
+        
+        const tbody = document.getElementById('usersTable');
+        tbody.innerHTML = users.map(u => `
+          <tr>
+            <td>
+              <div class="user-cell">
+                <img src="${u.profile_picture || 'https://via.placeholder.com/40'}" class="user-avatar">
+                <div class="user-info">
+                  <div class="name">${escapeHtml(u.username)}</div>
+                  <div class="email">${escapeHtml(u.email || 'No email')}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="role-badge role-${u.role}">${u.role}</span></td>
+            <td><span class="status-dot ${u.is_online ? 'status-online' : 'status-offline'}"></span> ${u.is_online ? 'Online' : 'Offline'}</td>
+            <td>${new Date(u.created_at).toLocaleDateString()}</td>
+            <td>${u.last_seen ? new Date(u.last_seen).toLocaleString() : 'Never'}</td>
+            <td>
+              <button class="action-btn edit" onclick="editUser(${u.id})">Edit</button>
+              <button class="action-btn warn" onclick="warnUser(${u.id})">Warn</button>
+              <button class="action-btn ban" onclick="banUser(${u.id})">${u.is_banned ? 'Unban' : 'Ban'}</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load users', e);
+      }
+    }
+    
+    async function editUser(userId) {
+      currentEditUserId = userId;
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const user = await res.json();
+      
+      document.getElementById('editUsername').value = user.username;
+      document.getElementById('editRole').value = user.role;
+      document.getElementById('userModal').classList.add('active');
+    }
+    
+    async function saveUserEdit() {
+      const username = document.getElementById('editUsername').value;
+      const role = document.getElementById('editRole').value;
+      
+      await fetch(`/api/admin/users/${currentEditUserId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ username, role })
+      });
+      
+      closeModal('userModal');
+      loadUsers();
+    }
+    
+    async function warnUser(userId) {
+      const reason = prompt('Warning reason:');
+      if (!reason) return;
+      
+      await fetch(`/api/admin/users/${userId}/warn`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ reason })
+      });
+      alert('User warned');
+    }
+    
+    async function banUser(userId) {
+      const reason = prompt('Ban reason:');
+      if (!reason) return;
+      
+      const duration = prompt('Duration (e.g., 1d, 7d, permanent):') || 'permanent';
+      
+      await fetch(`/api/admin/users/${userId}/ban`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ reason, duration })
+      });
+      loadUsers();
+    }
+    
+    async function loadServerRequests() {
+      const res = await fetch('/api/admin/server-requests', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const requests = await res.json();
+      
+      const tbody = document.getElementById('serverRequestsTable');
+      if (requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-light);">No pending requests</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = requests.map(r => `
+        <tr>
+          <td>${escapeHtml(r.server_name)}</td>
+          <td>${escapeHtml(r.username)}</td>
+          <td>${escapeHtml(r.description || 'No description')}</td>
+          <td>${new Date(r.created_at).toLocaleDateString()}</td>
+          <td>
+            <button class="action-btn edit" onclick="approveServer(${r.id})">Approve</button>
+            <button class="action-btn ban" onclick="denyServer(${r.id})">Deny</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    
+    async function approveServer(id) {
+      await fetch(`/api/admin/approve-server/${id}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      loadServerRequests();
+      refreshMetrics();
+    }
+    
+    async function denyServer(id) {
+      await fetch(`/api/admin/deny-server/${id}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      loadServerRequests();
+    }
+    
+    async function loadMessages() {
+      const res = await fetch('/api/admin/messages?limit=50', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const messages = await res.json();
+      
+      const tbody = document.getElementById('messagesTable');
+      tbody.innerHTML = messages.map(m => `
+        <tr>
+          <td>${escapeHtml(m.username)}</td>
+          <td>${escapeHtml(m.content?.substring(0, 50) || '')}${m.content?.length > 50 ? '...' : ''}</td>
+          <td>${m.channel_name || m.group_name || 'DM'}</td>
+          <td>${new Date(m.created_at).toLocaleString()}</td>
+          <td>
+            <button class="action-btn ban" onclick="deleteMessage(${m.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    
+    async function deleteMessage(id) {
+      if (!confirm('Delete this message?')) return;
+      await fetch(`/api/admin/messages/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      loadMessages();
+    }
+    
+    async function loadAuditLogs() {
+      const res = await fetch('/api/admin/audit-logs?limit=100', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const logs = await res.json();
+      
+      const container = document.getElementById('auditLogsList');
+      if (logs.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);text-align:center;">No audit logs yet</p>';
+        return;
+      }
+      
+      container.innerHTML = logs.map(log => `
+        <div class="log-entry">
+          <span class="log-time">[${new Date(log.created_at).toLocaleString()}]</span>
+          <span class="log-action">${escapeHtml(log.action)}</span>
+          <span class="log-user">by ${escapeHtml(log.admin_username)}</span>
+          ${log.target_username ? ` on <span class="log-user">${escapeHtml(log.target_username)}</span>` : ''}
+          ${log.details ? `: ${escapeHtml(log.details)}` : ''}
+        </div>
+      `).join('');
+    }
+    
+    async function loadAnalytics() {
+      const res = await fetch('/api/admin/analytics', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      
+      document.getElementById('dailyActive').textContent = data.daily_active || 0;
+      document.getElementById('weeklyActive').textContent = data.weekly_active || 0;
+      document.getElementById('avgMessages').textContent = data.avg_messages || 0;
+      document.getElementById('gamesPlayedTotal').textContent = data.games_played_today || 0;
+    }
+    
+    async function sendAnnouncement() {
+      const title = document.getElementById('announcementTitle').value.trim();
+      const content = document.getElementById('announcementContent').value.trim();
+      const priority = document.getElementById('announcementPriority').value;
+      
+      if (!content) return alert('Please enter announcement content');
+      
+      await fetch('/api/announcements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ title, content, priority })
+      });
+      
+      document.getElementById('announcementTitle').value = '';
+      document.getElementById('announcementContent').value = '';
+      alert('Announcement sent!');
+      loadAnnouncements();
+    }
+    
+    async function loadAnnouncements() {
+      const res = await fetch('/api/announcements/all', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const announcements = await res.json();
+      
+      const container = document.getElementById('activeAnnouncements');
+      if (announcements.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);">No announcements</p>';
+        return;
+      }
+      
+      container.innerHTML = announcements.map(a => `
+        <div class="alert-item ${a.priority || 'info'}">
+          <span class="alert-icon">📢</span>
+          <div class="alert-content">
+            <div class="alert-title">${escapeHtml(a.title || 'Announcement')}</div>
+            <div class="alert-desc">${escapeHtml(a.content)}</div>
+          </div>
+          <span class="alert-time">${new Date(a.created_at).toLocaleString()}</span>
+          <button class="action-btn ban" onclick="deleteAnnouncement(${a.id})">Delete</button>
+        </div>
+      `).join('');
+    }
+    
+    async function deleteAnnouncement(id) {
+      await fetch(`/api/announcements/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      loadAnnouncements();
+    }
+    
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+    
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    document.getElementById('userSearch')?.addEventListener('input', debounce(loadUsers, 300));
+    document.getElementById('roleFilter')?.addEventListener('change', loadUsers);
+    document.getElementById('statusFilter')?.addEventListener('change', loadUsers);
+    
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+    
+    refreshMetrics();
+  </script>
+</body>
+</html>
