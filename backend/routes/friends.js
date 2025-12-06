@@ -88,7 +88,7 @@ router.get('/pending', (req, res) => {
   }
 
   db.all(
-    `SELECT f.id, u.id as userId, u.username, u.profile_picture, f.created_at
+    `SELECT f.id, u.id as "userId", u.username, u.profile_picture as "profilePicture", f.created_at
      FROM friends f
      JOIN users u ON f.user_id = u.id
      WHERE f.friend_id = ? AND f.status = 'pending'
@@ -166,7 +166,7 @@ router.get('/', (req, res) => {
     `SELECT DISTINCT CASE 
       WHEN f.user_id = ? THEN f.friend_id 
       ELSE f.user_id 
-    END as friendId
+    END as "friendId"
     FROM friends f
     WHERE (f.user_id = ? OR f.friend_id = ?) AND f.status = 'accepted'`,
     [userId, userId, userId],
