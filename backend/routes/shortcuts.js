@@ -30,7 +30,7 @@ router.get('/', authenticateToken, (req, res) => {
   db.all(`
     SELECT ds.action, ds.description, ds.category,
            COALESCE(us.shortcut, ds.shortcut) as shortcut,
-           COALESCE(us.is_enabled, 1) as is_enabled
+           COALESCE(us.is_enabled, TRUE) as is_enabled
     FROM default_shortcuts ds
     LEFT JOIN user_shortcuts us ON ds.action = us.action AND us.user_id = ?
     ORDER BY ds.category, ds.action
@@ -81,7 +81,7 @@ router.put('/:action', authenticateToken, (req, res) => {
           ON CONFLICT (user_id, action) DO UPDATE SET
             shortcut = excluded.shortcut,
             is_enabled = excluded.is_enabled
-        `, [userId, action, normalizedShortcut, is_enabled !== false ? 1 : 0], function(err) {
+        `, [userId, action, normalizedShortcut, is_enabled !== false], function(err) {
           if (err) return res.status(500).json({ error: 'Failed to update shortcut' });
           
           res.json({ success: true, message: 'Shortcut updated' });
@@ -114,8 +114,8 @@ router.put('/:action/toggle', authenticateToken, (req, res) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (!data) return res.status(404).json({ error: 'Invalid action' });
     
-    const currentEnabled = data.is_enabled !== undefined ? data.is_enabled : 1;
-    const newEnabled = currentEnabled ? 0 : 1;
+    const currentEnabled = data.is_enabled !== undefined ? data.is_enabled : true;
+    const newEnabled = !currentEnabled;
     const shortcut = data.shortcut || data.default_shortcut;
     
     db.run(`

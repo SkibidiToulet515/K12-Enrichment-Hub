@@ -2110,7 +2110,7 @@ function renderProfileModal(profile) {
         ${!isOwnProfile ? `
           <div style="display:flex;gap:10px;justify-content:center;">
             ${!profile.friendshipStatus ? `
-              <button onclick="sendFriendRequest(${profile.id})" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;">Add Friend</button>
+              <button onclick="sendFriendRequestToUser(${profile.id})" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:6px;cursor:pointer;">Add Friend</button>
             ` : profile.friendshipStatus === 'pending' ? `
               <button disabled style="padding:10px 20px;background:var(--accent);color:var(--text-light);border:none;border-radius:6px;">Pending</button>
             ` : `
@@ -2139,7 +2139,7 @@ function closeProfileModal() {
   if (modal) modal.remove();
 }
 
-function sendFriendRequest(userId) {
+function sendFriendRequestToUser(userId) {
   fetch(`/api/friends/${userId}/request`, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
