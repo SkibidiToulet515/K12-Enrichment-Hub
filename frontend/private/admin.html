@@ -367,11 +367,11 @@
         </div>
         
         <div class="tabs">
-          <button class="tab-btn active" data-tab="pending">Pending Requests</button>
-          <button class="tab-btn" data-tab="active">Active Servers</button>
+          <button class="tab-btn active" data-tab="pending" onclick="showServerTab('pending')">Pending Requests</button>
+          <button class="tab-btn" data-tab="active" onclick="showServerTab('active')">Active Servers</button>
         </div>
         
-        <div class="panel">
+        <div class="panel" id="pendingServersPanel">
           <div class="panel-header">
             <h3 class="panel-title">Pending Server Requests</h3>
           </div>
@@ -386,6 +386,28 @@
               </tr>
             </thead>
             <tbody id="serverRequestsTable"></tbody>
+          </table>
+        </div>
+        
+        <div class="panel" id="activeServersPanel" style="display:none;">
+          <div class="panel-header">
+            <h3 class="panel-title">Active Servers</h3>
+            <div class="panel-actions">
+              <button class="action-btn edit" onclick="loadActiveServers()">Refresh</button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Server Name</th>
+                <th>Owner</th>
+                <th>Channels</th>
+                <th>Members</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="activeServersTable"></tbody>
           </table>
         </div>
       </section>
@@ -871,6 +893,62 @@
         headers: { 'Authorization': `Bearer ${token}` }
       });
       loadServerRequests();
+    }
+    
+    function showServerTab(tab) {
+      document.querySelectorAll('#servers .tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`#servers .tab-btn[data-tab="${tab}"]`).classList.add('active');
+      
+      if (tab === 'pending') {
+        document.getElementById('pendingServersPanel').style.display = 'block';
+        document.getElementById('activeServersPanel').style.display = 'none';
+        loadServerRequests();
+      } else {
+        document.getElementById('pendingServersPanel').style.display = 'none';
+        document.getElementById('activeServersPanel').style.display = 'block';
+        loadActiveServers();
+      }
+    }
+    
+    async function loadActiveServers() {
+      try {
+        const res = await fetch('/api/admin/servers', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const servers = await res.json();
+        
+        const tbody = document.getElementById('activeServersTable');
+        if (servers.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-light);">No active servers</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = servers.map(s => `
+          <tr>
+            <td>${escapeHtml(s.name)}</td>
+            <td>${escapeHtml(s.owner_name || 'Unknown')}</td>
+            <td>${s.channel_count || 0}</td>
+            <td>${s.member_count || 0}</td>
+            <td>${new Date(s.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn ban" onclick="deleteServer(${s.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load servers:', e);
+      }
+    }
+    
+    async function deleteServer(id) {
+      if (!confirm('Are you sure you want to delete this server? This will remove all channels and messages.')) return;
+      
+      await fetch(`/api/admin/servers/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      loadActiveServers();
+      refreshMetrics();
     }
     
     async function loadMessages() {

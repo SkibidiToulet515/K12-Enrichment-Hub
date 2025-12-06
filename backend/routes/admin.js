@@ -342,6 +342,39 @@ router.delete('/messages/:messageId', isAdmin, (req, res) => {
   });
 });
 
+// Get all active servers
+router.get('/servers', isAdmin, (req, res) => {
+  db.all(`
+    SELECT s.*, u.username as owner_name,
+      (SELECT COUNT(*) FROM channels WHERE server_id = s.id) as channel_count,
+      (SELECT COUNT(*) FROM server_members WHERE server_id = s.id) as member_count
+    FROM servers s
+    LEFT JOIN users u ON s.owner_id = u.id
+    ORDER BY s.created_at DESC
+  `, [], (err, servers) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to load servers' });
+    }
+    res.json(servers || []);
+  });
+});
+
+// Delete a server
+router.delete('/servers/:serverId', isAdmin, (req, res) => {
+  const { serverId } = req.params;
+  
+  db.run('DELETE FROM channels WHERE server_id = ?', [serverId], () => {
+    db.run('DELETE FROM server_members WHERE server_id = ?', [serverId], () => {
+      db.run('DELETE FROM servers WHERE id = ?', [serverId], (err) => {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to delete server' });
+        }
+        res.json({ success: true });
+      });
+    });
+  });
+});
+
 // Get dashboard metrics
 router.get('/metrics', isAdmin, (req, res) => {
   const metrics = {};
