@@ -88,6 +88,20 @@
       font-size: 12px;
       color: var(--text-light);
     }
+    .default-key {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+    .default-key kbd {
+      background: var(--bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 10px;
+      border: 1px solid var(--accent);
+      color: var(--text-light);
+    }
     .shortcut-controls {
       display: flex;
       align-items: center;
@@ -228,6 +242,7 @@
     }
 
     let shortcuts = [];
+    let defaultShortcuts = {};
     let recordingElement = null;
 
     const shortcutCategories = {
@@ -254,11 +269,22 @@
 
     async function loadShortcuts() {
       try {
-        const res = await fetch('/api/shortcuts', {
-          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
-        });
-        shortcuts = await res.json();
+        const [shortcutsRes, defaultsRes] = await Promise.all([
+          fetch('/api/shortcuts', {
+            headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+          }),
+          fetch('/api/shortcuts/defaults')
+        ]);
+        
+        shortcuts = await shortcutsRes.json();
+        const defaults = await defaultsRes.json();
+        
         if (!Array.isArray(shortcuts)) shortcuts = [];
+        if (Array.isArray(defaults)) {
+          defaults.forEach(d => {
+            defaultShortcuts[d.action] = d.shortcut;
+          });
+        }
         renderShortcuts();
       } catch (e) {
         console.error('Failed to load shortcuts:', e);
@@ -277,11 +303,14 @@
         return `
           <div class="shortcuts-section">
             <div class="section-title">${getCategoryIcon(category)} ${category}</div>
-            ${categoryShortcuts.map(s => `
+            ${categoryShortcuts.map(s => {
+              const defaultKey = defaultShortcuts[s.action] || '—';
+              return `
               <div class="shortcut-row">
                 <div class="shortcut-info">
                   <div class="shortcut-name">${formatActionName(s.action)}</div>
                   <div class="shortcut-desc">${shortcutDescriptions[s.action] || ''}</div>
+                  <div class="default-key">Default: <kbd>${formatShortcut(defaultKey)}</kbd></div>
                 </div>
                 <div class="shortcut-controls">
                   <div class="key-display" data-action="${s.action}" onclick="startRecording(this)">
@@ -292,7 +321,7 @@
                        onclick="toggleEnabled(this, ${s.is_enabled})"></div>
                 </div>
               </div>
-            `).join('')}
+            `}).join('')}
           </div>
         `;
       }).join('');
