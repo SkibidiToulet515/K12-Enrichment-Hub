@@ -1,0 +1,278 @@
+⭐ NEW FEATURES TO ADD (Unique, Useful, & Fit Your Website)
+1. Activity Status System (like Discord Rich Presence)
+
+Shows what users are doing:
+
+“Playing: Slope”
+
+“Watching: Kung Fu Panda”
+
+“Browsing: Google via Proxy”
+
+“Custom status with emoji + 100-char limit”
+
+2. AI Chat Assistant (PER USER)
+
+Each user gets an assistant for:
+
+Homework help
+
+Explaining assignments
+
+Summaries
+
+School-safe conversations
+
+(Does not need OpenAI — can use free small models.)
+
+3. AI Moderation System
+
+Automatic:
+
+Toxicity detection
+
+Auto-mute / warn
+
+Filter bypass detection
+
+Spam detection
+
+Auto-delete harmful images
+
+4. Mini-App Store (User-Contributed Tools)
+
+Let users upload small tools (HTML widgets):
+
+Calculators
+
+Timers
+
+Study flashcards
+
+Productivity tools
+
+Meme generators
+
+Micro-games
+
+Admins approve before publishing.
+
+5. Web-Based Code Runner (Sandbox)
+
+A built-in playground:
+
+HTML/CSS/JS
+
+Python (Skulpt)
+
+JavaScript console
+
+Safe sandboxed environment
+
+Perfect for school-friendly coding.
+
+6. Profile Levels & XP System
+
+XP from:
+
+Logging in
+
+Sending messages
+
+Playing games
+
+Completing tasks
+
+Watching educational videos
+
+Unlocks:
+
+Profile frames
+
+Badges
+
+Titles
+
+7. Global Leaderboards
+
+Most active users
+
+Highest XP
+
+Server ranking
+
+Daily/weekly events
+
+8. Task / To-Do System
+
+Users can:
+
+Make personal tasks
+
+Set reminders
+
+Mark as complete
+
+Sync with friend groups
+
+9. AI-Powered Search
+
+Search EVERYTHING at once:
+
+Users
+
+Servers
+
+Games
+
+Movies
+
+Proxy history
+
+Settings
+
+Commands
+
+(all from Ctrl + K)
+
+10. Cross-Server Announcements
+
+Admins can send a message that appears across:
+
+Global chat
+
+All servers
+
+A notification pop-up
+
+Useful for outages & updates.
+
+12. DM Games
+
+Built-in quick-play games in chat:
+
+Tic Tac Toe
+
+Connect 4
+
+Chess
+
+Hangman
+
+Rock Paper Scissors
+
+Animated inside the chat like Discord bots.
+
+13. Achievements System
+
+Examples:
+
+“Day 1” — first login
+
+“Chatterbox” — 100 messages
+
+“Collector” — bought 10 shop items
+
+“Strategist” — won 10 games
+
+“Loyal” — 30-day streak
+
+14. Server Boosting (Non-pay, In-game currency)
+
+Boost a server using coins:
+
+Custom server banner
+
+2 extra themes
+
+Audio reactions
+
+5 more emoji slots
+
+15. Custom Emojis (Per Server)
+
+Users/owners can upload:
+
+GIF emojis
+
+PNG emojis
+
+Use them in chat & DMs.
+
+16. Link Previews
+
+Paste a link → auto-preview:
+
+YouTube
+
+TikTok
+
+Images
+
+Articles
+
+Games
+
+(show thumbnails, titles, etc.)
+
+17. Event System
+
+Servers can host events:
+
+“Game Night – 7pm”
+
+“Movie Watch Party – 3pm”
+
+“Study Group – 5pm”
+
+With:
+
+RSVP
+
+Notifications
+
+Reminders
+
+18. Custom Chat Themes Per Server
+
+Similar to Discord server themes:
+
+Neon
+
+Midnight
+
+Bubblegum
+
+Retro grid
+
+Limbo (black/white glitch style)
+
+Users can toggle between:
+
+Global theme
+
+Server theme
+
+19. Advanced Proxy Mode Switching
+
+Instead of just UV / Scramjet:
+
+“Stealth mode” — iframe cloaking
+
+“Speed mode” — direct UV
+
+“Compatibility mode” — node fetch
+
+Auto-switch if a site fails.
+
+20. Snapshot Mode
+
+Users can “freeze” pages:
+
+Capture chat messages
+
+Save a server layout
+
+Save a favorite game screen
+
+This can be shared like a screenshot but stored server-side.
