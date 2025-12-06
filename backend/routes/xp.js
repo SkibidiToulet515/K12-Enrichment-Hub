@@ -103,7 +103,7 @@ router.post('/activity/:type', (req, res) => {
   db.run(`
     INSERT INTO user_xp (user_id, total_xp, messages_sent, games_played) VALUES (?, ?, 0, 0)
     ON CONFLICT(user_id) DO UPDATE SET 
-      total_xp = total_xp + ?,
+      total_xp = user_xp.total_xp + ?,
       ${updateField}
       updated_at = CURRENT_TIMESTAMP
   `, [userId, reward, reward], function(err) {
@@ -134,7 +134,7 @@ router.post('/claim-daily', (req, res) => {
       INSERT INTO user_xp (user_id, total_xp, login_streak, last_daily_claim)
       VALUES (?, ?, ?, CURRENT_TIMESTAMP)
       ON CONFLICT(user_id) DO UPDATE SET
-        total_xp = total_xp + ?,
+        total_xp = user_xp.total_xp + ?,
         login_streak = ?,
         last_daily_claim = CURRENT_TIMESTAMP,
         updated_at = CURRENT_TIMESTAMP
@@ -176,8 +176,8 @@ router.post('/activity/:type', (req, res) => {
     INSERT INTO user_xp (user_id, total_xp, ${column})
     VALUES (?, ?, 1)
     ON CONFLICT(user_id) DO UPDATE SET
-      total_xp = total_xp + ?,
-      ${column} = ${column} + 1,
+      total_xp = user_xp.total_xp + ?,
+      ${column} = user_xp.${column} + 1,
       updated_at = CURRENT_TIMESTAMP
   `, [userId, xpAmount, xpAmount], function(err) {
     if (err) return res.status(500).json({ error: err.message });
