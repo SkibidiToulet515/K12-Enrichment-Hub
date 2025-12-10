@@ -894,93 +894,61 @@
         float fbm(vec2 p) {
           float value = 0.0;
           float amplitude = 0.5;
-          float frequency = 1.0;
-          for (int i = 0; i < 8; i++) {
-            value += amplitude * smoothNoise(p * frequency);
-            frequency *= 2.0;
+          for (int i = 0; i < 6; i++) {
+            value += amplitude * smoothNoise(p);
+            p *= 2.0;
             amplitude *= 0.5;
           }
           return value;
         }
 
-        vec2 curl(vec2 p, float t) {
-          float eps = 0.01;
-          float n1 = fbm(p + vec2(eps, 0.0) + t);
-          float n2 = fbm(p - vec2(eps, 0.0) + t);
-          float n3 = fbm(p + vec2(0.0, eps) + t);
-          float n4 = fbm(p - vec2(0.0, eps) + t);
-          return vec2((n3 - n4) / (2.0 * eps), -(n1 - n2) / (2.0 * eps));
-        }
-
         void main() {
           vec2 uv = gl_FragCoord.xy / u_resolution;
-          float aspect = u_resolution.x / u_resolution.y;
-          vec2 p = (uv - 0.5) * vec2(aspect, 1.0) * 4.0;
+          vec2 p = uv * 3.0;
           
-          float t = u_time * 0.08;
+          float t = u_time * 0.15;
           
-          // Mouse attraction - particles flow TOWARD the mouse
-          vec2 mousePos = (u_mouse - 0.5) * vec2(aspect, 1.0) * 4.0;
-          float mouseDist = length(p - mousePos);
-          vec2 mouseDir = normalize(mousePos - p);
+          // Mouse attraction - particles gently flow toward mouse
+          vec2 mouseEffect = vec2(0.0);
+          float mouseDist = distance(uv, u_mouse);
+          if (mouseDist < 0.4) {
+            float strength = (1.0 - mouseDist / 0.4) * u_mouseStrength * 1.5;
+            // Flow TOWARD mouse (reversed direction)
+            mouseEffect = normalize(u_mouse - uv) * strength * 0.3;
+          }
           
-          // Create vortex/swirl effect around mouse
-          float vortexStrength = exp(-mouseDist * 0.8) * u_mouseStrength * 3.0;
-          vec2 vortex = vec2(-mouseDir.y, mouseDir.x) * vortexStrength;
-          vec2 attraction = mouseDir * vortexStrength * 0.5;
+          p += mouseEffect;
           
-          // Apply curl noise for organic swirling
-          vec2 curlOffset = curl(p * 0.5, t) * 0.8;
-          p += curlOffset + vortex + attraction;
+          float n1 = fbm(p + vec2(t, t * 0.7));
+          float n2 = fbm(p + vec2(n1 * 2.0, t * 0.5));
+          float n3 = fbm(p + vec2(n2, n1) + t * 0.3);
           
-          // Multiple layers of flowing noise
-          float n1 = fbm(p * 0.8 + vec2(t * 0.3, t * 0.2));
-          float n2 = fbm(p * 1.2 + vec2(n1 * 2.0, -t * 0.15) + curlOffset);
-          float n3 = fbm(p * 0.6 + vec2(n2 * 1.5, n1 * 1.5) + t * 0.1);
-          float n4 = fbm(p * 1.5 + vec2(n3, -n2) + vortex * 0.3);
+          float flow = fbm(p + vec2(n3 * 1.5, n2 * 1.5));
           
-          // Swirling smoke patterns
-          float swirl = sin(n1 * 6.28 + t) * 0.5 + 0.5;
-          float smoke = fbm(p + vec2(n4, n3) * 2.0 + t * 0.05);
-          
-          // Dynamic color mixing based on flow
           vec3 col1 = u_color1;
           vec3 col2 = u_color2;
           vec3 col3 = u_color3;
-          vec3 col4 = vec3(0.9, 0.4, 0.1); // Orange/gold accent
-          vec3 col5 = vec3(0.8, 0.2, 0.5); // Magenta accent
           
-          // Layer the colors like flowing smoke
-          vec3 color = mix(col1, col2, smoothstep(0.2, 0.8, n1));
-          color = mix(color, col3, smoothstep(0.3, 0.7, n2) * 0.8);
-          color = mix(color, col4, smoothstep(0.5, 0.9, n3) * 0.4);
-          color = mix(color, col5, smoothstep(0.4, 0.8, swirl) * 0.3);
+          vec3 color = mix(col1, col2, n1);
+          color = mix(color, col3, n2 * 0.6);
+          color = mix(color, col1, flow * 0.4);
           
-          // Flow intensity
-          float flow = (n1 + n2 + n3 + smoke) * 0.25;
-          float brightness = pow(flow, 1.5) * u_intensity * 1.5;
+          float brightness = (n3 + flow) * 0.5 * u_intensity;
+          color *= brightness + 0.1;
           
-          // Add bright wisps in the smoke
-          float wisps = pow(max(0.0, smoke - 0.5) * 2.0, 3.0);
-          color += vec3(0.3, 0.6, 0.8) * wisps * 0.5;
-          
-          // Mouse glow effect - bright spot where mouse is
-          float mouseGlow = exp(-mouseDist * 1.5) * u_mouseStrength;
-          color += mix(col2, col3, 0.5) * mouseGlow * 0.8;
-          
-          color *= brightness + 0.05;
+          // Soft glow at mouse position
+          float mouseGlow = exp(-mouseDist * 4.0) * u_mouseStrength * 0.3;
+          color += col2 * mouseGlow;
           
           if (u_glow > 0.5) {
-            float glow = pow(brightness, 2.5) * 0.6;
+            float glow = pow(brightness, 2.0) * 0.5;
             color += color * glow;
-            // Edge glow on smoke tendrils
-            float edge = abs(fract(n4 * 3.0) - 0.5) * 2.0;
-            color += col2 * pow(1.0 - edge, 4.0) * 0.2;
           }
           
-          // Subtle vignette
-          float vignette = 1.0 - pow(length(uv - 0.5) * 1.2, 2.0) * 0.5;
+          float vignette = 1.0 - length(uv - 0.5) * 0.8;
           color *= vignette;
+          
+          color *= 0.7;
           
           gl_FragColor = vec4(color, 1.0);
         }
