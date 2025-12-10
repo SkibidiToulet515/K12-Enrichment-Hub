@@ -228,8 +228,7 @@
       background: rgba(0, 0, 0, 0.95);
       z-index: 9999;
       display: none;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       padding: 20px;
     }
 
@@ -237,29 +236,65 @@
       display: flex;
     }
 
-    .video-modal-content {
-      width: 100%;
-      max-width: 1200px;
-      position: relative;
+    .video-modal-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      margin-bottom: 20px;
     }
 
-    .video-modal-close {
-      position: absolute;
-      top: -50px;
-      right: 0;
-      background: rgba(255, 255, 255, 0.1);
+    .video-modal-back {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       border: none;
+      border-radius: 10px;
       color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      font-size: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .video-modal-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .video-modal-close-btn {
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
       cursor: pointer;
       transition: all 0.3s;
     }
 
-    .video-modal-close:hover {
+    .video-modal-close-btn:hover {
       background: #ff0000;
+      border-color: #ff0000;
+    }
+
+    .video-modal-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .video-modal-close {
+      display: none;
     }
 
     .video-player {
@@ -267,6 +302,7 @@
       aspect-ratio: 16/9;
       border-radius: 12px;
       overflow: hidden;
+      max-height: calc(100vh - 150px);
     }
 
     .video-player iframe {
@@ -354,8 +390,11 @@
   </div>
 
   <div class="video-modal" id="videoModal">
+    <div class="video-modal-nav">
+      <a href="/private/dashboard.html" class="video-modal-back">← Back to Dashboard</a>
+      <button class="video-modal-close-btn" id="closeModal">✕ Close Video</button>
+    </div>
     <div class="video-modal-content">
-      <button class="video-modal-close" id="closeModal">&times;</button>
       <div class="video-player" id="videoPlayer"></div>
     </div>
   </div>
