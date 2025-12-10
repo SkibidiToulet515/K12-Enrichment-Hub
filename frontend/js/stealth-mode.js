@@ -3,11 +3,11 @@ const StealthMode = {
   originalFavicon: null,
   isActive: false,
   
-  // ClassLink MyApps icon (base64 encoded for reliability)
-  classLinkIcon: 'https://asset-cdn.schoology.com/sites/all/themes/flavor_developer/favicon.ico',
+  // ClassLink favicon
+  classLinkIcon: 'https://www.classlink.com/favicon.ico',
   
   panicTargets: [
-    { name: 'ClassLink Launchpad', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJSSURBVFhH7ZY9aBRBFMf/M7t3l0tCvogfqIWFYCEWFoKNhYWFhYWFhYWFhYWFhYWFhYWFRUSwsLCwsLCwsLCwsLCwECwsLCwsLCwsLCwEi4CgiN+JH+e5u7sz+2Zv725zd7mLYPzBMrPz3rz/vJnZnQP+U4QA4O8KnhOO47wHsNZ13ZXGmD2u664yxiw3xiwxxiw0xsw3xsw1xswyxkw3xkwzxkwxxkw2xkwyxkw0xowzxow1xow2xowkjCDRiCNxJI44Esfaoe08LvdJ+QTJTwK4H8ADANcBXAPwB4ArAC4BuAjgPIDfAM4BOAPgFIATAI4DOAbgKIAjAA4DOAjgAID9APYCOArgIIDLAK4A+ATgI4APAN4DeAfgLYA3AF4DeAXgJYAXAJ4DeAbgKYAnAB4DeATgIYAHAO4DuAfgLoA7AG4DuAXgJoAbAK4DuAbgKoBLAC4AuADgPADr4SyAMwBOAzgJ4ASA4wCOATgK4AiAwwAOATgI4ACA/QD2AdgLYA+A3QB2AdgJYAeA7QC2AdgKYAuAzQA2AdgIYAOA9QDWAVgLYA2A1QBWA1gFYCWAFQCWA1gGYCmAJQAWA1gEYCGABQDmA5gHYC6AOQBmA5gFYCaAGQCmA5gGYCqAKQAmA5gEYCKACQDGAxgHYCyAMQBGAxgFYCSAEQCGA/gH4G+CYQA7gIUA5gOYB2AugDkAZgOYBWAmgBkApgOYBmAqgCkAJgOYBGAigAkAxgMYB2AsgDEARgMYBWAkgBEAhgH4C2AogL8AegL4A6AbgG4AugLoAqAzgE4AOgLoAKA9gHYA2gJoA+A/BPBfKKi+K7gAAAAASUVORK5CYII=' }
+    { name: 'ClassLink Launchpad', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'https://www.classlink.com/favicon.ico' }
   ],
   
   // Custom flood history URL
