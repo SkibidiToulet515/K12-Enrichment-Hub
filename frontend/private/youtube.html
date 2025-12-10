@@ -14,7 +14,11 @@
     }
 
     .videos-header {
-      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
     }
 
     .videos-header h1 {
@@ -24,6 +28,25 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+    }
+
+    .back-btn {
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: var(--primary);
+      color: var(--bg);
     }
 
     .search-section {
@@ -297,27 +320,14 @@
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <nav class="sidebar" id="sidebar">
-      <div class="logo">NebulaCore</div>
-      <ul class="nav-links">
-        <li><a href="/private/dashboard.html">Dashboard</a></li>
-        <li><a href="/private/chat.html">Chat</a></li>
-        <li><a href="/private/games.html">Games</a></li>
-        <li><a href="/private/youtube.html" class="active">Videos</a></li>
-        <li><a href="/private/browse.html">Browse</a></li>
-        <li><a href="/private/shop.html">Shop</a></li>
-        <li><a href="/private/profile.html">Profile</a></li>
-        <li><a href="/private/settings.html">Settings</a></li>
-      </ul>
-    </nav>
-
-    <main class="main-content">
-      <div class="videos-container">
-        <div class="videos-header">
-          <h1>Video Library</h1>
-          <p style="color: var(--text-secondary);">Search and watch educational videos</p>
-        </div>
+  <div class="videos-container">
+    <div class="videos-header">
+      <div>
+        <h1>📺 Video Library</h1>
+        <p style="color: var(--text-secondary);">Search and watch educational videos</p>
+      </div>
+      <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+    </div>
 
         <div class="search-section">
           <div class="search-input-container">
@@ -338,9 +348,7 @@
           <div class="loading-spinner">Loading videos...</div>
         </div>
 
-        <button class="load-more-btn" id="loadMoreBtn" style="display: none;">Load More</button>
-      </div>
-    </main>
+    <button class="load-more-btn" id="loadMoreBtn" style="display: none;">Load More</button>
   </div>
 
   <div class="video-modal" id="videoModal">

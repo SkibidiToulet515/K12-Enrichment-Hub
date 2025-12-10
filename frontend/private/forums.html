@@ -31,6 +31,25 @@
       background-clip: text;
     }
 
+    .back-btn {
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .back-btn:hover {
+      background: var(--primary);
+      color: var(--bg);
+    }
+
     .new-post-btn {
       padding: 12px 24px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -475,28 +494,16 @@
   </style>
 </head>
 <body>
-  <nav class="private-nav">
-    <div class="nav-brand">NebulaCore</div>
-    <ul class="nav-links">
-      <li><a href="/private/dashboard.html">Dashboard</a></li>
-      <li><a href="/private/chat.html">Chat</a></li>
-      <li><a href="/private/games.html">Games</a></li>
-      <li><a href="/private/youtube.html">Videos</a></li>
-      <li><a href="/private/forums.html" class="active">Forums</a></li>
-      <li><a href="/private/browser.html">Browse</a></li>
-      <li><a href="/private/shop.html">Shop</a></li>
-      <li><a href="/private/profile.html">Profile</a></li>
-      <li><a href="/private/theme-creator.html">Theme Creator</a></li>
-    </ul>
-  </nav>
-
   <div class="forums-container">
     <div id="categoriesView">
       <div class="forums-header">
-        <h1>Anonymous Forums</h1>
-        <button class="new-post-btn" onclick="openNewPostModal()">
-          <span>+</span> New Post
-        </button>
+        <h1>💭 Anonymous Forums</h1>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <button class="new-post-btn" onclick="openNewPostModal()">
+            <span>+</span> New Post
+          </button>
+          <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+        </div>
       </div>
 
       <div class="search-bar">
