@@ -37,6 +37,8 @@ const activityRoutes = require('./routes/activity');
 const activityLogRoutes = require('./routes/activity-log');
 const tasksRoutes = require('./routes/tasks');
 const announcementsRoutes = require('./routes/announcements');
+const gamesRoutes = require('./routes/games');
+const customizationRoutes = require('./routes/customization');
 const logger = require('./logger');
 
 const storage = multer.diskStorage({
@@ -159,6 +161,8 @@ app.use('/api/activity', activityRoutes);
 app.use('/api/activity-log', activityLogRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/announcements', announcementsRoutes);
+app.use('/api/games', gamesRoutes);
+app.use('/api/customization', customizationRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {

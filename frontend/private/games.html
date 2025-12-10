@@ -355,6 +355,181 @@
       font-size: 15px;
     }
 
+    /* Category Filters */
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+      padding: 15px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--accent);
+    }
+
+    .category-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .category-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--bg);
+    }
+
+    .category-count {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-left: 4px;
+    }
+
+    /* Recently Played Section */
+    .recently-played {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .recently-played-grid {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scrollbar-width: thin;
+    }
+
+    .recently-played-grid::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .recently-played-grid::-webkit-scrollbar-track {
+      background: var(--card);
+      border-radius: 3px;
+    }
+
+    .recently-played-grid::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .recent-game-card {
+      min-width: 180px;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .recent-game-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+    }
+
+    .recent-game-thumb {
+      height: 100px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary, #ff6b6b));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .recent-game-info {
+      padding: 12px;
+    }
+
+    .recent-game-name {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recent-game-time {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* Thumbnail images */
+    .game-thumbnail-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .game-thumbnail.has-image {
+      padding: 0;
+      font-size: 0;
+    }
+
+    /* Star Rating */
+    .rating-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 15px;
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+    }
+
+    .rating-label {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 2px;
+    }
+
+    .star {
+      font-size: 20px;
+      cursor: pointer;
+      color: #444;
+      transition: all 0.15s;
+    }
+
+    .star:hover,
+    .star.hovered {
+      color: #ffd700;
+      transform: scale(1.2);
+    }
+
+    .star.active {
+      color: #ffd700;
+    }
+
+    .avg-rating {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-left: 5px;
+    }
+
     @media (max-width: 768px) {
       .games-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -399,6 +574,28 @@
       <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
     </div>
 
+    <!-- Recently Played Section -->
+    <div class="recently-played" id="recentlyPlayedSection" style="display: none;">
+      <div class="section-title">🕐 Recently Played</div>
+      <div class="recently-played-grid" id="recentlyPlayedGrid"></div>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="category-filters" id="categoryFilters">
+      <button class="category-btn active" data-category="all">All Games</button>
+      <button class="category-btn" data-category="action">🔫 Action</button>
+      <button class="category-btn" data-category="adventure">🗺️ Adventure</button>
+      <button class="category-btn" data-category="puzzle">🧩 Puzzle</button>
+      <button class="category-btn" data-category="racing">🏎️ Racing</button>
+      <button class="category-btn" data-category="sports">⚽ Sports</button>
+      <button class="category-btn" data-category="strategy">♟️ Strategy</button>
+      <button class="category-btn" data-category="arcade">👾 Arcade</button>
+      <button class="category-btn" data-category="rpg">⚔️ RPG</button>
+      <button class="category-btn" data-category="simulation">🏠 Simulation</button>
+      <button class="category-btn" data-category="horror">👻 Horror</button>
+      <button class="category-btn" data-category="multiplayer">👥 Multiplayer</button>
+    </div>
+
     <div id="searchResults" class="search-results"></div>
     <div id="errorContainer"></div>
     <div id="gamesGrid" class="games-grid">
@@ -411,6 +608,17 @@
     <div class="game-viewer-header">
       <h2 class="game-viewer-title" id="gameTitleHeader"></h2>
       <div class="game-viewer-buttons">
+        <div class="rating-section" id="ratingSection">
+          <span class="rating-label">Rate:</span>
+          <div class="star-rating" id="starRating">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+          </div>
+          <span class="avg-rating" id="avgRating"></span>
+        </div>
         <button class="game-btn fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
         <button class="game-btn exit-btn" onclick="closeGameViewer()">✕ Exit</button>
       </div>
@@ -438,12 +646,15 @@
     }
 
     let allGames = [];
+    let filteredGames = [];
     let displayedGames = [];
     let currentIndex = 0;
     const BATCH_SIZE = 50;
     let isLoading = false;
     let isSearching = false;
     let observer = null;
+    let currentCategory = 'all';
+    
     const iconMap = {
       'Duck Life': '🦆',
       'Duck Life 2': '🦆',
@@ -451,11 +662,38 @@
       'Doodle Jump': '⬆️'
     };
 
+    // Category detection based on game name keywords
+    const categoryKeywords = {
+      action: ['shoot', 'gun', 'war', 'fight', 'battle', 'combat', 'strike', 'assault', 'sniper', 'doom', 'quake', 'halo', 'call of duty', 'cod', 'madness', 'metal slug'],
+      adventure: ['zelda', 'mario', 'sonic', 'adventure', 'quest', 'kingdom', 'legend', 'metroid', 'hollow knight', 'journey', 'explorer'],
+      puzzle: ['puzzle', '2048', 'tetris', 'sudoku', 'match', 'block', 'brain', 'escape', 'riddle', 'slice'],
+      racing: ['race', 'racing', 'drift', 'kart', 'car', 'drive', 'speed', 'moto', 'bike', 'road', 'highway', 'nfs', 'need for speed'],
+      sports: ['soccer', 'football', 'basketball', 'tennis', 'golf', 'baseball', 'nba', 'nfl', 'fifa', 'sport', 'ball', 'hockey'],
+      strategy: ['tower defense', 'strategy', 'war', 'empire', 'kingdom', 'chess', 'civilization', 'bloons', 'td'],
+      arcade: ['arcade', 'pac', 'pinball', 'breakout', 'pong', 'snake', 'space invaders', 'clicker', 'idle', 'flappy'],
+      rpg: ['pokemon', 'rpg', 'final fantasy', 'dragon', 'quest', 'dungeon', 'persona', 'chrono', 'earthbound', 'mother'],
+      simulation: ['simulator', 'simulation', 'tycoon', 'farm', 'restaurant', 'papa', 'cooking', 'build', 'craft'],
+      horror: ['horror', 'scary', 'fnaf', 'freddy', 'zombie', 'dead', 'evil', 'nightmare', 'silent hill', 'resident evil'],
+      multiplayer: ['io', '.io', 'multiplayer', 'online', 'pvp', '1v1', 'vs', 'agar', 'slither']
+    };
+
+    function getGameCategory(gameName) {
+      const name = gameName.toLowerCase();
+      for (const [category, keywords] of Object.entries(categoryKeywords)) {
+        if (keywords.some(kw => name.includes(kw))) {
+          return category;
+        }
+      }
+      return 'arcade'; // default category
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuth()) return;
       await loadGames();
+      loadRecentlyPlayed();
       setupSearch();
       setupLazyLoad();
+      setupCategoryFilters();
       
       // Check for search query from URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -466,6 +704,118 @@
         searchInput.dispatchEvent(new Event('input'));
       }
     });
+
+    // Recently Played Functions
+    function getRecentlyPlayed() {
+      try {
+        return JSON.parse(localStorage.getItem('recentlyPlayedGames') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveRecentlyPlayed(gameName, gameUrl) {
+      let recent = getRecentlyPlayed();
+      // Remove if already exists
+      recent = recent.filter(g => g.name !== gameName);
+      // Add to front
+      recent.unshift({ name: gameName, url: gameUrl, timestamp: Date.now() });
+      // Keep only last 10
+      recent = recent.slice(0, 10);
+      localStorage.setItem('recentlyPlayedGames', JSON.stringify(recent));
+    }
+
+    function loadRecentlyPlayed() {
+      const recent = getRecentlyPlayed();
+      const section = document.getElementById('recentlyPlayedSection');
+      const grid = document.getElementById('recentlyPlayedGrid');
+      
+      if (recent.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      
+      section.style.display = 'block';
+      grid.innerHTML = recent.map(game => {
+        const timeAgo = getTimeAgo(game.timestamp);
+        return `
+          <div class="recent-game-card" onclick="openGameViewer('${escapeHtml(game.name)}', '${game.url}')">
+            <div class="recent-game-thumb">${iconMap[game.name] || '🎮'}</div>
+            <div class="recent-game-info">
+              <div class="recent-game-name">${escapeHtml(game.name)}</div>
+              <div class="recent-game-time">${timeAgo}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getTimeAgo(timestamp) {
+      const seconds = Math.floor((Date.now() - timestamp) / 1000);
+      if (seconds < 60) return 'Just now';
+      if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+      if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+      return Math.floor(seconds / 86400) + 'd ago';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Category Filter Functions
+    function setupCategoryFilters() {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.dataset.category;
+          filterByCategory();
+        });
+      });
+    }
+
+    function filterByCategory() {
+      if (currentCategory === 'all') {
+        filteredGames = [...allGames];
+      } else {
+        filteredGames = allGames.filter(game => getGameCategory(game.name) === currentCategory);
+      }
+      displayedGames = [];
+      currentIndex = 0;
+      const gamesGrid = document.getElementById('gamesGrid');
+      gamesGrid.innerHTML = '';
+      loadMoreFilteredGames();
+    }
+
+    function loadMoreFilteredGames() {
+      if (isLoading || currentIndex >= filteredGames.length) return;
+      
+      isLoading = true;
+      const gamesGrid = document.getElementById('gamesGrid');
+      const endIndex = Math.min(currentIndex + BATCH_SIZE, filteredGames.length);
+      const newGames = filteredGames.slice(currentIndex, endIndex);
+      
+      displayedGames.push(...newGames);
+      const html = newGames.map(game => createGameCard(game)).join('');
+      
+      if (currentIndex === 0) {
+        gamesGrid.innerHTML = html || '<div class="no-results"><div class="no-results-icon">🎮</div>No games in this category</div>';
+      } else {
+        const loaderEl = document.getElementById('lazy-loader');
+        if (loaderEl) loaderEl.remove();
+        gamesGrid.innerHTML += html;
+      }
+      
+      if (endIndex < filteredGames.length) {
+        gamesGrid.innerHTML += '<div id="lazy-loader" class="loading" style="padding: 20px; grid-column: 1/-1; text-align: center;">Loading more...</div>';
+        setTimeout(() => setupLazyLoad(), 0);
+      }
+      
+      currentIndex = endIndex;
+      isLoading = false;
+    }
 
     async function loadGames() {
       try {
@@ -537,6 +887,13 @@
       document.getElementById('gameFrame').src = gameUrl;
       document.getElementById('gameViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
+      
+      // Save to recently played
+      saveRecentlyPlayed(gameName, gameUrl);
+      loadRecentlyPlayed(); // Refresh the display
+      
+      // Load game rating
+      loadGameRating(gameName);
       
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -699,6 +1056,96 @@
       setupLazyLoad();
       document.getElementById('searchInput').focus();
     }
+
+    // Star Rating System
+    let currentGameName = '';
+    let userRating = 0;
+
+    function setupStarRating() {
+      const stars = document.querySelectorAll('#starRating .star');
+      
+      stars.forEach(star => {
+        star.addEventListener('mouseenter', () => {
+          const rating = parseInt(star.dataset.rating);
+          highlightStars(rating);
+        });
+        
+        star.addEventListener('mouseleave', () => {
+          highlightStars(userRating);
+        });
+        
+        star.addEventListener('click', () => {
+          const rating = parseInt(star.dataset.rating);
+          submitRating(rating);
+        });
+      });
+    }
+
+    function highlightStars(rating) {
+      const stars = document.querySelectorAll('#starRating .star');
+      stars.forEach(star => {
+        const r = parseInt(star.dataset.rating);
+        star.classList.toggle('active', r <= rating);
+      });
+    }
+
+    async function loadGameRating(gameName) {
+      currentGameName = gameName;
+      userRating = 0;
+      highlightStars(0);
+      document.getElementById('avgRating').textContent = '';
+
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`/api/games/ratings/${encodeURIComponent(gameName)}`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        const data = await response.json();
+        
+        if (data.userRating) {
+          userRating = data.userRating.rating;
+          highlightStars(userRating);
+        }
+        
+        if (data.total > 0) {
+          document.getElementById('avgRating').textContent = `${data.average}★ (${data.total})`;
+        }
+      } catch (err) {
+        console.error('Failed to load rating:', err);
+      }
+    }
+
+    async function submitRating(rating) {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert('Please log in to rate games');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/games/rate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ gameName: currentGameName, rating })
+        });
+
+        if (response.ok) {
+          userRating = rating;
+          highlightStars(rating);
+          loadGameRating(currentGameName); // Refresh average
+        }
+      } catch (err) {
+        console.error('Failed to submit rating:', err);
+      }
+    }
+
+    // Initialize star rating on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      setupStarRating();
+    });
   </script>
 </body>
 </html>

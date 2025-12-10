@@ -241,3 +241,138 @@ function escapeHtml(text) {
   };
   return String(text).replace(/[&<>"']/g, m => map[m]);
 }
+
+// Profile Banner Functionality
+function setupBannerUpload() {
+  const bannerInput = document.getElementById('bannerInput');
+  const uploadBannerBtn = document.getElementById('uploadBannerBtn');
+  const removeBannerBtn = document.getElementById('removeBannerBtn');
+  const bannerPreview = document.getElementById('bannerPreview');
+
+  // Load current banner
+  loadBanner();
+
+  uploadBannerBtn.addEventListener('click', async () => {
+    if (!bannerInput.files.length) {
+      alert('Please select an image file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('banner', bannerInput.files[0]);
+
+    try {
+      const response = await fetch('/api/customization/banner', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` },
+        body: formData
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        bannerPreview.style.backgroundImage = `url(${data.bannerUrl})`;
+        bannerInput.value = '';
+        alert('Banner updated!');
+      } else {
+        alert(data.error || 'Failed to upload banner');
+      }
+    } catch (err) {
+      console.error('Banner upload error:', err);
+      alert('Failed to upload banner');
+    }
+  });
+
+  removeBannerBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/customization/banner', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+
+      if (response.ok) {
+        bannerPreview.style.backgroundImage = '';
+        alert('Banner removed!');
+      }
+    } catch (err) {
+      console.error('Banner remove error:', err);
+    }
+  });
+}
+
+async function loadBanner() {
+  try {
+    const response = await fetch('/api/customization/banner', {
+      headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+    });
+    const data = await response.json();
+    if (data.bannerUrl) {
+      document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerUrl})`;
+    }
+  } catch (err) {
+    console.error('Failed to load banner:', err);
+  }
+}
+
+// Wallpaper Functionality
+function setupWallpaperUpload() {
+  const wallpaperInput = document.getElementById('wallpaperInput');
+  const uploadWallpaperBtn = document.getElementById('uploadWallpaperBtn');
+  const removeWallpaperBtn = document.getElementById('removeWallpaperBtn');
+  const wallpaperStatus = document.getElementById('wallpaperStatus');
+
+  uploadWallpaperBtn.addEventListener('click', async () => {
+    if (!wallpaperInput.files.length) {
+      alert('Please select an image file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('wallpaper', wallpaperInput.files[0]);
+
+    try {
+      const response = await fetch('/api/customization/wallpaper', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` },
+        body: formData
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('customWallpaper', data.wallpaperUrl);
+        wallpaperStatus.textContent = 'Wallpaper set! Refresh dashboard to see it.';
+        wallpaperStatus.style.color = 'var(--accent)';
+        wallpaperStatus.style.display = 'block';
+        wallpaperInput.value = '';
+      } else {
+        alert(data.error || 'Failed to upload wallpaper');
+      }
+    } catch (err) {
+      console.error('Wallpaper upload error:', err);
+      alert('Failed to upload wallpaper');
+    }
+  });
+
+  removeWallpaperBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/customization/wallpaper', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+      });
+
+      if (response.ok) {
+        localStorage.removeItem('customWallpaper');
+        wallpaperStatus.textContent = 'Wallpaper removed!';
+        wallpaperStatus.style.color = 'var(--text-secondary)';
+        wallpaperStatus.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Wallpaper remove error:', err);
+    }
+  });
+}
+
+// Initialize banner and wallpaper on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setupBannerUpload();
+  setupWallpaperUpload();
+});

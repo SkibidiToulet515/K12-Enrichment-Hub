@@ -136,6 +136,27 @@
           </select>
         </div>
 
+        <div class="profile-section">
+          <h3>Profile Banner</h3>
+          <div id="bannerPreview" style="width: 100%; height: 120px; background: linear-gradient(135deg, var(--primary), var(--secondary, #ff6b6b)); border-radius: 12px; margin-bottom: 12px; background-size: cover; background-position: center;"></div>
+          <input type="file" id="bannerInput" accept=".png,.jpg,.jpeg,.gif,.webp" style="margin-bottom: 12px;">
+          <div style="display: flex; gap: 10px;">
+            <button id="uploadBannerBtn" class="btn-primary">Upload Banner</button>
+            <button id="removeBannerBtn" class="btn-secondary">Remove</button>
+          </div>
+        </div>
+
+        <div class="profile-section">
+          <h3>Custom Wallpaper</h3>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">Set a custom background for your dashboard</p>
+          <input type="file" id="wallpaperInput" accept=".png,.jpg,.jpeg,.gif,.webp" style="margin-bottom: 12px;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button id="uploadWallpaperBtn" class="btn-primary">Upload Wallpaper</button>
+            <button id="removeWallpaperBtn" class="btn-secondary">Remove</button>
+          </div>
+          <p id="wallpaperStatus" style="margin-top: 10px; font-size: 13px; display: none;"></p>
+        </div>
+
         <div class="profile-section" style="border-top: 2px solid #e74c3c; padding-top: 20px; margin-top: 20px;">
           <h3 style="color: #e74c3c;">Danger Zone</h3>
           <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">

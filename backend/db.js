@@ -529,6 +529,32 @@ async function initDatabase() {
     await client.query(`CREATE INDEX IF NOT EXISTS idx_activity_log_category ON activity_log(category)`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_activity_log_created ON activity_log(created_at DESC)`);
 
+    // Game ratings and reviews
+    await client.query(`CREATE TABLE IF NOT EXISTS game_ratings (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      game_name TEXT NOT NULL,
+      rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+      review TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, game_name)
+    )`);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_game_ratings_game ON game_ratings(game_name)`);
+
+    // User customization settings (wallpapers, banners, etc.)
+    await client.query(`CREATE TABLE IF NOT EXISTS user_customization (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL UNIQUE,
+      wallpaper_url TEXT,
+      wallpaper_type TEXT DEFAULT 'default',
+      profile_banner_url TEXT,
+      dashboard_layout TEXT DEFAULT '{}',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+
     await client.query(`CREATE TABLE IF NOT EXISTS user_preferences (
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL UNIQUE,
