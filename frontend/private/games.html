@@ -530,6 +530,184 @@
       margin-left: 5px;
     }
 
+    /* Speedrun Timer */
+    .speedrun-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 15px;
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+    }
+
+    .timer-display {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: bold;
+      color: #00ff88;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .timer-display.running {
+      color: #ffcc00;
+    }
+
+    .timer-display.stopped {
+      color: #ff6b6b;
+    }
+
+    .timer-btn {
+      padding: 5px 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .timer-btn.start-btn {
+      background: #00ff88;
+      color: #000;
+    }
+
+    .timer-btn.start-btn.running {
+      background: #ffcc00;
+    }
+
+    .timer-btn.reset-btn {
+      background: #666;
+      color: white;
+    }
+
+    .timer-btn.submit-btn {
+      background: var(--accent);
+      color: white;
+    }
+
+    .timer-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .leaderboard-btn {
+      padding: 8px 12px !important;
+      font-size: 16px !important;
+    }
+
+    /* Leaderboard Modal */
+    .leaderboard-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 10001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .leaderboard-modal.active {
+      display: flex;
+    }
+
+    .leaderboard-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 25px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .leaderboard-header h3 {
+      margin: 0;
+      color: var(--accent);
+    }
+
+    .leaderboard-close {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .leaderboard-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .leaderboard-tab {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .leaderboard-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .leaderboard-entry {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .leaderboard-rank {
+      font-size: 18px;
+      font-weight: bold;
+      width: 30px;
+      text-align: center;
+    }
+
+    .leaderboard-rank.gold { color: #ffd700; }
+    .leaderboard-rank.silver { color: #c0c0c0; }
+    .leaderboard-rank.bronze { color: #cd7f32; }
+
+    .leaderboard-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .leaderboard-info {
+      flex: 1;
+    }
+
+    .leaderboard-name {
+      font-weight: 600;
+    }
+
+    .leaderboard-score {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
     @media (max-width: 768px) {
       .games-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -608,6 +786,12 @@
     <div class="game-viewer-header">
       <h2 class="game-viewer-title" id="gameTitleHeader"></h2>
       <div class="game-viewer-buttons">
+        <div class="speedrun-section" id="speedrunSection">
+          <span class="timer-display" id="timerDisplay">00:00.000</span>
+          <button class="timer-btn start-btn" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+          <button class="timer-btn reset-btn" onclick="resetTimer()">Reset</button>
+          <button class="timer-btn submit-btn" id="submitTimeBtn" onclick="submitSpeedrun()" style="display:none;">Submit</button>
+        </div>
         <div class="rating-section" id="ratingSection">
           <span class="rating-label">Rate:</span>
           <div class="star-rating" id="starRating">
@@ -619,6 +803,7 @@
           </div>
           <span class="avg-rating" id="avgRating"></span>
         </div>
+        <button class="game-btn leaderboard-btn" onclick="showLeaderboard()">🏆</button>
         <button class="game-btn fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
         <button class="game-btn exit-btn" onclick="closeGameViewer()">✕ Exit</button>
       </div>
@@ -631,6 +816,21 @@
   <!-- Fullscreen exit hint -->
   <div class="fullscreen-hint" id="fullscreenHint">
     Press <kbd>\</kbd> to exit fullscreen
+  </div>
+
+  <!-- Leaderboard Modal -->
+  <div class="leaderboard-modal" id="leaderboardModal">
+    <div class="leaderboard-content">
+      <div class="leaderboard-header">
+        <h3 id="leaderboardTitle">Leaderboard</h3>
+        <button class="leaderboard-close" onclick="closeLeaderboard()">&times;</button>
+      </div>
+      <div class="leaderboard-tabs">
+        <button class="leaderboard-tab active" data-type="scores" onclick="switchLeaderboardTab('scores')">High Scores</button>
+        <button class="leaderboard-tab" data-type="speedruns" onclick="switchLeaderboardTab('speedruns')">Speedruns</button>
+      </div>
+      <div id="leaderboardList"></div>
+    </div>
   </div>
 
   <script src="/js/themes.js"></script>
@@ -1145,6 +1345,183 @@
     // Initialize star rating on page load
     document.addEventListener('DOMContentLoaded', () => {
       setupStarRating();
+    });
+
+    // Speedrun Timer System
+    let timerInterval = null;
+    let timerStartTime = 0;
+    let timerElapsed = 0;
+    let timerRunning = false;
+
+    function formatTime(ms) {
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const millis = ms % 1000;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(millis).padStart(3, '0')}`;
+    }
+
+    function toggleTimer() {
+      const display = document.getElementById('timerDisplay');
+      const startBtn = document.getElementById('timerStartBtn');
+      const submitBtn = document.getElementById('submitTimeBtn');
+      
+      if (timerRunning) {
+        // Stop timer
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerElapsed = Date.now() - timerStartTime;
+        display.classList.remove('running');
+        display.classList.add('stopped');
+        startBtn.textContent = 'Resume';
+        startBtn.classList.remove('running');
+        submitBtn.style.display = 'inline-block';
+      } else {
+        // Start timer
+        timerStartTime = Date.now() - timerElapsed;
+        timerRunning = true;
+        display.classList.add('running');
+        display.classList.remove('stopped');
+        startBtn.textContent = 'Stop';
+        startBtn.classList.add('running');
+        submitBtn.style.display = 'none';
+        
+        timerInterval = setInterval(() => {
+          timerElapsed = Date.now() - timerStartTime;
+          display.textContent = formatTime(timerElapsed);
+        }, 10);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerElapsed = 0;
+      timerStartTime = 0;
+      
+      const display = document.getElementById('timerDisplay');
+      const startBtn = document.getElementById('timerStartBtn');
+      const submitBtn = document.getElementById('submitTimeBtn');
+      
+      display.textContent = '00:00.000';
+      display.classList.remove('running', 'stopped');
+      startBtn.textContent = 'Start';
+      startBtn.classList.remove('running');
+      submitBtn.style.display = 'none';
+    }
+
+    async function submitSpeedrun() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert('Please log in to submit speedruns');
+        return;
+      }
+
+      if (timerElapsed === 0) {
+        alert('No time to submit');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/speedruns/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            gameName: currentGameName,
+            timeMs: timerElapsed,
+            category: 'any%'
+          })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          let message = `Time submitted: ${formatTime(timerElapsed)}`;
+          if (data.isPersonalBest) message += '\nNew Personal Best!';
+          if (data.isWorldRecord) message += '\nWORLD RECORD!';
+          alert(message);
+          resetTimer();
+        } else {
+          alert(data.error || 'Failed to submit time');
+        }
+      } catch (err) {
+        console.error('Submit error:', err);
+        alert('Failed to submit time');
+      }
+    }
+
+    // Leaderboard System
+    let currentLeaderboardType = 'scores';
+
+    function showLeaderboard() {
+      document.getElementById('leaderboardModal').classList.add('active');
+      document.getElementById('leaderboardTitle').textContent = `${currentGameName} Leaderboard`;
+      loadLeaderboardData('scores');
+    }
+
+    function closeLeaderboard() {
+      document.getElementById('leaderboardModal').classList.remove('active');
+    }
+
+    function switchLeaderboardTab(type) {
+      currentLeaderboardType = type;
+      document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.type === type);
+      });
+      loadLeaderboardData(type);
+    }
+
+    async function loadLeaderboardData(type) {
+      const listEl = document.getElementById('leaderboardList');
+      listEl.innerHTML = '<p style="text-align:center;color:var(--text-secondary)">Loading...</p>';
+
+      try {
+        const endpoint = type === 'scores' 
+          ? `/api/leaderboards/${encodeURIComponent(currentGameName)}`
+          : `/api/speedruns/${encodeURIComponent(currentGameName)}`;
+        
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        const entries = type === 'scores' ? data.leaderboard : data.speedruns;
+        
+        if (!entries || entries.length === 0) {
+          listEl.innerHTML = '<p style="text-align:center;color:var(--text-secondary)">No entries yet. Be the first!</p>';
+          return;
+        }
+
+        listEl.innerHTML = entries.map((entry, i) => {
+          const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+          const value = type === 'scores' ? `${entry.score.toLocaleString()} pts` : formatTime(entry.time_ms);
+          
+          return `
+            <div class="leaderboard-entry">
+              <span class="leaderboard-rank ${rankClass}">#${i + 1}</span>
+              <img class="leaderboard-avatar" src="${entry.profile_picture || 'https://via.placeholder.com/36'}" alt="">
+              <div class="leaderboard-info">
+                <div class="leaderboard-name">${escapeHtml(entry.username)}</div>
+                <div class="leaderboard-score">${value}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Leaderboard load error:', err);
+        listEl.innerHTML = '<p style="text-align:center;color:var(--text-secondary)">Failed to load leaderboard</p>';
+      }
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Close leaderboard on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('leaderboardModal').classList.contains('active')) {
+        closeLeaderboard();
+      }
     });
   </script>
 </body>

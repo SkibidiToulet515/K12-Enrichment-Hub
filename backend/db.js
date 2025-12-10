@@ -568,6 +568,61 @@ async function initDatabase() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`);
 
+    // Game leaderboards for high scores
+    await client.query(`CREATE TABLE IF NOT EXISTS game_leaderboards (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      game_name TEXT NOT NULL,
+      score INTEGER NOT NULL,
+      play_time INTEGER DEFAULT 0,
+      achieved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, game_name)
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_leaderboards_game ON game_leaderboards(game_name)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_leaderboards_score ON game_leaderboards(score DESC)`);
+
+    // Speedrun records
+    await client.query(`CREATE TABLE IF NOT EXISTS speedrun_records (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      game_name TEXT NOT NULL,
+      time_ms INTEGER NOT NULL,
+      category TEXT DEFAULT 'any%',
+      verified BOOLEAN DEFAULT false,
+      achieved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_speedruns_game ON speedrun_records(game_name)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_speedruns_time ON speedrun_records(time_ms ASC)`);
+
+    // Dashboard widgets configuration
+    await client.query(`CREATE TABLE IF NOT EXISTS user_widgets (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      widget_type TEXT NOT NULL,
+      widget_config TEXT DEFAULT '{}',
+      position_x INTEGER DEFAULT 0,
+      position_y INTEGER DEFAULT 0,
+      width INTEGER DEFAULT 1,
+      height INTEGER DEFAULT 1,
+      enabled BOOLEAN DEFAULT true,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_widgets_user ON user_widgets(user_id)`);
+
+    // Custom user themes
+    await client.query(`CREATE TABLE IF NOT EXISTS custom_themes (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      theme_data TEXT NOT NULL,
+      is_public BOOLEAN DEFAULT false,
+      uses_count INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, name)
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_themes_public ON custom_themes(is_public) WHERE is_public = true`);
+
     await client.query(`INSERT INTO roles (name, permissions) VALUES 
       ('admin', 'full_control'),
       ('moderator', 'delete_message,mute_user,warn_user'),

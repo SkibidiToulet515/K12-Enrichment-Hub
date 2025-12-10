@@ -40,6 +40,10 @@ const announcementsRoutes = require('./routes/announcements');
 const gamesRoutes = require('./routes/games');
 const youtubeRoutes = require('./routes/youtube');
 const customizationRoutes = require('./routes/customization');
+const leaderboardsRoutes = require('./routes/leaderboards');
+const speedrunsRoutes = require('./routes/speedruns');
+const widgetsRoutes = require('./routes/widgets');
+const themesRoutes = require('./routes/themes');
 const logger = require('./logger');
 
 const storage = multer.diskStorage({
@@ -165,6 +169,10 @@ app.use('/api/announcements', announcementsRoutes);
 app.use('/api/games', gamesRoutes);
 app.use('/api/customization', customizationRoutes);
 app.use('/api/youtube', youtubeRoutes);
+app.use('/api/leaderboards', leaderboardsRoutes);
+app.use('/api/speedruns', speedrunsRoutes);
+app.use('/api/widgets', widgetsRoutes);
+app.use('/api/themes', themesRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {

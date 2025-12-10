@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme Creator - NebulaCore</title>
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <style>
+    .theme-creator-container {
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .theme-creator-header {
+      margin-bottom: 30px;
+    }
+
+    .theme-creator-header h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--accent), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .creator-layout {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 30px;
+    }
+
+    .preview-section {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .preview-header h3 {
+      margin: 0;
+    }
+
+    .preview-frame {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+    }
+
+    .preview-nav {
+      padding: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .preview-nav-item {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .preview-content {
+      padding: 20px;
+      min-height: 200px;
+    }
+
+    .preview-card {
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .preview-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .controls-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .control-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .control-card h4 {
+      margin: 0 0 15px 0;
+      color: var(--accent);
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .color-item label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .color-picker-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .color-picker {
+      width: 40px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .color-value {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text);
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    .theme-name-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .theme-name-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .action-btn.secondary {
+      background: var(--bg-tertiary);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+
+    .saved-themes {
+      margin-top: 20px;
+    }
+
+    .saved-theme-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .saved-theme-name {
+      font-weight: 500;
+    }
+
+    .saved-theme-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .saved-theme-btn {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .saved-theme-btn.load {
+      background: var(--accent);
+      color: white;
+    }
+
+    .saved-theme-btn.delete {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .gallery-section {
+      margin-top: 30px;
+    }
+
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .gallery-theme {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gallery-theme:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+
+    .gallery-preview {
+      height: 80px;
+      display: flex;
+    }
+
+    .gallery-preview-bar {
+      width: 30%;
+    }
+
+    .gallery-preview-content {
+      flex: 1;
+      padding: 10px;
+    }
+
+    .gallery-preview-card {
+      width: 50%;
+      height: 25px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+
+    .gallery-preview-btn {
+      width: 40%;
+      height: 20px;
+      border-radius: 4px;
+    }
+
+    .gallery-info {
+      padding: 12px;
+    }
+
+    .gallery-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .gallery-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 900px) {
+      .creator-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <nav class="sidebar" id="sidebar">
+      <div class="logo">NebulaCore</div>
+      <ul class="nav-links">
+        <li><a href="/private/dashboard.html">Dashboard</a></li>
+        <li><a href="/private/chat.html">Chat</a></li>
+        <li><a href="/private/games.html">Games</a></li>
+        <li><a href="/private/youtube.html">Videos</a></li>
+        <li><a href="/private/browse.html">Browse</a></li>
+        <li><a href="/private/shop.html">Shop</a></li>
+        <li><a href="/private/profile.html">Profile</a></li>
+        <li><a href="/private/settings.html">Settings</a></li>
+        <li><a href="/private/theme-creator.html" class="active">Theme Creator</a></li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <div class="theme-creator-container">
+        <div class="theme-creator-header">
+          <h1>Theme Creator</h1>
+          <p style="color: var(--text-secondary);">Design your own custom theme</p>
+        </div>
+
+        <div class="creator-layout">
+          <div class="preview-section">
+            <div class="preview-header">
+              <h3>Live Preview</h3>
+              <button class="preview-btn" onclick="randomizeColors()">Randomize</button>
+            </div>
+            <div class="preview-frame" id="previewFrame">
+              <div class="preview-nav" id="previewNav">
+                <span class="preview-nav-item" id="previewNavItem">Dashboard</span>
+                <span class="preview-nav-item">Games</span>
+                <span class="preview-nav-item">Chat</span>
+              </div>
+              <div class="preview-content" id="previewContent">
+                <div class="preview-card" id="previewCard">
+                  <h4 style="margin:0 0 10px 0" id="previewCardTitle">Sample Card</h4>
+                  <p style="margin:0;font-size:13px" id="previewCardText">This is how your theme will look.</p>
+                </div>
+                <button class="preview-btn" id="previewButton">Action Button</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls-section">
+            <div class="control-card">
+              <h4>Theme Name</h4>
+              <input type="text" class="theme-name-input" id="themeName" placeholder="My Custom Theme" maxlength="50">
+              <label class="checkbox-item">
+                <input type="checkbox" id="isPublic">
+                <span>Share in public gallery</span>
+              </label>
+            </div>
+
+            <div class="control-card">
+              <h4>Colors</h4>
+              <div class="color-grid">
+                <div class="color-item">
+                  <label>Background</label>
+                  <div class="color-picker-row">
+                    <input type="color" class="color-picker" id="bgColor" value="#0a0e17">
+                    <input type="text" class="color-value" id="bgColorValue" value="#0a0e17">
+                  </div>
+                </div>
+                <div class="color-item">
+                  <label>Secondary BG</label>
+                  <div class="color-picker-row">
+                    <input type="color" class="color-picker" id="bgSecondary" value="#151b2b">
+                    <input type="text" class="color-value" id="bgSecondaryValue" value="#151b2b">
+                  </div>
+                </div>
+                <div class="color-item">
+                  <label>Accent</label>
+                  <div class="color-picker-row">
+                    <input type="color" class="color-picker" id="accentColor" value="#00d4ff">
+                    <input type="text" class="color-value" id="accentColorValue" value="#00d4ff">
+                  </div>
+                </div>
+                <div class="color-item">
+                  <label>Text</label>
+                  <div class="color-picker-row">
+                    <input type="color" class="color-picker" id="textColor" value="#ffffff">
+                    <input type="text" class="color-value" id="textColorValue" value="#ffffff">
+                  </div>
+                </div>
+                <div class="color-item">
+                  <label>Border</label>
+                  <div class="color-picker-row">
+                    <input type="color" class="color-picker" id="borderColor" value="#2a3548">
+                    <input type="text" class="color-value" id="borderColorValue" value="#2a3548">
+                  </div>
+                </div>
+                <div class="color-item">
+                  <label>Card BG</label>
+                  <div class="color-picker-row">
+                    <input type="color" class="color-picker" id="cardColor" value="#1a2235">
+                    <input type="text" class="color-value" id="cardColorValue" value="#1a2235">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-card">
+              <h4>Actions</h4>
+              <div class="action-buttons">
+                <button class="action-btn primary" onclick="saveTheme()">Save Theme</button>
+                <button class="action-btn secondary" onclick="applyTheme()">Apply Theme</button>
+                <button class="action-btn secondary" onclick="exportTheme()">Export JSON</button>
+              </div>
+            </div>
+
+            <div class="control-card saved-themes">
+              <h4>My Saved Themes</h4>
+              <div id="savedThemesList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-section">
+          <div class="gallery-header">
+            <h3>Public Theme Gallery</h3>
+          </div>
+          <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script src="/js/stealth-mode.js"></script>
+  <script>
+    function getAuthToken() {
+      return localStorage.getItem('authToken');
+    }
+
+    const colorInputs = {
+      bg: { picker: 'bgColor', value: 'bgColorValue' },
+      bgSecondary: { picker: 'bgSecondary', value: 'bgSecondaryValue' },
+      accent: { picker: 'accentColor', value: 'accentColorValue' },
+      text: { picker: 'textColor', value: 'textColorValue' },
+      border: { picker: 'borderColor', value: 'borderColorValue' },
+      card: { picker: 'cardColor', value: 'cardColorValue' }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupColorPickers();
+      loadSavedThemes();
+      loadPublicGallery();
+      updatePreview();
+    });
+
+    function setupColorPickers() {
+      Object.values(colorInputs).forEach(({ picker, value }) => {
+        const pickerEl = document.getElementById(picker);
+        const valueEl = document.getElementById(value);
+        
+        pickerEl.addEventListener('input', () => {
+          valueEl.value = pickerEl.value;
+          updatePreview();
+        });
+        
+        valueEl.addEventListener('input', () => {
+          if (/^#[0-9A-Fa-f]{6}$/.test(valueEl.value)) {
+            pickerEl.value = valueEl.value;
+            updatePreview();
+          }
+        });
+      });
+    }
+
+    function updatePreview() {
+      const bg = document.getElementById('bgColor').value;
+      const bgSecondary = document.getElementById('bgSecondary').value;
+      const accent = document.getElementById('accentColor').value;
+      const text = document.getElementById('textColor').value;
+      const border = document.getElementById('borderColor').value;
+      const card = document.getElementById('cardColor').value;
+
+      const frame = document.getElementById('previewFrame');
+      frame.style.background = bg;
+      frame.style.borderColor = border;
+
+      document.getElementById('previewNav').style.background = bgSecondary;
+      document.getElementById('previewNavItem').style.background = accent;
+      document.getElementById('previewNavItem').style.color = bg;
+      
+      document.getElementById('previewContent').style.background = bg;
+      document.getElementById('previewCard').style.background = card;
+      document.getElementById('previewCard').style.borderColor = border;
+      document.getElementById('previewCardTitle').style.color = text;
+      document.getElementById('previewCardText').style.color = text + '99';
+      
+      document.getElementById('previewButton').style.background = accent;
+      document.getElementById('previewButton').style.color = bg;
+    }
+
+    function randomizeColors() {
+      const randomColor = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+      
+      const hue = Math.random() * 360;
+      const bg = hslToHex(hue, 20, 8);
+      const bgSecondary = hslToHex(hue, 25, 12);
+      const accent = hslToHex((hue + 180) % 360, 80, 55);
+      const card = hslToHex(hue, 22, 15);
+      const border = hslToHex(hue, 20, 25);
+      
+      document.getElementById('bgColor').value = bg;
+      document.getElementById('bgColorValue').value = bg;
+      document.getElementById('bgSecondary').value = bgSecondary;
+      document.getElementById('bgSecondaryValue').value = bgSecondary;
+      document.getElementById('accentColor').value = accent;
+      document.getElementById('accentColorValue').value = accent;
+      document.getElementById('cardColor').value = card;
+      document.getElementById('cardColorValue').value = card;
+      document.getElementById('borderColor').value = border;
+      document.getElementById('borderColorValue').value = border;
+      
+      updatePreview();
+    }
+
+    function hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    function getThemeData() {
+      return {
+        name: document.getElementById('themeName').value || 'Custom Theme',
+        colors: {
+          bg: document.getElementById('bgColor').value,
+          bgSecondary: document.getElementById('bgSecondary').value,
+          accent: document.getElementById('accentColor').value,
+          text: document.getElementById('textColor').value,
+          border: document.getElementById('borderColor').value,
+          card: document.getElementById('cardColor').value
+        }
+      };
+    }
+
+    async function saveTheme() {
+      const token = getAuthToken();
+      if (!token) {
+        alert('Please log in to save themes');
+        return;
+      }
+
+      const themeData = getThemeData();
+      const isPublic = document.getElementById('isPublic').checked;
+
+      try {
+        const response = await fetch('/api/themes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name: themeData.name,
+            themeData: themeData,
+            isPublic
+          })
+        });
+
+        if (response.ok) {
+          alert('Theme saved!');
+          loadSavedThemes();
+          if (isPublic) loadPublicGallery();
+        } else {
+          const data = await response.json();
+          alert(data.error || 'Failed to save theme');
+        }
+      } catch (err) {
+        console.error('Save error:', err);
+        alert('Failed to save theme');
+      }
+    }
+
+    function applyTheme() {
+      const themeData = getThemeData();
+      
+      document.documentElement.style.setProperty('--bg', themeData.colors.bg);
+      document.documentElement.style.setProperty('--bg-secondary', themeData.colors.bgSecondary);
+      document.documentElement.style.setProperty('--accent', themeData.colors.accent);
+      document.documentElement.style.setProperty('--text', themeData.colors.text);
+      document.documentElement.style.setProperty('--border', themeData.colors.border);
+      document.documentElement.style.setProperty('--bg-tertiary', themeData.colors.card);
+      
+      localStorage.setItem('customTheme', JSON.stringify(themeData));
+      alert('Theme applied!');
+    }
+
+    function exportTheme() {
+      const themeData = getThemeData();
+      const blob = new Blob([JSON.stringify(themeData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${themeData.name.replace(/[^a-z0-9]/gi, '_')}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function loadSavedThemes() {
+      const token = getAuthToken();
+      if (!token) return;
+
+      try {
+        const response = await fetch('/api/themes/my', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const listEl = document.getElementById('savedThemesList');
+        if (!data.themes || data.themes.length === 0) {
+          listEl.innerHTML = '<p style="color:var(--text-secondary);font-size:13px">No saved themes yet</p>';
+          return;
+        }
+
+        listEl.innerHTML = data.themes.map(theme => `
+          <div class="saved-theme-item">
+            <span class="saved-theme-name">${escapeHtml(theme.name)}</span>
+            <div class="saved-theme-actions">
+              <button class="saved-theme-btn load" onclick="loadTheme(${theme.id})">Load</button>
+              <button class="saved-theme-btn delete" onclick="deleteTheme(${theme.id})">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Failed to load saved themes:', err);
+      }
+    }
+
+    async function loadTheme(themeId) {
+      try {
+        const response = await fetch(`/api/themes/${themeId}`, {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        const data = await response.json();
+        
+        if (data.theme) {
+          const themeData = JSON.parse(data.theme.theme_data);
+          
+          document.getElementById('themeName').value = themeData.name || data.theme.name;
+          document.getElementById('bgColor').value = themeData.colors.bg;
+          document.getElementById('bgColorValue').value = themeData.colors.bg;
+          document.getElementById('bgSecondary').value = themeData.colors.bgSecondary;
+          document.getElementById('bgSecondaryValue').value = themeData.colors.bgSecondary;
+          document.getElementById('accentColor').value = themeData.colors.accent;
+          document.getElementById('accentColorValue').value = themeData.colors.accent;
+          document.getElementById('textColor').value = themeData.colors.text;
+          document.getElementById('textColorValue').value = themeData.colors.text;
+          document.getElementById('borderColor').value = themeData.colors.border;
+          document.getElementById('borderColorValue').value = themeData.colors.border;
+          document.getElementById('cardColor').value = themeData.colors.card;
+          document.getElementById('cardColorValue').value = themeData.colors.card;
+          
+          updatePreview();
+        }
+      } catch (err) {
+        console.error('Failed to load theme:', err);
+      }
+    }
+
+    async function deleteTheme(themeId) {
+      if (!confirm('Delete this theme?')) return;
+      
+      try {
+        const response = await fetch(`/api/themes/${themeId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        
+        if (response.ok) {
+          loadSavedThemes();
+        }
+      } catch (err) {
+        console.error('Failed to delete theme:', err);
+      }
+    }
+
+    async function loadPublicGallery() {
+      try {
+        const response = await fetch('/api/themes/public');
+        const data = await response.json();
+        
+        const gridEl = document.getElementById('galleryGrid');
+        if (!data.themes || data.themes.length === 0) {
+          gridEl.innerHTML = '<p style="color:var(--text-secondary)">No public themes yet. Be the first to share!</p>';
+          return;
+        }
+
+        gridEl.innerHTML = data.themes.map(theme => {
+          const themeData = JSON.parse(theme.theme_data);
+          return `
+            <div class="gallery-theme" onclick="loadPublicTheme(${theme.id})">
+              <div class="gallery-preview" style="background:${themeData.colors.bg}">
+                <div class="gallery-preview-bar" style="background:${themeData.colors.bgSecondary}"></div>
+                <div class="gallery-preview-content">
+                  <div class="gallery-preview-card" style="background:${themeData.colors.card}"></div>
+                  <div class="gallery-preview-btn" style="background:${themeData.colors.accent}"></div>
+                </div>
+              </div>
+              <div class="gallery-info">
+                <div class="gallery-name">${escapeHtml(theme.name)}</div>
+                <div class="gallery-meta">by ${escapeHtml(theme.creator_name)} - ${theme.uses_count} uses</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Failed to load gallery:', err);
+      }
+    }
+
+    async function loadPublicTheme(themeId) {
+      try {
+        const response = await fetch(`/api/themes/${themeId}`);
+        const data = await response.json();
+        
+        if (data.theme) {
+          const themeData = JSON.parse(data.theme.theme_data);
+          
+          document.getElementById('themeName').value = themeData.name + ' (Copy)';
+          document.getElementById('bgColor').value = themeData.colors.bg;
+          document.getElementById('bgColorValue').value = themeData.colors.bg;
+          document.getElementById('bgSecondary').value = themeData.colors.bgSecondary;
+          document.getElementById('bgSecondaryValue').value = themeData.colors.bgSecondary;
+          document.getElementById('accentColor').value = themeData.colors.accent;
+          document.getElementById('accentColorValue').value = themeData.colors.accent;
+          document.getElementById('textColor').value = themeData.colors.text;
+          document.getElementById('textColorValue').value = themeData.colors.text;
+          document.getElementById('borderColor').value = themeData.colors.border;
+          document.getElementById('borderColorValue').value = themeData.colors.border;
+          document.getElementById('cardColor').value = themeData.colors.card;
+          document.getElementById('cardColorValue').value = themeData.colors.card;
+          
+          updatePreview();
+          
+          // Track usage
+          fetch(`/api/themes/${themeId}/use`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load theme:', err);
+      }
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>

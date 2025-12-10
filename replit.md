@@ -42,10 +42,14 @@ Do not make changes to the file `Y`.
 - **Profile Banner**: Custom banner image upload for user profiles.
 - **Custom Wallpaper**: Upload background images for dashboard pages.
 - **YouTube Video Library**: Search and watch educational videos with category filtering (Education, Science, Music, Gaming, Entertainment).
+- **Game Leaderboards**: High score tracking per game with global rankings and personal bests.
+- **Speedrun Timer**: Built-in stopwatch with millisecond precision for speedrunning, submit times to leaderboard.
+- **Dashboard Widgets**: Customizable widget system with 10 widget types (stats, recent games, leaderboard, friends, announcements, tasks, clock, calendar, notes, weather).
+- **Theme Creator**: Full theme customization with live preview, color pickers, save/export functionality, and public theme gallery.
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.
-- **Database Schema**: Includes tables for users, servers, channels, messages, friends, group_chats, roles, badges, games, user_xp, achievements, user_activity, tasks, announcements, channel_permissions, friend_notes, polls, poll_options, poll_votes, user_preferences, changelogs, user_shortcuts, default_shortcuts, archived_chats, shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, daily_rewards, game_ratings, and recently_played.
+- **Database Schema**: Includes tables for users, servers, channels, messages, friends, group_chats, roles, badges, games, user_xp, achievements, user_activity, tasks, announcements, channel_permissions, friend_notes, polls, poll_options, poll_votes, user_preferences, changelogs, user_shortcuts, default_shortcuts, archived_chats, shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, daily_rewards, game_ratings, recently_played, game_leaderboards, speedrun_records, user_widgets, and custom_themes.
 - **Security**: Pre-seeded admin accounts (admin, Yusoff(ADMIN)) with default passwords for initial setup (requires immediate change for production). CORS configured to allow all origins during development, needing restriction for production. JWT secret should be an environment variable.
 
 ## External Dependencies
