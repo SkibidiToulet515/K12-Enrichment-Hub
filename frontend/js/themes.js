@@ -59,14 +59,67 @@ const THEME_CATEGORIES = [
 
 // Initialize theme on page load
 function initTheme() {
+  // Check for custom theme first
+  const customTheme = localStorage.getItem('customTheme');
+  if (customTheme) {
+    try {
+      applyCustomTheme(JSON.parse(customTheme));
+      createStarField();
+      return;
+    } catch (e) {
+      console.error('Failed to parse custom theme:', e);
+    }
+  }
+  
   const saved = localStorage.getItem('theme') || 'nebulacore';
   applyTheme(saved);
   updateThemeSelector(saved);
   createStarField();
 }
 
+// Apply a custom theme from theme creator
+function applyCustomTheme(themeData) {
+  if (!themeData || !themeData.colors) return;
+  
+  const colors = themeData.colors;
+  const root = document.documentElement;
+  
+  // Apply custom CSS variables
+  root.style.setProperty('--bg', colors.bg);
+  root.style.setProperty('--bg-secondary', colors.bgSecondary);
+  root.style.setProperty('--bg-tertiary', colors.card);
+  root.style.setProperty('--accent', colors.accent);
+  root.style.setProperty('--primary', colors.accent);
+  root.style.setProperty('--text', colors.text);
+  root.style.setProperty('--text-secondary', colors.text + 'aa');
+  root.style.setProperty('--border', colors.border);
+  root.style.setProperty('--card', colors.card);
+  root.style.setProperty('--glass-bg', colors.card + 'cc');
+  root.style.setProperty('--glass-border', colors.border);
+  
+  // Mark as custom theme
+  root.setAttribute('data-theme', 'custom');
+  
+  // Update star colors
+  if (window.updateStarColors) {
+    window.updateStarColors();
+  }
+}
+
+// Clear custom theme and use preset
+function clearCustomTheme() {
+  localStorage.removeItem('customTheme');
+  document.documentElement.style.cssText = '';
+  const saved = localStorage.getItem('theme') || 'nebulacore';
+  applyTheme(saved);
+}
+
 // Apply theme to document
 function applyTheme(themeId) {
+  // Clear any custom theme styles
+  document.documentElement.style.cssText = '';
+  localStorage.removeItem('customTheme');
+  
   if (!THEMES[themeId]) themeId = 'nebulacore';
   document.documentElement.setAttribute('data-theme', themeId);
   localStorage.setItem('theme', themeId);

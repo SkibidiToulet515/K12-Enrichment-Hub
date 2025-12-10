@@ -444,8 +444,9 @@
               <h4>Actions</h4>
               <div class="action-buttons">
                 <button class="action-btn primary" onclick="saveTheme()">Save Theme</button>
-                <button class="action-btn secondary" onclick="applyTheme()">Apply Theme</button>
+                <button class="action-btn primary" onclick="applyTheme()">Apply to All Pages</button>
                 <button class="action-btn secondary" onclick="exportTheme()">Export JSON</button>
+                <button class="action-btn danger" onclick="resetToDefault()" style="background: #e74c3c; border-color: #e74c3c;">Reset to Default</button>
               </div>
             </div>
 
@@ -624,16 +625,38 @@
 
     function applyTheme() {
       const themeData = getThemeData();
+      const colors = themeData.colors;
+      const root = document.documentElement;
       
-      document.documentElement.style.setProperty('--bg', themeData.colors.bg);
-      document.documentElement.style.setProperty('--bg-secondary', themeData.colors.bgSecondary);
-      document.documentElement.style.setProperty('--accent', themeData.colors.accent);
-      document.documentElement.style.setProperty('--text', themeData.colors.text);
-      document.documentElement.style.setProperty('--border', themeData.colors.border);
-      document.documentElement.style.setProperty('--bg-tertiary', themeData.colors.card);
+      // Apply all CSS variables
+      root.style.setProperty('--bg', colors.bg);
+      root.style.setProperty('--bg-secondary', colors.bgSecondary);
+      root.style.setProperty('--bg-tertiary', colors.card);
+      root.style.setProperty('--accent', colors.accent);
+      root.style.setProperty('--primary', colors.accent);
+      root.style.setProperty('--text', colors.text);
+      root.style.setProperty('--text-secondary', colors.text + 'aa');
+      root.style.setProperty('--border', colors.border);
+      root.style.setProperty('--card', colors.card);
+      root.style.setProperty('--glass-bg', colors.card + 'cc');
+      root.style.setProperty('--glass-border', colors.border);
       
+      // Save to localStorage so it persists across pages
       localStorage.setItem('customTheme', JSON.stringify(themeData));
-      alert('Theme applied!');
+      localStorage.removeItem('theme'); // Clear preset theme
+      
+      root.setAttribute('data-theme', 'custom');
+      alert('Theme applied! It will now appear on all pages.');
+    }
+
+    function resetToDefault() {
+      if (!confirm('Reset to default theme? This will remove your custom theme.')) return;
+      
+      localStorage.removeItem('customTheme');
+      localStorage.setItem('theme', 'nebulacore');
+      document.documentElement.style.cssText = '';
+      document.documentElement.setAttribute('data-theme', 'nebulacore');
+      alert('Reset to default NebulaCore theme!');
     }
 
     function exportTheme() {
