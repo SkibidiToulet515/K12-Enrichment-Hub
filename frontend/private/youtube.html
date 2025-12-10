@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Videos - NebulaCore</title>
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <style>
+    .videos-container {
+      padding: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .videos-header {
+      margin-bottom: 30px;
+    }
+
+    .videos-header h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ff0000, #cc0000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .search-section {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-container {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #ff0000;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+    }
+
+    .search-btn {
+      padding: 14px 30px;
+      background: linear-gradient(135deg, #ff0000, #cc0000);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .category-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .category-tab {
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 25px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+
+    .category-tab:hover,
+    .category-tab.active {
+      background: linear-gradient(135deg, #ff0000, #cc0000);
+      border-color: #ff0000;
+      color: white;
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+    }
+
+    .video-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
+      border-color: #ff0000;
+    }
+
+    .video-thumbnail {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .video-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .video-card:hover .video-thumbnail img {
+      transform: scale(1.05);
+    }
+
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 0, 0, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .video-card:hover .play-overlay {
+      opacity: 1;
+    }
+
+    .play-overlay::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 18px solid white;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      margin-left: 4px;
+    }
+
+    .video-info {
+      padding: 15px;
+    }
+
+    .video-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video-channel {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .video-stats {
+      display: flex;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .video-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .video-modal.active {
+      display: flex;
+    }
+
+    .video-modal-content {
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+    }
+
+    .video-modal-close {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .video-modal-close:hover {
+      background: #ff0000;
+    }
+
+    .video-player {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .video-player iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 50px;
+      color: var(--text-secondary);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .no-results-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .load-more-btn {
+      display: block;
+      margin: 30px auto;
+      padding: 14px 40px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .load-more-btn:hover {
+      border-color: #ff0000;
+      color: #ff0000;
+    }
+
+    @media (max-width: 768px) {
+      .videos-container {
+        padding: 20px;
+      }
+
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <nav class="sidebar" id="sidebar">
+      <div class="logo">NebulaCore</div>
+      <ul class="nav-links">
+        <li><a href="/private/dashboard.html">Dashboard</a></li>
+        <li><a href="/private/chat.html">Chat</a></li>
+        <li><a href="/private/games.html">Games</a></li>
+        <li><a href="/private/youtube.html" class="active">Videos</a></li>
+        <li><a href="/private/browse.html">Browse</a></li>
+        <li><a href="/private/shop.html">Shop</a></li>
+        <li><a href="/private/profile.html">Profile</a></li>
+        <li><a href="/private/settings.html">Settings</a></li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <div class="videos-container">
+        <div class="videos-header">
+          <h1>Video Library</h1>
+          <p style="color: var(--text-secondary);">Search and watch educational videos</p>
+        </div>
+
+        <div class="search-section">
+          <div class="search-input-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search for videos...">
+          </div>
+          <button class="search-btn" id="searchBtn">Search</button>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs">
+          <button class="category-tab active" data-category="education">Education</button>
+          <button class="category-tab" data-category="science">Science</button>
+          <button class="category-tab" data-category="music">Music</button>
+          <button class="category-tab" data-category="gaming">Gaming</button>
+          <button class="category-tab" data-category="entertainment">Entertainment</button>
+        </div>
+
+        <div class="videos-grid" id="videosGrid">
+          <div class="loading-spinner">Loading videos...</div>
+        </div>
+
+        <button class="load-more-btn" id="loadMoreBtn" style="display: none;">Load More</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-content">
+      <button class="video-modal-close" id="closeModal">&times;</button>
+      <div class="video-player" id="videoPlayer"></div>
+    </div>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script src="/js/stealth-mode.js"></script>
+  <script src="/js/quick-switcher.js"></script>
+  <script>
+    let currentCategory = 'education';
+    let nextPageToken = null;
+    let isSearchMode = false;
+    let currentQuery = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTrendingVideos(currentCategory);
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      document.getElementById('searchBtn').addEventListener('click', performSearch);
+      document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
+      });
+
+      document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentCategory = tab.dataset.category;
+          isSearchMode = false;
+          document.getElementById('searchInput').value = '';
+          loadTrendingVideos(currentCategory);
+        });
+      });
+
+      document.getElementById('loadMoreBtn').addEventListener('click', () => {
+        if (isSearchMode && nextPageToken) {
+          searchVideos(currentQuery, nextPageToken);
+        }
+      });
+
+      document.getElementById('closeModal').addEventListener('click', closeVideoModal);
+      document.getElementById('videoModal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeVideoModal();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeVideoModal();
+      });
+    }
+
+    async function loadTrendingVideos(category) {
+      const grid = document.getElementById('videosGrid');
+      grid.innerHTML = '<div class="loading-spinner">Loading trending videos...</div>';
+      document.getElementById('loadMoreBtn').style.display = 'none';
+
+      try {
+        const response = await fetch(`/api/youtube/trending?category=${category}`);
+        const data = await response.json();
+
+        if (data.error) {
+          grid.innerHTML = `<div class="no-results"><div class="no-results-icon">!</div><p>${data.error}</p></div>`;
+          return;
+        }
+
+        if (!data.videos || data.videos.length === 0) {
+          grid.innerHTML = '<div class="no-results"><div class="no-results-icon">No videos found</div></div>';
+          return;
+        }
+
+        grid.innerHTML = data.videos.map(video => createVideoCard(video)).join('');
+      } catch (err) {
+        console.error('Failed to load trending:', err);
+        grid.innerHTML = '<div class="no-results"><div class="no-results-icon">Failed to load videos</div></div>';
+      }
+    }
+
+    function performSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return;
+
+      currentQuery = query;
+      isSearchMode = true;
+      nextPageToken = null;
+      searchVideos(query);
+    }
+
+    async function searchVideos(query, pageToken = '') {
+      const grid = document.getElementById('videosGrid');
+      
+      if (!pageToken) {
+        grid.innerHTML = '<div class="loading-spinner">Searching...</div>';
+      }
+
+      try {
+        let url = `/api/youtube/search?q=${encodeURIComponent(query)}`;
+        if (pageToken) url += `&pageToken=${pageToken}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+          grid.innerHTML = `<div class="no-results"><div class="no-results-icon">!</div><p>${data.error}</p></div>`;
+          return;
+        }
+
+        const videosHtml = data.videos.map(video => createVideoCard(video)).join('');
+        
+        if (pageToken) {
+          grid.innerHTML += videosHtml;
+        } else {
+          grid.innerHTML = videosHtml;
+        }
+
+        nextPageToken = data.nextPageToken;
+        document.getElementById('loadMoreBtn').style.display = nextPageToken ? 'block' : 'none';
+      } catch (err) {
+        console.error('Search failed:', err);
+        if (!pageToken) {
+          grid.innerHTML = '<div class="no-results"><div class="no-results-icon">Search failed</div></div>';
+        }
+      }
+    }
+
+    function createVideoCard(video) {
+      const timeAgo = formatTimeAgo(video.publishedAt);
+      const views = video.viewCount ? formatViews(video.viewCount) : '';
+      
+      return `
+        <div class="video-card" onclick="openVideo('${video.id}')">
+          <div class="video-thumbnail">
+            <img src="${video.thumbnail}" alt="${escapeHtml(video.title)}" loading="lazy">
+            <div class="play-overlay"></div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">${escapeHtml(video.title)}</div>
+            <div class="video-channel">${escapeHtml(video.channelTitle)}</div>
+            <div class="video-stats">
+              ${views ? `<span>${views} views</span>` : ''}
+              <span>${timeAgo}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openVideo(videoId) {
+      const modal = document.getElementById('videoModal');
+      const player = document.getElementById('videoPlayer');
+      
+      player.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allowfullscreen allow="autoplay"></iframe>`;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const player = document.getElementById('videoPlayer');
+      
+      modal.classList.remove('active');
+      player.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    function formatTimeAgo(dateStr) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diff = now - date;
+      
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      const months = Math.floor(diff / 2592000000);
+      const years = Math.floor(diff / 31536000000);
+      
+      if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
+      if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
+      if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+      if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+      if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+      return 'Just now';
+    }
+
+    function formatViews(count) {
+      const num = parseInt(count);
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return num.toString();
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>

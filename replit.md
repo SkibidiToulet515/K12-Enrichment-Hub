@@ -36,10 +36,16 @@ Do not make changes to the file `Y`.
 - **Polls System**: In-channel polls with various options.
 - **Friend Notes**: Private notes on user profiles.
 - **Auto Theme**: Automatic theme switching based on system preference or time.
+- **Game Rating System**: Star rating (1-5) for games with user reviews and average rating display.
+- **Recently Played Games**: Tracks last 10 played games in a carousel display on the games page.
+- **Game Categories**: Filter games by 10 categories (Action, Racing, Puzzle, Sports, Strategy, Adventure, Arcade, Shooter, Simulation, Multiplayer).
+- **Profile Banner**: Custom banner image upload for user profiles.
+- **Custom Wallpaper**: Upload background images for dashboard pages.
+- **YouTube Video Library**: Search and watch educational videos with category filtering (Education, Science, Music, Gaming, Entertainment).
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.
-- **Database Schema**: Includes tables for users, servers, channels, messages, friends, group_chats, roles, badges, games, user_xp, achievements, user_activity, tasks, announcements, channel_permissions, friend_notes, polls, poll_options, poll_votes, user_preferences, changelogs, user_shortcuts, default_shortcuts, archived_chats, shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, and daily_rewards.
+- **Database Schema**: Includes tables for users, servers, channels, messages, friends, group_chats, roles, badges, games, user_xp, achievements, user_activity, tasks, announcements, channel_permissions, friend_notes, polls, poll_options, poll_votes, user_preferences, changelogs, user_shortcuts, default_shortcuts, archived_chats, shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, daily_rewards, game_ratings, and recently_played.
 - **Security**: Pre-seeded admin accounts (admin, Yusoff(ADMIN)) with default passwords for initial setup (requires immediate change for production). CORS configured to allow all origins during development, needing restriction for production. JWT secret should be an environment variable.
 
 ## External Dependencies

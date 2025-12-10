@@ -38,6 +38,7 @@ const activityLogRoutes = require('./routes/activity-log');
 const tasksRoutes = require('./routes/tasks');
 const announcementsRoutes = require('./routes/announcements');
 const gamesRoutes = require('./routes/games');
+const youtubeRoutes = require('./routes/youtube');
 const customizationRoutes = require('./routes/customization');
 const logger = require('./logger');
 
@@ -163,6 +164,7 @@ app.use('/api/tasks', tasksRoutes);
 app.use('/api/announcements', announcementsRoutes);
 app.use('/api/games', gamesRoutes);
 app.use('/api/customization', customizationRoutes);
+app.use('/api/youtube', youtubeRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {
