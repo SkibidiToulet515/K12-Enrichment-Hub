@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forums - NebulaCore</title>
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <style>
+    .forums-container {
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .forums-header {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .forums-header h1 {
+      font-size: 2rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .new-post-btn {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .new-post-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .sort-select {
+      padding: 12px 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .category-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .category-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-card.active {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(247, 37, 133, 0.1));
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .category-info h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.1rem;
+    }
+
+    .category-info p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .category-stats {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .posts-section {
+      margin-top: 30px;
+    }
+
+    .posts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .posts-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .back-btn {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .post-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .post-card:hover {
+      border-color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .post-card.pinned {
+      border-color: gold;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), transparent);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .post-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .post-title .pin-icon {
+      color: gold;
+    }
+
+    .post-title .lock-icon {
+      color: #ff6b6b;
+    }
+
+    .post-meta {
+      display: flex;
+      gap: 15px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .post-preview {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .post-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 15px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .post-stats span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 2px solid var(--border);
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+    }
+
+    .post-view {
+      display: none;
+    }
+
+    .post-view.active {
+      display: block;
+    }
+
+    .full-post {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 25px;
+      border: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .full-post-title {
+      font-size: 1.5rem;
+      margin: 0 0 15px 0;
+    }
+
+    .full-post-content {
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .vote-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .vote-btn {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .vote-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .vote-btn.upvoted {
+      background: rgba(76, 201, 240, 0.2);
+      border-color: var(--primary);
+    }
+
+    .vote-btn.downvoted {
+      background: rgba(247, 37, 133, 0.2);
+      border-color: var(--secondary);
+    }
+
+    .vote-count {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .replies-section {
+      margin-top: 30px;
+    }
+
+    .replies-section h3 {
+      margin-bottom: 20px;
+    }
+
+    .reply-card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      margin-bottom: 15px;
+    }
+
+    .reply-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .reply-content {
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .reply-form {
+      margin-top: 25px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .reply-form h4 {
+      margin: 0 0 15px 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .anon-note {
+      background: rgba(76, 201, 240, 0.1);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="private-nav">
+    <div class="nav-brand">NebulaCore</div>
+    <ul class="nav-links">
+      <li><a href="/private/dashboard.html">Dashboard</a></li>
+      <li><a href="/private/chat.html">Chat</a></li>
+      <li><a href="/private/games.html">Games</a></li>
+      <li><a href="/private/youtube.html">Videos</a></li>
+      <li><a href="/private/forums.html" class="active">Forums</a></li>
+      <li><a href="/private/browser.html">Browse</a></li>
+      <li><a href="/private/shop.html">Shop</a></li>
+      <li><a href="/private/profile.html">Profile</a></li>
+      <li><a href="/private/theme-creator.html">Theme Creator</a></li>
+    </ul>
+  </nav>
+
+  <div class="forums-container">
+    <div id="categoriesView">
+      <div class="forums-header">
+        <h1>Anonymous Forums</h1>
+        <button class="new-post-btn" onclick="openNewPostModal()">
+          <span>+</span> New Post
+        </button>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search forums...">
+        <select class="sort-select" id="sortSelect" onchange="loadPosts()">
+          <option value="newest">Newest</option>
+          <option value="popular">Most Popular</option>
+          <option value="views">Most Viewed</option>
+        </select>
+      </div>
+
+      <div class="categories-grid" id="categoriesGrid"></div>
+
+      <div class="posts-section" id="postsSection">
+        <div class="posts-header">
+          <h2 id="postsTitle">All Posts</h2>
+        </div>
+        <div id="postsList"></div>
+      </div>
+    </div>
+
+    <div id="postView" class="post-view">
+      <button class="back-btn" onclick="showCategories()">Back to Forums</button>
+      <div id="postContent"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="newPostModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create New Post</h2>
+        <button class="close-btn" onclick="closeNewPostModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="anon-note">
+          <span>🎭</span>
+          <span>Posts are anonymous. Choose a display name or stay as "Anonymous".</span>
+        </div>
+        <form id="newPostForm" onsubmit="submitPost(event)">
+          <div class="form-group">
+            <label for="postCategory">Category</label>
+            <select id="postCategory" required></select>
+          </div>
+          <div class="form-group">
+            <label for="postAuthor">Display Name (Anonymous)</label>
+            <input type="text" id="postAuthor" placeholder="Anonymous" maxlength="30">
+          </div>
+          <div class="form-group">
+            <label for="postTitle">Title</label>
+            <input type="text" id="postTitle" required placeholder="What's your post about?" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="postContent">Content</label>
+            <textarea id="postContent" required placeholder="Share your thoughts..."></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Post Anonymously</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    let categories = [];
+    let currentCategory = null;
+    let currentPost = null;
+
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/forums/categories');
+        const data = await res.json();
+        categories = data.categories || [];
+        renderCategories();
+        populateCategorySelect();
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      }
+    }
+
+    function renderCategories() {
+      const grid = document.getElementById('categoriesGrid');
+      grid.innerHTML = categories.map(cat => `
+        <div class="category-card ${currentCategory === cat.id ? 'active' : ''}" 
+             onclick="selectCategory(${cat.id})" style="border-left: 4px solid ${cat.color}">
+          <div class="category-icon">${cat.icon}</div>
+          <div class="category-info">
+            <h3>${cat.name}</h3>
+            <p>${cat.description}</p>
+            <div class="category-stats">
+              ${cat.post_count || 0} posts
+              ${cat.last_post_at ? ' &bull; Last: ' + formatDate(cat.last_post_at) : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function populateCategorySelect() {
+      const select = document.getElementById('postCategory');
+      select.innerHTML = categories.map(cat => 
+        `<option value="${cat.id}">${cat.icon} ${cat.name}</option>`
+      ).join('');
+    }
+
+    function selectCategory(categoryId) {
+      currentCategory = currentCategory === categoryId ? null : categoryId;
+      renderCategories();
+      loadPosts();
+    }
+
+    async function loadPosts() {
+      const sort = document.getElementById('sortSelect').value;
+      let url = `/api/forums/posts?sort=${sort}`;
+      if (currentCategory) {
+        url += `&category=${currentCategory}`;
+        const cat = categories.find(c => c.id === currentCategory);
+        document.getElementById('postsTitle').textContent = cat ? `${cat.icon} ${cat.name}` : 'Posts';
+      } else {
+        document.getElementById('postsTitle').textContent = 'All Posts';
+      }
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        renderPosts(data.posts || []);
+      } catch (err) {
+        console.error('Failed to load posts:', err);
+      }
+    }
+
+    function renderPosts(posts) {
+      const list = document.getElementById('postsList');
+      if (posts.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📝</div>
+            <h3>No posts yet</h3>
+            <p>Be the first to start a discussion!</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = posts.map(post => `
+        <div class="post-card ${post.is_pinned ? 'pinned' : ''}" onclick="viewPost(${post.id})">
+          <div class="post-header">
+            <h3 class="post-title">
+              ${post.is_pinned ? '<span class="pin-icon">📌</span>' : ''}
+              ${post.is_locked ? '<span class="lock-icon">🔒</span>' : ''}
+              ${escapeHtml(post.title)}
+            </h3>
+            <span class="post-meta">${post.category_icon} ${post.category_name}</span>
+          </div>
+          <div class="post-preview">${escapeHtml(post.content)}</div>
+          <div class="post-stats">
+            <span>👤 ${escapeHtml(post.anonymous_name)}</span>
+            <span>💬 ${post.reply_count || 0} replies</span>
+            <span>👁️ ${post.views || 0} views</span>
+            <span>👍 ${(post.upvotes || 0) - (post.downvotes || 0)}</span>
+            <span>🕐 ${formatDate(post.created_at)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function viewPost(postId) {
+      try {
+        const res = await fetch(`/api/forums/posts/${postId}`);
+        const data = await res.json();
+        currentPost = data.post;
+        
+        document.getElementById('categoriesView').style.display = 'none';
+        document.getElementById('postView').classList.add('active');
+        
+        const score = (currentPost.upvotes || 0) - (currentPost.downvotes || 0);
+        
+        document.getElementById('postContent').innerHTML = `
+          <div class="full-post">
+            <div class="post-meta" style="margin-bottom: 15px">
+              <span>${currentPost.category_icon} ${currentPost.category_name}</span>
+              <span>&bull;</span>
+              <span>Posted by ${escapeHtml(currentPost.anonymous_name)}</span>
+              <span>&bull;</span>
+              <span>${formatDate(currentPost.created_at)}</span>
+              <span>&bull;</span>
+              <span>👁️ ${currentPost.views} views</span>
+            </div>
+            <h1 class="full-post-title">${escapeHtml(currentPost.title)}</h1>
+            <div class="full-post-content">${escapeHtml(currentPost.content)}</div>
+            <div class="vote-section">
+              <button class="vote-btn" onclick="vote('post', ${currentPost.id}, 'up')">👍 Upvote</button>
+              <span class="vote-count">${score >= 0 ? '+' : ''}${score}</span>
+              <button class="vote-btn" onclick="vote('post', ${currentPost.id}, 'down')">👎 Downvote</button>
+            </div>
+          </div>
+          
+          <div class="replies-section">
+            <h3>💬 ${data.replies?.length || 0} Replies</h3>
+            <div id="repliesList">
+              ${(data.replies || []).map(reply => `
+                <div class="reply-card">
+                  <div class="reply-header">
+                    <span>👤 ${escapeHtml(reply.anonymous_name)}</span>
+                    <span>${formatDate(reply.created_at)}</span>
+                  </div>
+                  <div class="reply-content">${escapeHtml(reply.content)}</div>
+                  <div class="vote-section" style="border: none; padding-top: 10px; margin-top: 10px">
+                    <button class="vote-btn" onclick="vote('reply', ${reply.id}, 'up')">👍 ${reply.upvotes || 0}</button>
+                    <button class="vote-btn" onclick="vote('reply', ${reply.id}, 'down')">👎 ${reply.downvotes || 0}</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            
+            ${currentPost.is_locked ? `
+              <div class="empty-state">
+                <span class="icon">🔒</span>
+                <p>This post is locked. No new replies allowed.</p>
+              </div>
+            ` : `
+              <div class="reply-form">
+                <h4>Add a Reply</h4>
+                <div class="anon-note">
+                  <span>🎭</span>
+                  <span>Your reply will be anonymous</span>
+                </div>
+                <div class="form-group">
+                  <label>Display Name</label>
+                  <input type="text" id="replyAuthor" placeholder="Anonymous" maxlength="30">
+                </div>
+                <div class="form-group">
+                  <label>Your Reply</label>
+                  <textarea id="replyContent" placeholder="Write your reply..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="submitReply()">Post Reply</button>
+              </div>
+            `}
+          </div>
+        `;
+      } catch (err) {
+        console.error('Failed to load post:', err);
+      }
+    }
+
+    function showCategories() {
+      document.getElementById('categoriesView').style.display = 'block';
+      document.getElementById('postView').classList.remove('active');
+      currentPost = null;
+    }
+
+    function openNewPostModal() {
+      document.getElementById('newPostModal').classList.add('active');
+    }
+
+    function closeNewPostModal() {
+      document.getElementById('newPostModal').classList.remove('active');
+    }
+
+    async function submitPost(e) {
+      e.preventDefault();
+      
+      const categoryId = document.getElementById('postCategory').value;
+      const title = document.getElementById('postTitle').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+      const anonymousName = document.getElementById('postAuthor').value.trim() || 'Anonymous';
+
+      try {
+        const res = await fetch('/api/forums/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ categoryId, title, content, anonymousName })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          closeNewPostModal();
+          document.getElementById('newPostForm').reset();
+          loadCategories();
+          loadPosts();
+          viewPost(data.postId);
+        } else {
+          alert(data.error || 'Failed to create post');
+        }
+      } catch (err) {
+        console.error('Failed to submit post:', err);
+        alert('Failed to create post');
+      }
+    }
+
+    async function submitReply() {
+      if (!currentPost) return;
+      
+      const content = document.getElementById('replyContent').value.trim();
+      const anonymousName = document.getElementById('replyAuthor').value.trim() || 'Anonymous';
+
+      if (!content) {
+        alert('Please enter a reply');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/forums/posts/${currentPost.id}/reply`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ content, anonymousName })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          viewPost(currentPost.id);
+        } else {
+          alert(data.error || 'Failed to post reply');
+        }
+      } catch (err) {
+        console.error('Failed to submit reply:', err);
+        alert('Failed to post reply');
+      }
+    }
+
+    async function vote(type, id, voteType) {
+      if (!token) {
+        alert('Please login to vote');
+        return;
+      }
+
+      try {
+        const body = { voteType };
+        if (type === 'post') body.postId = id;
+        else body.replyId = id;
+
+        const res = await fetch('/api/forums/vote', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+        if (data.success && currentPost) {
+          viewPost(currentPost.id);
+        }
+      } catch (err) {
+        console.error('Failed to vote:', err);
+      }
+    }
+
+    document.getElementById('searchInput').addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        const query = e.target.value.trim();
+        if (query.length < 2) return;
+
+        try {
+          const res = await fetch(`/api/forums/search?q=${encodeURIComponent(query)}`);
+          const data = await res.json();
+          document.getElementById('postsTitle').textContent = `Search: "${query}"`;
+          renderPosts(data.posts || []);
+        } catch (err) {
+          console.error('Search failed:', err);
+        }
+      }
+    });
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diff = now - date;
+      
+      if (diff < 60000) return 'Just now';
+      if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+      if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+      return date.toLocaleDateString();
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    loadCategories();
+    loadPosts();
+  </script>
+</body>
+</html>

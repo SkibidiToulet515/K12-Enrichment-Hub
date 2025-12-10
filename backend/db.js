@@ -623,6 +623,67 @@ async function initDatabase() {
     )`);
     await client.query(`CREATE INDEX IF NOT EXISTS idx_themes_public ON custom_themes(is_public) WHERE is_public = true`);
 
+    // Anonymous forums
+    await client.query(`CREATE TABLE IF NOT EXISTS forum_categories (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE,
+      description TEXT,
+      icon TEXT DEFAULT '📁',
+      color TEXT DEFAULT '#4cc9f0',
+      position INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    await client.query(`CREATE TABLE IF NOT EXISTS forum_posts (
+      id SERIAL PRIMARY KEY,
+      category_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      anonymous_name TEXT DEFAULT 'Anonymous',
+      user_id INTEGER,
+      is_pinned BOOLEAN DEFAULT false,
+      is_locked BOOLEAN DEFAULT false,
+      views INTEGER DEFAULT 0,
+      upvotes INTEGER DEFAULT 0,
+      downvotes INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_forum_posts_category ON forum_posts(category_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_forum_posts_created ON forum_posts(created_at DESC)`);
+
+    await client.query(`CREATE TABLE IF NOT EXISTS forum_replies (
+      id SERIAL PRIMARY KEY,
+      post_id INTEGER NOT NULL,
+      content TEXT NOT NULL,
+      anonymous_name TEXT DEFAULT 'Anonymous',
+      user_id INTEGER,
+      upvotes INTEGER DEFAULT 0,
+      downvotes INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_forum_replies_post ON forum_replies(post_id)`);
+
+    await client.query(`CREATE TABLE IF NOT EXISTS forum_votes (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      post_id INTEGER,
+      reply_id INTEGER,
+      vote_type TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, post_id, reply_id)
+    )`);
+
+    // Seed default forum categories
+    await client.query(`INSERT INTO forum_categories (name, description, icon, color, position) VALUES
+      ('General Discussion', 'Talk about anything school-related', '💬', '#4cc9f0', 1),
+      ('Homework Help', 'Get help with your homework', '📚', '#f72585', 2),
+      ('Study Tips', 'Share your best study strategies', '🧠', '#7209b7', 3),
+      ('Game Requests', 'Request new games for the portal', '🎮', '#3a0ca3', 4),
+      ('Bug Reports', 'Report issues with the portal', '🐛', '#f77f00', 5),
+      ('Off Topic', 'Random discussions and fun', '🎭', '#06d6a0', 6)
+      ON CONFLICT (name) DO NOTHING`);
+
     await client.query(`INSERT INTO roles (name, permissions) VALUES 
       ('admin', 'full_control'),
       ('moderator', 'delete_message,mute_user,warn_user'),
