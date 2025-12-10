@@ -158,6 +158,63 @@
       border-radius: 14px;
       overflow: hidden;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .game-card-content {
+      cursor: pointer;
+    }
+
+    .game-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .game-card:hover .game-actions {
+      opacity: 1;
+    }
+
+    .game-action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .game-action-btn:hover {
+      transform: scale(1.15);
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    .game-action-btn.active {
+      background: var(--primary);
+    }
+
+    .pin-btn.active {
+      background: #f39c12;
+    }
+
+    .like-btn.active {
+      background: #e74c3c;
+    }
+
+    .category-btn.special {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border-color: transparent;
       cursor: pointer;
       text-decoration: none;
       color: inherit;
@@ -761,6 +818,8 @@
     <!-- Category Filters -->
     <div class="category-filters" id="categoryFilters">
       <button class="category-btn active" data-category="all">All Games</button>
+      <button class="category-btn special" data-category="pinned">📌 Pinned</button>
+      <button class="category-btn special" data-category="liked">❤️ Liked</button>
       <button class="category-btn" data-category="action">🔫 Action</button>
       <button class="category-btn" data-category="adventure">🗺️ Adventure</button>
       <button class="category-btn" data-category="puzzle">🧩 Puzzle</button>
@@ -979,6 +1038,16 @@
     function filterByCategory() {
       if (currentCategory === 'all') {
         filteredGames = [...allGames];
+      } else if (currentCategory === 'pinned') {
+        const pinnedNames = getPinnedGames();
+        filteredGames = allGames.filter(game => pinnedNames.includes(game.name));
+        // Sort by pinned order
+        filteredGames.sort((a, b) => pinnedNames.indexOf(a.name) - pinnedNames.indexOf(b.name));
+      } else if (currentCategory === 'liked') {
+        const likedNames = getLikedGames();
+        filteredGames = allGames.filter(game => likedNames.includes(game.name));
+        // Sort by liked order
+        filteredGames.sort((a, b) => likedNames.indexOf(a.name) - likedNames.indexOf(b.name));
       } else {
         filteredGames = allGames.filter(game => getGameCategory(game.name) === currentCategory);
       }
@@ -1070,16 +1139,68 @@
     }
 
     function createGameCard(game) {
+      const isPinned = getPinnedGames().includes(game.name);
+      const isLiked = getLikedGames().includes(game.name);
       return `
-        <div class="game-card" onclick="openGameViewer('${game.name}', '${game.url.startsWith('/') ? game.url : '/' + game.url}')">
-          <div class="game-thumbnail">${iconMap[game.name] || '🎮'}</div>
-          <div class="game-info">
-            <h3 class="game-name">${game.name}</h3>
-            <p class="game-description">${game.tagline}</p>
-            <button class="play-btn">Play Now</button>
+        <div class="game-card">
+          <div class="game-actions">
+            <button class="game-action-btn pin-btn ${isPinned ? 'active' : ''}" onclick="event.stopPropagation(); togglePin('${game.name}')" title="${isPinned ? 'Unpin' : 'Pin'}">
+              📌
+            </button>
+            <button class="game-action-btn like-btn ${isLiked ? 'active' : ''}" onclick="event.stopPropagation(); toggleLike('${game.name}')" title="${isLiked ? 'Unlike' : 'Like'}">
+              ${isLiked ? '❤️' : '🤍'}
+            </button>
+          </div>
+          <div class="game-card-content" onclick="openGameViewer('${game.name}', '${game.url.startsWith('/') ? game.url : '/' + game.url}')">
+            <div class="game-thumbnail">${iconMap[game.name] || '🎮'}</div>
+            <div class="game-info">
+              <h3 class="game-name">${game.name}</h3>
+              <p class="game-description">${game.tagline}</p>
+              <button class="play-btn">Play Now</button>
+            </div>
           </div>
         </div>
       `;
+    }
+
+    // Pinned Games Functions
+    function getPinnedGames() {
+      try {
+        return JSON.parse(localStorage.getItem('pinnedGames') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function togglePin(gameName) {
+      let pinned = getPinnedGames();
+      if (pinned.includes(gameName)) {
+        pinned = pinned.filter(g => g !== gameName);
+      } else {
+        pinned.unshift(gameName);
+      }
+      localStorage.setItem('pinnedGames', JSON.stringify(pinned));
+      filterByCategory(); // Refresh view
+    }
+
+    // Liked Games Functions
+    function getLikedGames() {
+      try {
+        return JSON.parse(localStorage.getItem('likedGames') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function toggleLike(gameName) {
+      let liked = getLikedGames();
+      if (liked.includes(gameName)) {
+        liked = liked.filter(g => g !== gameName);
+      } else {
+        liked.unshift(gameName);
+      }
+      localStorage.setItem('likedGames', JSON.stringify(liked));
+      filterByCategory(); // Refresh view
     }
 
     function openGameViewer(gameName, gameUrl) {
