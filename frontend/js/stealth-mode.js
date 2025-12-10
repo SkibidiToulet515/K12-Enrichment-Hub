@@ -3,9 +3,15 @@ const StealthMode = {
   originalFavicon: null,
   isActive: false,
   
+  // ClassLink MyApps icon (base64 encoded for reliability)
+  classLinkIcon: 'https://asset-cdn.schoology.com/sites/all/themes/flavor_developer/favicon.ico',
+  
   panicTargets: [
-    { name: 'ClassLink', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'https://launchpad.classlink.com/favicon.ico' }
+    { name: 'ClassLink Launchpad', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJSSURBVFhH7ZY9aBRBFMf/M7t3l0tCvogfqIWFYCEWFoKNhYWFhYWFhYWFhYWFhYWFhYWFRUSwsLCwsLCwsLCwsLCwECwsLCwsLCwsLCwEi4CgiN+JH+e5u7sz+2Zv725zd7mLYPzBMrPz3rz/vJnZnQP+U4QA4O8KnhOO47wHsNZ13ZXGmD2u664yxiw3xiwxxiw0xsw3xsw1xswyxkw3xkwzxkwxxkw2xkwyxkw0xowzxow1xow2xowkjCDRiCNxJI44Esfaoe08LvdJ+QTJTwK4H8ADANcBXAPwB4ArAC4BuAjgPIDfAM4BOAPgFIATAI4DOAbgKIAjAA4DOAjgAID9APYCOArgIIDLAK4A+ATgI4APAN4DeAfgLYA3AF4DeAXgJYAXAJ4DeAbgKYAnAB4DeATgIYAHAO4DuAfgLoA7AG4DuAXgJoAbAK4DuAbgKoBLAC4AuADgPADr4SyAMwBOAzgJ4ASA4wCOATgK4AiAwwAOATgI4ACA/QD2AdgLYA+A3QB2AdgJYAeA7QC2AdgKYAuAzQA2AdgIYAOA9QDWAVgLYA2A1QBWA1gFYCWAFQCWA1gGYCmAJQAWA1gEYCGABQDmA5gHYC6AOQBmA5gFYCaAGQCmA5gGYCqAKQAmA5gEYCKACQDGAxgHYCyAMQBGAxgFYCSAEQCGA/gH4G+CYQA7gIUA5gOYB2AugDkAZgOYBWAmgBkApgOYBmAqgCkAJgOYBGAigAkAxgMYB2AsgDEARgMYBWAkgBEAhgH4C2AogL8AegL4A6AbgG4AugLoAqAzgE4AOgLoAKA9gHYA2gJoA+A/BPBfKKi+K7gAAAAASUVORK5CYII=' }
   ],
+  
+  // Custom flood history URL
+  customFloodUrl: localStorage.getItem('customFloodUrl') || '',
   
   disguises: [
     { name: 'Google Docs', title: 'Untitled document - Google Docs', favicon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico', url: 'https://docs.google.com' },
@@ -130,8 +136,8 @@ const StealthMode = {
     }
   },
   
-  floodHistory(count = 50) {
-    const urls = [
+  floodHistory(count = 50, customUrl = null) {
+    const baseUrls = [
       'https://myapps.classlink.com/home',
       'https://myapps.classlink.com/home#dashboard',
       'https://myapps.classlink.com/home#apps',
@@ -144,6 +150,9 @@ const StealthMode = {
       'https://outlook.office.com/mail'
     ];
     
+    // Add custom URL if provided
+    const urls = customUrl ? [customUrl, ...baseUrls] : baseUrls;
+    
     for (let i = 0; i < count; i++) {
       const randomUrl = urls[Math.floor(Math.random() * urls.length)];
       history.pushState({}, '', window.location.pathname + '?t=' + Date.now() + i);
@@ -151,6 +160,55 @@ const StealthMode = {
     history.replaceState({}, '', window.location.pathname);
     
     return `Flooded history with ${count} entries`;
+  },
+  
+  openInBlobLink() {
+    const currentUrl = window.location.href;
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${this.currentPanicTarget.title}</title>
+        <link rel="icon" href="${this.currentPanicTarget.favicon}">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { overflow: hidden; }
+          iframe { width: 100vw; height: 100vh; border: none; }
+        </style>
+      </head>
+      <body>
+        <iframe src="${currentUrl}"></iframe>
+      </body>
+      </html>
+    `;
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, '_blank');
+  },
+  
+  saveCustomFloodUrl() {
+    const input = document.getElementById('customFloodUrl');
+    if (input && input.value.trim()) {
+      this.customFloodUrl = input.value.trim();
+      localStorage.setItem('customFloodUrl', this.customFloodUrl);
+      alert('Custom flood URL saved!');
+    } else {
+      localStorage.removeItem('customFloodUrl');
+      this.customFloodUrl = '';
+      alert('Custom flood URL cleared!');
+    }
+  },
+  
+  floodWithCustomUrl() {
+    const input = document.getElementById('customFloodUrl');
+    const url = input ? input.value.trim() : this.customFloodUrl;
+    if (url) {
+      this.floodHistory(50, url);
+      alert(`History flooded with custom URL: ${url}`);
+    } else {
+      alert('Please enter a custom URL first!');
+    }
   },
   
   manipulateHistory() {
@@ -387,11 +445,29 @@ const StealthMode = {
         <button class="stealth-btn primary" onclick="StealthMode.openInAboutBlank()">
           📄 Open in about:blank
         </button>
+        <button class="stealth-btn primary" onclick="StealthMode.openInBlobLink()">
+          🔗 Open in Blob Link
+        </button>
         <button class="stealth-btn secondary" onclick="StealthMode.floodHistory(); alert('History flooded!')">
           📚 Flood History (50 entries)
         </button>
         <button class="stealth-btn secondary" onclick="StealthMode.manipulateHistory(); alert('History manipulated!')">
           🔄 Manipulate History
+        </button>
+      </div>
+      
+      <div class="stealth-divider"></div>
+      
+      <div class="stealth-section">
+        <h4>🌊 Custom Flood URL</h4>
+        <input type="text" id="customFloodUrl" placeholder="Enter custom URL (e.g. Flood Escape link)" 
+          value="${this.customFloodUrl}"
+          style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--accent, #45475a); background: var(--bg, #11111b); color: var(--text, #cdd6f4); font-size: 12px; margin-bottom: 8px;">
+        <button class="stealth-btn secondary" onclick="StealthMode.saveCustomFloodUrl()">
+          💾 Save Custom URL
+        </button>
+        <button class="stealth-btn secondary" onclick="StealthMode.floodWithCustomUrl()">
+          🌊 Flood with Custom URL
         </button>
       </div>
       
