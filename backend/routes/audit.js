@@ -183,4 +183,84 @@ router.get('/action-types', (req, res) => {
   res.json(ACTION_TYPES);
 });
 
+// Global update log - tracks ALL updates across the entire system
+router.get('/global', (req, res) => {
+  const user = getUserFromToken(req);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  
+  const limit = parseInt(req.query.limit) || 100;
+  const offset = parseInt(req.query.offset) || 0;
+  const updateType = req.query.type;
+  
+  // Check if user is admin
+  db.get('SELECT is_admin FROM users WHERE id = ?', [user.userId], (err, userData) => {
+    if (err || !userData?.is_admin) {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    
+    let query = `
+      SELECT ul.*, u.username as actor_username
+      FROM update_log ul
+      LEFT JOIN users u ON ul.actor_id = u.id
+    `;
+    const params = [];
+    
+    if (updateType) {
+      query += ' WHERE ul.update_type = ?';
+      params.push(updateType);
+    }
+    
+    query += ' ORDER BY ul.created_at DESC LIMIT ? OFFSET ?';
+    params.push(limit, offset);
+    
+    db.all(query, params, (err, logs) => {
+      if (err) return res.status(500).json({ error: 'Failed to load update log' });
+      
+      const formatted = logs.map(log => ({
+        id: log.id,
+        updateType: log.update_type,
+        actor: {
+          id: log.actor_id,
+          username: log.actor_username
+        },
+        targetType: log.target_type,
+        targetId: log.target_id,
+        changes: log.changes ? JSON.parse(log.changes) : null,
+        description: log.description,
+        createdAt: log.created_at
+      }));
+      
+      res.json(formatted);
+    });
+  });
+});
+
+// Get update log stats
+router.get('/global/stats', (req, res) => {
+  const user = getUserFromToken(req);
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  
+  db.get('SELECT is_admin FROM users WHERE id = ?', [user.userId], (err, userData) => {
+    if (err || !userData?.is_admin) {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    
+    db.all(`
+      SELECT update_type, COUNT(*) as count
+      FROM update_log
+      GROUP BY update_type
+      ORDER BY count DESC
+    `, (err, stats) => {
+      if (err) return res.status(500).json({ error: 'Failed to load stats' });
+      
+      db.get('SELECT COUNT(*) as total FROM update_log', (err, total) => {
+        res.json({
+          total: total?.total || 0,
+          byType: stats || []
+        });
+      });
+    });
+  });
+});
+
 module.exports = router;

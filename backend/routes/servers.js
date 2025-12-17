@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const { logUpdate, logGlobalUpdate, UPDATE_TYPES } = require('../utils/updateLogger');
 
 const router = express.Router();
 
@@ -94,6 +95,11 @@ router.post('/create', (req, res) => {
       [serverId, 'general'], (channelErr) => {
         if (channelErr) console.error('Failed to create default channel:', channelErr);
       });
+    
+    // Auto-log the server creation
+    logUpdate(UPDATE_TYPES.SERVER_CREATED, userId, serverId, 'server', serverId, 
+      { name: serverName.trim(), description: description || '' }, 
+      'Server created').catch(err => console.error('Failed to log server creation:', err));
     
     res.json({ success: true, serverId, serverName: serverName.trim() });
   });
