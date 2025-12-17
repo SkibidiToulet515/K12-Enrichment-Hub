@@ -169,6 +169,11 @@ app.get('/lock', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/private/lock.html'));
 });
 
+// Fake login screen for stealth mode
+app.get('/classlink', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/private/fake-login.html'));
+});
+
 // Legacy auth routes
 app.get(['/private/auth', '/private/auth.html'], (req, res) => {
   res.redirect('/auth');

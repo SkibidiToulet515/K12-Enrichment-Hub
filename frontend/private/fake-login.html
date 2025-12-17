@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClassLink Launchpad</title>
+  <link rel="icon" href="https://www.classlink.com/favicon.ico">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #01579b 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    
+    .logo {
+      margin-bottom: 30px;
+    }
+    
+    .logo img {
+      height: 50px;
+    }
+    
+    .logo-text {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1565c0;
+      margin-top: 10px;
+    }
+    
+    .logo-text span {
+      color: #43a047;
+    }
+    
+    h1 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #1565c0;
+    }
+    
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4);
+    }
+    
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #999;
+      font-size: 13px;
+    }
+    
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e0e0e0;
+    }
+    
+    .divider span {
+      padding: 0 15px;
+    }
+    
+    .sso-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .sso-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    
+    .sso-btn:hover {
+      border-color: #1565c0;
+      background: #f5f5f5;
+    }
+    
+    .sso-btn img {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .footer-links {
+      margin-top: 25px;
+      font-size: 13px;
+    }
+    
+    .footer-links a {
+      color: #1565c0;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+    
+    .copyright {
+      position: fixed;
+      bottom: 20px;
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+    }
+    
+    .exit-hint {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      color: rgba(255,255,255,0.3);
+      font-size: 10px;
+    }
+    
+    .loading {
+      display: none;
+      margin-top: 15px;
+    }
+    
+    .loading.show {
+      display: block;
+    }
+    
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #1565c0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .error-msg {
+      color: #d32f2f;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="exit-hint">Press ` or ESC to exit</div>
+  
+  <div class="login-container">
+    <div class="logo">
+      <div class="logo-text">Class<span>Link</span></div>
+    </div>
+    
+    <h1>Sign in to your account</h1>
+    <p class="subtitle">Access your school apps and resources</p>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Username or Email</label>
+        <input type="text" id="username" placeholder="Enter your username" autocomplete="off">
+      </div>
+      
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password">
+      </div>
+      
+      <button type="submit" class="login-btn">Sign In</button>
+      
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+      </div>
+      
+      <div class="error-msg" id="error">Invalid username or password. Please try again.</div>
+    </form>
+    
+    <div class="divider"><span>or sign in with</span></div>
+    
+    <div class="sso-buttons">
+      <button class="sso-btn" type="button">
+        <img src="https://www.google.com/favicon.ico" alt="Google">
+        Sign in with Google
+      </button>
+      <button class="sso-btn" type="button">
+        <img src="https://www.microsoft.com/favicon.ico" alt="Microsoft">
+        Sign in with Microsoft
+      </button>
+    </div>
+    
+    <div class="footer-links">
+      <a href="#">Forgot Password?</a>
+      <a href="#">Help</a>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+  
+  <div class="copyright">© 2025 ClassLink, Inc. All rights reserved.</div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('loading').classList.add('show');
+      document.getElementById('error').style.display = 'none';
+      
+      setTimeout(() => {
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('error').style.display = 'block';
+      }, 2000);
+    });
+    
+    document.querySelectorAll('.sso-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('loading').classList.add('show');
+        setTimeout(() => {
+          document.getElementById('loading').classList.remove('show');
+          document.getElementById('error').style.display = 'block';
+        }, 2000);
+      });
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '`' || e.key === 'Escape') {
+        window.location.href = '/';
+      }
+    });
+  </script>
+</body>
+</html>
