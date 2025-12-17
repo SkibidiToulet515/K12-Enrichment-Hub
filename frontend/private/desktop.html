@@ -134,6 +134,29 @@
       border-radius: 2px;
     }
     
+    .taskbar-btn.open::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 3px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 2px;
+    }
+    
+    .taskbar-btn.open.focused::after {
+      width: 20px;
+      background: #60cdff;
+    }
+    
+    .taskbar-apps {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
     .start-btn {
       background: transparent;
     }
@@ -464,12 +487,7 @@
           <rect x="11" y="11" width="8" height="8" rx="1"/>
         </svg>
       </div>
-      <div class="taskbar-btn" data-app="proxy">&#127760;</div>
-      <div class="taskbar-btn" data-app="games">&#128193;</div>
-      <div class="taskbar-btn" data-app="chat">&#128172;</div>
-      <div class="taskbar-btn" data-app="settings">&#9881;</div>
-      <div class="taskbar-btn" data-app="videos">&#127910;</div>
-      <div class="taskbar-btn" data-app="music">&#127925;</div>
+      <div class="taskbar-apps" id="taskbarApps"></div>
     </div>
     
     <div class="system-tray">
@@ -574,6 +592,26 @@
 
   <script>
     let startMenuOpen = false;
+    let openApps = [];
+    let currentApp = null;
+    
+    const appInfo = {
+      dashboard: { title: 'Dashboard', icon: '&#127968;' },
+      chat: { title: 'Chat', icon: '&#128172;' },
+      games: { title: 'File Explorer', icon: '&#128193;' },
+      proxy: { title: 'Browser', icon: '&#127760;' },
+      settings: { title: 'Settings', icon: '&#9881;' },
+      videos: { title: 'Videos', icon: '&#127910;' },
+      music: { title: 'Music', icon: '&#127925;' },
+      apps: { title: 'Calculator', icon: '&#128290;' },
+      forums: { title: 'Notepad', icon: '&#128221;' },
+      shop: { title: 'Microsoft Store', icon: '&#128722;' },
+      admin: { title: 'Task Manager', icon: '&#128187;' },
+      bugs: { title: 'Feedback Hub', icon: '&#128172;' },
+      profile: { title: 'Your Profile', icon: '&#128100;' },
+      themes: { title: 'Personalization', icon: '&#127912;' },
+      leaderboard: { title: 'Leaderboard', icon: '&#127942;' }
+    };
     
     function updateClock() {
       const now = new Date();
@@ -592,36 +630,52 @@
       document.getElementById('startBtn').classList.toggle('active', startMenuOpen);
     }
     
+    function updateTaskbar() {
+      const container = document.getElementById('taskbarApps');
+      container.innerHTML = '';
+      
+      openApps.forEach(appName => {
+        const app = appInfo[appName] || { icon: '&#128193;' };
+        const btn = document.createElement('div');
+        btn.className = 'taskbar-btn open';
+        btn.setAttribute('data-taskbar-app', appName);
+        btn.innerHTML = app.icon;
+        
+        if (appName === currentApp && document.getElementById('appWindow').classList.contains('active')) {
+          btn.classList.add('focused');
+        }
+        
+        btn.onclick = () => {
+          const win = document.getElementById('appWindow');
+          if (appName === currentApp && win.classList.contains('active')) {
+            minimizeWindow();
+          } else {
+            openApp(appName);
+          }
+        };
+        
+        container.appendChild(btn);
+      });
+    }
+    
     function openApp(appName) {
-      const window = document.getElementById('appWindow');
+      const win = document.getElementById('appWindow');
       const frame = document.getElementById('appFrame');
       const title = document.getElementById('windowTitle');
       const icon = document.getElementById('windowIcon');
       
-      const apps = {
-        dashboard: { title: 'Dashboard', icon: '&#127968;' },
-        chat: { title: 'Chat', icon: '&#128172;' },
-        games: { title: 'File Explorer', icon: '&#128193;' },
-        proxy: { title: 'Browser', icon: '&#127760;' },
-        settings: { title: 'Settings', icon: '&#9881;' },
-        videos: { title: 'Videos', icon: '&#127910;' },
-        music: { title: 'Music', icon: '&#127925;' },
-        apps: { title: 'Calculator', icon: '&#128290;' },
-        forums: { title: 'Notepad', icon: '&#128221;' },
-        shop: { title: 'Microsoft Store', icon: '&#128722;' },
-        admin: { title: 'Task Manager', icon: '&#128187;' },
-        bugs: { title: 'Feedback Hub', icon: '&#128172;' },
-        profile: { title: 'Your Profile', icon: '&#128100;' },
-        themes: { title: 'Personalization', icon: '&#127912;' },
-        leaderboard: { title: 'Leaderboard', icon: '&#127942;' }
-      };
-      
-      const app = apps[appName] || { title: appName, icon: '&#128193;' };
+      const app = appInfo[appName] || { title: appName, icon: '&#128193;' };
       title.textContent = app.title;
       icon.innerHTML = app.icon;
       frame.src = `/pages/${appName}`;
-      window.classList.add('active');
+      win.classList.add('active');
       
+      if (!openApps.includes(appName)) {
+        openApps.push(appName);
+      }
+      currentApp = appName;
+      
+      updateTaskbar();
       if (startMenuOpen) toggleStartMenu();
     }
     
@@ -629,10 +683,17 @@
       document.getElementById('appWindow').classList.remove('active');
       document.getElementById('appWindow').classList.remove('maximized');
       document.getElementById('appFrame').src = '';
+      
+      if (currentApp) {
+        openApps = openApps.filter(a => a !== currentApp);
+        currentApp = null;
+      }
+      updateTaskbar();
     }
     
     function minimizeWindow() {
       document.getElementById('appWindow').classList.remove('active');
+      updateTaskbar();
     }
     
     function toggleMaximize() {
