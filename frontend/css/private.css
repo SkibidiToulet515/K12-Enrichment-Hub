@@ -3,14 +3,20 @@
    NebulaCore Theme Compatible
    ====================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 /* App Container */
 .app-container {
   width: 100%;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   position: relative;
+}
+
+h1, h2, h3, h4, h5, h6, .logo-text {
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
 }
 
 /* Background gradient overlay */
