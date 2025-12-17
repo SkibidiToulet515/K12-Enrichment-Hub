@@ -10,6 +10,15 @@
   display: none !important;
 }
 
+/* Hide back-to-dashboard buttons in OS mode */
+.layout-os .back-btn,
+.layout-os .back-link,
+.layout-os .logout-btn[href*="dashboard"],
+.layout-os .video-modal-back,
+.layout-os a[href="/private/dashboard.html"] {
+  display: none !important;
+}
+
 /* Hover Zone - invisible trigger area on left edge */
 .os-sidebar-hover-zone {
   position: fixed;
