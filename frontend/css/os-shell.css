@@ -1,8 +1,8 @@
-/* NebulaCore OS Shell - Sidebar Mode */
+/* NebulaCore OS Shell - Sidebar Mode with Animations */
 
 :root {
   --sidebar-width: 260px;
-  --sidebar-collapsed-width: 0px;
+  --transition-speed: 0.3s;
 }
 
 /* Hide classic content in OS mode */
@@ -15,7 +15,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 8px;
+  width: 12px;
   height: 100vh;
   z-index: 9998;
   background: transparent;
@@ -28,15 +28,17 @@
   top: 50%;
   transform: translateY(-50%);
   width: 4px;
-  height: 60px;
-  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+  height: 80px;
+  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.6), rgba(168, 85, 247, 0.6), transparent);
   border-radius: 0 4px 4px 0;
-  opacity: 0.5;
-  transition: opacity 0.3s;
+  opacity: 0.6;
+  transition: all 0.3s ease;
 }
 
 .os-sidebar-hover-zone:hover::after {
   opacity: 1;
+  width: 6px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
 }
 
 /* Sidebar */
@@ -54,7 +56,7 @@
   flex-direction: column;
   z-index: 9999;
   transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .os-sidebar.visible {
@@ -82,6 +84,12 @@
   font-size: 14px;
   color: white;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  animation: logoPulse 3s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 40px rgba(168, 85, 247, 0.3); }
 }
 
 .os-sidebar-title {
@@ -128,14 +136,31 @@
   background: transparent;
   color: var(--text, #fff);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.os-sidebar-app::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), transparent);
+  transition: width 0.3s ease;
+  z-index: -1;
+}
+
+.os-sidebar-app:hover::before {
   width: 100%;
 }
 
 .os-sidebar-app:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  transform: translateX(4px);
+  transform: translateX(8px);
 }
 
 .os-sidebar-app:hover .app-icon-wrapper svg {
@@ -143,7 +168,23 @@
 }
 
 .os-sidebar-app:active {
-  transform: translateX(4px) scale(0.98);
+  transform: translateX(8px) scale(0.98);
+}
+
+.os-sidebar-app.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(168, 85, 247, 0.1));
+}
+
+.os-sidebar-app.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: linear-gradient(180deg, var(--primary, #00d4ff), var(--secondary, #a855f7));
+  border-radius: 0 3px 3px 0;
 }
 
 .os-sidebar-app-label {
@@ -151,6 +192,7 @@
   font-weight: 500;
   color: var(--text, #fff);
   opacity: 0.9;
+  transition: opacity 0.2s;
 }
 
 .os-sidebar-app:hover .os-sidebar-app-label {
@@ -206,12 +248,99 @@
   bottom: 0;
   z-index: 1;
   background: var(--bg, #0a0a12);
+  overflow: hidden;
 }
 
-.os-main-content iframe {
+.os-main-content.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: scale(0.98); }
+}
+
+/* Page Container */
+.os-page-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Page/iframe styles */
+.os-page {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.os-page.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.os-page.slide-out {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.os-page.slide-in {
+  opacity: 0;
+  transform: translateX(30px);
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Loading Overlay */
+.os-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 18, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.os-loading-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.os-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary, #00d4ff);
+  border-right-color: var(--secondary, #a855f7);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Classic mode hides OS elements */
@@ -219,17 +348,6 @@
 .layout-classic .os-sidebar-hover-zone,
 .layout-classic .os-main-content {
   display: none !important;
-}
-
-/* Animations */
-@keyframes slideIn {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 /* Responsive */
@@ -241,4 +359,49 @@
   .os-sidebar-hover-zone {
     width: 20px;
   }
+  
+  .os-sidebar-hover-zone::after {
+    height: 100px;
+  }
+}
+
+/* Stagger animation for sidebar apps */
+.os-sidebar.visible .os-sidebar-app {
+  animation: slideInApp 0.3s ease forwards;
+  opacity: 0;
+}
+
+.os-sidebar.visible .os-sidebar-app:nth-child(1) { animation-delay: 0.02s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(2) { animation-delay: 0.04s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(3) { animation-delay: 0.06s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(4) { animation-delay: 0.08s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(5) { animation-delay: 0.10s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(6) { animation-delay: 0.12s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(7) { animation-delay: 0.14s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(8) { animation-delay: 0.16s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(9) { animation-delay: 0.18s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(10) { animation-delay: 0.20s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(11) { animation-delay: 0.22s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(12) { animation-delay: 0.24s; }
+.os-sidebar.visible .os-sidebar-app:nth-child(13) { animation-delay: 0.26s; }
+
+@keyframes slideInApp {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Hover zone glow animation */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.os-sidebar-hover-zone::after {
+  animation: glowPulse 2s ease-in-out infinite;
 }

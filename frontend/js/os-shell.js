@@ -1,8 +1,8 @@
-/* NebulaCore OS Shell - Sidebar Mode */
+/* NebulaCore OS Shell - Sidebar Mode with Animations */
 
 const OSShell = {
-  proxyWindow: null,
-  sidebarOpen: false,
+  currentApp: null,
+  isTransitioning: false,
   
   apps: [
     { id: 'games', name: 'Games', icon: 'games', color: '#ff6b6b', url: '/private/games.html' },
@@ -52,7 +52,7 @@ const OSShell = {
     if (layoutMode === 'os') {
       this.renderOSShell();
       this.setupEventListeners();
-      setTimeout(() => this.openProxyFullscreen(), 100);
+      setTimeout(() => this.openApp('proxy', false), 100);
     }
   },
   
@@ -100,7 +100,14 @@ const OSShell = {
     const mainContent = document.createElement('div');
     mainContent.className = 'os-main-content';
     mainContent.id = 'osMainContent';
-    mainContent.innerHTML = '<iframe id="osMainFrame" src="/private/proxy.html"></iframe>';
+    mainContent.innerHTML = `
+      <div class="os-page-container" id="osPageContainer">
+        <iframe class="os-page active" id="osMainFrame" src="about:blank"></iframe>
+      </div>
+      <div class="os-loading-overlay" id="osLoadingOverlay">
+        <div class="os-loading-spinner"></div>
+      </div>
+    `;
     
     document.body.appendChild(hoverZone);
     document.body.appendChild(sidebar);
@@ -113,24 +120,21 @@ const OSShell = {
     
     hoverZone.addEventListener('mouseenter', () => {
       sidebar.classList.add('visible');
-      this.sidebarOpen = true;
     });
     
     sidebar.addEventListener('mouseenter', () => {
       sidebar.classList.add('visible');
-      this.sidebarOpen = true;
     });
     
     sidebar.addEventListener('mouseleave', () => {
       sidebar.classList.remove('visible');
-      this.sidebarOpen = false;
     });
     
     document.querySelectorAll('.os-sidebar-app').forEach(btn => {
       btn.addEventListener('click', () => {
         const appId = btn.dataset.app;
         if (appId) {
-          this.openApp(appId);
+          this.openApp(appId, true);
         }
       });
     });
@@ -138,26 +142,70 @@ const OSShell = {
     document.querySelector('.os-sidebar-logout')?.addEventListener('click', () => {
       this.signOut();
     });
+    
+    const frame = document.getElementById('osMainFrame');
+    if (frame) {
+      frame.addEventListener('load', () => {
+        this.hideLoading();
+      });
+    }
   },
   
-  openApp(appId) {
+  openApp(appId, animate = true) {
+    if (this.isTransitioning || appId === this.currentApp) {
+      document.getElementById('osSidebar')?.classList.remove('visible');
+      return;
+    }
+    
     const app = this.apps.find(a => a.id === appId);
     if (!app) return;
     
-    const frame = document.getElementById('osMainFrame');
-    if (frame) {
-      frame.src = app.url;
+    this.isTransitioning = true;
+    const container = document.getElementById('osPageContainer');
+    const currentFrame = document.getElementById('osMainFrame');
+    
+    if (animate && this.currentApp) {
+      this.showLoading();
+      
+      currentFrame.classList.add('slide-out');
+      
+      setTimeout(() => {
+        currentFrame.classList.remove('slide-out', 'active');
+        currentFrame.src = app.url;
+        currentFrame.classList.add('slide-in');
+        
+        setTimeout(() => {
+          currentFrame.classList.remove('slide-in');
+          currentFrame.classList.add('active');
+          this.isTransitioning = false;
+        }, 300);
+      }, 200);
+    } else {
+      this.showLoading();
+      currentFrame.src = app.url;
+      currentFrame.classList.add('active');
+      this.isTransitioning = false;
     }
     
+    this.currentApp = appId;
+    this.updateActiveApp();
     document.getElementById('osSidebar')?.classList.remove('visible');
-    this.sidebarOpen = false;
   },
   
-  openProxyFullscreen() {
-    const frame = document.getElementById('osMainFrame');
-    if (frame) {
-      frame.src = '/private/proxy.html';
-    }
+  updateActiveApp() {
+    document.querySelectorAll('.os-sidebar-app').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.app === this.currentApp);
+    });
+  },
+  
+  showLoading() {
+    document.getElementById('osLoadingOverlay')?.classList.add('visible');
+  },
+  
+  hideLoading() {
+    setTimeout(() => {
+      document.getElementById('osLoadingOverlay')?.classList.remove('visible');
+    }, 100);
   },
   
   getCurrentUser() {
@@ -172,9 +220,16 @@ const OSShell = {
   },
   
   signOut() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
-    window.location.href = '/login.html';
+    const mainContent = document.getElementById('osMainContent');
+    if (mainContent) {
+      mainContent.classList.add('fade-out');
+    }
+    
+    setTimeout(() => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('currentUser');
+      window.location.href = '/login.html';
+    }, 300);
   }
 };
 
