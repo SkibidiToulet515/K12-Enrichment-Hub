@@ -43,12 +43,7 @@
     }
   }, true);
   
-  // Block right-click context menu
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    showAccessDenied();
-    return false;
-  });
+  // Allow right-click but block "Inspect" option via keyboard shortcuts only
   
   function showAccessDenied() {
     // Create overlay
