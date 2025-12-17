@@ -100,6 +100,42 @@
       background: var(--accent);
       color: var(--bg);
     }
+    .guest-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: var(--text-light);
+      border: 1px dashed var(--text-light);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .guest-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 20px 0;
+      color: var(--text-light);
+      font-size: 12px;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--accent);
+    }
     .error-message {
       color: #e74c3c;
       font-size: 13px;
@@ -167,6 +203,15 @@
     </form>
 
     <div class="error-message" id="errorMessage"></div>
+    
+    <div class="divider">or</div>
+    
+    <button type="button" class="guest-btn" id="guestBtn" onclick="continueAsGuest()">
+      👤 Continue as Guest
+    </button>
+    <p style="text-align: center; font-size: 11px; color: var(--text-light); margin-top: 10px;">
+      Guests can browse but cannot save progress or post content
+    </p>
 
     <div class="logout-link">
       <a href="/public/index.html">← Back to Public</a>
@@ -345,6 +390,22 @@
         errorEl.classList.add('show');
       }
     });
+    
+    function continueAsGuest() {
+      localStorage.setItem('isGuest', 'true');
+      localStorage.setItem('guestSessionStart', Date.now().toString());
+      localStorage.setItem('userToken', 'guest');
+      localStorage.setItem('authToken', 'guest');
+      localStorage.setItem('username', 'Guest');
+      localStorage.setItem('user', JSON.stringify({
+        id: 'guest',
+        username: 'Guest',
+        profilePicture: '',
+        isGuest: true,
+        createdAt: new Date().toISOString()
+      }));
+      window.location.href = '/private/dashboard.html';
+    }
   </script>
   <script src="/js/transitions.js"></script>
 </body>

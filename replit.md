@@ -47,6 +47,12 @@ Do not make changes to the file `Y`.
 - **Dashboard Widgets**: Customizable widget system with 10 widget types (stats, recent games, leaderboard, friends, announcements, tasks, clock, calendar, notes, weather).
 - **Theme Creator**: Full theme customization with live preview, color pickers, save/export functionality, and public theme gallery.
 - **Anonymous Forums**: Discussion boards where users can post anonymously with categories (General Discussion, Homework Help, Study Tips, Game Requests, Bug Reports, Off Topic), voting system, replies, search, and sorting options.
+- **OS-Style Interface (New)**: Optional desktop-style interface with taskbar, windowed apps, start menu, and notifications panel. Switchable via Settings.
+- **Universal Settings App (New)**: Centralized settings page with layout toggle, theme selection, font customization, accessibility options, and notification preferences.
+- **Guest Mode (New)**: Users can browse as guests without creating an account. Guests have limited access (cannot save progress, post content, or access admin features).
+- **Pin/Like Games (New)**: Games can be pinned and liked with localStorage persistence and dedicated filter categories.
+- **Apps Page (New)**: Utility apps including Calculator, Stopwatch, Timer, Quick Notes, Coin Flip, and Dice Roller.
+- **YouTube Privacy Mode (New)**: Videos embed using youtube-nocookie.com for enhanced privacy.
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.

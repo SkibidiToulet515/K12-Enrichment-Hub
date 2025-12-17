@@ -1,0 +1,370 @@
+Your task is to TRANSFORM the current UI into an OS-style interface while preserving 100% of all existing functionality, logic, data, and routes.
+
+This must feel human-built, realistic, and production-quality — NOT AI-generated or generic.
+
+1️⃣ CORE GOAL (MANDATORY)
+
+Turn the current website into a browser-based OS-style interface, similar to a lightweight desktop OS.
+
+This includes:
+
+A taskbar (bottom or side)
+
+App-like windows that can:
+
+Open
+
+Close
+
+Minimize
+
+Focus (active window state)
+
+A desktop / workspace feel
+
+Smooth animations (subtle, not flashy)
+
+⚠️ The original layout must still exist and be switchable.
+
+2️⃣ LAYOUT MODE TOGGLE (MANDATORY)
+
+Add a Universal Settings App that applies settings globally.
+
+Inside Settings:
+
+Add a Layout Mode toggle:
+
+“Classic Layout”
+
+“OS Layout”
+
+Requirements:
+
+Show visual preview images for both layouts (like Windows theme previews)
+
+Changes apply instantly
+
+Save preference per user (or per session if guest)
+
+No reload required
+
+3️⃣ TASKBAR (MANDATORY)
+
+Add a persistent taskbar that includes:
+
+App icons for existing features (games, chat, forums, media, tools, etc.)
+
+Active app indicators
+
+System clock
+
+Notifications icon
+
+Settings shortcut
+
+Taskbar must:
+
+Stay fixed
+
+Work across all pages/views
+
+Reflect open windows correctly
+
+4️⃣ SETTINGS APP (MANDATORY)
+
+Create a single, universal Settings app instead of scattered settings.
+
+Include:
+
+Layout mode toggle (OS / Classic)
+
+Theme selector
+
+Custom theme editor (keep existing theme maker)
+
+Font changer (global font selector)
+
+Notification settings
+
+Accessibility options (font size, motion reduction)
+
+Account settings
+
+Settings must:
+
+Apply globally
+
+Persist correctly
+
+Never break existing pages
+
+5️⃣ AUTH & GUEST MODE (MANDATORY)
+
+On login screen:
+
+Add “Continue as Guest”
+
+Guest limitations:
+
+Cannot save progress
+
+Cannot save games played
+
+Cannot send messages
+
+Cannot post in forums
+
+Cannot create servers
+
+Cannot customize profile permanently
+
+Cannot access admin features
+
+Guest access must still allow:
+
+Browsing content
+
+Viewing games/media
+
+Using basic tools
+
+6️⃣ CHAT SYSTEM (VERY IMPORTANT)
+Core fixes (MANDATORY):
+
+Fix forums so posting actually works
+
+Remove any requirement for admin permission to create servers
+
+Chat input bar MUST stay fixed (like Discord) and never move down as messages increase
+
+Add Discord-like features:
+
+Servers with:
+
+Rename
+
+Delete
+
+Invite via generated invite codes
+
+Kick / timeout / remove members
+
+Assign roles
+
+Permissions
+
+Subchannels inside servers
+
+Group chats with same controls
+
+Mentions & notifications:
+
+Typing @ shows user list in that server/chat
+
+@mentions trigger notifications
+
+Notifications appear OS-style (top corner popup)
+
+Notification preferences per user
+
+7️⃣ ADMIN PANEL (MANDATORY)
+
+Admin panel is owner-only and must:
+
+Actually work (no fake / placeholder stats)
+
+Show:
+
+Real user stats
+
+Reports
+
+Activity metrics
+
+Allow:
+
+Ban / unban users
+
+Timeout users
+
+Moderate content
+
+View bug reports
+
+8️⃣ BUG REPORT SYSTEM (MANDATORY)
+
+Add a “Report a Bug” feature:
+
+Accessible to users
+
+Submits:
+
+Description
+
+Page/app name
+
+Optional screenshot
+
+Reports appear in Admin Panel
+
+Include status tracking (open / resolved)
+
+9️⃣ PERFORMANCE (MANDATORY)
+
+Implement:
+
+Skeleton loading (preferred over lazy loading for UI)
+
+Lazy loading ONLY for heavy media
+
+Zero layout shifting
+
+Smooth loading states everywhere
+
+🔟 MUSIC APP (MANDATORY)
+
+Add a Music app inside the OS interface.
+
+Technical requirements:
+
+Use YouTube Data API (NOT embeds, NOT iframes)
+
+Use API only for:
+
+Search
+
+Metadata
+
+Thumbnails
+
+Filter results to:
+
+Music only
+
+Exclude long videos
+
+Exclude non-music content
+
+⚠️ IMPORTANT:
+
+This is NOT YouTube Music
+
+This is NOT embedding YouTube players
+
+Playback logic must be abstracted cleanly
+
+If playback is unavailable due to network restrictions, show a clean fallback UI
+
+Music app must:
+
+Feel native to the OS
+
+Open in a window
+
+Support playlists (UI-side)
+
+Work for logged-in users
+
+Guest users can browse but not save
+
+1️⃣1️⃣ KEEP ALL EXISTING FEATURES (CRITICAL)
+
+You MUST keep every existing feature, including but not limited to:
+
+Games
+
+Movies & TV
+
+Chat
+
+Forums
+
+Profiles
+
+Themes
+
+Tools
+
+Calculators
+
+To-do lists
+
+Admin features
+
+Nothing may be removed or broken.
+
+1️⃣2️⃣ ZERO ERRORS REQUIREMENT (VERY IMPORTANT)
+
+You must:
+
+Debug EVERY file
+
+Validate EVERY feature
+
+Check EACH file at least 19 times
+
+Fix:
+
+Console errors
+
+UI bugs
+
+Broken routes
+
+Broken state
+
+Broken permissions
+
+Ensure:
+
+Zero runtime errors
+
+Zero console warnings (where possible)
+
+No unfinished logic
+
+If something cannot be completed, you MUST explicitly explain why.
+
+1️⃣3️⃣ HUMAN QUALITY REQUIREMENT
+
+The final result must:
+
+Look human-designed
+
+Use realistic spacing, animations, and UI decisions
+
+Avoid generic AI patterns
+
+Avoid placeholder text
+
+Avoid fake data
+
+Feel polished and intentional
+
+1️⃣4️⃣ REQUIRED FINAL OUTPUT
+
+At the end, you MUST:
+
+Confirm all features are preserved
+
+Confirm zero known bugs
+
+List ANY steps I must do manually, such as:
+
+Environment variables
+
+API keys
+
+Render configuration
+
+Permissions
+
+Explain anything that cannot be automated
+
+⚠️ THIS IS NOT OPTIONAL
+
+Do not skip steps.
+Do not simplify.
+Do not hallucinate.
+Do not replace features.
+Do not introduce breaking changes.

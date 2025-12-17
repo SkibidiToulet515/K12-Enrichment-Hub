@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - NebulaCore</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <link rel="stylesheet" href="/css/os-shell.css">
+  <script src="/js/private-auth.js"></script>
+  <style>
+    .settings-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .settings-header h1 {
+      font-size: 2rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .back-btn {
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .back-btn:hover {
+      background: var(--primary);
+      color: var(--bg);
+    }
+    
+    .settings-section {
+      background: var(--card);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .settings-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .settings-section-title span {
+      font-size: 24px;
+    }
+    
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+    
+    .setting-info h4 {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+    
+    .setting-info p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    
+    .setting-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      border: 2px solid var(--glass-border);
+      border-radius: 26px;
+      transition: 0.3s;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background: var(--text);
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+      background: white;
+    }
+    
+    .layout-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    
+    .layout-preview {
+      border: 3px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: var(--bg);
+    }
+    
+    .layout-preview:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    
+    .layout-preview.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(var(--primary-rgb, 76, 201, 240), 0.3);
+    }
+    
+    .layout-preview-image {
+      width: 100%;
+      height: 150px;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .layout-preview-classic {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 10px;
+    }
+    
+    .layout-preview-classic .preview-nav {
+      height: 20px;
+      background: var(--accent);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    
+    .layout-preview-classic .preview-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    
+    .layout-preview-classic .preview-card {
+      background: var(--card);
+      border-radius: 4px;
+    }
+    
+    .layout-preview-os {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .layout-preview-os .preview-desktop {
+      flex: 1;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    
+    .layout-preview-os .preview-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .layout-preview-os .preview-icon-box {
+      width: 24px;
+      height: 24px;
+      background: var(--card);
+      border-radius: 6px;
+    }
+    
+    .layout-preview-os .preview-icon-label {
+      width: 20px;
+      height: 4px;
+      background: var(--text-secondary);
+      border-radius: 2px;
+    }
+    
+    .layout-preview-os .preview-window {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      right: 20px;
+      bottom: 30px;
+      background: var(--card);
+      border-radius: 6px;
+      border: 1px solid var(--glass-border);
+      overflow: hidden;
+    }
+    
+    .layout-preview-os .preview-window-header {
+      height: 12px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      gap: 3px;
+    }
+    
+    .layout-preview-os .preview-window-btn {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    
+    .layout-preview-os .preview-window-btn.red { background: #ff5f57; }
+    .layout-preview-os .preview-window-btn.yellow { background: #ffbd2e; }
+    .layout-preview-os .preview-window-btn.green { background: #28c940; }
+    
+    .layout-preview-os .preview-taskbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 16px;
+      background: rgba(20, 20, 30, 0.95);
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      gap: 4px;
+    }
+    
+    .layout-preview-os .preview-taskbar-btn {
+      width: 12px;
+      height: 12px;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+    
+    .layout-preview-os .preview-taskbar-app {
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    
+    .layout-preview-label {
+      padding: 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--card);
+    }
+    
+    .layout-preview.active .layout-preview-label {
+      color: var(--primary);
+    }
+    
+    select.setting-select {
+      padding: 10px 15px;
+      background: var(--bg);
+      border: 2px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      min-width: 150px;
+    }
+    
+    select.setting-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .setting-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .setting-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(var(--primary-rgb, 76, 201, 240), 0.3);
+    }
+    
+    .setting-btn.danger {
+      background: #ff4444;
+    }
+    
+    .setting-btn.danger:hover {
+      box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+    }
+    
+    .font-size-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .font-size-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 2px solid var(--glass-border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .font-size-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    .font-size-value {
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-container classic-content">
+    <div class="settings-header">
+      <h1>⚙️ Settings</h1>
+      <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>🖥️</span> Layout Mode
+      </div>
+      <p style="color: var(--text-secondary); margin-bottom: 20px;">
+        Choose between the classic web layout or the new OS-style desktop interface.
+      </p>
+      <div class="layout-preview-grid">
+        <div class="layout-preview" id="layoutClassic" onclick="setLayoutMode('classic')">
+          <div class="layout-preview-image">
+            <div class="layout-preview-classic">
+              <div class="preview-nav"></div>
+              <div class="preview-content">
+                <div class="preview-card"></div>
+                <div class="preview-card"></div>
+                <div class="preview-card"></div>
+                <div class="preview-card"></div>
+                <div class="preview-card"></div>
+                <div class="preview-card"></div>
+              </div>
+            </div>
+          </div>
+          <div class="layout-preview-label">Classic Layout</div>
+        </div>
+        <div class="layout-preview" id="layoutOS" onclick="setLayoutMode('os')">
+          <div class="layout-preview-image">
+            <div class="layout-preview-os">
+              <div class="preview-desktop">
+                <div class="preview-icon"><div class="preview-icon-box"></div><div class="preview-icon-label"></div></div>
+                <div class="preview-icon"><div class="preview-icon-box"></div><div class="preview-icon-label"></div></div>
+                <div class="preview-icon"><div class="preview-icon-box"></div><div class="preview-icon-label"></div></div>
+                <div class="preview-icon"><div class="preview-icon-box"></div><div class="preview-icon-label"></div></div>
+              </div>
+              <div class="preview-window">
+                <div class="preview-window-header">
+                  <div class="preview-window-btn red"></div>
+                  <div class="preview-window-btn yellow"></div>
+                  <div class="preview-window-btn green"></div>
+                </div>
+              </div>
+              <div class="preview-taskbar">
+                <div class="preview-taskbar-btn"></div>
+                <div class="preview-taskbar-app"></div>
+                <div class="preview-taskbar-app"></div>
+                <div class="preview-taskbar-app"></div>
+              </div>
+            </div>
+          </div>
+          <div class="layout-preview-label">OS Layout</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>🎨</span> Appearance
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Theme</h4>
+          <p>Choose your visual theme</p>
+        </div>
+        <div class="setting-control">
+          <a href="/private/themes.html" class="setting-btn">Open Theme Selector</a>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Custom Theme Creator</h4>
+          <p>Create and share your own themes</p>
+        </div>
+        <div class="setting-control">
+          <a href="/private/theme-creator.html" class="setting-btn">Open Theme Creator</a>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Font Family</h4>
+          <p>Change the global font</p>
+        </div>
+        <div class="setting-control">
+          <select class="setting-select" id="fontSelect" onchange="setFont(this.value)">
+            <option value="Inter">Inter (Default)</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Open Sans">Open Sans</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Montserrat">Montserrat</option>
+            <option value="Source Code Pro">Source Code Pro</option>
+            <option value="JetBrains Mono">JetBrains Mono</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>♿</span> Accessibility
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Font Size</h4>
+          <p>Adjust the base font size</p>
+        </div>
+        <div class="setting-control">
+          <div class="font-size-control">
+            <button class="font-size-btn" onclick="adjustFontSize(-1)">−</button>
+            <span class="font-size-value" id="fontSizeValue">100%</span>
+            <button class="font-size-btn" onclick="adjustFontSize(1)">+</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Reduce Motion</h4>
+          <p>Minimize animations and transitions</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="reduceMotionToggle" onchange="toggleReduceMotion(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>High Contrast</h4>
+          <p>Increase color contrast for better visibility</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="highContrastToggle" onchange="toggleHighContrast(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>🔔</span> Notifications
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Enable Notifications</h4>
+          <p>Show notification popups</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="notificationsToggle" checked onchange="toggleNotifications(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Sound Effects</h4>
+          <p>Play sounds for notifications and actions</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="soundsToggle" checked onchange="toggleSounds(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>⌨️</span> Keyboard Shortcuts
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Customize Shortcuts</h4>
+          <p>Edit keyboard shortcuts for quick actions</p>
+        </div>
+        <div class="setting-control">
+          <a href="/private/shortcuts.html" class="setting-btn">Edit Shortcuts</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>👤</span> Account
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Edit Profile</h4>
+          <p>Update your profile information and avatar</p>
+        </div>
+        <div class="setting-control">
+          <a href="/private/profile.html" class="setting-btn">Edit Profile</a>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Sign Out</h4>
+          <p>Log out of your account</p>
+        </div>
+        <div class="setting-control">
+          <button class="setting-btn danger" onclick="signOut()">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script src="/js/stealth-mode.js"></script>
+  <script src="/js/quick-switcher.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+    });
+    
+    function loadSettings() {
+      const layoutMode = localStorage.getItem('layoutMode') || 'classic';
+      document.getElementById('layoutClassic').classList.toggle('active', layoutMode === 'classic');
+      document.getElementById('layoutOS').classList.toggle('active', layoutMode === 'os');
+      
+      const font = localStorage.getItem('globalFont') || 'Inter';
+      document.getElementById('fontSelect').value = font;
+      
+      const fontSize = parseInt(localStorage.getItem('fontSize') || '100');
+      document.getElementById('fontSizeValue').textContent = fontSize + '%';
+      
+      document.getElementById('reduceMotionToggle').checked = localStorage.getItem('reduceMotion') === 'true';
+      document.getElementById('highContrastToggle').checked = localStorage.getItem('highContrast') === 'true';
+      document.getElementById('notificationsToggle').checked = localStorage.getItem('notifications') !== 'false';
+      document.getElementById('soundsToggle').checked = localStorage.getItem('sounds') !== 'false';
+    }
+    
+    function setLayoutMode(mode) {
+      localStorage.setItem('layoutMode', mode);
+      document.getElementById('layoutClassic').classList.toggle('active', mode === 'classic');
+      document.getElementById('layoutOS').classList.toggle('active', mode === 'os');
+      
+      if (typeof OSShell !== 'undefined') {
+        OSShell.setLayoutMode(mode);
+      } else {
+        document.body.classList.remove('layout-classic', 'layout-os');
+        document.body.classList.add(`layout-${mode}`);
+      }
+      
+      if (mode === 'os') {
+        window.location.href = '/private/dashboard.html';
+      }
+    }
+    
+    function setFont(font) {
+      localStorage.setItem('globalFont', font);
+      document.body.style.fontFamily = font + ', sans-serif';
+      
+      const link = document.createElement('link');
+      link.href = `https://fonts.googleapis.com/css2?family=${font.replace(' ', '+')}:wght@300;400;500;600;700&display=swap`;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    
+    function adjustFontSize(delta) {
+      let size = parseInt(localStorage.getItem('fontSize') || '100');
+      size = Math.max(80, Math.min(150, size + delta * 10));
+      localStorage.setItem('fontSize', size.toString());
+      document.getElementById('fontSizeValue').textContent = size + '%';
+      document.documentElement.style.fontSize = size + '%';
+    }
+    
+    function toggleReduceMotion(enabled) {
+      localStorage.setItem('reduceMotion', enabled.toString());
+      if (enabled) {
+        document.body.classList.add('reduce-motion');
+      } else {
+        document.body.classList.remove('reduce-motion');
+      }
+    }
+    
+    function toggleHighContrast(enabled) {
+      localStorage.setItem('highContrast', enabled.toString());
+      if (enabled) {
+        document.body.classList.add('high-contrast');
+      } else {
+        document.body.classList.remove('high-contrast');
+      }
+    }
+    
+    function toggleNotifications(enabled) {
+      localStorage.setItem('notifications', enabled.toString());
+    }
+    
+    function toggleSounds(enabled) {
+      localStorage.setItem('sounds', enabled.toString());
+    }
+    
+    function signOut() {
+      localStorage.removeItem('authToken');
+      window.location.href = '/login.html';
+    }
+  </script>
+  <script src="/js/os-shell.js"></script>
+</body>
+</html>
