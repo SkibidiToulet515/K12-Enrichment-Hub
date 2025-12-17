@@ -106,7 +106,22 @@
           } else {
             const response = await fetch(`/pages/${pageName}`);
             if (!response.ok) throw new Error('Page not found');
-            html = await response.text();
+            const fullHtml = await response.text();
+            
+            // Extract just the body content and inline styles from the page
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(fullHtml, 'text/html');
+            
+            // Get any inline styles from head
+            let styles = '';
+            doc.querySelectorAll('head style').forEach(style => {
+              styles += style.outerHTML;
+            });
+            
+            // Get body content
+            const bodyContent = doc.body ? doc.body.innerHTML : fullHtml;
+            html = styles + bodyContent;
+            
             this.cache[pageName] = html;
           }
           
@@ -219,7 +234,15 @@
     
     document.addEventListener('DOMContentLoaded', () => SPA.init());
   </script>
+  
+  <!-- Common scripts needed by all pages -->
+  <script src="/js/themes.js"></script>
   <script src="/js/transitions.js"></script>
+  <script src="/js/stealth-mode.js"></script>
+  <script src="/js/quick-switcher.js"></script>
+  <script src="/js/auto-theme.js"></script>
+  <script src="/js/os-shell.js"></script>
+  <script src="/js/os-notifications.js"></script>
   <script src="/js/security.js"></script>
 </body>
 </html>
