@@ -159,6 +159,16 @@ app.get('/auth', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/private/auth.html'));
 });
 
+// Setup wizard - accessible without login
+app.get('/setup', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/private/setup.html'));
+});
+
+// Lock screen - accessible without login (checks localStorage)
+app.get('/lock', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/private/lock.html'));
+});
+
 // Legacy auth routes
 app.get(['/private/auth', '/private/auth.html'], (req, res) => {
   res.redirect('/auth');
@@ -181,13 +191,13 @@ app.use(express.static(path.join(__dirname, '../frontend'), {
   index: false // Don't auto-serve index.html
 }));
 
-// Root - serve SPA when logged in, otherwise public landing
+// Root - serve desktop when logged in, otherwise public landing
 app.get('/', (req, res) => {
   const token = req.cookies?.authToken;
   if (token) {
     try {
       jwt.verify(token, JWT_SECRET);
-      return res.sendFile(path.join(__dirname, '../frontend/private/app.html'));
+      return res.sendFile(path.join(__dirname, '../frontend/private/desktop.html'));
     } catch {
       res.clearCookie('authToken');
     }

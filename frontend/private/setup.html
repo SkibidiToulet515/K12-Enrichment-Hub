@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup - NebulaCore</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .setup-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+      padding: 40px;
+      gap: 80px;
+    }
+    
+    .logo-section {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .tb-logo {
+      font-size: 180px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4dd0e1, #7c4dff, #e040fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 80px rgba(124, 77, 255, 0.5);
+      filter: drop-shadow(0 0 40px rgba(77, 208, 225, 0.4));
+      letter-spacing: -8px;
+    }
+    
+    .content-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    
+    .step-title {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+    
+    .step-title strong {
+      font-weight: 700;
+    }
+    
+    .tagline {
+      font-size: 20px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+    
+    .tagline-bold {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #333;
+      border: 2px solid #444;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      overflow: hidden;
+    }
+    
+    .avatar-placeholder:hover {
+      border-color: #7c4dff;
+    }
+    
+    .avatar-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .avatar-placeholder svg {
+      width: 40px;
+      height: 40px;
+      fill: #666;
+    }
+    
+    .input-field {
+      width: 280px;
+      padding: 12px 16px;
+      background: transparent;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    
+    .input-field:focus {
+      border-color: #7c4dff;
+    }
+    
+    .input-field::placeholder {
+      color: #666;
+    }
+    
+    .select-field {
+      width: 280px;
+      padding: 12px 16px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    
+    .select-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    
+    .select-row .select-field {
+      width: 140px;
+    }
+    
+    .nav-buttons {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      right: 30px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .nav-btn {
+      padding: 10px 24px;
+      background: #333;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .nav-btn:hover {
+      background: #444;
+    }
+    
+    .nav-btn.primary {
+      background: linear-gradient(135deg, #4dd0e1, #7c4dff);
+      border: none;
+    }
+    
+    .nav-btn.primary:hover {
+      opacity: 0.9;
+    }
+    
+    .nav-btn.hidden {
+      visibility: hidden;
+    }
+    
+    .center-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .step {
+      display: none;
+    }
+    
+    .step.active {
+      display: block;
+    }
+    
+    .error-msg {
+      color: #ff5252;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-container">
+    <div class="logo-section">
+      <div class="tb-logo">TB</div>
+    </div>
+    
+    <div class="content-section">
+      <!-- Step 1: Welcome -->
+      <div class="step active" id="step1">
+        <div class="tagline">The next generation of <strong class="tagline-bold">Terbium.</strong></div>
+        <div class="tagline tagline-bold">Built to last.</div>
+      </div>
+      
+      <!-- Step 2: Account Setup -->
+      <div class="step" id="step2">
+        <div class="step-title">Setup your account.</div>
+        <label class="avatar-placeholder" id="avatarLabel">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <input type="file" id="avatarInput" accept="image/*" style="display:none">
+        </label>
+        <input type="text" class="input-field" id="usernameInput" placeholder="Username">
+        <input type="password" class="input-field" id="passwordInput" placeholder="Password">
+        <div class="error-msg" id="accountError"></div>
+      </div>
+      
+      <!-- Step 3: Choose Proxy -->
+      <div class="step" id="step3">
+        <div class="step-title">Choose your default proxy.</div>
+        <select class="select-field" id="proxySelect">
+          <option value="ultraviolet">Ultraviolet</option>
+          <option value="scramjet">Scramjet</option>
+        </select>
+      </div>
+      
+      <!-- Step 4: Customize Settings -->
+      <div class="step" id="step4">
+        <div class="step-title">Customize Proxy Settings</div>
+        <div class="select-row">
+          <select class="select-field" id="backendSelect">
+            <option value="default">Backend (Default)</option>
+            <option value="bare">Bare Server</option>
+          </select>
+          <select class="select-field" id="transportSelect">
+            <option value="epoxy">Default (Epoxy)</option>
+            <option value="libcurl">LibCurl</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Navigation -->
+  <div class="nav-buttons" id="navButtons" style="display:none">
+    <button class="nav-btn" id="prevBtn">Previous</button>
+    <button class="nav-btn" id="nextBtn">Next</button>
+  </div>
+  
+  <button class="nav-btn center-btn" id="startBtn">Start</button>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    let avatarData = null;
+    
+    const steps = document.querySelectorAll('.step');
+    const startBtn = document.getElementById('startBtn');
+    const navButtons = document.getElementById('navButtons');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const avatarInput = document.getElementById('avatarInput');
+    const avatarLabel = document.getElementById('avatarLabel');
+    
+    function showStep(num) {
+      steps.forEach((s, i) => {
+        s.classList.toggle('active', i === num - 1);
+      });
+      
+      if (num === 1) {
+        startBtn.style.display = 'block';
+        navButtons.style.display = 'none';
+      } else {
+        startBtn.style.display = 'none';
+        navButtons.style.display = 'flex';
+      }
+      
+      prevBtn.classList.toggle('hidden', num === 1);
+      nextBtn.textContent = num === totalSteps ? 'Finish' : 'Next';
+    }
+    
+    startBtn.addEventListener('click', () => {
+      currentStep = 2;
+      showStep(currentStep);
+    });
+    
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    });
+    
+    nextBtn.addEventListener('click', async () => {
+      if (currentStep === 2) {
+        const username = document.getElementById('usernameInput').value.trim();
+        const password = document.getElementById('passwordInput').value;
+        const errorEl = document.getElementById('accountError');
+        
+        if (!username || !password) {
+          errorEl.textContent = 'Please enter username and password';
+          return;
+        }
+        
+        try {
+          const formData = new FormData();
+          formData.append('username', username);
+          formData.append('password', password);
+          if (avatarInput.files[0]) {
+            formData.append('profilePicture', avatarInput.files[0]);
+          }
+          
+          const res = await fetch('/api/users/signup', {
+            method: 'POST',
+            body: formData
+          });
+          
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Signup failed');
+          
+          localStorage.setItem('userToken', data.token);
+          localStorage.setItem('userId', data.userId);
+          localStorage.setItem('username', data.username);
+          localStorage.setItem('profilePicture', data.profilePicture || '');
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('user', JSON.stringify({
+            id: data.userId,
+            username: data.username,
+            profilePicture: data.profilePicture || ''
+          }));
+          localStorage.setItem('setupComplete', 'true');
+          
+          errorEl.textContent = '';
+          currentStep++;
+          showStep(currentStep);
+        } catch (err) {
+          errorEl.textContent = err.message;
+        }
+        return;
+      }
+      
+      if (currentStep === totalSteps) {
+        localStorage.setItem('defaultProxy', document.getElementById('proxySelect').value);
+        localStorage.setItem('proxyBackend', document.getElementById('backendSelect').value);
+        localStorage.setItem('proxyTransport', document.getElementById('transportSelect').value);
+        localStorage.setItem('setupComplete', 'true');
+        window.location.href = '/lock';
+        return;
+      }
+      
+      currentStep++;
+      showStep(currentStep);
+    });
+    
+    avatarInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          avatarLabel.innerHTML = `<img src="${e.target.result}" alt="Avatar">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    if (localStorage.getItem('setupComplete')) {
+      window.location.href = '/lock';
+    }
+  </script>
+</body>
+</html>
