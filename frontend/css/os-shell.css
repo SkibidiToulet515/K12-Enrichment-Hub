@@ -116,6 +116,17 @@
   height: 32px;
 }
 
+.os-desktop-icon.dragging {
+  opacity: 0.9;
+  cursor: grabbing !important;
+  z-index: 100;
+}
+
+.os-desktop-icon.dragging .os-desktop-icon-img {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 25px var(--icon-color, rgba(0, 200, 255, 0.4));
+}
+
 .os-desktop-icon-label {
   font-size: 11px;
   color: var(--text);
@@ -369,8 +380,19 @@
 }
 
 .os-window-icon {
-  font-size: 16px;
   margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.os-window-icon .app-icon-wrapper {
+  width: 18px;
+  height: 18px;
+}
+
+.os-window-icon .app-icon-wrapper svg {
+  width: 100%;
+  height: 100%;
 }
 
 .os-window-title {

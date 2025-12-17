@@ -310,14 +310,90 @@ const OSShell = {
     
     const user = this.getCurrentUser();
     const isAdmin = user && user.is_admin;
-    const visibleApps = this.apps.filter(app => !app.adminOnly || isAdmin);
+    const currentPage = window.location.pathname;
+    
+    let visibleApps = this.apps.filter(app => !app.adminOnly || isAdmin);
+    
+    if (currentPage.includes('dashboard')) {
+      visibleApps = visibleApps.filter(app => app.id !== 'dashboard');
+    }
     
     container.innerHTML = visibleApps.map(app => `
-      <div class="os-desktop-icon" data-app="${app.id}" ondblclick="OSShell.openApp('${app.id}')">
+      <div class="os-desktop-icon" data-app="${app.id}">
         <div class="os-desktop-icon-img">${this.getIcon(app.icon, app.color)}</div>
         <div class="os-desktop-icon-label">${app.name}</div>
       </div>
     `).join('');
+    
+    this.setupDesktopIconEvents();
+  },
+  
+  setupDesktopIconEvents() {
+    const container = document.getElementById('osDesktopIcons');
+    if (!container) return;
+    
+    const icons = container.querySelectorAll('.os-desktop-icon');
+    
+    icons.forEach(icon => {
+      let isDragging = false;
+      let hasMoved = false;
+      let startX, startY, startLeft, startTop;
+      
+      icon.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        
+        isDragging = true;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        const rect = icon.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        startLeft = rect.left - containerRect.left;
+        startTop = rect.top - containerRect.top;
+        
+        icon.style.position = 'absolute';
+        icon.style.left = startLeft + 'px';
+        icon.style.top = startTop + 'px';
+        icon.style.zIndex = '100';
+        icon.classList.add('dragging');
+        
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+          hasMoved = true;
+        }
+        
+        icon.style.left = (startLeft + dx) + 'px';
+        icon.style.top = (startTop + dy) + 'px';
+      });
+      
+      document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        icon.classList.remove('dragging');
+        icon.style.zIndex = '';
+      });
+      
+      icon.addEventListener('dblclick', () => {
+        const appId = icon.dataset.app;
+        OSShell.openApp(appId);
+      });
+      
+      icon.addEventListener('click', (e) => {
+        if (hasMoved) {
+          e.stopPropagation();
+          return;
+        }
+      });
+    });
   },
   
   renderTaskbarApps() {
@@ -422,7 +498,7 @@ const OSShell = {
     
     windowEl.innerHTML = `
       <div class="os-window-header" data-window="${app.id}">
-        <span class="os-window-icon">${app.icon}</span>
+        <span class="os-window-icon">${this.getIcon(app.icon, app.color)}</span>
         <span class="os-window-title">${app.name}</span>
         <div class="os-window-controls">
           <button class="os-window-btn minimize" onclick="OSShell.minimizeWindow('${app.id}')" title="Minimize">−</button>
