@@ -65,7 +65,10 @@ const OSShell = {
     const desktop = document.createElement('div');
     desktop.className = 'os-desktop';
     desktop.id = 'osDesktop';
-    desktop.innerHTML = '<div class="os-desktop-icons" id="osDesktopIcons"></div>';
+    desktop.innerHTML = `
+      <div class="os-desktop-icons" id="osDesktopIcons"></div>
+      <div class="os-widgets-container" id="osWidgets"></div>
+    `;
     
     const taskbar = document.createElement('div');
     taskbar.className = 'os-taskbar';
@@ -98,6 +101,136 @@ const OSShell = {
     
     this.renderDesktopIcons();
     this.renderTaskbarApps();
+    this.renderWidgets();
+  },
+  
+  renderWidgets() {
+    const container = document.getElementById('osWidgets');
+    if (!container) return;
+    
+    const user = this.getCurrentUser();
+    const username = user ? user.username : 'Guest';
+    const now = new Date();
+    const hour = now.getHours();
+    let greeting = 'Good evening';
+    if (hour < 12) greeting = 'Good morning';
+    else if (hour < 17) greeting = 'Good afternoon';
+    
+    container.innerHTML = `
+      <div class="os-widget os-widget-welcome">
+        <div class="widget-header">
+          <span class="widget-icon">👋</span>
+          <span class="widget-title">Welcome</span>
+        </div>
+        <div class="widget-content">
+          <h2>${greeting}, ${username}!</h2>
+          <p>Ready to learn something new today?</p>
+        </div>
+      </div>
+      
+      <div class="os-widget os-widget-clock">
+        <div class="widget-header">
+          <span class="widget-icon">🕐</span>
+          <span class="widget-title">Clock</span>
+        </div>
+        <div class="widget-content">
+          <div class="widget-time" id="widgetTime">${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          <div class="widget-date">${now.toLocaleDateString([], {weekday: 'long', month: 'long', day: 'numeric'})}</div>
+        </div>
+      </div>
+      
+      <div class="os-widget os-widget-quick-launch">
+        <div class="widget-header">
+          <span class="widget-icon">⚡</span>
+          <span class="widget-title">Quick Launch</span>
+        </div>
+        <div class="widget-content widget-quick-apps">
+          <button class="widget-quick-btn" onclick="location.href='/private/games.html'" title="Games">
+            ${this.getIcon('games', '#ff6b6b')}
+          </button>
+          <button class="widget-quick-btn" onclick="location.href='/private/chat.html'" title="Chat">
+            ${this.getIcon('chat', '#a855f7')}
+          </button>
+          <button class="widget-quick-btn" onclick="location.href='/private/youtube.html'" title="Videos">
+            ${this.getIcon('videos', '#ef4444')}
+          </button>
+          <button class="widget-quick-btn" onclick="location.href='/private/music.html'" title="Music">
+            ${this.getIcon('music', '#ec4899')}
+          </button>
+        </div>
+      </div>
+      
+      <div class="os-widget os-widget-stats">
+        <div class="widget-header">
+          <span class="widget-icon">📊</span>
+          <span class="widget-title">Your Stats</span>
+        </div>
+        <div class="widget-content widget-stats-grid">
+          <div class="widget-stat">
+            <span class="stat-value" id="widgetXp">0</span>
+            <span class="stat-label">XP</span>
+          </div>
+          <div class="widget-stat">
+            <span class="stat-value" id="widgetLevel">1</span>
+            <span class="stat-label">Level</span>
+          </div>
+          <div class="widget-stat">
+            <span class="stat-value" id="widgetCoins">0</span>
+            <span class="stat-label">Coins</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="os-widget os-widget-tip">
+        <div class="widget-header">
+          <span class="widget-icon">💡</span>
+          <span class="widget-title">Tip of the Day</span>
+        </div>
+        <div class="widget-content">
+          <p id="widgetTip">Press the backtick key (\`) to activate stealth mode!</p>
+        </div>
+      </div>
+    `;
+    
+    this.loadWidgetStats();
+    this.startWidgetClock();
+  },
+  
+  loadWidgetStats() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
+    fetch('/api/xp/stats', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.xp !== undefined) {
+          document.getElementById('widgetXp').textContent = data.xp.toLocaleString();
+          document.getElementById('widgetLevel').textContent = data.level || 1;
+        }
+      })
+      .catch(() => {});
+    
+    fetch('/api/shop/balance', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.coins !== undefined) {
+          document.getElementById('widgetCoins').textContent = data.coins.toLocaleString();
+        }
+      })
+      .catch(() => {});
+  },
+  
+  startWidgetClock() {
+    setInterval(() => {
+      const timeEl = document.getElementById('widgetTime');
+      if (timeEl) {
+        timeEl.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      }
+    }, 1000);
   },
   
   createStartMenu() {
