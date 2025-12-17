@@ -51,6 +51,10 @@ const OSShell = {
   notifications: [],
   
   init() {
+    if (window.self !== window.top) {
+      return;
+    }
+    
     const layoutMode = localStorage.getItem('layoutMode') || 'classic';
     document.body.classList.add(`layout-${layoutMode}`);
     
