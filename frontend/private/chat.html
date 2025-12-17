@@ -263,6 +263,7 @@
   </style>
 </head>
 <body class="chat-page">
+  <script>document.body.classList.add('layout-' + (localStorage.getItem('layoutMode') || 'classic'));</script>
   <div class="chat-app">
     <!-- Sidebar - Servers -->
     <aside class="sidebar servers-sidebar">

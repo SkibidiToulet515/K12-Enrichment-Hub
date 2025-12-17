@@ -8,6 +8,7 @@
   <link rel="shortcut icon" type="image/png" href="/favicon.png">
   <link rel="stylesheet" href="/css/private-theme.css">
   <link rel="stylesheet" href="/css/private.css">
+  <link rel="stylesheet" href="/css/os-shell.css">
   <style>
     .theme-creator-container {
       padding: 30px;
@@ -353,6 +354,7 @@
   </style>
 </head>
 <body>
+  <script>document.body.classList.add('layout-' + (localStorage.getItem('layoutMode') || 'classic'));</script>
     <div class="theme-creator-container">
       <div class="theme-creator-header">
         <div>

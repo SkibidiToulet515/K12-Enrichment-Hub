@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="shortcut icon" type="image/png" href="/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/os-shell.css">
   <style>
     * {
       box-sizing: border-box;
@@ -696,6 +697,7 @@
   </style>
 </head>
 <body>
+  <script>document.body.classList.add('layout-' + (localStorage.getItem('layoutMode') || 'classic'));</script>
   <div id="nebula-bg"></div>
   <canvas id="stars-canvas"></canvas>
   <canvas id="fluid-canvas"></canvas>
