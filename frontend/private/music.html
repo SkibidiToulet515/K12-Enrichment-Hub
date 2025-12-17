@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music - NebulaCore</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/os-shell.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .page-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      margin: 0;
+    }
+
+    .back-btn {
+      padding: 10px 20px;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .music-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 20px;
+    }
+
+    @media (max-width: 1000px) {
+      .music-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .search-section {
+      margin-bottom: 20px;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .search-btn {
+      padding: 14px 28px;
+      background: var(--primary);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .search-btn:hover {
+      filter: brightness(1.2);
+    }
+
+    .genre-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .genre-btn {
+      padding: 8px 16px;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 13px;
+    }
+
+    .genre-btn:hover, .genre-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .track-card {
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .track-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .track-card.playing {
+      border-color: #00ff88;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    }
+
+    .track-thumbnail {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .track-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .track-play-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .track-card:hover .track-play-overlay {
+      opacity: 1;
+    }
+
+    .track-play-overlay span {
+      font-size: 48px;
+    }
+
+    .track-info {
+      padding: 12px;
+    }
+
+    .track-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .track-artist {
+      font-size: 12px;
+      color: var(--text-secondary, #888);
+    }
+
+    .now-playing-panel {
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 20px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .now-playing-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .now-playing-header span {
+      color: #00ff88;
+    }
+
+    .player-container {
+      margin-bottom: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .player-container iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+    }
+
+    .current-track-info {
+      margin-bottom: 16px;
+    }
+
+    .current-track-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .current-track-artist {
+      font-size: 13px;
+      color: var(--text-secondary, #888);
+    }
+
+    .playlist-section h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: var(--text-secondary);
+    }
+
+    .playlist-items {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .playlist-item:hover {
+      background: var(--bg);
+    }
+
+    .playlist-item.active {
+      background: rgba(0, 255, 136, 0.1);
+    }
+
+    .playlist-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .playlist-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .playlist-item-title {
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .playlist-item-remove {
+      padding: 4px 8px;
+      background: transparent;
+      border: none;
+      color: #ff6b6b;
+      cursor: pointer;
+      font-size: 16px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .playlist-item:hover .playlist-item-remove {
+      opacity: 1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state span {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--primary);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header class="page-header">
+      <h1>🎵 Music</h1>
+      <a href="/private/dashboard.html" class="back-btn">← Dashboard</a>
+    </header>
+
+    <div class="search-section">
+      <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search for music...">
+        <button class="search-btn" onclick="searchMusic()">Search</button>
+      </div>
+    </div>
+
+    <div class="genre-filters">
+      <button class="genre-btn active" data-genre="popular music 2024">Trending</button>
+      <button class="genre-btn" data-genre="pop music">Pop</button>
+      <button class="genre-btn" data-genre="hip hop music">Hip Hop</button>
+      <button class="genre-btn" data-genre="rock music">Rock</button>
+      <button class="genre-btn" data-genre="electronic music">Electronic</button>
+      <button class="genre-btn" data-genre="classical music">Classical</button>
+      <button class="genre-btn" data-genre="jazz music">Jazz</button>
+      <button class="genre-btn" data-genre="lofi beats study">Lo-Fi</button>
+      <button class="genre-btn" data-genre="ambient relaxing music">Ambient</button>
+    </div>
+
+    <div class="music-layout">
+      <div class="tracks-section">
+        <div class="tracks-grid" id="tracksGrid">
+          <div class="loading">Loading music...</div>
+        </div>
+      </div>
+
+      <div class="now-playing-panel">
+        <div class="now-playing-header">
+          <span>▶</span> Now Playing
+        </div>
+        <div class="player-container" id="playerContainer">
+          <div class="empty-state">
+            <span>🎵</span>
+            <p>Select a track to play</p>
+          </div>
+        </div>
+        <div class="current-track-info" id="currentTrackInfo" style="display: none;">
+          <div class="current-track-title" id="currentTitle"></div>
+          <div class="current-track-artist" id="currentArtist"></div>
+        </div>
+        <div class="playlist-section">
+          <h3>Queue</h3>
+          <div class="playlist-items" id="playlistItems">
+            <div class="empty-state" style="padding: 20px;">
+              <p>No tracks in queue</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/themes.js"></script>
+  <script src="/js/transitions.js"></script>
+  <script src="/js/stealth-mode.js"></script>
+  <script src="/js/quick-switcher.js"></script>
+  <script>
+    let currentTrack = null;
+    let playlist = [];
+    let currentIndex = -1;
+
+    document.querySelectorAll('.genre-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadGenre(btn.dataset.genre);
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchMusic();
+    });
+
+    async function searchMusic() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return;
+      
+      document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+      loadTracks(query + ' music');
+    }
+
+    async function loadGenre(genre) {
+      loadTracks(genre);
+    }
+
+    async function loadTracks(query) {
+      const grid = document.getElementById('tracksGrid');
+      grid.innerHTML = '<div class="loading">Loading music...</div>';
+
+      try {
+        const res = await fetch(`/api/youtube/search?q=${encodeURIComponent(query)}&maxResults=20`);
+        const data = await res.json();
+
+        if (data.error) {
+          grid.innerHTML = '<div class="empty-state"><span>❌</span><p>' + data.error + '</p></div>';
+          return;
+        }
+
+        if (!data.videos || data.videos.length === 0) {
+          grid.innerHTML = '<div class="empty-state"><span>🔍</span><p>No music found</p></div>';
+          return;
+        }
+
+        grid.innerHTML = data.videos.map(video => `
+          <div class="track-card" onclick="playTrack('${video.id}', '${escapeHtml(video.title)}', '${escapeHtml(video.channelTitle)}', '${video.thumbnail}')" data-id="${video.id}">
+            <div class="track-thumbnail">
+              <img src="${video.thumbnail}" alt="${escapeHtml(video.title)}" loading="lazy">
+              <div class="track-play-overlay"><span>▶</span></div>
+            </div>
+            <div class="track-info">
+              <div class="track-title">${escapeHtml(video.title)}</div>
+              <div class="track-artist">${escapeHtml(video.channelTitle)}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading tracks:', err);
+        grid.innerHTML = '<div class="empty-state"><span>❌</span><p>Failed to load music</p></div>';
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function playTrack(id, title, artist, thumbnail) {
+      currentTrack = { id, title: title.replace(/\\'/g, "'").replace(/\\"/g, '"'), artist: artist.replace(/\\'/g, "'").replace(/\\"/g, '"'), thumbnail };
+      
+      document.querySelectorAll('.track-card').forEach(card => card.classList.remove('playing'));
+      const currentCard = document.querySelector(`.track-card[data-id="${id}"]`);
+      if (currentCard) currentCard.classList.add('playing');
+
+      const player = document.getElementById('playerContainer');
+      player.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+
+      document.getElementById('currentTrackInfo').style.display = 'block';
+      document.getElementById('currentTitle').textContent = currentTrack.title;
+      document.getElementById('currentArtist').textContent = currentTrack.artist;
+
+      addToPlaylist(currentTrack);
+    }
+
+    function addToPlaylist(track) {
+      const exists = playlist.find(t => t.id === track.id);
+      if (!exists) {
+        playlist.push(track);
+        currentIndex = playlist.length - 1;
+        updatePlaylistUI();
+      } else {
+        currentIndex = playlist.indexOf(exists);
+        updatePlaylistUI();
+      }
+    }
+
+    function updatePlaylistUI() {
+      const container = document.getElementById('playlistItems');
+      if (playlist.length === 0) {
+        container.innerHTML = '<div class="empty-state" style="padding: 20px;"><p>No tracks in queue</p></div>';
+        return;
+      }
+
+      container.innerHTML = playlist.map((track, i) => `
+        <div class="playlist-item ${i === currentIndex ? 'active' : ''}" onclick="playFromPlaylist(${i})">
+          <img src="${track.thumbnail}" alt="">
+          <div class="playlist-item-info">
+            <div class="playlist-item-title">${track.title}</div>
+          </div>
+          <button class="playlist-item-remove" onclick="event.stopPropagation(); removeFromPlaylist(${i})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function playFromPlaylist(index) {
+      if (index >= 0 && index < playlist.length) {
+        const track = playlist[index];
+        currentIndex = index;
+        playTrack(track.id, track.title, track.artist, track.thumbnail);
+      }
+    }
+
+    function removeFromPlaylist(index) {
+      playlist.splice(index, 1);
+      if (currentIndex >= playlist.length) {
+        currentIndex = playlist.length - 1;
+      }
+      updatePlaylistUI();
+    }
+
+    loadTracks('popular music 2024');
+  </script>
+  <script src="/js/os-shell.js"></script>
+</body>
+</html>

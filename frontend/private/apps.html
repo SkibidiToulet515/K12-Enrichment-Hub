@@ -540,6 +540,18 @@
         <div class="app-name">Dice Roller</div>
         <div class="app-desc">Roll 1-6 dice at once</div>
       </div>
+
+      <div class="app-card" onclick="window.location.href='/private/music.html'">
+        <div class="app-icon">🎵</div>
+        <div class="app-name">Music</div>
+        <div class="app-desc">Stream music with YouTube</div>
+      </div>
+
+      <div class="app-card" onclick="openApp('bugreport')">
+        <div class="app-icon">🐛</div>
+        <div class="app-name">Bug Report</div>
+        <div class="app-desc">Report issues and bugs</div>
+      </div>
     </div>
   </div>
 
@@ -665,6 +677,43 @@
             <div class="coin-stat-label">Tails</div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bug Report Modal -->
+  <div class="modal-overlay" id="bugreportModal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>🐛 Bug Report</h2>
+        <button class="close-modal" onclick="closeApp('bugreport')">&times;</button>
+      </div>
+      <div class="bugreport-app">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 6px; font-size: 13px;">Category</label>
+          <select id="bugCategory" style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); font-size: 14px;">
+            <option value="ui">UI/Visual Issue</option>
+            <option value="functionality">Feature Not Working</option>
+            <option value="performance">Performance Issue</option>
+            <option value="crash">App Crash/Error</option>
+            <option value="suggestion">Feature Suggestion</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 6px; font-size: 13px;">Title</label>
+          <input type="text" id="bugTitle" placeholder="Brief description of the issue" style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); font-size: 14px; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 6px; font-size: 13px;">Description</label>
+          <textarea id="bugDescription" placeholder="Describe the issue in detail. Include steps to reproduce if possible." style="width: 100%; height: 150px; padding: 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); font-size: 14px; resize: none; box-sizing: border-box;"></textarea>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 6px; font-size: 13px;">Page/Location</label>
+          <input type="text" id="bugLocation" placeholder="Which page or feature has the issue?" style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text); font-size: 14px; box-sizing: border-box;">
+        </div>
+        <button onclick="submitBugReport()" style="width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 16px;">Submit Report</button>
+        <div id="bugReportStatus" style="margin-top: 12px; text-align: center; font-size: 13px;"></div>
       </div>
     </div>
   </div>
@@ -986,6 +1035,54 @@
         });
         document.getElementById('diceTotal').textContent = `Total: ${total}`;
       }, 300);
+    }
+
+    // Bug Report
+    async function submitBugReport() {
+      const category = document.getElementById('bugCategory').value;
+      const title = document.getElementById('bugTitle').value.trim();
+      const description = document.getElementById('bugDescription').value.trim();
+      const location = document.getElementById('bugLocation').value.trim();
+      const status = document.getElementById('bugReportStatus');
+
+      if (!title || !description) {
+        status.innerHTML = '<span style="color: #ff6b6b;">Please fill in title and description</span>';
+        return;
+      }
+
+      const token = localStorage.getItem('authToken');
+      const isGuest = localStorage.getItem('isGuest') === 'true';
+      
+      if (isGuest) {
+        status.innerHTML = '<span style="color: #ff6b6b;">Guests cannot submit bug reports. Please create an account.</span>';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/bug-reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ category, title, description, location })
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+          status.innerHTML = '<span style="color: #00ff88;">Bug report submitted successfully!</span>';
+          document.getElementById('bugTitle').value = '';
+          document.getElementById('bugDescription').value = '';
+          document.getElementById('bugLocation').value = '';
+          setTimeout(() => closeApp('bugreport'), 2000);
+        } else {
+          status.innerHTML = `<span style="color: #ff6b6b;">${data.error || 'Failed to submit report'}</span>`;
+        }
+      } catch (err) {
+        console.error('Bug report error:', err);
+        status.innerHTML = '<span style="color: #ff6b6b;">Failed to submit report</span>';
+      }
     }
 
     // Init

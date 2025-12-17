@@ -674,6 +674,23 @@ async function initDatabase() {
       UNIQUE(user_id, post_id, reply_id)
     )`);
 
+    await client.query(`CREATE TABLE IF NOT EXISTS bug_reports (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      category TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      location TEXT,
+      status TEXT DEFAULT 'open',
+      priority TEXT DEFAULT 'normal',
+      admin_notes TEXT,
+      resolved_by INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_bug_reports_status ON bug_reports(status)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_bug_reports_user ON bug_reports(user_id)`);
+
     // Seed default forum categories
     await client.query(`INSERT INTO forum_categories (name, description, icon, color, position) VALUES
       ('General Discussion', 'Talk about anything school-related', '💬', '#4cc9f0', 1),

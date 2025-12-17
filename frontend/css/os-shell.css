@@ -1,5 +1,19 @@
 /* NebulaCore OS Shell Styles */
 
+/* OS Notifications Animation */
+@keyframes slideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.os-notification:hover {
+  transform: translateX(0) scale(1.02) !important;
+}
+
+.os-notification button:hover {
+  filter: brightness(1.2);
+}
+
 :root {
   --taskbar-height: 48px;
   --window-header-height: 36px;

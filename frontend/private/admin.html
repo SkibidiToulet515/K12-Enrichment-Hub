@@ -204,6 +204,11 @@
           <span class="nav-item-icon">📢</span>
           <span>Announcements</span>
         </div>
+        <div class="nav-item" data-section="bugreports">
+          <span class="nav-item-icon">🐛</span>
+          <span>Bug Reports</span>
+          <span class="nav-item-badge" id="openBugReports">0</span>
+        </div>
       </div>
       
       <div class="back-link">
@@ -644,6 +649,64 @@
           <div id="activeAnnouncements"></div>
         </div>
       </section>
+
+      <section id="bugreports" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Bug Reports</h2>
+          <div class="header-actions">
+            <button class="header-btn secondary" onclick="loadBugReports()">Refresh</button>
+          </div>
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="bugReportsOpen">0</div>
+            <div class="metric-label">Open</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="bugReportsInProgress">0</div>
+            <div class="metric-label">In Progress</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="bugReportsResolved">0</div>
+            <div class="metric-label">Resolved</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="bugReportsTotal">0</div>
+            <div class="metric-label">Total</div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">All Bug Reports</h3>
+            <div class="panel-actions">
+              <select class="filter-select" id="bugStatusFilter" onchange="loadBugReports()">
+                <option value="all">All Status</option>
+                <option value="open">Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Reporter</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bugReportsTable"></tbody>
+          </table>
+        </div>
+      </section>
     </main>
   </div>
   
@@ -709,6 +772,7 @@
       else if (section === 'announcements') loadAnnouncements();
       else if (section === 'analytics') loadAnalytics();
       else if (section === 'content') loadMessages();
+      else if (section === 'bugreports') loadBugReports();
     }
     
     async function refreshMetrics() {
@@ -1091,6 +1155,113 @@
         timeout = setTimeout(() => func.apply(this, args), wait);
       };
     }
+
+    async function loadBugReports() {
+      try {
+        const status = document.getElementById('bugStatusFilter')?.value || 'all';
+        const statsRes = await fetch('/api/bug-reports/stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const stats = await statsRes.json();
+        
+        document.getElementById('bugReportsOpen').textContent = stats.open || 0;
+        document.getElementById('bugReportsInProgress').textContent = stats.in_progress || 0;
+        document.getElementById('bugReportsResolved').textContent = stats.resolved || 0;
+        document.getElementById('bugReportsTotal').textContent = stats.total || 0;
+        document.getElementById('openBugReports').textContent = stats.open || 0;
+
+        const res = await fetch(`/api/bug-reports?status=${status}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        const tbody = document.getElementById('bugReportsTable');
+        if (!data.reports || data.reports.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-light);">No bug reports found</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = data.reports.map(r => `
+          <tr>
+            <td>#${r.id}</td>
+            <td title="${escapeHtml(r.description)}">${escapeHtml(r.title)}</td>
+            <td>${escapeHtml(r.category)}</td>
+            <td>${escapeHtml(r.reporter_username || 'Unknown')}</td>
+            <td>
+              <select class="filter-select" style="padding:4px 8px;font-size:12px;" onchange="updateBugStatus(${r.id}, this.value)">
+                <option value="open" ${r.status === 'open' ? 'selected' : ''}>Open</option>
+                <option value="in_progress" ${r.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                <option value="resolved" ${r.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                <option value="closed" ${r.status === 'closed' ? 'selected' : ''}>Closed</option>
+              </select>
+            </td>
+            <td>
+              <select class="filter-select" style="padding:4px 8px;font-size:12px;" onchange="updateBugPriority(${r.id}, this.value)">
+                <option value="low" ${r.priority === 'low' ? 'selected' : ''}>Low</option>
+                <option value="normal" ${r.priority === 'normal' ? 'selected' : ''}>Normal</option>
+                <option value="high" ${r.priority === 'high' ? 'selected' : ''}>High</option>
+                <option value="critical" ${r.priority === 'critical' ? 'selected' : ''}>Critical</option>
+              </select>
+            </td>
+            <td>${new Date(r.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn ban" onclick="deleteBugReport(${r.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load bug reports:', e);
+      }
+    }
+
+    async function updateBugStatus(id, status) {
+      try {
+        await fetch(`/api/bug-reports/${id}`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        loadBugReports();
+      } catch (e) {
+        console.error('Failed to update bug status:', e);
+      }
+    }
+
+    async function updateBugPriority(id, priority) {
+      try {
+        await fetch(`/api/bug-reports/${id}`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ priority })
+        });
+      } catch (e) {
+        console.error('Failed to update bug priority:', e);
+      }
+    }
+
+    async function deleteBugReport(id) {
+      if (!confirm('Are you sure you want to delete this bug report?')) return;
+      try {
+        await fetch(`/api/bug-reports/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadBugReports();
+      } catch (e) {
+        console.error('Failed to delete bug report:', e);
+      }
+    }
+
+    async function loadBugReportStats() {
+      try {
+        const res = await fetch('/api/bug-reports/stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const stats = await res.json();
+        document.getElementById('openBugReports').textContent = stats.open || 0;
+      } catch (e) {}
+    }
+    loadBugReportStats();
     
     refreshMetrics();
   </script>

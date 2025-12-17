@@ -45,6 +45,7 @@ const speedrunsRoutes = require('./routes/speedruns');
 const widgetsRoutes = require('./routes/widgets');
 const themesRoutes = require('./routes/themes');
 const forumsRoutes = require('./routes/forums');
+const bugReportsRoutes = require('./routes/bug-reports');
 const logger = require('./logger');
 
 const storage = multer.diskStorage({
@@ -175,6 +176,7 @@ app.use('/api/speedruns', speedrunsRoutes);
 app.use('/api/widgets', widgetsRoutes);
 app.use('/api/themes', themesRoutes);
 app.use('/api/forums', forumsRoutes);
+app.use('/api/bug-reports', bugReportsRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {

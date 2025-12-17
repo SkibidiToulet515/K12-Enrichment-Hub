@@ -584,5 +584,17 @@
     }
   </script>
   <script src="/js/os-shell.js"></script>
+  <script src="/js/os-notifications.js"></script>
+  <script>
+    OSNotifications.init();
+    setTimeout(() => {
+      OSNotifications.show({
+        title: 'Welcome to NebulaCore',
+        message: 'Your learning adventure begins now!',
+        type: 'success',
+        duration: 4000
+      });
+    }, 1000);
+  </script>
 </body>
 </html>
