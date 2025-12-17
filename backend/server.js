@@ -133,7 +133,14 @@ function verifyPageAccess(req, res, next) {
   const token = req.cookies?.authToken;
   
   if (!token) {
-    return res.redirect('/private/auth.html?redirect=' + encodeURIComponent(req.originalUrl));
+    // Store intended destination in a cookie (not visible in URL)
+    res.cookie('redirectAfterLogin', req.originalUrl, {
+      httpOnly: false, // Needs to be readable by client JS
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000, // 5 minutes
+      path: '/'
+    });
+    return res.redirect('/private/auth.html');
   }
   
   try {
@@ -141,9 +148,15 @@ function verifyPageAccess(req, res, next) {
     req.userId = decoded.userId;
     next();
   } catch (err) {
-    // Clear invalid cookie
+    // Clear invalid cookie and set redirect
     res.clearCookie('authToken');
-    return res.redirect('/private/auth.html?redirect=' + encodeURIComponent(req.originalUrl));
+    res.cookie('redirectAfterLogin', req.originalUrl, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000,
+      path: '/'
+    });
+    return res.redirect('/private/auth.html');
   }
 }
 
