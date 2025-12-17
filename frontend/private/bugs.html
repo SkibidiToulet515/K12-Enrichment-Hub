@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Hub - NebulaCore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Inter', sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    
+    .header-icon {
+      font-size: 32px;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 12px;
+    }
+    
+    .tab {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .tab:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    
+    .tab.active {
+      background: rgba(96,205,255,0.2);
+      color: #60cdff;
+    }
+    
+    .section {
+      display: none;
+    }
+    
+    .section.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.9);
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #60cdff;
+    }
+    
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    
+    .submit-btn {
+      padding: 12px 32px;
+      background: #0078d4;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .submit-btn:hover {
+      background: #1a86d9;
+    }
+    
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .report-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    
+    .report-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    .report-status {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .report-status.pending {
+      background: rgba(255,193,7,0.2);
+      color: #ffc107;
+    }
+    
+    .report-status.investigating {
+      background: rgba(33,150,243,0.2);
+      color: #2196f3;
+    }
+    
+    .report-status.resolved {
+      background: rgba(76,175,80,0.2);
+      color: #4caf50;
+    }
+    
+    .report-status.closed {
+      background: rgba(158,158,158,0.2);
+      color: #9e9e9e;
+    }
+    
+    .report-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+    
+    .report-description {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .success-msg {
+      background: rgba(76,175,80,0.2);
+      border: 1px solid rgba(76,175,80,0.3);
+      color: #4caf50;
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .success-msg.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">&#128172;</div>
+      <h1>Feedback Hub</h1>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" data-tab="submit">Submit Feedback</button>
+      <button class="tab" data-tab="my-reports">My Reports</button>
+    </div>
+    
+    <div class="section active" id="submit">
+      <div class="success-msg" id="successMsg">Your feedback has been submitted successfully!</div>
+      
+      <form id="bugForm">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="bugTitle" placeholder="Brief description of the issue" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="bugCategory">
+              <option value="bug">Bug Report</option>
+              <option value="feature">Feature Request</option>
+              <option value="performance">Performance Issue</option>
+              <option value="ui">UI/UX Feedback</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="bugPriority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="bugDescription" placeholder="Please provide as much detail as possible..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Steps to Reproduce (optional)</label>
+          <textarea id="bugSteps" placeholder="1. Go to...&#10;2. Click on...&#10;3. See error..." rows="4"></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">Submit Feedback</button>
+      </form>
+    </div>
+    
+    <div class="section" id="my-reports">
+      <div class="report-list" id="reportList">
+        <div class="empty-state">
+          <div class="empty-state-icon">&#128196;</div>
+          <p>You haven't submitted any feedback yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const token = localStorage.getItem('userToken');
+    const userId = localStorage.getItem('userId');
+    
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+        
+        if (tab.dataset.tab === 'my-reports') {
+          loadMyReports();
+        }
+      });
+    });
+    
+    document.getElementById('bugForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const data = {
+        title: document.getElementById('bugTitle').value,
+        category: document.getElementById('bugCategory').value,
+        priority: document.getElementById('bugPriority').value,
+        description: document.getElementById('bugDescription').value,
+        steps: document.getElementById('bugSteps').value
+      };
+      
+      try {
+        const res = await fetch('/api/bug-reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+          document.getElementById('successMsg').classList.add('show');
+          document.getElementById('bugForm').reset();
+          setTimeout(() => {
+            document.getElementById('successMsg').classList.remove('show');
+          }, 5000);
+        }
+      } catch (err) {
+        console.error('Failed to submit:', err);
+      }
+    });
+    
+    async function loadMyReports() {
+      try {
+        const res = await fetch('/api/bug-reports/my-reports', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+          const reports = await res.json();
+          renderReports(reports);
+        }
+      } catch (err) {
+        console.error('Failed to load reports:', err);
+      }
+    }
+    
+    function renderReports(reports) {
+      const list = document.getElementById('reportList');
+      
+      if (!reports || reports.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">&#128196;</div>
+            <p>You haven't submitted any feedback yet</p>
+          </div>
+        `;
+        return;
+      }
+      
+      list.innerHTML = reports.map(r => `
+        <div class="report-item">
+          <div class="report-header">
+            <div class="report-title">${escapeHtml(r.title)}</div>
+            <div class="report-status ${r.status}">${r.status}</div>
+          </div>
+          <div class="report-meta">${r.category} - ${new Date(r.created_at).toLocaleDateString()}</div>
+          <div class="report-description">${escapeHtml(r.description)}</div>
+        </div>
+      `).join('');
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
