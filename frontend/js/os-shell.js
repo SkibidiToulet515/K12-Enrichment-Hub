@@ -10,21 +10,43 @@ const OSShell = {
   resizeState: null,
   
   apps: [
-    { id: 'dashboard', name: 'Dashboard', icon: '🏠', url: '/private/dashboard.html', pinned: true },
-    { id: 'games', name: 'Games', icon: '🎮', url: '/private/games.html', pinned: true },
-    { id: 'chat', name: 'Chat', icon: '💬', url: '/private/chat.html', pinned: true },
-    { id: 'forums', name: 'Forums', icon: '📋', url: '/private/forums.html', pinned: true },
-    { id: 'youtube', name: 'Videos', icon: '📺', url: '/private/youtube.html', pinned: true },
-    { id: 'apps', name: 'Apps', icon: '📱', url: '/private/apps.html', pinned: true },
-    { id: 'music', name: 'Music', icon: '🎵', url: '/private/music.html', pinned: false },
-    { id: 'proxy', name: 'Web Proxy', icon: '🌐', url: '/private/proxy.html', pinned: true },
-    { id: 'profile', name: 'Profile', icon: '👤', url: '/private/profile.html', pinned: false },
-    { id: 'settings', name: 'Settings', icon: '⚙️', url: '/private/settings.html', pinned: false },
-    { id: 'themes', name: 'Themes', icon: '🎨', url: '/private/themes.html', pinned: false },
-    { id: 'leaderboard', name: 'Leaderboard', icon: '🏆', url: '/private/leaderboard.html', pinned: false },
-    { id: 'shop', name: 'Shop', icon: '🛒', url: '/private/shop.html', pinned: false },
-    { id: 'admin', name: 'Admin', icon: '🔧', url: '/private/admin.html', pinned: false, adminOnly: true }
+    { id: 'dashboard', name: 'Dashboard', icon: 'dashboard', color: '#00d4ff', url: '/private/dashboard.html', pinned: true },
+    { id: 'games', name: 'Games', icon: 'games', color: '#ff6b6b', url: '/private/games.html', pinned: true },
+    { id: 'chat', name: 'Chat', icon: 'chat', color: '#a855f7', url: '/private/chat.html', pinned: true },
+    { id: 'forums', name: 'Forums', icon: 'forums', color: '#22c55e', url: '/private/forums.html', pinned: true },
+    { id: 'youtube', name: 'Videos', icon: 'videos', color: '#ef4444', url: '/private/youtube.html', pinned: true },
+    { id: 'apps', name: 'Apps', icon: 'apps', color: '#3b82f6', url: '/private/apps.html', pinned: true },
+    { id: 'music', name: 'Music', icon: 'music', color: '#ec4899', url: '/private/music.html', pinned: false },
+    { id: 'proxy', name: 'Web Proxy', icon: 'proxy', color: '#14b8a6', url: '/private/proxy.html', pinned: true },
+    { id: 'profile', name: 'Profile', icon: 'profile', color: '#f59e0b', url: '/private/profile.html', pinned: false },
+    { id: 'settings', name: 'Settings', icon: 'settings', color: '#6b7280', url: '/private/settings.html', pinned: false },
+    { id: 'themes', name: 'Themes', icon: 'themes', color: '#8b5cf6', url: '/private/themes.html', pinned: false },
+    { id: 'leaderboard', name: 'Leaderboard', icon: 'leaderboard', color: '#eab308', url: '/private/leaderboard.html', pinned: false },
+    { id: 'shop', name: 'Shop', icon: 'shop', color: '#06b6d4', url: '/private/shop.html', pinned: false },
+    { id: 'admin', name: 'Admin', icon: 'admin', color: '#dc2626', url: '/private/admin.html', pinned: false, adminOnly: true }
   ],
+  
+  icons: {
+    dashboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>`,
+    games: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="16" cy="10" r="1" fill="currentColor"/><circle cx="18" cy="12" r="1" fill="currentColor"/></svg>`,
+    chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>`,
+    forums: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    videos: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10 9 16 12 10 15" fill="currentColor"/></svg>`,
+    apps: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+    music: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="15.5" r="3.5"/><line x1="9" y1="17" x2="9" y2="4"/><line x1="22" y1="15" x2="22" y2="2"/><path d="M9 8l13-4"/></svg>`,
+    proxy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    profile: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>`,
+    settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    themes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>`,
+    leaderboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 22V8a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v14"/><path d="M14 14h2a2 2 0 0 1 2 2v6"/><path d="M6 18a2 2 0 0 1 2-2h2v6H6z"/></svg>`,
+    shop: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
+    admin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>`
+  },
+  
+  getIcon(iconName, color) {
+    const svg = this.icons[iconName] || this.icons.apps;
+    return `<div class="app-icon-wrapper" style="--icon-color: ${color}">${svg}</div>`;
+  },
   
   notifications: [],
   
@@ -89,6 +111,24 @@ const OSShell = {
     const pinnedApps = this.apps.filter(app => app.pinned && (!app.adminOnly || isAdmin));
     const allApps = this.apps.filter(app => !app.adminOnly || isAdmin);
     
+    const pinnedHtml = pinnedApps.map(app => `
+      <div class="os-start-menu-app" data-app="${app.id}">
+        <div class="os-start-menu-app-icon">${this.getIcon(app.icon, app.color)}</div>
+        <div class="os-start-menu-app-info">
+          <h4>${app.name}</h4>
+        </div>
+      </div>
+    `).join('');
+    
+    const allAppsHtml = allApps.map(app => `
+      <div class="os-start-menu-app" data-app="${app.id}">
+        <div class="os-start-menu-app-icon">${this.getIcon(app.icon, app.color)}</div>
+        <div class="os-start-menu-app-info">
+          <h4>${app.name}</h4>
+        </div>
+      </div>
+    `).join('');
+    
     menu.innerHTML = `
       <div class="os-start-menu-header">
         <input type="text" class="os-start-menu-search" id="osStartSearch" placeholder="Search apps...">
@@ -96,25 +136,11 @@ const OSShell = {
       <div class="os-start-menu-apps" id="osStartMenuApps">
         <div class="os-start-menu-section">
           <div class="os-start-menu-section-title">Pinned</div>
-          ${pinnedApps.map(app => `
-            <div class="os-start-menu-app" data-app="${app.id}">
-              <div class="os-start-menu-app-icon">${app.icon}</div>
-              <div class="os-start-menu-app-info">
-                <h4>${app.name}</h4>
-              </div>
-            </div>
-          `).join('')}
+          ${pinnedHtml}
         </div>
         <div class="os-start-menu-section">
           <div class="os-start-menu-section-title">All Apps</div>
-          ${allApps.map(app => `
-            <div class="os-start-menu-app" data-app="${app.id}">
-              <div class="os-start-menu-app-icon">${app.icon}</div>
-              <div class="os-start-menu-app-info">
-                <h4>${app.name}</h4>
-              </div>
-            </div>
-          `).join('')}
+          ${allAppsHtml}
         </div>
       </div>
       <div class="os-start-menu-footer">
@@ -155,7 +181,7 @@ const OSShell = {
     
     container.innerHTML = visibleApps.map(app => `
       <div class="os-desktop-icon" data-app="${app.id}" ondblclick="OSShell.openApp('${app.id}')">
-        <div class="os-desktop-icon-img">${app.icon}</div>
+        <div class="os-desktop-icon-img">${this.getIcon(app.icon, app.color)}</div>
         <div class="os-desktop-icon-label">${app.name}</div>
       </div>
     `).join('');
@@ -171,7 +197,7 @@ const OSShell = {
     
     let html = pinnedApps.map(app => `
       <button class="os-taskbar-app" data-app="${app.id}" onclick="OSShell.openApp('${app.id}')" title="${app.name}">
-        <span>${app.icon}</span>
+        ${this.getIcon(app.icon, app.color)}
       </button>
     `).join('');
     
