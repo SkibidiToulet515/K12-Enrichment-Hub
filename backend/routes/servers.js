@@ -69,22 +69,31 @@ router.post('/create', (req, res) => {
   }
   
   db.run(`
-    INSERT INTO servers (name, owner_id, description, needs_setup)
-    VALUES (?, ?, ?, 0)
+    INSERT INTO servers (name, owner_id, description, needs_setup, status)
+    VALUES (?, ?, ?, false, 'active')
   `, [serverName.trim(), userId, description || ''], function(err) {
     if (err) {
-      return res.status(400).json({ error: 'Failed to create server' });
+      console.error('Server creation error:', err);
+      return res.status(400).json({ error: 'Failed to create server: ' + (err.message || 'Unknown error') });
     }
     
     const serverId = this.lastID;
     
+    if (!serverId) {
+      return res.status(400).json({ error: 'Failed to get server ID after creation' });
+    }
+    
     // Add owner as member
-    db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?) ON CONFLICT DO NOTHING', 
-      [serverId, userId], () => {});
+    db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?) ON CONFLICT(server_id, user_id) DO NOTHING', 
+      [serverId, userId], (memberErr) => {
+        if (memberErr) console.error('Failed to add owner as member:', memberErr);
+      });
     
     // Create default #general channel
-    db.run('INSERT INTO channels (server_id, name, type) VALUES (?, ?, ?)', 
-      [serverId, 'general', 'text'], () => {});
+    db.run('INSERT INTO channels (server_id, name) VALUES (?, ?)', 
+      [serverId, 'general'], (channelErr) => {
+        if (channelErr) console.error('Failed to create default channel:', channelErr);
+      });
     
     res.json({ success: true, serverId, serverName: serverName.trim() });
   });
