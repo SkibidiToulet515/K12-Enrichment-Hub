@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NebulaCore Desktop</title>
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -14,7 +14,7 @@
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Segoe UI', 'Inter', -apple-system, sans-serif;
       background: #000;
       color: #fff;
       min-height: 100vh;
@@ -27,197 +27,385 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
+      bottom: 48px;
       background-image: url('/images/aurora.jpg');
       background-size: cover;
       background-position: center;
     }
     
-    .top-bar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(20px);
-      border-radius: 0 0 0 12px;
+    .desktop-icons {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: grid;
+      grid-template-columns: repeat(1, 80px);
+      gap: 5px;
     }
     
-    .top-bar-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      opacity: 0.9;
-    }
-    
-    .weather-icon {
-      font-size: 16px;
-    }
-    
-    .top-bar-icon {
-      width: 16px;
-      height: 16px;
-      opacity: 0.8;
-    }
-    
-    .app-icons {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .app-icon {
+    .desktop-icon {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 70px;
-      padding: 8px;
-      border-radius: 8px;
+      padding: 6px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background 0.1s;
     }
     
-    .app-icon:hover {
+    .desktop-icon:hover {
       background: rgba(255,255,255,0.1);
     }
     
-    .app-icon-img {
-      width: 40px;
-      height: 40px;
+    .desktop-icon.selected {
       background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      border-radius: 10px;
+      outline: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .desktop-icon-img {
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 32px;
       margin-bottom: 4px;
-      font-size: 20px;
     }
     
-    .app-icon-label {
-      font-size: 10px;
+    .desktop-icon-label {
+      font-size: 11px;
       text-align: center;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-      line-height: 1.2;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      line-height: 1.3;
+      max-width: 70px;
+      word-wrap: break-word;
     }
     
+    /* Windows 11 Taskbar */
     .taskbar {
       position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: rgba(32, 32, 32, 0.85);
+      backdrop-filter: blur(30px) saturate(125%);
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(20px);
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.2);
+      justify-content: center;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .taskbar-center {
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     
     .taskbar-btn {
-      width: 36px;
-      height: 36px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 8px;
+      width: 44px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.2s;
-      font-size: 16px;
+      transition: background 0.1s;
+      font-size: 22px;
+      position: relative;
     }
     
     .taskbar-btn:hover {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
     }
     
-    .taskbar-search {
+    .taskbar-btn.active {
+      background: rgba(255,255,255,0.15);
+    }
+    
+    .taskbar-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      background: #60cdff;
+      border-radius: 2px;
+    }
+    
+    .start-btn {
+      background: transparent;
+    }
+    
+    .start-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    /* System Tray */
+    .system-tray {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      height: 48px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      background: rgba(0,0,0,0.3);
+      padding: 0 12px;
+      gap: 4px;
+    }
+    
+    .tray-icons {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .tray-icons:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .tray-icon {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .clock-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .clock-area:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .clock-time {
+      font-weight: 400;
+    }
+    
+    .clock-date {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+    
+    /* Start Menu */
+    .start-menu {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      width: 600px;
+      background: rgba(32, 32, 32, 0.95);
+      backdrop-filter: blur(30px);
       border-radius: 8px;
-      min-width: 150px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      overflow: hidden;
     }
     
-    .taskbar-search input {
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #fff;
-      font-size: 13px;
+    .start-menu.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) scale(1);
+    }
+    
+    .start-search {
+      padding: 32px 40px 20px;
+    }
+    
+    .start-search input {
       width: 100%;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
     }
     
-    .taskbar-search input::placeholder {
-      color: rgba(255,255,255,0.6);
+    .start-search input:focus {
+      border-color: #60cdff;
     }
     
+    .start-search input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .start-section {
+      padding: 0 40px 20px;
+    }
+    
+    .start-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .start-apps {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+    }
+    
+    .start-app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    
+    .start-app:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .start-app-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+    
+    .start-app-name {
+      font-size: 11px;
+      text-align: center;
+    }
+    
+    .start-user {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 40px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.2);
+    }
+    
+    .start-user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .start-user-info:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .start-user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0078d4, #00bcf2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      overflow: hidden;
+    }
+    
+    .start-user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .start-user-name {
+      font-size: 13px;
+    }
+    
+    .start-power {
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    .start-power:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    /* App Windows */
     .app-window {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      height: 85%;
-      max-width: 1200px;
-      background: rgba(30,30,30,0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 12px;
+      top: 50px;
+      left: 100px;
+      width: 900px;
+      height: calc(100vh - 150px);
+      background: #202020;
+      border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.1);
       display: none;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
     
     .app-window.active {
       display: flex;
     }
     
-    .window-header {
+    .window-titlebar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      background: rgba(0,0,0,0.3);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      height: 32px;
+      background: #1f1f1f;
+      padding-left: 12px;
     }
     
     .window-title {
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 12px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .window-title-icon {
+      font-size: 14px;
     }
     
     .window-controls {
       display: flex;
-      gap: 8px;
+      height: 100%;
     }
     
-    .window-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+    .window-ctrl-btn {
+      width: 46px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      font-size: 10px;
+      transition: background 0.1s;
     }
     
-    .window-btn.close { background: #ff5f57; }
-    .window-btn.minimize { background: #febc2e; }
-    .window-btn.maximize { background: #28c840; }
+    .window-ctrl-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .window-ctrl-btn.close:hover {
+      background: #c42b1c;
+    }
     
     .window-content {
       flex: 1;
       overflow: auto;
+      background: #1a1a1a;
     }
     
     .window-content iframe {
@@ -229,90 +417,140 @@
 </head>
 <body>
   <div class="desktop" id="desktop">
-    <!-- Top Bar -->
-    <div class="top-bar">
-      <div class="top-bar-item">
-        <span class="weather-icon">&#9728;</span>
-        <span id="temperature">--</span>
+    <div class="desktop-icons">
+      <div class="desktop-icon" data-app="proxy">
+        <div class="desktop-icon-img">&#127760;</div>
+        <div class="desktop-icon-label">Browser</div>
       </div>
-      <div class="top-bar-item" id="topTime">12:00 PM</div>
-      <div class="top-bar-item">&#9211;</div>
-      <div class="top-bar-item">&#128246;</div>
-      <div class="top-bar-item">&#128267;</div>
-    </div>
-    
-    <!-- App Icons -->
-    <div class="app-icons">
-      <div class="app-icon" data-app="about">
-        <div class="app-icon-img">&#9432;</div>
-        <div class="app-icon-label">About</div>
+      <div class="desktop-icon" data-app="games">
+        <div class="desktop-icon-img">&#128193;</div>
+        <div class="desktop-icon-label">File Explorer</div>
       </div>
-      <div class="app-icon" data-app="shop">
-        <div class="app-icon-img">&#128722;</div>
-        <div class="app-icon-label">App Store</div>
+      <div class="desktop-icon" data-app="settings">
+        <div class="desktop-icon-img">&#9881;</div>
+        <div class="desktop-icon-label">Settings</div>
       </div>
-      <div class="app-icon" data-app="proxy">
-        <div class="app-icon-img">&#127760;</div>
-        <div class="app-icon-label">Browser</div>
+      <div class="desktop-icon" data-app="chat">
+        <div class="desktop-icon-img">&#128172;</div>
+        <div class="desktop-icon-label">Chat</div>
       </div>
-      <div class="app-icon" data-app="apps">
-        <div class="app-icon-img">&#128290;</div>
-        <div class="app-icon-label">Calculator</div>
+      <div class="desktop-icon" data-app="shop">
+        <div class="desktop-icon-img">&#128722;</div>
+        <div class="desktop-icon-label">Store</div>
       </div>
-      <div class="app-icon" data-app="bugs">
-        <div class="app-icon-img">&#128172;</div>
-        <div class="app-icon-label">Feedback</div>
-      </div>
-      <div class="app-icon" data-app="games">
-        <div class="app-icon-img">&#128193;</div>
-        <div class="app-icon-label">Files</div>
-      </div>
-      <div class="app-icon" data-app="videos">
-        <div class="app-icon-img">&#127910;</div>
-        <div class="app-icon-label">Media<br>Viewer</div>
-      </div>
-      <div class="app-icon" data-app="settings">
-        <div class="app-icon-img">&#9881;</div>
-        <div class="app-icon-label">Settings</div>
-      </div>
-      <div class="app-icon" data-app="admin">
-        <div class="app-icon-img">&#128187;</div>
-        <div class="app-icon-label">Task<br>Manager</div>
-      </div>
-      <div class="app-icon" data-app="chat">
-        <div class="app-icon-img">&#128421;</div>
-        <div class="app-icon-label">Terminal</div>
-      </div>
-      <div class="app-icon" data-app="forums">
-        <div class="app-icon-img">TXT</div>
-        <div class="app-icon-label">Text<br>Editor</div>
+      <div class="desktop-icon" data-app="bugs">
+        <div class="desktop-icon-img">&#128221;</div>
+        <div class="desktop-icon-label">Feedback Hub</div>
       </div>
     </div>
-    
-    <!-- Taskbar -->
-    <div class="taskbar">
-      <div class="taskbar-btn" id="startMenuBtn">&#9641;&#9641;<br>&#9641;&#9641;</div>
-      <div class="taskbar-search">
-        <span>&#128269;</span>
-        <input type="text" placeholder="Search" id="searchInput">
-      </div>
-      <div class="taskbar-btn" data-app="videos">&#128444;</div>
+  </div>
+  
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <div class="taskbar-center">
+      <div class="taskbar-btn start-btn" id="startBtn" onclick="toggleStartMenu()">&#9641;&#9641;&#9641;&#9641;</div>
+      <div class="taskbar-btn" data-app="proxy">&#127760;</div>
       <div class="taskbar-btn" data-app="games">&#128193;</div>
-      <div class="taskbar-btn" data-app="settings">&#9881;</div>
       <div class="taskbar-btn" data-app="chat">&#128172;</div>
+      <div class="taskbar-btn" data-app="settings">&#9881;</div>
+      <div class="taskbar-btn" data-app="videos">&#127910;</div>
+      <div class="taskbar-btn" data-app="music">&#127925;</div>
+    </div>
+    
+    <div class="system-tray">
+      <div class="tray-icons">
+        <span class="tray-icon">&#128266;</span>
+        <span class="tray-icon">&#128246;</span>
+        <span class="tray-icon">&#128267;</span>
+      </div>
+      <div class="clock-area" id="clockArea">
+        <div class="clock-time" id="clockTime">12:00 PM</div>
+        <div class="clock-date" id="clockDate">12/17/2025</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Start Menu -->
+  <div class="start-menu" id="startMenu">
+    <div class="start-search">
+      <input type="text" placeholder="Type here to search" id="startSearch">
+    </div>
+    
+    <div class="start-section">
+      <div class="start-section-title">Pinned</div>
+      <div class="start-apps">
+        <div class="start-app" data-app="proxy">
+          <div class="start-app-icon">&#127760;</div>
+          <div class="start-app-name">Browser</div>
+        </div>
+        <div class="start-app" data-app="games">
+          <div class="start-app-icon">&#128193;</div>
+          <div class="start-app-name">Files</div>
+        </div>
+        <div class="start-app" data-app="chat">
+          <div class="start-app-icon">&#128172;</div>
+          <div class="start-app-name">Chat</div>
+        </div>
+        <div class="start-app" data-app="settings">
+          <div class="start-app-icon">&#9881;</div>
+          <div class="start-app-name">Settings</div>
+        </div>
+        <div class="start-app" data-app="videos">
+          <div class="start-app-icon">&#127910;</div>
+          <div class="start-app-name">Videos</div>
+        </div>
+        <div class="start-app" data-app="music">
+          <div class="start-app-icon">&#127925;</div>
+          <div class="start-app-name">Music</div>
+        </div>
+        <div class="start-app" data-app="apps">
+          <div class="start-app-icon">&#128290;</div>
+          <div class="start-app-name">Calculator</div>
+        </div>
+        <div class="start-app" data-app="shop">
+          <div class="start-app-icon">&#128722;</div>
+          <div class="start-app-name">Store</div>
+        </div>
+        <div class="start-app" data-app="forums">
+          <div class="start-app-icon">&#128221;</div>
+          <div class="start-app-name">Notepad</div>
+        </div>
+        <div class="start-app" data-app="bugs">
+          <div class="start-app-icon">&#128172;</div>
+          <div class="start-app-name">Feedback</div>
+        </div>
+        <div class="start-app" data-app="admin">
+          <div class="start-app-icon">&#128187;</div>
+          <div class="start-app-name">Task Manager</div>
+        </div>
+        <div class="start-app" data-app="themes">
+          <div class="start-app-icon">&#127912;</div>
+          <div class="start-app-name">Themes</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="start-user">
+      <div class="start-user-info" data-app="profile">
+        <div class="start-user-avatar" id="userAvatar">&#128100;</div>
+        <div class="start-user-name" id="userName">User</div>
+      </div>
+      <div class="start-power" onclick="logout()">&#9211;</div>
     </div>
   </div>
   
   <!-- App Window -->
   <div class="app-window" id="appWindow">
-    <div class="window-header">
-      <div class="window-controls">
-        <div class="window-btn close" onclick="closeWindow()"></div>
-        <div class="window-btn minimize"></div>
-        <div class="window-btn maximize"></div>
+    <div class="window-titlebar">
+      <div class="window-title">
+        <span class="window-title-icon" id="windowIcon">&#128193;</span>
+        <span id="windowTitle">App</span>
       </div>
-      <div class="window-title" id="windowTitle">App</div>
-      <div style="width: 52px"></div>
+      <div class="window-controls">
+        <div class="window-ctrl-btn minimize">&#128469;</div>
+        <div class="window-ctrl-btn maximize">&#128470;</div>
+        <div class="window-ctrl-btn close" onclick="closeWindow()">&#10005;</div>
+      </div>
     </div>
     <div class="window-content">
       <iframe id="appFrame" src=""></iframe>
@@ -320,42 +558,56 @@
   </div>
 
   <script>
-    function updateTime() {
+    let startMenuOpen = false;
+    
+    function updateClock() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes().toString().padStart(2, '0');
       const ampm = hours >= 12 ? 'PM' : 'AM';
-      const hour12 = (hours % 12 || 12).toString().padStart(2, '0');
-      document.getElementById('topTime').textContent = `${hour12}:${minutes} ${ampm}`;
+      const hour12 = hours % 12 || 12;
+      
+      document.getElementById('clockTime').textContent = `${hour12}:${minutes} ${ampm}`;
+      document.getElementById('clockDate').textContent = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+    }
+    
+    function toggleStartMenu() {
+      startMenuOpen = !startMenuOpen;
+      document.getElementById('startMenu').classList.toggle('active', startMenuOpen);
+      document.getElementById('startBtn').classList.toggle('active', startMenuOpen);
     }
     
     function openApp(appName) {
       const window = document.getElementById('appWindow');
       const frame = document.getElementById('appFrame');
       const title = document.getElementById('windowTitle');
+      const icon = document.getElementById('windowIcon');
       
-      const titles = {
-        dashboard: 'Dashboard',
-        chat: 'Terminal',
-        games: 'Files',
-        proxy: 'Browser',
-        settings: 'Settings',
-        videos: 'Media Viewer',
-        music: 'Music',
-        apps: 'Calculator',
-        forums: 'Text Editor',
-        shop: 'App Store',
-        admin: 'Task Manager',
-        bugs: 'Feedback',
-        about: 'About',
-        profile: 'Profile',
-        themes: 'Themes',
-        leaderboard: 'Leaderboard'
+      const apps = {
+        dashboard: { title: 'Dashboard', icon: '&#127968;' },
+        chat: { title: 'Chat', icon: '&#128172;' },
+        games: { title: 'File Explorer', icon: '&#128193;' },
+        proxy: { title: 'Browser', icon: '&#127760;' },
+        settings: { title: 'Settings', icon: '&#9881;' },
+        videos: { title: 'Videos', icon: '&#127910;' },
+        music: { title: 'Music', icon: '&#127925;' },
+        apps: { title: 'Calculator', icon: '&#128290;' },
+        forums: { title: 'Notepad', icon: '&#128221;' },
+        shop: { title: 'Microsoft Store', icon: '&#128722;' },
+        admin: { title: 'Task Manager', icon: '&#128187;' },
+        bugs: { title: 'Feedback Hub', icon: '&#128172;' },
+        profile: { title: 'Your Profile', icon: '&#128100;' },
+        themes: { title: 'Personalization', icon: '&#127912;' },
+        leaderboard: { title: 'Leaderboard', icon: '&#127942;' }
       };
       
-      title.textContent = titles[appName] || appName;
+      const app = apps[appName] || { title: appName, icon: '&#128193;' };
+      title.textContent = app.title;
+      icon.innerHTML = app.icon;
       frame.src = `/pages/${appName}`;
       window.classList.add('active');
+      
+      if (startMenuOpen) toggleStartMenu();
     }
     
     function closeWindow() {
@@ -363,19 +615,18 @@
       document.getElementById('appFrame').src = '';
     }
     
+    function logout() {
+      fetch('/api/auth/logout', { method: 'POST' });
+      localStorage.clear();
+      window.location.href = '/lock';
+    }
+    
     document.querySelectorAll('[data-app]').forEach(el => {
-      el.addEventListener('click', () => {
-        openApp(el.dataset.app);
-      });
+      el.addEventListener('click', () => openApp(el.dataset.app));
+      el.addEventListener('dblclick', () => openApp(el.dataset.app));
     });
     
-    document.querySelectorAll('.app-icon').forEach(el => {
-      el.addEventListener('dblclick', () => {
-        openApp(el.dataset.app);
-      });
-    });
-    
-    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    document.getElementById('startSearch').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const query = e.target.value.toLowerCase().trim();
         const apps = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'videos', 'music', 'apps', 'forums', 'shop', 'admin', 'bugs', 'themes', 'profile'];
@@ -387,10 +638,23 @@
       }
     });
     
-    updateTime();
-    setInterval(updateTime, 1000);
+    document.addEventListener('click', (e) => {
+      if (startMenuOpen && !e.target.closest('.start-menu') && !e.target.closest('#startBtn')) {
+        toggleStartMenu();
+      }
+    });
     
-    document.getElementById('temperature').textContent = '6C';
+    const savedUser = localStorage.getItem('username');
+    const savedPic = localStorage.getItem('profilePicture');
+    if (savedUser) {
+      document.getElementById('userName').textContent = savedUser;
+    }
+    if (savedPic) {
+      document.getElementById('userAvatar').innerHTML = `<img src="${savedPic}" alt="">`;
+    }
+    
+    updateClock();
+    setInterval(updateClock, 1000);
     
     const token = localStorage.getItem('userToken');
     if (!token) {

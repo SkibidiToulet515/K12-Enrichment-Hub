@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lock Screen - NebulaCore</title>
+  <title>NebulaCore</title>
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -14,7 +14,7 @@
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Segoe UI', 'Inter', -apple-system, sans-serif;
       background: #000;
       color: #fff;
       min-height: 100vh;
@@ -34,269 +34,331 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.5s ease, filter 0.5s ease;
+      cursor: pointer;
     }
     
-    .lock-screen.blur {
-      filter: blur(20px) brightness(0.6);
-    }
-    
-    .time-display {
-      font-size: 72px;
-      font-weight: 300;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-      margin-bottom: 8px;
-    }
-    
-    .date-display {
-      font-size: 20px;
+    .lock-time {
+      font-size: 96px;
       font-weight: 400;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      opacity: 0.9;
-      margin-bottom: 30px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+      margin-bottom: 8px;
+      letter-spacing: -2px;
     }
     
-    .unlock-hint {
+    .lock-date {
+      font-size: 18px;
+      font-weight: 400;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.3);
+      opacity: 0.95;
+    }
+    
+    .lock-hint {
+      position: fixed;
+      bottom: 60px;
       font-size: 14px;
-      opacity: 0.7;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      opacity: 0.8;
     }
     
-    .login-overlay {
+    .lock-status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+    }
+    
+    .lock-status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Login Screen */
+    .login-screen {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      display: flex;
+      background-image: url('/images/aurora.jpg');
+      background-size: cover;
+      background-position: center;
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
     }
     
-    .login-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
+    .login-screen.active {
+      display: flex;
     }
     
-    .login-time {
-      font-size: 48px;
-      font-weight: 300;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-      margin-bottom: 5px;
-    }
-    
-    .login-date {
-      font-size: 16px;
-      opacity: 0.8;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      margin-bottom: 40px;
-    }
-    
-    .user-avatar {
-      width: 100px;
-      height: 100px;
+    .login-avatar {
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #81c784, #4caf50);
+      background: linear-gradient(135deg, #0078d4, #00bcf2);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      font-size: 72px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
       overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.3s;
     }
     
-    .user-avatar:hover {
-      transform: scale(1.05);
-    }
-    
-    .user-avatar img {
+    .login-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
     
-    .user-avatar svg {
-      width: 50px;
-      height: 50px;
-      fill: rgba(255,255,255,0.9);
+    .login-username {
+      font-size: 32px;
+      font-weight: 400;
+      margin-bottom: 24px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
     
-    .user-name {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 15px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    .login-password-container {
+      position: relative;
+      width: 280px;
     }
     
-    .login-btn {
-      padding: 8px 24px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 6px;
+    .login-password {
+      width: 100%;
+      padding: 12px 50px 12px 16px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.4);
+      border: none;
+      border-radius: 4px;
       color: #fff;
-      font-size: 13px;
+      outline: none;
+    }
+    
+    .login-password::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .login-password:focus {
+      background: rgba(0,0,0,0.5);
+    }
+    
+    .login-submit {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 18px;
       cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .login-btn:hover {
-      background: rgba(255,255,255,0.3);
-    }
-    
-    .guest-section {
-      position: fixed;
-      bottom: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    
-    .guest-section.active {
-      opacity: 1;
-    }
-    
-    .guest-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
+    }
+    
+    .login-submit:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .login-error {
+      margin-top: 12px;
+      color: #ff6b6b;
+      font-size: 13px;
+      min-height: 20px;
+    }
+    
+    .login-options {
+      position: fixed;
+      bottom: 20px;
+      display: flex;
+      gap: 24px;
+    }
+    
+    .login-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.3s;
+      min-width: 80px;
     }
     
-    .guest-avatar:hover {
-      background: rgba(255,255,255,0.3);
+    .login-option:hover {
+      background: rgba(255,255,255,0.1);
     }
     
-    .guest-avatar svg {
-      width: 30px;
-      height: 30px;
-      fill: rgba(255,255,255,0.8);
+    .login-option-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
     }
     
-    .guest-label {
-      font-size: 12px;
-      opacity: 0.7;
+    .login-option-label {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+    
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .back-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .back-btn.visible {
+      display: flex;
     }
   </style>
 </head>
 <body>
-  <div class="lock-screen" id="lockScreen">
-    <div class="time-display" id="lockTime">12:00 PM</div>
-    <div class="date-display" id="lockDate">Wednesday December 17 2025</div>
-    <div class="unlock-hint">Press any key to login</div>
+  <button class="back-btn" id="backBtn" onclick="showLockScreen()">&#8592;</button>
+  
+  <div class="lock-screen" id="lockScreen" onclick="showLoginScreen()">
+    <div class="lock-time" id="lockTime">12:00</div>
+    <div class="lock-date" id="lockDate">Wednesday, December 17</div>
+    <div class="lock-hint">Click anywhere to unlock</div>
+    <div class="lock-status">
+      <div class="lock-status-item">&#128246;</div>
+      <div class="lock-status-item">&#128267;</div>
+    </div>
   </div>
   
-  <div class="login-overlay" id="loginOverlay">
-    <div class="login-time" id="loginTime">12:00 PM</div>
-    <div class="login-date" id="loginDate">Wednesday December 17 2025</div>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-avatar" id="loginAvatar">&#128100;</div>
+    <div class="login-username" id="loginUsername">User</div>
+    <div class="login-password-container">
+      <input type="password" class="login-password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+      <button class="login-submit" onclick="attemptLogin()">&#8594;</button>
+    </div>
+    <div class="login-error" id="loginError"></div>
     
-    <div class="user-avatar" id="userAvatar" onclick="doLogin()">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <div class="login-options">
+      <div class="login-option" onclick="window.location.href='/auth'">
+        <div class="login-option-icon">&#128100;</div>
+        <div class="login-option-label">Other user</div>
+      </div>
+      <div class="login-option" onclick="window.location.href='/auth'">
+        <div class="login-option-icon">&#10133;</div>
+        <div class="login-option-label">Sign up</div>
+      </div>
     </div>
-    <div class="user-name" id="userName">Guest</div>
-    <button class="login-btn" onclick="doLogin()">Login</button>
-  </div>
-  
-  <div class="guest-section" id="guestSection">
-    <div class="guest-avatar" onclick="loginAsGuest()">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    </div>
-    <div class="guest-label">Guest</div>
   </div>
 
   <script>
-    let isUnlocked = false;
-    
     function updateTime() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const hour12 = hours % 12 || 12;
-      const timeStr = `${hour12}:${minutes} ${ampm}`;
+      
+      document.getElementById('lockTime').textContent = `${hours}:${minutes}`;
       
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      const dateStr = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()} ${now.getFullYear()}`;
-      
-      document.getElementById('lockTime').textContent = timeStr;
-      document.getElementById('lockDate').textContent = dateStr;
-      document.getElementById('loginTime').textContent = timeStr;
-      document.getElementById('loginDate').textContent = dateStr;
+      document.getElementById('lockDate').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
     }
     
-    function unlock() {
-      if (isUnlocked) return;
-      isUnlocked = true;
-      
-      const lockScreen = document.getElementById('lockScreen');
-      const loginOverlay = document.getElementById('loginOverlay');
-      const guestSection = document.getElementById('guestSection');
-      
-      lockScreen.classList.add('blur');
-      loginOverlay.classList.add('active');
-      guestSection.classList.add('active');
+    function showLockScreen() {
+      document.getElementById('lockScreen').style.display = 'flex';
+      document.getElementById('loginScreen').classList.remove('active');
+      document.getElementById('backBtn').classList.remove('visible');
+    }
+    
+    function showLoginScreen() {
+      document.getElementById('lockScreen').style.display = 'none';
+      document.getElementById('loginScreen').classList.add('active');
+      document.getElementById('backBtn').classList.add('visible');
+      document.getElementById('loginPassword').focus();
       
       const savedUser = localStorage.getItem('username');
       const savedPic = localStorage.getItem('profilePicture');
       
-      if (savedUser && savedUser !== 'Guest') {
-        document.getElementById('userName').textContent = savedUser;
-        if (savedPic) {
-          document.getElementById('userAvatar').innerHTML = `<img src="${savedPic}" alt="Avatar">`;
-        }
+      if (savedUser) {
+        document.getElementById('loginUsername').textContent = savedUser;
+      }
+      if (savedPic) {
+        document.getElementById('loginAvatar').innerHTML = `<img src="${savedPic}" alt="">`;
       }
     }
     
-    function doLogin() {
-      const token = localStorage.getItem('userToken');
-      if (token && token !== 'guest') {
-        window.location.href = '/';
-      } else {
+    async function attemptLogin() {
+      const username = localStorage.getItem('username');
+      const password = document.getElementById('loginPassword').value;
+      const errorEl = document.getElementById('loginError');
+      
+      if (!username) {
         window.location.href = '/auth';
+        return;
+      }
+      
+      if (!password) {
+        errorEl.textContent = 'Please enter your password';
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        
+        if (data.token) {
+          localStorage.setItem('userToken', data.token);
+          localStorage.setItem('userId', data.user.id);
+          localStorage.setItem('username', data.user.username);
+          if (data.user.profile_picture) {
+            localStorage.setItem('profilePicture', data.user.profile_picture);
+          }
+          window.location.href = '/';
+        } else {
+          errorEl.textContent = data.error || 'Invalid password';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Connection error. Please try again.';
       }
     }
     
-    function loginAsGuest() {
-      localStorage.setItem('isGuest', 'true');
-      localStorage.setItem('guestSessionStart', Date.now().toString());
-      localStorage.setItem('userToken', 'guest');
-      localStorage.setItem('authToken', 'guest');
-      localStorage.setItem('username', 'Guest');
-      localStorage.setItem('user', JSON.stringify({
-        id: 'guest',
-        username: 'Guest',
-        profilePicture: '',
-        isGuest: true
-      }));
-      window.location.href = '/';
-    }
+    document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptLogin();
+    });
     
-    document.addEventListener('keydown', unlock);
-    document.addEventListener('click', unlock);
-    document.addEventListener('touchstart', unlock);
+    const token = localStorage.getItem('userToken');
+    const username = localStorage.getItem('username');
+    
+    if (token && username) {
+      window.location.href = '/';
+    } else if (username) {
+      showLoginScreen();
+    }
     
     updateTime();
     setInterval(updateTime, 1000);
-    
-    if (!localStorage.getItem('setupComplete') && !localStorage.getItem('userToken')) {
-      window.location.href = '/setup';
-    }
   </script>
+  <script src="/js/security.js"></script>
 </body>
 </html>
