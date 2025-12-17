@@ -8,7 +8,7 @@ const StealthMode = {
   
   panicTargets: [
     { name: 'ClassLink Launchpad', url: 'https://myapps.classlink.com/home', title: 'ClassLink Launchpad', favicon: 'https://www.classlink.com/favicon.ico' },
-    { name: 'Fake ClassLink Login', url: '/classlink', title: 'ClassLink Launchpad', favicon: 'https://www.classlink.com/favicon.ico' }
+    { name: 'Staff Portal Login', url: '/classlink', title: 'Staff Portal | K-12 Learning Portal', favicon: '/favicon.png' }
   ],
   
   // Custom flood history URL
