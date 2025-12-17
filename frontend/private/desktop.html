@@ -747,5 +747,11 @@
     }
   </script>
   <script src="/js/security.js"></script>
+  <script src="/js/stealth-mode.js"></script>
+  <script>
+    if (typeof StealthMode !== 'undefined') {
+      StealthMode.init();
+    }
+  </script>
 </body>
 </html>
