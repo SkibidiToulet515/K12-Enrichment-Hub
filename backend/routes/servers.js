@@ -56,7 +56,41 @@ router.post('/:id/join', (req, res) => {
   });
 });
 
-// Request to create server
+// Direct server creation (no admin approval required)
+router.post('/create', (req, res) => {
+  const { userId, serverName, description } = req.body;
+  
+  if (!userId || !serverName) {
+    return res.status(400).json({ error: 'User ID and server name are required' });
+  }
+  
+  if (serverName.length > 50) {
+    return res.status(400).json({ error: 'Server name must be 50 characters or less' });
+  }
+  
+  db.run(`
+    INSERT INTO servers (name, owner_id, description, needs_setup)
+    VALUES (?, ?, ?, 0)
+  `, [serverName.trim(), userId, description || ''], function(err) {
+    if (err) {
+      return res.status(400).json({ error: 'Failed to create server' });
+    }
+    
+    const serverId = this.lastID;
+    
+    // Add owner as member
+    db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?) ON CONFLICT DO NOTHING', 
+      [serverId, userId], () => {});
+    
+    // Create default #general channel
+    db.run('INSERT INTO channels (server_id, name, type) VALUES (?, ?, ?)', 
+      [serverId, 'general', 'text'], () => {});
+    
+    res.json({ success: true, serverId, serverName: serverName.trim() });
+  });
+});
+
+// Request to create server (legacy - still works but redirects to direct creation)
 router.post('/request', (req, res) => {
   const { userId, serverName, description } = req.body;
 

@@ -11,6 +11,8 @@
   display: flex;
   flex-direction: column;
   background: var(--bg);
+  height: 100%;
+  overflow: hidden;
 }
 
 .chat-header {
@@ -98,6 +100,59 @@
   background: var(--card);
   border-top: 2px solid var(--accent);
   flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.mentions-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 60px;
+  right: 60px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 100;
+}
+
+.mentions-dropdown.active {
+  display: block;
+}
+
+.mention-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mention-item:hover,
+.mention-item.selected {
+  background: var(--accent);
+}
+
+.mention-item img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mention-item .mention-name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.mention-item .mention-status {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 #messageInput {

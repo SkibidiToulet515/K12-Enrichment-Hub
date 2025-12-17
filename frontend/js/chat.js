@@ -837,18 +837,162 @@ function getTimeRemaining(banUntil) {
   return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
 }
 
+let mentionUsers = [];
+let selectedMentionIndex = 0;
+let mentionStartPos = -1;
+
 function setupEventListeners() {
   if (eventListenersInitialized) return;
   eventListenersInitialized = true;
   
   document.getElementById('sendBtn').addEventListener('click', sendMessage);
-  document.getElementById('messageInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
+  
+  const messageInput = document.getElementById('messageInput');
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !document.getElementById('mentionsDropdown').classList.contains('active')) {
+      sendMessage();
+    }
   });
+  
+  messageInput.addEventListener('input', handleMentionInput);
+  messageInput.addEventListener('keydown', handleMentionKeydown);
+  
   document.getElementById('addServerBtn').addEventListener('click', createServerRequest);
   document.getElementById('joinServerBtn').addEventListener('click', openJoinServerModal);
   document.getElementById('addFriendBtn').addEventListener('click', addFriend);
   document.getElementById('createGroupBtn').addEventListener('click', createGroupChat);
+  
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.mentions-dropdown') && !e.target.closest('#messageInput')) {
+      closeMentionsDropdown();
+    }
+  });
+}
+
+function handleMentionInput(e) {
+  const input = e.target;
+  const value = input.value;
+  const cursorPos = input.selectionStart;
+  
+  const textBeforeCursor = value.substring(0, cursorPos);
+  const atMatch = textBeforeCursor.match(/@(\w*)$/);
+  
+  if (atMatch) {
+    mentionStartPos = cursorPos - atMatch[0].length;
+    const searchTerm = atMatch[1].toLowerCase();
+    showMentionsDropdown(searchTerm);
+  } else {
+    closeMentionsDropdown();
+  }
+}
+
+function handleMentionKeydown(e) {
+  const dropdown = document.getElementById('mentionsDropdown');
+  if (!dropdown.classList.contains('active')) return;
+  
+  const items = dropdown.querySelectorAll('.mention-item');
+  
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    selectedMentionIndex = Math.min(selectedMentionIndex + 1, items.length - 1);
+    updateMentionSelection(items);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    selectedMentionIndex = Math.max(selectedMentionIndex - 1, 0);
+    updateMentionSelection(items);
+  } else if (e.key === 'Enter' || e.key === 'Tab') {
+    e.preventDefault();
+    if (items[selectedMentionIndex]) {
+      selectMention(mentionUsers[selectedMentionIndex]);
+    }
+  } else if (e.key === 'Escape') {
+    closeMentionsDropdown();
+  }
+}
+
+function updateMentionSelection(items) {
+  items.forEach((item, i) => {
+    item.classList.toggle('selected', i === selectedMentionIndex);
+  });
+  if (items[selectedMentionIndex]) {
+    items[selectedMentionIndex].scrollIntoView({ block: 'nearest' });
+  }
+}
+
+function showMentionsDropdown(searchTerm) {
+  const dropdown = document.getElementById('mentionsDropdown');
+  
+  let users = [];
+  if (currentServerData && currentServerData.members) {
+    users = currentServerData.members;
+  } else if (currentGroupChatData && currentGroupChatData.members) {
+    users = currentGroupChatData.members;
+  } else {
+    fetch('/api/users/online', {
+      headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+    })
+      .then(r => r.json())
+      .then(onlineUsers => {
+        mentionUsers = onlineUsers.filter(u => 
+          u.username.toLowerCase().includes(searchTerm) && u.id !== currentUser.id
+        ).slice(0, 8);
+        renderMentionsDropdown();
+      })
+      .catch(() => {});
+    return;
+  }
+  
+  mentionUsers = users.filter(u => 
+    u.username.toLowerCase().includes(searchTerm) && u.id !== currentUser.id
+  ).slice(0, 8);
+  
+  renderMentionsDropdown();
+}
+
+function renderMentionsDropdown() {
+  const dropdown = document.getElementById('mentionsDropdown');
+  
+  if (mentionUsers.length === 0) {
+    closeMentionsDropdown();
+    return;
+  }
+  
+  selectedMentionIndex = 0;
+  
+  dropdown.innerHTML = mentionUsers.map((user, i) => `
+    <div class="mention-item ${i === 0 ? 'selected' : ''}" data-index="${i}" onclick="selectMention(mentionUsers[${i}])">
+      <img src="${user.profile_picture || 'https://via.placeholder.com/28'}" alt="">
+      <div>
+        <div class="mention-name">${escapeHtml(user.username)}</div>
+        <div class="mention-status">${user.is_online ? 'Online' : 'Offline'}</div>
+      </div>
+    </div>
+  `).join('');
+  
+  dropdown.classList.add('active');
+}
+
+function selectMention(user) {
+  const input = document.getElementById('messageInput');
+  const value = input.value;
+  
+  const before = value.substring(0, mentionStartPos);
+  const after = value.substring(input.selectionStart);
+  
+  input.value = before + '@' + user.username + ' ' + after;
+  input.focus();
+  
+  const newPos = mentionStartPos + user.username.length + 2;
+  input.setSelectionRange(newPos, newPos);
+  
+  closeMentionsDropdown();
+}
+
+function closeMentionsDropdown() {
+  const dropdown = document.getElementById('mentionsDropdown');
+  dropdown.classList.remove('active');
+  dropdown.innerHTML = '';
+  mentionStartPos = -1;
 }
 
 // Setup Global Chat
@@ -1774,7 +1918,7 @@ function createServerRequest() {
       
       <div style="margin-bottom:15px;">
         <label style="display:block;color:var(--text);font-weight:600;margin-bottom:8px;font-size:13px;">SERVER NAME</label>
-        <input type="text" id="createServerNameInput" placeholder="My Awesome Server" 
+        <input type="text" id="createServerNameInput" placeholder="My Awesome Server" maxlength="50"
           style="width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;">
       </div>
       
@@ -1784,23 +1928,19 @@ function createServerRequest() {
           style="width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:14px;min-height:80px;resize:vertical;"></textarea>
       </div>
       
-      <button onclick="submitServerRequest()" 
+      <button onclick="submitServerCreate()" 
         style="width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:15px;">
-        Submit Server Request
+        Create Server
       </button>
       
       <div id="createServerResult" style="padding:12px;border-radius:8px;display:none;margin-top:15px;"></div>
-      
-      <p style="color:var(--text-light);font-size:12px;margin-top:15px;text-align:center;">
-        Note: Server requests require admin approval
-      </p>
     </div>
   `;
   
   document.getElementById('createServerNameInput').focus();
 }
 
-function submitServerRequest() {
+function submitServerCreate() {
   const nameInput = document.getElementById('createServerNameInput');
   const descInput = document.getElementById('createServerDescInput');
   const resultDiv = document.getElementById('createServerResult');
@@ -1816,7 +1956,7 @@ function submitServerRequest() {
     return;
   }
 
-  fetch('/api/servers/request', {
+  fetch('/api/servers/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1830,19 +1970,26 @@ function submitServerRequest() {
   })
     .then(r => r.json())
     .then(data => {
-      resultDiv.style.display = 'block';
-      resultDiv.style.background = 'rgba(46, 204, 113, 0.2)';
-      resultDiv.style.color = '#2ecc71';
-      resultDiv.textContent = '✅ Server request submitted! Waiting for admin approval.';
-      nameInput.value = '';
-      descInput.value = '';
-      loadServers();
+      if (data.success) {
+        resultDiv.style.display = 'block';
+        resultDiv.style.background = 'rgba(46, 204, 113, 0.2)';
+        resultDiv.style.color = '#2ecc71';
+        resultDiv.textContent = '✅ Server created successfully!';
+        nameInput.value = '';
+        descInput.value = '';
+        loadServers();
+        setTimeout(() => {
+          selectServer(data.serverId);
+        }, 500);
+      } else {
+        throw new Error(data.error || 'Failed to create server');
+      }
     })
-    .catch(() => {
+    .catch((err) => {
       resultDiv.style.display = 'block';
       resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
       resultDiv.style.color = '#e74c3c';
-      resultDiv.textContent = '❌ Failed to submit request';
+      resultDiv.textContent = '❌ ' + (err.message || 'Failed to create server');
     });
 }
 
