@@ -1047,17 +1047,33 @@ function loadServers() {
       const list = document.getElementById('serversList');
       list.innerHTML = '';
       servers.forEach(server => {
+        const serverWrapper = document.createElement('div');
+        serverWrapper.className = 'server-wrapper';
+        serverWrapper.dataset.serverId = server.id;
+        
         const container = document.createElement('div');
         container.className = 'server-item';
         container.style.cssText = 'display: flex; align-items: center; gap: 5px; margin-bottom: 2px;';
+        
+        const expandBtn = document.createElement('button');
+        expandBtn.className = 'expand-btn';
+        expandBtn.innerHTML = '▶';
+        expandBtn.title = 'Expand channels';
+        expandBtn.style.cssText = 'padding: 4px 6px; background: transparent; border: none; cursor: pointer; font-size: 10px; color: var(--text-light); transition: transform 0.2s;';
+        expandBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleServerChannels(server, serverWrapper, expandBtn);
+        });
         
         const btn = document.createElement('button');
         btn.className = 'server-btn';
         btn.style.cssText = 'flex: 1;';
         btn.textContent = server.name;
-        btn.addEventListener('click', () => selectServer(server));
+        btn.addEventListener('click', () => toggleServerChannels(server, serverWrapper, expandBtn));
         
-        // Don't show options for Welcome server (ID: 1)
+        container.appendChild(expandBtn);
+        container.appendChild(btn);
+        
         if (server.id !== 1) {
           const isOwner = server.owner_id === currentUser.id;
           
@@ -1070,15 +1086,106 @@ function loadServers() {
             showServerOptions(server, isOwner);
           });
           
-          container.appendChild(btn);
           container.appendChild(optBtn);
-        } else {
-          container.appendChild(btn);
         }
         
-        list.appendChild(container);
+        const channelsContainer = document.createElement('div');
+        channelsContainer.className = 'channels-container';
+        channelsContainer.style.cssText = 'display: none; padding-left: 20px; margin-top: 4px;';
+        
+        serverWrapper.appendChild(container);
+        serverWrapper.appendChild(channelsContainer);
+        list.appendChild(serverWrapper);
       });
     });
+}
+
+function toggleServerChannels(server, wrapper, expandBtn) {
+  const channelsContainer = wrapper.querySelector('.channels-container');
+  const isExpanded = channelsContainer.style.display !== 'none';
+  
+  if (isExpanded) {
+    channelsContainer.style.display = 'none';
+    expandBtn.innerHTML = '▶';
+    expandBtn.style.transform = 'rotate(0deg)';
+  } else {
+    expandBtn.innerHTML = '▼';
+    expandBtn.style.transform = 'rotate(0deg)';
+    channelsContainer.style.display = 'block';
+    
+    if (!channelsContainer.dataset.loaded) {
+      channelsContainer.innerHTML = '<div style="color: var(--text-light); font-size: 12px; padding: 4px;">Loading...</div>';
+      loadServerChannels(server, channelsContainer);
+    }
+  }
+}
+
+function loadServerChannels(server, container) {
+  fetch(`/api/servers/${server.id}`, {
+    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+  })
+    .then(r => r.json())
+    .then(serverData => {
+      container.innerHTML = '';
+      container.dataset.loaded = 'true';
+      
+      if (serverData.channels && serverData.channels.length > 0) {
+        serverData.channels.forEach(channel => {
+          const channelBtn = document.createElement('button');
+          channelBtn.className = 'channel-btn';
+          channelBtn.dataset.channelId = channel.id;
+          channelBtn.innerHTML = `<span style="opacity: 0.6;">#</span> ${channel.name}`;
+          channelBtn.style.cssText = 'display: block; width: 100%; text-align: left; padding: 6px 10px; margin-bottom: 2px; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: var(--text-light); font-size: 13px; transition: background 0.2s, color 0.2s;';
+          channelBtn.addEventListener('mouseenter', () => {
+            channelBtn.style.background = 'var(--accent)';
+            channelBtn.style.color = 'var(--text)';
+          });
+          channelBtn.addEventListener('mouseleave', () => {
+            if (!channelBtn.classList.contains('active')) {
+              channelBtn.style.background = 'transparent';
+              channelBtn.style.color = 'var(--text-light)';
+            }
+          });
+          channelBtn.addEventListener('click', () => selectChannel(server, channel));
+          container.appendChild(channelBtn);
+        });
+      } else {
+        container.innerHTML = '<div style="color: var(--text-light); font-size: 12px; padding: 4px; font-style: italic;">No channels</div>';
+      }
+    })
+    .catch(err => {
+      console.error('Failed to load channels:', err);
+      container.innerHTML = '<div style="color: var(--text-light); font-size: 12px; padding: 4px;">Failed to load</div>';
+    });
+}
+
+function selectChannel(server, channel) {
+  currentGroupChat = null;
+  currentFriend = null;
+  isGlobalChat = false;
+  messageOffset = 0;
+  hasMoreMessages = true;
+  
+  document.getElementById('chatTitle').textContent = `${server.name} > #${channel.name}`;
+  document.getElementById('globalChatBtn').classList.remove('active');
+  
+  document.querySelectorAll('.channel-btn').forEach(btn => {
+    btn.classList.remove('active');
+    btn.style.background = 'transparent';
+    btn.style.color = 'var(--text-light)';
+  });
+  
+  const activeBtn = document.querySelector(`.channel-btn[data-channel-id="${channel.id}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    activeBtn.style.background = 'var(--primary)';
+    activeBtn.style.color = 'white';
+  }
+  
+  currentChannel = channel.id;
+  currentMessageEndpoint = `/api/messages/channel/${channel.id}`;
+  socket.emit('join_channel', { channelId: channel.id });
+  loadMessages();
 }
 
 function showServerOptions(server, isOwner) {
