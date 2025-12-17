@@ -39,6 +39,15 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
 
       const token = jwt.sign({ userId: this.lastID, username }, SECRET_KEY);
       logger.auth('User registered', { username, userId: this.lastID }, this.lastID);
+      
+      // Set HTTP-only cookie for server-side auth
+      res.cookie('authToken', token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/'
+      });
+      
       res.json({ 
         success: true, 
         userId: this.lastID, 
@@ -69,12 +78,22 @@ router.post('/login', (req, res) => {
 
     const token = jwt.sign({ userId: user.id, username: user.username, role: user.role }, SECRET_KEY);
     logger.auth('User logged in', { username: user.username, userId: user.id, role: user.role }, user.id);
+    
+    // Set HTTP-only cookie for server-side auth
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/'
+    });
+    
     res.json({ 
       success: true, 
       userId: user.id, 
       username: user.username, 
       profilePicture: user.profile_picture,
       role: user.role,
+      isAdmin: user.is_admin,
       token 
     });
   });

@@ -101,7 +101,8 @@ const io = socketIo(server, {
 adminRoutes.setIo(io);
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.use(require('cookie-parser')());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -123,8 +124,66 @@ app.use('/uv', (req, res, next) => {
 app.use('/baremux', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-mux/dist')));
 app.use('/bareasmodule', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
 
-// Serve all frontend files (CSS, JS, uploads)
-app.use(express.static(path.join(__dirname, '../frontend')));
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';
+
+// Server-side authentication check for private pages
+function verifyPageAccess(req, res, next) {
+  // Only check HTTP-only cookie (no query params for security)
+  const token = req.cookies?.authToken;
+  
+  if (!token) {
+    return res.redirect('/private/auth.html?redirect=' + encodeURIComponent(req.originalUrl));
+  }
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (err) {
+    // Clear invalid cookie
+    res.clearCookie('authToken');
+    return res.redirect('/private/auth.html?redirect=' + encodeURIComponent(req.originalUrl));
+  }
+}
+
+// Allow access to auth page without authentication (it's the login page)
+app.get('/private/auth.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/private/auth.html'));
+});
+
+// Protect private pages - must come BEFORE static file serving
+app.use('/private', verifyPageAccess, express.static(path.join(__dirname, '../frontend/private')));
+
+// Serve public files and other static assets (CSS, JS, uploads, etc.)
+app.use(express.static(path.join(__dirname, '../frontend'), {
+  index: false // Don't auto-serve index.html
+}));
+
+// Root redirect - go to public landing or dashboard based on auth
+app.get('/', (req, res) => {
+  const token = req.cookies?.authToken;
+  if (token) {
+    try {
+      jwt.verify(token, JWT_SECRET);
+      return res.redirect('/private/dashboard.html');
+    } catch {
+      res.clearCookie('authToken');
+    }
+  }
+  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+});
+
+// Logout endpoint - clears the auth cookie
+app.post('/api/auth/logout', (req, res) => {
+  res.clearCookie('authToken', { httpOnly: true, sameSite: 'lax', path: '/' });
+  res.json({ success: true });
+});
+
+app.get('/api/auth/logout', (req, res) => {
+  res.clearCookie('authToken', { httpOnly: true, sameSite: 'lax', path: '/' });
+  res.redirect('/private/auth.html');
+});
 
 // Routes - REAL user system (no token needed for signup/login)
 app.use('/api/users', usersRoutes);
@@ -132,11 +191,19 @@ app.use('/api/users', usersRoutes);
 // Auth routes - NO middleware (users need to login first to get a token)
 app.use('/api/auth', authRoutes);
 
-// Auth middleware for protected API routes
+// Auth middleware for protected API routes (checks both header and cookie)
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1] || req.cookies?.authToken;
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
-  next();
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
 };
 
 // Protected routes

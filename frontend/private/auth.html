@@ -220,6 +220,10 @@
   </div>
 
   <script>
+    // Get redirect URL from query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect') || '/private/dashboard.html';
+    
     // Auto-login: Check if already logged in or has saved credentials
     (async function checkExistingLogin() {
       const token = localStorage.getItem('userToken');
@@ -229,7 +233,7 @@
             headers: { 'Authorization': 'Bearer ' + token }
           });
           if (res.ok) {
-            window.location.href = '/private/dashboard.html';
+            window.location.href = redirectUrl;
             return;
           }
         } catch (e) {}
@@ -272,7 +276,7 @@
             profilePicture: data.profilePicture || '',
             createdAt: new Date().toISOString()
           }));
-          window.location.href = '/private/dashboard.html';
+          window.location.href = redirectUrl;
         } else {
           localStorage.removeItem('autoLoginCreds');
         }
@@ -384,8 +388,8 @@
           }
         }
 
-        // Redirect to dashboard
-        window.location.href = '/private/dashboard.html';
+        // Redirect to intended page or dashboard
+        window.location.href = redirectUrl;
       } catch (err) {
         errorEl.textContent = err.message;
         errorEl.classList.add('show');
@@ -405,7 +409,7 @@
         isGuest: true,
         createdAt: new Date().toISOString()
       }));
-      window.location.href = '/private/dashboard.html';
+      window.location.href = redirectUrl;
     }
   </script>
   <script src="/js/transitions.js"></script>
