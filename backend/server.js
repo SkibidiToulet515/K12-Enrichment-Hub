@@ -140,7 +140,7 @@ function verifyPageAccess(req, res, next) {
       maxAge: 5 * 60 * 1000, // 5 minutes
       path: '/'
     });
-    return res.redirect('/private/auth.html');
+    return res.redirect('/private/auth');
   }
   
   try {
@@ -156,16 +156,25 @@ function verifyPageAccess(req, res, next) {
       maxAge: 5 * 60 * 1000,
       path: '/'
     });
-    return res.redirect('/private/auth.html');
+    return res.redirect('/private/auth');
   }
 }
 
 // Allow access to auth page without authentication (it's the login page)
-app.get('/private/auth.html', (req, res) => {
+app.get(['/private/auth', '/private/auth.html'], (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/private/auth.html'));
 });
 
-// Protect private pages - must come BEFORE static file serving
+// Clean URL routing for private pages (no .html extension needed)
+const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog'];
+
+privatePages.forEach(page => {
+  app.get(`/private/${page}`, verifyPageAccess, (req, res) => {
+    res.sendFile(path.join(__dirname, `../frontend/private/${page}.html`));
+  });
+});
+
+// Protect private pages with .html extension too (backwards compatibility)
 app.use('/private', verifyPageAccess, express.static(path.join(__dirname, '../frontend/private')));
 
 // Serve public files and other static assets (CSS, JS, uploads, etc.)
@@ -173,13 +182,18 @@ app.use(express.static(path.join(__dirname, '../frontend'), {
   index: false // Don't auto-serve index.html
 }));
 
+// Clean URL routing for public pages
+app.get('/public/index', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+});
+
 // Root redirect - go to public landing or dashboard based on auth
 app.get('/', (req, res) => {
   const token = req.cookies?.authToken;
   if (token) {
     try {
       jwt.verify(token, JWT_SECRET);
-      return res.redirect('/private/dashboard.html');
+      return res.redirect('/private/dashboard');
     } catch {
       res.clearCookie('authToken');
     }
@@ -195,7 +209,7 @@ app.post('/api/auth/logout', (req, res) => {
 
 app.get('/api/auth/logout', (req, res) => {
   res.clearCookie('authToken', { httpOnly: true, sameSite: 'lax', path: '/' });
-  res.redirect('/private/auth.html');
+  res.redirect('/private/auth');
 });
 
 // Routes - REAL user system (no token needed for signup/login)
