@@ -47,6 +47,14 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
       // Auto-add to Welcome server (ID: 1) with Rules and Moderation Logs channels
       db.run('INSERT INTO server_members (server_id, user_id) VALUES (?, ?) ON CONFLICT DO NOTHING', [1, userId], () => {});
       
+      // Set HTTP-only cookie for server-side auth
+      res.cookie('authToken', token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/'
+      });
+      
       res.json({
         success: true,
         userId,
@@ -74,6 +82,15 @@ router.post('/login', (req, res) => {
     }
 
     const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY);
+    
+    // Set HTTP-only cookie for server-side auth
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/'
+    });
+    
     res.json({
       success: true,
       userId: user.id,
