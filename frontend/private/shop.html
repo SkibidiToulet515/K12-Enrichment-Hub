@@ -13,220 +13,328 @@
   <script src="/js/private-auth.js"></script>
   <style>
     .shop-page {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 40px 32px 60px;
     }
+    
     .shop-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
     }
+    
     .shop-title {
-      font-size: 28px;
-      font-weight: 700;
+      font-size: 32px;
+      font-weight: 600;
       color: var(--text);
+      letter-spacing: -0.5px;
     }
+    
     .coin-display {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       background: var(--card);
-      padding: 12px 20px;
-      border-radius: 25px;
-      border: 2px solid var(--accent);
+      padding: 16px 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
+    
     .coin-icon {
-      font-size: 24px;
+      font-size: 28px;
     }
+    
     .coin-amount {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 600;
       color: var(--primary);
+      min-width: 60px;
     }
+    
     .daily-btn {
-      padding: 10px 20px;
+      padding: 12px 24px;
       background: linear-gradient(135deg, var(--primary), var(--accent));
       color: white;
       border: none;
-      border-radius: 20px;
+      border-radius: 12px;
       font-weight: 600;
+      font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s ease;
+      margin-left: 8px;
     }
+    
     .daily-btn:hover {
-      transform: scale(1.05);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 201, 240, 0.35);
     }
+    
     .daily-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
+    
     .shop-tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 25px;
+      gap: 12px;
+      margin-bottom: 36px;
       flex-wrap: wrap;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
+    
     .shop-tab {
-      padding: 10px 20px;
+      padding: 12px 24px;
       background: var(--card);
-      border: 2px solid transparent;
-      border-radius: 25px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
       color: var(--text);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s ease;
       font-weight: 500;
+      font-size: 14px;
     }
-    .shop-tab:hover, .shop-tab.active {
-      border-color: var(--primary);
+    
+    .shop-tab:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-1px);
+    }
+    
+    .shop-tab.active {
       background: var(--primary);
+      border-color: var(--primary);
       color: white;
+      box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
     }
+    
     .inventory-toggle {
       margin-left: auto;
-      padding: 10px 20px;
-      background: var(--accent);
-      border: none;
-      border-radius: 25px;
-      color: white;
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: var(--text);
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.25s ease;
     }
+    
+    .inventory-toggle:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    
     .shop-items {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 28px;
     }
+    
     .shop-item {
       background: var(--card);
-      border-radius: 12px;
-      padding: 20px;
-      border: 2px solid transparent;
-      transition: all 0.2s;
+      border-radius: 18px;
+      padding: 28px 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s ease;
+      position: relative;
     }
+    
     .shop-item:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
+      border-color: rgba(76, 201, 240, 0.3);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
     }
+    
     .item-preview {
-      height: 80px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
-      margin-bottom: 15px;
-      background: var(--bg);
-      border-radius: 8px;
+      font-size: 52px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
     }
+    
     .item-name {
       font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 5px;
+      font-size: 17px;
+      margin-bottom: 8px;
+      color: var(--text);
     }
+    
     .item-desc {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-light);
-      margin-bottom: 10px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      opacity: 0.8;
     }
+    
     .item-rarity {
       display: inline-block;
-      padding: 3px 10px;
-      border-radius: 15px;
+      padding: 5px 14px;
+      border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .rarity-common { background: #95a5a6; color: white; }
-    .rarity-uncommon { background: #27ae60; color: white; }
-    .rarity-rare { background: #3498db; color: white; }
-    .rarity-epic { background: #9b59b6; color: white; }
-    .rarity-legendary { background: linear-gradient(135deg, #f39c12, #e74c3c); color: white; }
+    
+    .rarity-common { background: rgba(149, 165, 166, 0.2); color: #b0bec5; border: 1px solid rgba(149, 165, 166, 0.3); }
+    .rarity-uncommon { background: rgba(39, 174, 96, 0.15); color: #4cd964; border: 1px solid rgba(39, 174, 96, 0.3); }
+    .rarity-rare { background: rgba(52, 152, 219, 0.15); color: #5dade2; border: 1px solid rgba(52, 152, 219, 0.3); }
+    .rarity-epic { background: rgba(155, 89, 182, 0.15); color: #bb8fce; border: 1px solid rgba(155, 89, 182, 0.3); }
+    .rarity-legendary { background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(231, 76, 60, 0.2)); color: #f5b041; border: 1px solid rgba(243, 156, 18, 0.4); }
+    
     .item-price {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-weight: 700;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 18px;
       color: var(--primary);
-      margin-bottom: 12px;
+      margin-bottom: 18px;
     }
+    
     .buy-btn, .equip-btn {
       width: 100%;
-      padding: 10px;
+      padding: 14px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-weight: 600;
+      font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s ease;
     }
+    
     .buy-btn {
       background: var(--primary);
       color: white;
     }
+    
     .buy-btn:hover {
-      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 201, 240, 0.35);
     }
+    
     .buy-btn:disabled {
-      background: var(--text-light);
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.4);
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
+    
     .equip-btn {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .equip-btn:hover {
       background: var(--accent);
+      border-color: var(--accent);
       color: white;
     }
+    
     .equip-btn.equipped {
-      background: #27ae60;
+      background: rgba(39, 174, 96, 0.2);
+      border-color: #27ae60;
+      color: #4cd964;
     }
+    
     .owned-badge {
-      background: #27ae60;
-      color: white;
-      padding: 3px 10px;
-      border-radius: 15px;
+      background: rgba(39, 174, 96, 0.2);
+      color: #4cd964;
+      padding: 5px 14px;
+      border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
       display: inline-block;
+      border: 1px solid rgba(39, 174, 96, 0.3);
     }
+    
     .back-link {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       color: var(--text-light);
       text-decoration: none;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
       font-weight: 500;
+      font-size: 14px;
+      opacity: 0.7;
+      transition: all 0.2s ease;
     }
+    
     .back-link:hover {
       color: var(--primary);
+      opacity: 1;
     }
+    
     .theme-btn {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px;
-      background: var(--glass-bg, var(--card));
-      border: 1px solid var(--glass-border, var(--accent));
-      border-radius: var(--radius-md, 8px);
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
       color: var(--text);
       font-size: 13px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.25s ease;
     }
+    
     .theme-btn:hover {
       background: var(--primary);
       border-color: var(--primary);
-      color: var(--bg);
-      box-shadow: var(--glow-primary, 0 0 20px rgba(76, 201, 240, 0.5));
+      color: white;
     }
+    
     .empty-state {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 30px;
       color: var(--text-light);
     }
+    
     .empty-state .icon {
-      font-size: 64px;
-      margin-bottom: 15px;
+      font-size: 72px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+    
+    .empty-state p {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+    
+    @media (max-width: 768px) {
+      .shop-page {
+        padding: 24px 20px 40px;
+      }
+      
+      .shop-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .shop-items {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
     }
   </style>
 </head>
