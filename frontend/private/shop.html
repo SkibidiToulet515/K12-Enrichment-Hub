@@ -390,14 +390,14 @@
   <script src="/js/auto-theme.js"></script>
   <script>
     if (!localStorage.getItem('userToken')) {
-      window.location.href = '/private/auth.html';
+      window.location.href = '/auth';
     }
 
     function logout() {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       localStorage.removeItem('userId');
-      window.location.href = '/private/auth.html';
+      window.location.href = '/auth';
     }
 
     function getAuthToken() {

@@ -200,7 +200,7 @@ const QuickSwitcher = {
     const commands = [
       { name: 'Panic Mode', icon: '🛡️', desc: 'Activate stealth mode', action: () => StealthMode.activate(), type: 'command' },
       { name: 'Toggle Theme', icon: '🎨', desc: 'Switch dark/light mode', action: () => this.toggleTheme(), type: 'command' },
-      { name: 'Logout', icon: '🚪', desc: 'Sign out of your account', action: () => { localStorage.clear(); location.href = '/private/auth.html'; }, type: 'command' },
+      { name: 'Logout', icon: '🚪', desc: 'Sign out of your account', action: () => { localStorage.clear(); location.href = '/auth'; }, type: 'command' },
       { name: 'Clear Cache', icon: '🗑️', desc: 'Clear local storage', action: () => { if(confirm('Clear all cached data?')) localStorage.clear(); }, type: 'command' }
     ];
     

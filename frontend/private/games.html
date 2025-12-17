@@ -903,7 +903,7 @@
     function checkAuth() {
       const token = localStorage.getItem('authToken');
       if (!token) {
-        window.location.href = '/private/auth.html';
+        window.location.href = '/auth';
         return false;
       }
       return true;

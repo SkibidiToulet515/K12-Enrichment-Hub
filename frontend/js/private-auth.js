@@ -7,7 +7,7 @@ function checkPrivateAuth() {
   const isGuest = localStorage.getItem('isGuest') === 'true';
   
   if (!userToken && !authToken && !isGuest) {
-    window.location.href = '/private/auth.html';
+    window.location.href = '/auth';
     return false;
   }
   return true;
@@ -51,7 +51,7 @@ function showGuestRestrictionModal(action) {
           ${action || 'This feature'} is not available for guests. Create an account to unlock all features!
         </p>
         <div style="display:flex;gap:10px;justify-content:center;">
-          <button onclick="window.location.href='/private/auth.html'" style="padding:12px 24px;background:linear-gradient(135deg,var(--primary,#00d4ff),var(--secondary,#7c3aed));border:none;border-radius:8px;color:white;font-weight:600;cursor:pointer;">
+          <button onclick="window.location.href='/auth'" style="padding:12px 24px;background:linear-gradient(135deg,var(--primary,#00d4ff),var(--secondary,#7c3aed));border:none;border-radius:8px;color:white;font-weight:600;cursor:pointer;">
             Create Account
           </button>
           <button onclick="this.closest('#guestRestrictionModal').remove()" style="padding:12px 24px;background:transparent;border:2px solid var(--border,#333);border-radius:8px;color:var(--text,white);cursor:pointer;">
@@ -71,7 +71,7 @@ function logoutPrivate() {
 
 // Check auth on private pages
 if (window.location.pathname.includes('/private/')) {
-  if (window.location.pathname !== '/private/auth.html') {
+  if (window.location.pathname !== '/auth') {
     document.addEventListener('DOMContentLoaded', checkPrivateAuth);
   }
 }

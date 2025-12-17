@@ -140,7 +140,7 @@ function verifyPageAccess(req, res, next) {
       maxAge: 5 * 60 * 1000, // 5 minutes
       path: '/'
     });
-    return res.redirect('/private/auth');
+    return res.redirect('/auth');
   }
   
   try {
@@ -148,33 +148,32 @@ function verifyPageAccess(req, res, next) {
     req.userId = decoded.userId;
     next();
   } catch (err) {
-    // Clear invalid cookie and set redirect
+    // Clear invalid cookie
     res.clearCookie('authToken');
-    res.cookie('redirectAfterLogin', req.originalUrl, {
-      httpOnly: false,
-      sameSite: 'lax',
-      maxAge: 5 * 60 * 1000,
-      path: '/'
-    });
-    return res.redirect('/private/auth');
+    return res.redirect('/auth');
   }
 }
 
-// Allow access to auth page without authentication (it's the login page)
-app.get(['/private/auth', '/private/auth.html'], (req, res) => {
+// Auth page - accessible without login
+app.get('/auth', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/private/auth.html'));
 });
 
-// Clean URL routing for private pages (no .html extension needed)
+// Legacy auth routes
+app.get(['/private/auth', '/private/auth.html'], (req, res) => {
+  res.redirect('/auth');
+});
+
+// Page content endpoints for SPA - returns just the page content
 const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog'];
 
 privatePages.forEach(page => {
-  app.get(`/private/${page}`, verifyPageAccess, (req, res) => {
+  app.get(`/pages/${page}`, verifyPageAccess, (req, res) => {
     res.sendFile(path.join(__dirname, `../frontend/private/${page}.html`));
   });
 });
 
-// Protect private pages with .html extension too (backwards compatibility)
+// Protect private static files
 app.use('/private', verifyPageAccess, express.static(path.join(__dirname, '../frontend/private')));
 
 // Serve public files and other static assets (CSS, JS, uploads, etc.)
@@ -182,18 +181,13 @@ app.use(express.static(path.join(__dirname, '../frontend'), {
   index: false // Don't auto-serve index.html
 }));
 
-// Clean URL routing for public pages
-app.get('/public/index', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
-});
-
-// Root redirect - go to public landing or dashboard based on auth
+// Root - serve SPA when logged in, otherwise public landing
 app.get('/', (req, res) => {
   const token = req.cookies?.authToken;
   if (token) {
     try {
       jwt.verify(token, JWT_SECRET);
-      return res.redirect('/private/dashboard');
+      return res.sendFile(path.join(__dirname, '../frontend/private/app.html'));
     } catch {
       res.clearCookie('authToken');
     }
@@ -209,7 +203,7 @@ app.post('/api/auth/logout', (req, res) => {
 
 app.get('/api/auth/logout', (req, res) => {
   res.clearCookie('authToken', { httpOnly: true, sameSite: 'lax', path: '/' });
-  res.redirect('/private/auth');
+  res.redirect('/auth');
 });
 
 // Routes - REAL user system (no token needed for signup/login)

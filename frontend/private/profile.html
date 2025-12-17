@@ -210,14 +210,14 @@
       const userStr = localStorage.getItem('user');
       
       if (!token || !userStr) {
-        window.location.href = '/private/auth.html';
+        window.location.href = '/auth';
         return null;
       }
       
       try {
         return JSON.parse(userStr);
       } catch {
-        window.location.href = '/private/auth.html';
+        window.location.href = '/auth';
         return null;
       }
     }

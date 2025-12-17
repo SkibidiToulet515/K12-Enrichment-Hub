@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NebulaCore</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/private.css">
+  <link rel="stylesheet" href="/css/os-shell.css">
+  <style>
+    #spa-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      transition: opacity 0.3s ease;
+    }
+    
+    #spa-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .spa-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--glass-border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    #spa-content {
+      min-height: 100vh;
+    }
+    
+    .spa-fade-in {
+      animation: spaFadeIn 0.2s ease;
+    }
+    
+    @keyframes spaFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="spa-loader">
+    <div class="spa-spinner"></div>
+  </div>
+  
+  <div id="spa-content"></div>
+
+  <script>
+    const SPA = {
+      currentPage: 'dashboard',
+      cache: {},
+      
+      async init() {
+        const token = localStorage.getItem('userToken');
+        if (!token || token === 'guest') {
+          if (!localStorage.getItem('isGuest')) {
+            window.location.href = '/auth';
+            return;
+          }
+        }
+        
+        await this.loadPage('dashboard');
+        this.hideLoader();
+      },
+      
+      hideLoader() {
+        const loader = document.getElementById('spa-loader');
+        if (loader) {
+          loader.classList.add('hidden');
+          setTimeout(() => loader.remove(), 300);
+        }
+      },
+      
+      showLoader() {
+        const content = document.getElementById('spa-content');
+        content.style.opacity = '0.5';
+      },
+      
+      async loadPage(pageName) {
+        const content = document.getElementById('spa-content');
+        
+        try {
+          let html;
+          if (this.cache[pageName]) {
+            html = this.cache[pageName];
+          } else {
+            const response = await fetch(`/pages/${pageName}`);
+            if (!response.ok) throw new Error('Page not found');
+            html = await response.text();
+            this.cache[pageName] = html;
+          }
+          
+          content.innerHTML = html;
+          content.style.opacity = '1';
+          content.classList.remove('spa-fade-in');
+          void content.offsetWidth;
+          content.classList.add('spa-fade-in');
+          
+          this.currentPage = pageName;
+          document.title = this.getPageTitle(pageName);
+          
+          this.executeScripts(content);
+          this.bindNavigation();
+          
+        } catch (err) {
+          console.error('Failed to load page:', err);
+          content.innerHTML = '<div style="padding: 40px; text-align: center;"><h2>Page not found</h2></div>';
+          content.style.opacity = '1';
+        }
+      },
+      
+      getPageTitle(pageName) {
+        const titles = {
+          dashboard: 'Dashboard - NebulaCore',
+          chat: 'Chat - NebulaCore',
+          games: 'Games - NebulaCore',
+          proxy: 'Web Proxy - NebulaCore',
+          settings: 'Settings - NebulaCore',
+          profile: 'Profile - NebulaCore',
+          admin: 'Admin - NebulaCore',
+          videos: 'Videos - NebulaCore',
+          music: 'Music - NebulaCore',
+          apps: 'Apps - NebulaCore',
+          forums: 'Forums - NebulaCore',
+          shop: 'Shop - NebulaCore',
+          leaderboard: 'Leaderboard - NebulaCore',
+          achievements: 'Achievements - NebulaCore',
+          bugs: 'Bug Reports - NebulaCore',
+          themes: 'Themes - NebulaCore',
+          changelog: 'Changelog - NebulaCore'
+        };
+        return titles[pageName] || 'NebulaCore';
+      },
+      
+      executeScripts(container) {
+        const scripts = container.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+          const newScript = document.createElement('script');
+          if (oldScript.src) {
+            newScript.src = oldScript.src;
+          } else {
+            newScript.textContent = oldScript.textContent;
+          }
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+      },
+      
+      bindNavigation() {
+        document.querySelectorAll('[data-spa-link]').forEach(link => {
+          link.removeEventListener('click', this.handleNavClick);
+          link.addEventListener('click', this.handleNavClick.bind(this));
+        });
+        
+        document.querySelectorAll('.nav-item, .sidebar-link, [data-page]').forEach(link => {
+          link.removeEventListener('click', this.handleLegacyNavClick);
+          link.addEventListener('click', this.handleLegacyNavClick.bind(this));
+        });
+      },
+      
+      handleNavClick(e) {
+        e.preventDefault();
+        const page = e.currentTarget.getAttribute('data-spa-link');
+        if (page && page !== this.currentPage) {
+          this.loadPage(page);
+        }
+      },
+      
+      handleLegacyNavClick(e) {
+        const href = e.currentTarget.getAttribute('href') || '';
+        const dataPage = e.currentTarget.getAttribute('data-page');
+        
+        if (dataPage) {
+          e.preventDefault();
+          if (dataPage !== this.currentPage) {
+            this.loadPage(dataPage);
+          }
+          return;
+        }
+        
+        const match = href.match(/\/private\/(\w+)(?:\.html)?$/);
+        if (match) {
+          e.preventDefault();
+          const page = match[1];
+          if (page !== this.currentPage) {
+            this.loadPage(page);
+          }
+        }
+      },
+      
+      navigate(pageName) {
+        if (pageName !== this.currentPage) {
+          this.loadPage(pageName);
+        }
+      }
+    };
+    
+    window.SPA = SPA;
+    window.navigateTo = (page) => SPA.navigate(page);
+    
+    document.addEventListener('DOMContentLoaded', () => SPA.init());
+  </script>
+  <script src="/js/transitions.js"></script>
+  <script src="/js/security.js"></script>
+</body>
+</html>

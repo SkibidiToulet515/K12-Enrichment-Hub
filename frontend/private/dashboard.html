@@ -366,7 +366,7 @@
   <script>
     // Check if user is logged in
     if (!localStorage.getItem('userToken')) {
-      window.location.href = '/private/auth.html';
+      window.location.href = '/auth';
     }
 
     // Set random welcome greeting
@@ -389,7 +389,7 @@
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       localStorage.removeItem('userId');
-      window.location.href = '/private/auth.html';
+      window.location.href = '/auth';
     }
 
     let currentAnnouncementId = null;
