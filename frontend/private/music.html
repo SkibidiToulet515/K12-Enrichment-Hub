@@ -449,6 +449,17 @@
       loadTracks(genre);
     }
 
+    const fallbackTracks = [
+      { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channelTitle: 'Rick Astley', thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg' },
+      { id: 'fJ9rUzIMcZQ', title: 'Queen - Bohemian Rhapsody', channelTitle: 'Queen Official', thumbnail: 'https://i.ytimg.com/vi/fJ9rUzIMcZQ/hqdefault.jpg' },
+      { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito', channelTitle: 'Luis Fonsi', thumbnail: 'https://i.ytimg.com/vi/kJQP7kiw5Fk/hqdefault.jpg' },
+      { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', channelTitle: 'Ed Sheeran', thumbnail: 'https://i.ytimg.com/vi/JGwWNGJdvx8/hqdefault.jpg' },
+      { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again', channelTitle: 'Wiz Khalifa', thumbnail: 'https://i.ytimg.com/vi/RgKAFK5djSk/hqdefault.jpg' },
+      { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk', channelTitle: 'Mark Ronson', thumbnail: 'https://i.ytimg.com/vi/OPf0YbXqDm0/hqdefault.jpg' },
+      { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channelTitle: 'Katy Perry', thumbnail: 'https://i.ytimg.com/vi/CevxZvSJLk8/hqdefault.jpg' },
+      { id: 'YQHsXMglC9A', title: 'Adele - Hello', channelTitle: 'Adele', thumbnail: 'https://i.ytimg.com/vi/YQHsXMglC9A/hqdefault.jpg' }
+    ];
+
     async function loadTracks(query) {
       const grid = document.getElementById('tracksGrid');
       grid.innerHTML = '<div class="loading">Loading music...</div>';
@@ -457,32 +468,40 @@
         const res = await fetch(`/api/youtube/search?q=${encodeURIComponent(query)}&maxResults=20`);
         const data = await res.json();
 
-        if (data.error) {
-          grid.innerHTML = '<div class="empty-state"><span>❌</span><p>' + data.error + '</p></div>';
+        if (data.error || !data.videos || data.videos.length === 0) {
+          showFallbackTracks(grid, data.error || 'No results found - showing popular tracks');
           return;
         }
 
-        if (!data.videos || data.videos.length === 0) {
-          grid.innerHTML = '<div class="empty-state"><span>🔍</span><p>No music found</p></div>';
-          return;
-        }
-
-        grid.innerHTML = data.videos.map(video => `
-          <div class="track-card" onclick="playTrack('${video.id}', '${escapeHtml(video.title)}', '${escapeHtml(video.channelTitle)}', '${video.thumbnail}')" data-id="${video.id}">
-            <div class="track-thumbnail">
-              <img src="${video.thumbnail}" alt="${escapeHtml(video.title)}" loading="lazy">
-              <div class="track-play-overlay"><span>▶</span></div>
-            </div>
-            <div class="track-info">
-              <div class="track-title">${escapeHtml(video.title)}</div>
-              <div class="track-artist">${escapeHtml(video.channelTitle)}</div>
-            </div>
-          </div>
-        `).join('');
+        renderTracks(grid, data.videos);
       } catch (err) {
         console.error('Error loading tracks:', err);
-        grid.innerHTML = '<div class="empty-state"><span>❌</span><p>Failed to load music</p></div>';
+        showFallbackTracks(grid, 'Could not connect - showing popular tracks');
       }
+    }
+    
+    function showFallbackTracks(grid, message) {
+      grid.innerHTML = `<div class="fallback-notice" style="grid-column: 1/-1; padding: 15px; background: rgba(255,165,0,0.1); border-radius: 10px; margin-bottom: 15px; text-align: center; color: var(--text-secondary);">${message}</div>`;
+      grid.innerHTML += renderTracksHtml(fallbackTracks);
+    }
+    
+    function renderTracks(grid, videos) {
+      grid.innerHTML = renderTracksHtml(videos);
+    }
+    
+    function renderTracksHtml(videos) {
+      return videos.map(video => `
+        <div class="track-card" onclick="playTrack('${video.id}', '${escapeHtml(video.title)}', '${escapeHtml(video.channelTitle)}', '${video.thumbnail}')" data-id="${video.id}">
+          <div class="track-thumbnail">
+            <img src="${video.thumbnail}" alt="${escapeHtml(video.title)}" loading="lazy">
+            <div class="track-play-overlay"><span>▶</span></div>
+          </div>
+          <div class="track-info">
+            <div class="track-title">${escapeHtml(video.title)}</div>
+            <div class="track-artist">${escapeHtml(video.channelTitle)}</div>
+          </div>
+        </div>
+      `).join('');
     }
 
     function escapeHtml(text) {

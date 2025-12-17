@@ -29,11 +29,65 @@
   bottom: var(--taskbar-height);
   overflow: hidden;
   background: var(--bg);
-  background-image: 
-    radial-gradient(ellipse at 20% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 60%);
   z-index: 1;
+}
+
+/* Animated Background Effects */
+.os-background-effects {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  bottom: -20px;
+  animation: floatUp linear infinite;
+  filter: blur(2px);
+  opacity: 0.7;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(30px);
+    opacity: 0;
+  }
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  animation: blobPulse ease-in-out infinite alternate;
+  filter: blur(60px);
+  opacity: 0.6;
+}
+
+@keyframes blobPulse {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2) translate(10px, -10px);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(0.9) translate(-10px, 10px);
+    opacity: 0.3;
+  }
 }
 
 .os-desktop-icons {

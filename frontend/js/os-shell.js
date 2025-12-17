@@ -66,6 +66,7 @@ const OSShell = {
     desktop.className = 'os-desktop';
     desktop.id = 'osDesktop';
     desktop.innerHTML = `
+      <div class="os-background-effects" id="osBgEffects"></div>
       <div class="os-desktop-icons" id="osDesktopIcons"></div>
       <div class="os-widgets-container" id="osWidgets"></div>
     `;
@@ -102,6 +103,49 @@ const OSShell = {
     this.renderDesktopIcons();
     this.renderTaskbarApps();
     this.renderWidgets();
+    this.renderBackgroundEffects();
+  },
+  
+  renderBackgroundEffects() {
+    const container = document.getElementById('osBgEffects');
+    if (!container) return;
+    
+    let html = '';
+    
+    for (let i = 0; i < 15; i++) {
+      const size = 4 + Math.random() * 8;
+      const left = Math.random() * 100;
+      const delay = Math.random() * 20;
+      const duration = 15 + Math.random() * 20;
+      const hue = Math.random() > 0.5 ? '200' : '280';
+      
+      html += `<div class="floating-orb" style="
+        width: ${size}px;
+        height: ${size}px;
+        left: ${left}%;
+        animation-delay: -${delay}s;
+        animation-duration: ${duration}s;
+        background: radial-gradient(circle, hsla(${hue}, 100%, 70%, 0.6), hsla(${hue}, 100%, 50%, 0));
+      "></div>`;
+    }
+    
+    for (let i = 0; i < 3; i++) {
+      const size = 200 + Math.random() * 300;
+      const left = Math.random() * 80;
+      const top = Math.random() * 80;
+      const hue = 180 + Math.random() * 100;
+      
+      html += `<div class="glow-blob" style="
+        width: ${size}px;
+        height: ${size}px;
+        left: ${left}%;
+        top: ${top}%;
+        background: radial-gradient(circle, hsla(${hue}, 70%, 50%, 0.08), transparent 70%);
+        animation-duration: ${30 + Math.random() * 20}s;
+      "></div>`;
+    }
+    
+    container.innerHTML = html;
   },
   
   renderWidgets() {
@@ -304,6 +348,10 @@ const OSShell = {
     return panel;
   },
   
+  iconPositions: {},
+  gridCellSize: 100,
+  gridCols: 3,
+  
   renderDesktopIcons() {
     const container = document.getElementById('osDesktopIcons');
     if (!container) return;
@@ -318,12 +366,32 @@ const OSShell = {
       visibleApps = visibleApps.filter(app => app.id !== 'dashboard');
     }
     
-    container.innerHTML = visibleApps.map(app => `
-      <div class="os-desktop-icon" data-app="${app.id}">
+    const saved = localStorage.getItem('iconPositions');
+    if (saved) {
+      try { this.iconPositions = JSON.parse(saved); } catch(e) {}
+    }
+    
+    container.innerHTML = '';
+    
+    visibleApps.forEach((app, index) => {
+      const icon = document.createElement('div');
+      icon.className = 'os-desktop-icon';
+      icon.dataset.app = app.id;
+      
+      const pos = this.iconPositions[app.id] || { col: index % this.gridCols, row: Math.floor(index / this.gridCols) };
+      this.iconPositions[app.id] = pos;
+      
+      icon.style.position = 'absolute';
+      icon.style.left = (20 + pos.col * this.gridCellSize) + 'px';
+      icon.style.top = (20 + pos.row * this.gridCellSize) + 'px';
+      
+      icon.innerHTML = `
         <div class="os-desktop-icon-img">${this.getIcon(app.icon, app.color)}</div>
         <div class="os-desktop-icon-label">${app.name}</div>
-      </div>
-    `).join('');
+      `;
+      
+      container.appendChild(icon);
+    });
     
     this.setupDesktopIconEvents();
   },
@@ -337,31 +405,25 @@ const OSShell = {
     icons.forEach(icon => {
       let isDragging = false;
       let hasMoved = false;
-      let startX, startY, startLeft, startTop;
+      let startX, startY, origLeft, origTop;
       
-      icon.addEventListener('mousedown', (e) => {
+      const onMouseDown = (e) => {
         if (e.button !== 0) return;
         
         isDragging = true;
         hasMoved = false;
         startX = e.clientX;
         startY = e.clientY;
+        origLeft = parseInt(icon.style.left) || 0;
+        origTop = parseInt(icon.style.top) || 0;
         
-        const rect = icon.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        startLeft = rect.left - containerRect.left;
-        startTop = rect.top - containerRect.top;
-        
-        icon.style.position = 'absolute';
-        icon.style.left = startLeft + 'px';
-        icon.style.top = startTop + 'px';
         icon.style.zIndex = '100';
         icon.classList.add('dragging');
         
         e.preventDefault();
-      });
+      };
       
-      document.addEventListener('mousemove', (e) => {
+      const onMouseMove = (e) => {
         if (!isDragging) return;
         
         const dx = e.clientX - startX;
@@ -371,26 +433,40 @@ const OSShell = {
           hasMoved = true;
         }
         
-        icon.style.left = (startLeft + dx) + 'px';
-        icon.style.top = (startTop + dy) + 'px';
-      });
+        icon.style.left = (origLeft + dx) + 'px';
+        icon.style.top = (origTop + dy) + 'px';
+      };
       
-      document.addEventListener('mouseup', () => {
+      const onMouseUp = () => {
         if (!isDragging) return;
         isDragging = false;
         icon.classList.remove('dragging');
         icon.style.zIndex = '';
-      });
+        
+        if (hasMoved) {
+          const left = parseInt(icon.style.left) || 0;
+          const top = parseInt(icon.style.top) || 0;
+          
+          const col = Math.max(0, Math.round((left - 20) / this.gridCellSize));
+          const row = Math.max(0, Math.round((top - 20) / this.gridCellSize));
+          
+          const appId = icon.dataset.app;
+          this.iconPositions[appId] = { col, row };
+          
+          icon.style.left = (20 + col * this.gridCellSize) + 'px';
+          icon.style.top = (20 + row * this.gridCellSize) + 'px';
+          
+          localStorage.setItem('iconPositions', JSON.stringify(this.iconPositions));
+        }
+      };
+      
+      icon.addEventListener('mousedown', onMouseDown);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp.bind(this));
       
       icon.addEventListener('dblclick', () => {
-        const appId = icon.dataset.app;
-        OSShell.openApp(appId);
-      });
-      
-      icon.addEventListener('click', (e) => {
-        if (hasMoved) {
-          e.stopPropagation();
-          return;
+        if (!hasMoved) {
+          OSShell.openApp(icon.dataset.app);
         }
       });
     });
