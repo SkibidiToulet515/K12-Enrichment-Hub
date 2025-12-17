@@ -357,6 +357,14 @@
       display: flex;
     }
     
+    .app-window.maximized {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 48px);
+      border-radius: 0;
+    }
+    
     .window-titlebar {
       display: flex;
       align-items: center;
@@ -448,7 +456,14 @@
   <!-- Taskbar -->
   <div class="taskbar">
     <div class="taskbar-center">
-      <div class="taskbar-btn start-btn" id="startBtn" onclick="toggleStartMenu()">&#9641;&#9641;&#9641;&#9641;</div>
+      <div class="taskbar-btn start-btn" id="startBtn" onclick="toggleStartMenu()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <rect x="1" y="1" width="8" height="8" rx="1"/>
+          <rect x="11" y="1" width="8" height="8" rx="1"/>
+          <rect x="1" y="11" width="8" height="8" rx="1"/>
+          <rect x="11" y="11" width="8" height="8" rx="1"/>
+        </svg>
+      </div>
       <div class="taskbar-btn" data-app="proxy">&#127760;</div>
       <div class="taskbar-btn" data-app="games">&#128193;</div>
       <div class="taskbar-btn" data-app="chat">&#128172;</div>
@@ -547,8 +562,8 @@
         <span id="windowTitle">App</span>
       </div>
       <div class="window-controls">
-        <div class="window-ctrl-btn minimize">&#128469;</div>
-        <div class="window-ctrl-btn maximize">&#128470;</div>
+        <div class="window-ctrl-btn minimize" onclick="minimizeWindow()">&#8211;</div>
+        <div class="window-ctrl-btn maximize" onclick="toggleMaximize()">&#9633;</div>
         <div class="window-ctrl-btn close" onclick="closeWindow()">&#10005;</div>
       </div>
     </div>
@@ -612,7 +627,16 @@
     
     function closeWindow() {
       document.getElementById('appWindow').classList.remove('active');
+      document.getElementById('appWindow').classList.remove('maximized');
       document.getElementById('appFrame').src = '';
+    }
+    
+    function minimizeWindow() {
+      document.getElementById('appWindow').classList.remove('active');
+    }
+    
+    function toggleMaximize() {
+      document.getElementById('appWindow').classList.toggle('maximized');
     }
     
     function logout() {
