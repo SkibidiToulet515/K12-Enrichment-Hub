@@ -53,10 +53,13 @@ Do not make changes to the file `Y`.
 - **Pin/Like Games (New)**: Games can be pinned and liked with localStorage persistence and dedicated filter categories.
 - **Apps Page (New)**: Utility apps including Calculator, Stopwatch, Timer, Quick Notes, Coin Flip, and Dice Roller.
 - **YouTube Privacy Mode (New)**: Videos embed using youtube-nocookie.com for enhanced privacy.
+- **Music App (New)**: YouTube-based music streaming with search, genre filters, play queue, and currently playing display using youtube-nocookie.com embeds.
+- **Bug Report System (New)**: User submission form with category/priority selection, screenshot upload, admin review queue with status management (pending/investigating/resolved/closed), filtering, and statistics dashboard.
+- **OS-Style Notifications (New)**: Toast notification system with info/success/warning/error types, auto-dismiss, action buttons, slide-in animations, and max 3 concurrent notifications.
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.
-- **Database Schema**: Includes tables for users, servers, channels, messages, friends, group_chats, roles, badges, games, user_xp, achievements, user_activity, tasks, announcements, channel_permissions, friend_notes, polls, poll_options, poll_votes, user_preferences, changelogs, user_shortcuts, default_shortcuts, archived_chats, shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, daily_rewards, game_ratings, recently_played, game_leaderboards, speedrun_records, user_widgets, custom_themes, forum_categories, forum_posts, forum_replies, and forum_votes.
+- **Database Schema**: Includes tables for users, servers, channels, messages, friends, group_chats, roles, badges, games, user_xp, achievements, user_activity, tasks, announcements, channel_permissions, friend_notes, polls, poll_options, poll_votes, user_preferences, changelogs, user_shortcuts, default_shortcuts, archived_chats, shop_categories, shop_items, user_purchases, user_equipped, coin_transactions, daily_rewards, game_ratings, recently_played, game_leaderboards, speedrun_records, user_widgets, custom_themes, forum_categories, forum_posts, forum_replies, forum_votes, and bug_reports.
 - **Security**: Pre-seeded admin accounts (admin, Yusoff(ADMIN)) with default passwords for initial setup (requires immediate change for production). CORS configured to allow all origins during development, needing restriction for production. JWT secret should be an environment variable.
 
 ## External Dependencies
