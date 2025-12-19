@@ -57,6 +57,11 @@ Do not make changes to the file `Y`.
 - **Bug Report System (New)**: User submission form with category/priority selection, screenshot upload, admin review queue with status management (pending/investigating/resolved/closed), filtering, and statistics dashboard.
 - **OS-Style Notifications (New)**: Toast notification system with info/success/warning/error types, auto-dismiss, action buttons, slide-in animations, and max 3 concurrent notifications.
 - **Advanced Tab Cloaking**: Tab disguise with custom icon (My Apps) and title, about:blank wrapper, blob: URL wrapper, and auto-cloak on site open. Settings to enable/disable each cloaking method.
+- **Nova AI Chat**: AI-powered study buddy using OpenAI GPT-4o-mini. Conversational interface for homework help, study tips, and general chat. Session-based conversation history with typing indicators and error handling.
+- **Pomodoro Timer**: Study timer with work/short break/long break modes, session tracking, streak counter, and stats persistence.
+- **Custom Cursors**: Selectable cursor styles including custom SVG cursors (neon glow, retro pixel, minimal dot) with persistence.
+- **Sound Effects**: Configurable notification and click sounds using Web Audio API with volume control.
+- **Bookmark Manager**: Save and organize proxy site URLs for quick access.
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.
