@@ -43,12 +43,8 @@
     }
   }, true);
   
-  // Block right-click context menu
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    showAccessDenied();
-    return false;
-  }, true);
+  // Note: Right-click is allowed for custom context menus
+  // Dev tools are blocked via keyboard shortcuts only
   
   function showAccessDenied() {
     // Create overlay

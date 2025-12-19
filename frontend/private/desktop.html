@@ -1074,10 +1074,11 @@
       document.getElementById('desktopContextMenu').classList.remove('active');
     });
     
-    // Desktop left-click context menu
-    document.querySelector('.desktop').addEventListener('click', e => {
+    // Desktop right-click context menu
+    document.querySelector('.desktop').addEventListener('contextmenu', e => {
       // Only show menu if clicking on empty desktop space
       if (e.target.classList.contains('desktop') || e.target.classList.contains('widgets')) {
+        e.preventDefault();
         const menu = document.getElementById('desktopContextMenu');
         menu.style.left = e.clientX + 'px';
         menu.style.top = e.clientY + 'px';
