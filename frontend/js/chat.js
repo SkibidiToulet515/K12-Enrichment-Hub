@@ -614,6 +614,36 @@ function initSocket() {
     if (isRelevant) {
       displayMessage(message, true);
     }
+    
+    // Send desktop notification only if message is NOT for the current view and NOT from current user
+    if (message.user_id !== currentUser.id && !isRelevant) {
+      // Check notification settings
+      const mutedServers = JSON.parse(localStorage.getItem('mutedServers') || '[]');
+      const mutedUsers = JSON.parse(localStorage.getItem('mutedUsers') || '[]');
+      const notificationsEnabled = localStorage.getItem('chatNotifications') !== 'false';
+      
+      // Check if server or user is muted
+      const serverMuted = message.server_id && mutedServers.includes(message.server_id);
+      const userMuted = mutedUsers.includes(message.user_id);
+      
+      if (notificationsEnabled && !serverMuted && !userMuted) {
+        // Send notification to parent (desktop)
+        const notifData = {
+          type: 'chatNotification',
+          title: message.username || 'New Message',
+          body: message.content ? (message.content.length > 50 ? message.content.substring(0, 50) + '...' : message.content) : 'Sent an attachment',
+          icon: '💬',
+          serverId: message.server_id,
+          channelId: message.channel_id,
+          userId: message.user_id
+        };
+        
+        // Post to parent window (desktop)
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(notifData, '*');
+        }
+      }
+    }
   });
 
   socket.on('message_deleted', (data) => {

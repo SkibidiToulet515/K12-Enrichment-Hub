@@ -573,6 +573,39 @@
           </label>
         </div>
       </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Chat Message Notifications</h4>
+          <p>Show notifications for new chat messages</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="chatNotifToggle" checked onchange="toggleChatNotifications(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Muted Servers</h4>
+          <p>Servers you won't receive notifications from</p>
+        </div>
+        <div class="setting-control">
+          <button class="setting-btn" onclick="openMuteManager('servers')">Manage</button>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Muted Users</h4>
+          <p>Users you won't receive notifications from</p>
+        </div>
+        <div class="setting-control">
+          <button class="setting-btn" onclick="openMuteManager('users')">Manage</button>
+        </div>
+      </div>
     </div>
     
     <div class="settings-section">
@@ -677,6 +710,19 @@
         </div>
       </div>
     </div>
+  </div>
+  
+  <!-- Mute Manager Modal -->
+  <div id="muteManagerOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;"></div>
+  <div id="muteManagerModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border-radius:16px;padding:24px;width:90%;max-width:450px;z-index:1001;border:1px solid var(--accent);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 id="muteManagerTitle" style="margin:0;color:var(--text);">Muted Items</h3>
+      <button onclick="closeMuteManager()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text);">&times;</button>
+    </div>
+    <div id="mutedItemsList" style="max-height:300px;overflow-y:auto;margin-bottom:15px;">
+      <p style="text-align:center;color:var(--text-light);">No muted items</p>
+    </div>
+    <p style="font-size:12px;color:var(--text-light);text-align:center;">To mute a server or user, right-click on them in the chat and select "Mute"</p>
   </div>
   
   <script src="/js/iframe-detect.js"></script>
@@ -813,6 +859,63 @@
           StealthMode.applyTabCloak();
         }
       }
+    }
+    
+    // Chat notification settings
+    function toggleChatNotifications(enabled) {
+      localStorage.setItem('chatNotifications', enabled.toString());
+    }
+    
+    // Load chat notification setting
+    document.getElementById('chatNotifToggle').checked = localStorage.getItem('chatNotifications') !== 'false';
+    
+    // Mute Manager
+    let muteManagerType = 'servers';
+    
+    function openMuteManager(type) {
+      muteManagerType = type;
+      document.getElementById('muteManagerOverlay').style.display = 'block';
+      document.getElementById('muteManagerModal').style.display = 'block';
+      document.getElementById('muteManagerTitle').textContent = type === 'servers' ? 'Muted Servers' : 'Muted Users';
+      loadMutedItems();
+    }
+    
+    function closeMuteManager() {
+      document.getElementById('muteManagerOverlay').style.display = 'none';
+      document.getElementById('muteManagerModal').style.display = 'none';
+    }
+    
+    async function loadMutedItems() {
+      const list = document.getElementById('mutedItemsList');
+      const key = muteManagerType === 'servers' ? 'mutedServers' : 'mutedUsers';
+      const mutedIds = JSON.parse(localStorage.getItem(key) || '[]');
+      
+      if (mutedIds.length === 0) {
+        list.innerHTML = '<p style="text-align:center;color:var(--text-light);">No muted ' + muteManagerType + '</p>';
+        return;
+      }
+      
+      // Fetch names for the IDs
+      const token = localStorage.getItem('userToken') || localStorage.getItem('authToken');
+      list.innerHTML = '';
+      
+      for (const id of mutedIds) {
+        const item = document.createElement('div');
+        item.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border-radius:8px;margin-bottom:8px;';
+        item.innerHTML = `
+          <span style="color:var(--text);">${muteManagerType === 'servers' ? 'Server' : 'User'} #${id}</span>
+          <button onclick="unmuteItem(${id})" style="padding:6px 12px;background:#ff4444;color:white;border:none;border-radius:6px;cursor:pointer;">Unmute</button>
+        `;
+        list.appendChild(item);
+      }
+    }
+    
+    function unmuteItem(id) {
+      const key = muteManagerType === 'servers' ? 'mutedServers' : 'mutedUsers';
+      let mutedIds = JSON.parse(localStorage.getItem(key) || '[]');
+      mutedIds = mutedIds.filter(i => i !== id);
+      localStorage.setItem(key, JSON.stringify(mutedIds));
+      loadMutedItems();
     }
   </script>
   <script src="/js/os-shell.js"></script>

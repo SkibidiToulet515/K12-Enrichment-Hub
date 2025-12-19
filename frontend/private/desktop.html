@@ -1292,6 +1292,13 @@
         document.getElementById('volumePanel').style.display = 'none';
       }
     });
+    
+    // Listen for chat notifications from iframe
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'chatNotification') {
+        showNotification(e.data.title, e.data.body, e.data.icon || '💬', 5000);
+      }
+    });
   </script>
   <script src="/js/security.js"></script>
   <script src="/js/stealth-mode.js"></script>
