@@ -210,6 +210,10 @@
           <span>Bug Reports</span>
           <span class="nav-item-badge" id="openBugReports">0</span>
         </div>
+        <div class="nav-item" data-section="changelog">
+          <span class="nav-item-icon">📜</span>
+          <span>Changelog</span>
+        </div>
       </div>
       
       <div class="back-link">
@@ -706,6 +710,50 @@
             </thead>
             <tbody id="bugReportsTable"></tbody>
           </table>
+        </div>
+      </section>
+      
+      <section id="changelog" class="section">
+        <div class="page-header">
+          <h2 class="page-title">Changelog Management</h2>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Add New Changelog Entry</h3>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Version</label>
+            <input type="text" class="form-input" id="changelogVersion" placeholder="e.g., 1.2.0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-input" id="changelogTitle" placeholder="e.g., New Features & Bug Fixes">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Changes (one per line)</label>
+            <textarea class="form-textarea" id="changelogContent" placeholder="Added new games library&#10;Fixed chat notifications&#10;Improved performance"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-select" id="changelogType">
+              <option value="feature">Feature</option>
+              <option value="bugfix">Bug Fix</option>
+              <option value="improvement">Improvement</option>
+              <option value="security">Security</option>
+            </select>
+          </div>
+          <button class="header-btn" onclick="addChangelog()">Publish Changelog</button>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Previous Changelogs</h3>
+            <div class="panel-actions">
+              <button class="action-btn edit" onclick="loadChangelogs()">Refresh</button>
+            </div>
+          </div>
+          <div id="changelogList"></div>
         </div>
       </section>
     </main>
@@ -1263,6 +1311,82 @@
       } catch (e) {}
     }
     loadBugReportStats();
+    
+    // Changelog functions
+    async function loadChangelogs() {
+      try {
+        const res = await fetch('/api/changelogs', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const list = document.getElementById('changelogList');
+        
+        if (!data || data.length === 0) {
+          list.innerHTML = '<p style="color:var(--text-light);text-align:center;padding:20px;">No changelogs yet</p>';
+          return;
+        }
+        
+        list.innerHTML = data.map(log => `
+          <div class="alert-item info" style="margin-bottom:10px;">
+            <div class="alert-content" style="flex:1;">
+              <div class="alert-title">v${escapeHtml(log.version)} - ${escapeHtml(log.title)}</div>
+              <div class="alert-desc">${escapeHtml(log.content).replace(/\n/g, '<br>')}</div>
+              <div class="alert-time">${new Date(log.created_at).toLocaleDateString()} • ${escapeHtml(log.type)}</div>
+            </div>
+            <button class="action-btn ban" onclick="deleteChangelog(${log.id})">Delete</button>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load changelogs:', e);
+      }
+    }
+    
+    async function addChangelog() {
+      const version = document.getElementById('changelogVersion').value.trim();
+      const title = document.getElementById('changelogTitle').value.trim();
+      const content = document.getElementById('changelogContent').value.trim();
+      const type = document.getElementById('changelogType').value;
+      
+      if (!version || !title || !content) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/changelogs', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ version, title, content, type })
+        });
+        
+        if (res.ok) {
+          document.getElementById('changelogVersion').value = '';
+          document.getElementById('changelogTitle').value = '';
+          document.getElementById('changelogContent').value = '';
+          loadChangelogs();
+          alert('Changelog published!');
+        } else {
+          const err = await res.json();
+          alert(err.error || 'Failed to publish changelog');
+        }
+      } catch (e) {
+        console.error('Failed to add changelog:', e);
+        alert('Failed to publish changelog');
+      }
+    }
+    
+    async function deleteChangelog(id) {
+      if (!confirm('Delete this changelog entry?')) return;
+      try {
+        await fetch(`/api/changelogs/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadChangelogs();
+      } catch (e) {
+        console.error('Failed to delete changelog:', e);
+      }
+    }
     
     refreshMetrics();
   </script>

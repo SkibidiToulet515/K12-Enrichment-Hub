@@ -577,6 +577,67 @@
     
     <div class="settings-section">
       <div class="settings-section-title">
+        <span>🛡️</span> Stealth Mode & Cloaking
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Panic Button</h4>
+          <p>Press ` (backtick) or ESC twice to activate</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="panicButtonToggle" checked onchange="togglePanicButton(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Panic Destination</h4>
+          <p>Where to redirect when panic is triggered</p>
+        </div>
+        <div class="setting-control">
+          <select class="setting-select" id="panicTargetSelect" onchange="setPanicTarget(this.value)">
+            <option value="ClassLink Launchpad">ClassLink Launchpad</option>
+            <option value="Staff Portal Login">Staff Portal Login</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Tab Disguise</h4>
+          <p>Change tab title and icon to look like another site</p>
+        </div>
+        <div class="setting-control">
+          <select class="setting-select" id="tabDisguiseSelect" onchange="setTabDisguise(this.value)">
+            <option value="None">None (NebulaCore)</option>
+            <option value="Google Docs">Google Docs</option>
+            <option value="Google Classroom">Google Classroom</option>
+            <option value="Khan Academy">Khan Academy</option>
+            <option value="Google Drive">Google Drive</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Show Panic Button</h4>
+          <p>Display the floating panic button on screen</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="showPanicBtnToggle" checked onchange="toggleShowPanicBtn(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
         <span>⌨️</span> Keyboard Shortcuts
       </div>
       
@@ -642,6 +703,12 @@
       document.getElementById('highContrastToggle').checked = localStorage.getItem('highContrast') === 'true';
       document.getElementById('notificationsToggle').checked = localStorage.getItem('notifications') !== 'false';
       document.getElementById('soundsToggle').checked = localStorage.getItem('sounds') !== 'false';
+      
+      // Load stealth settings
+      document.getElementById('panicButtonToggle').checked = localStorage.getItem('panicButtonEnabled') !== 'false';
+      document.getElementById('showPanicBtnToggle').checked = localStorage.getItem('showPanicButton') !== 'false';
+      document.getElementById('panicTargetSelect').value = localStorage.getItem('panicTarget') || 'ClassLink Launchpad';
+      document.getElementById('tabDisguiseSelect').value = localStorage.getItem('stealthDisguise') || 'None';
     }
     
     function setLayoutMode(mode) {
@@ -707,7 +774,44 @@
     
     function signOut() {
       localStorage.removeItem('authToken');
-      window.location.href = '/login.html';
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('username');
+      window.location.href = '/';
+    }
+    
+    // Stealth Mode Settings
+    function togglePanicButton(enabled) {
+      localStorage.setItem('panicButtonEnabled', enabled.toString());
+    }
+    
+    function toggleShowPanicBtn(enabled) {
+      localStorage.setItem('showPanicButton', enabled.toString());
+      const panicBtn = document.getElementById('panicButton');
+      if (panicBtn) {
+        panicBtn.style.display = enabled ? 'flex' : 'none';
+      }
+    }
+    
+    function setPanicTarget(target) {
+      localStorage.setItem('panicTarget', target);
+      if (typeof StealthMode !== 'undefined') {
+        StealthMode.loadSettings();
+      }
+    }
+    
+    function setTabDisguise(disguise) {
+      localStorage.setItem('stealthDisguise', disguise);
+      if (typeof StealthMode !== 'undefined') {
+        if (disguise === 'None') {
+          // Reset to original
+          document.title = 'Settings - NebulaCore';
+          StealthMode.setFavicon('/favicon.png');
+        } else {
+          StealthMode.loadSettings();
+          StealthMode.applyTabCloak();
+        }
+      }
     }
   </script>
   <script src="/js/os-shell.js"></script>
