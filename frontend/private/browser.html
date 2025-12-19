@@ -442,78 +442,89 @@
     let activeTabId = null;
     let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
     let swStatus = { uv: false, scramjet: false };
-    let uvLoaded = false;
-    let uvLoading = false;
-    let scramjetLoaded = false;
-    let scramjetLoading = false;
+    let uvLoadPromise = null;
+    let scramjetLoadPromise = null;
+    let bareMuxPromise = null;
     let scramjetController = null;
+    const scriptPromises = {};
 
     async function loadScript(src) {
-      return new Promise((resolve, reject) => {
+      if (scriptPromises[src]) return scriptPromises[src];
+      
+      scriptPromises[src] = new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+          if (existing.dataset.loaded === 'true') {
+            resolve(true);
+          } else {
+            existing.addEventListener('load', () => resolve(true));
+            existing.addEventListener('error', () => reject(new Error('Failed to load ' + src)));
+          }
+          return;
+        }
         const script = document.createElement('script');
         script.src = src;
-        script.onload = () => resolve(true);
-        script.onerror = () => reject(new Error('Failed to load ' + src));
+        script.onload = () => { script.dataset.loaded = 'true'; resolve(true); };
+        script.onerror = () => { delete scriptPromises[src]; reject(new Error('Failed to load ' + src)); };
         document.head.appendChild(script);
       });
+      
+      return scriptPromises[src];
     }
 
-    async function loadUVBundle() {
-      if (uvLoaded || uvLoading) return uvLoaded;
-      uvLoading = true;
+    async function initBareMux() {
+      if (bareMuxPromise) return bareMuxPromise;
       
-      try {
-        // Load bare-mux first
+      bareMuxPromise = (async () => {
         await loadScript('/baremux/index.js');
-        
-        // Initialize bare-mux connection with bare transport
         if (typeof BareMux !== 'undefined' && BareMux.BareMuxConnection) {
           const conn = new BareMux.BareMuxConnection('/baremux/worker.js');
           const bareUrl = new URL('/bare/', location.origin).href;
           await conn.setTransport('/bareasmodule/index.mjs', [bareUrl]);
           console.log('BareMux transport configured with:', bareUrl);
         }
-        
-        // Load UV bundle and config
-        await loadScript('/uv/uv.bundle.js');
-        await loadScript('/uv/uv.config.js');
-        
-        uvLoaded = true;
-        uvLoading = false;
-        return true;
-      } catch (err) {
-        console.error('Failed to load UV bundle:', err);
-        uvLoading = false;
-        return false;
-      }
+      })();
+      
+      return bareMuxPromise;
+    }
+
+    async function loadUVBundle() {
+      if (uvLoadPromise) return uvLoadPromise;
+      
+      uvLoadPromise = (async () => {
+        try {
+          await initBareMux();
+          await loadScript('/uv/uv.bundle.js');
+          await loadScript('/uv/uv.config.js');
+          return true;
+        } catch (err) {
+          console.error('Failed to load UV bundle:', err);
+          uvLoadPromise = null;
+          return false;
+        }
+      })();
+      
+      return uvLoadPromise;
     }
 
     async function loadScramjetBundle() {
-      if (scramjetLoaded || scramjetLoading) return scramjetLoaded;
-      scramjetLoading = true;
+      if (scramjetLoadPromise) return scramjetLoadPromise;
       
-      try {
-        await loadScript('/baremux/index.js');
-        
-        if (typeof BareMux !== 'undefined' && BareMux.BareMuxConnection) {
-          const conn = new BareMux.BareMuxConnection('/baremux/worker.js');
-          const bareUrl = new URL('/bare/', location.origin).href;
-          await conn.setTransport('/bareasmodule/index.mjs', [bareUrl]);
-          console.log('BareMux transport configured for Scramjet');
+      scramjetLoadPromise = (async () => {
+        try {
+          await initBareMux();
+          await loadScript('/scram/scramjet.codecs.js');
+          await loadScript('/scram/scramjet.config.js');
+          await loadScript('/scram/scramjet.bundle.js');
+          return true;
+        } catch (err) {
+          console.error('Failed to load Scramjet bundle:', err);
+          scramjetLoadPromise = null;
+          return false;
         }
-        
-        await loadScript('/scram/scramjet.codecs.js');
-        await loadScript('/scram/scramjet.config.js');
-        await loadScript('/scram/scramjet.bundle.js');
-        
-        scramjetLoaded = true;
-        scramjetLoading = false;
-        return true;
-      } catch (err) {
-        console.error('Failed to load Scramjet bundle:', err);
-        scramjetLoading = false;
-        return false;
-      }
+      })();
+      
+      return scramjetLoadPromise;
     }
 
     async function registerScramjetSW() {
@@ -889,24 +900,10 @@
     }
 
     async function preloadAllProxies() {
-      const promises = [];
-      promises.push(loadUVBundle().catch(e => console.log('UV preload failed:', e)));
-      promises.push(loadScramjetBundle().catch(e => console.log('Scramjet preload failed:', e)));
-      
-      if ('serviceWorker' in navigator) {
-        promises.push(
-          navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' })
-            .then(() => { swStatus.uv = true; })
-            .catch(e => console.log('UV SW preload failed:', e))
-        );
-        promises.push(
-          navigator.serviceWorker.register('/scram-sw.js', { scope: '/scram-service/' })
-            .then(() => { swStatus.scramjet = true; })
-            .catch(e => console.log('Scramjet SW preload failed:', e))
-        );
-      }
-      
-      await Promise.all(promises);
+      await Promise.all([
+        loadUVBundle().catch(e => console.log('UV preload failed:', e)),
+        loadScramjetBundle().catch(e => console.log('Scramjet preload failed:', e))
+      ]);
     }
 
     async function init() {
