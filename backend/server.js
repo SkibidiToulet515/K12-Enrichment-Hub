@@ -48,6 +48,7 @@ const widgetsRoutes = require('./routes/widgets');
 const themesRoutes = require('./routes/themes');
 const forumsRoutes = require('./routes/forums');
 const bugReportsRoutes = require('./routes/bug-reports');
+const aiChatRoutes = require('./routes/ai-chat');
 const logger = require('./logger');
 
 const storage = multer.diskStorage({
@@ -190,7 +191,7 @@ app.get(['/private/auth', '/private/auth.html'], (req, res) => {
 });
 
 // Page content endpoints for SPA - returns just the page content
-const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog', 'tasks', 'browser', 'movies', 'stats', 'shortcuts', 'youtube', 'theme-creator'];
+const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog', 'tasks', 'browser', 'movies', 'stats', 'shortcuts', 'youtube', 'theme-creator', 'ai-chat'];
 
 privatePages.forEach(page => {
   app.get(`/pages/${page}`, verifyPageAccess, (req, res) => {
@@ -289,6 +290,7 @@ app.use('/api/widgets', widgetsRoutes);
 app.use('/api/themes', themesRoutes);
 app.use('/api/forums', forumsRoutes);
 app.use('/api/bug-reports', bugReportsRoutes);
+app.use('/api/chat', authMiddleware, aiChatRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {
