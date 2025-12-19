@@ -514,7 +514,7 @@
         try {
           await initBareMux();
           await loadScript('/scram/scramjet.codecs.js');
-          await loadScript('/scram/scramjet.config.js');
+          await loadScript('/js/scramjet.config.js');
           await loadScript('/scram/scramjet.bundle.js');
           return true;
         } catch (err) {
@@ -707,8 +707,8 @@
         console.log('UV encoding:', url, '->', self.__uv$config.prefix + encoded);
         return self.__uv$config.prefix + encoded;
       }
-      if (currentEngine === 'scramjet' && swStatus.scramjet && typeof self.$scramjet !== 'undefined') {
-        const codec = self.$scramjet.codecs.xor;
+      if (currentEngine === 'scramjet' && swStatus.scramjet && typeof self.__scramjet$codecs !== 'undefined') {
+        const codec = self.__scramjet$codecs.xor;
         const encoded = codec.encode(url);
         console.log('Scramjet encoding:', url, '->', '/scram-service/' + encoded);
         return '/scram-service/' + encoded;

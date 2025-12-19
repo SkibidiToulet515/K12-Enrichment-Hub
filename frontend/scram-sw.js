@@ -1,16 +1,23 @@
-importScripts("/scram/scramjet.bundle.js");
 importScripts("/scram/scramjet.codecs.js");
-importScripts("/scram/scramjet.config.js");
+importScripts("/js/scramjet.config.js");
+importScripts("/scram/scramjet.bundle.js");
 
-const scramjet = new ScramjetServiceWorker();
+let scramjet;
 
-async function handleRequest(event) {
-  if (scramjet.route(event)) {
-    return await scramjet.fetch(event);
-  }
-  return await fetch(event.request);
-}
+self.addEventListener("install", () => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(handleRequest(event));
+  if (!scramjet) {
+    scramjet = new ScramjetServiceWorker();
+  }
+  
+  if (scramjet.route(event)) {
+    event.respondWith(scramjet.fetch(event));
+  }
 });
