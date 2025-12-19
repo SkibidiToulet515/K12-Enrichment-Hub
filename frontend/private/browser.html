@@ -638,7 +638,7 @@
       if (currentEngine === 'rammerhead') {
         const session = await getRammerheadSession();
         if (session) {
-          const proxyUrl = '/' + session + '/' + encodeURIComponent(url);
+          const proxyUrl = '/' + session + '/' + url;
           console.log('Rammerhead encoding:', url, '->', proxyUrl);
           return proxyUrl;
         }
