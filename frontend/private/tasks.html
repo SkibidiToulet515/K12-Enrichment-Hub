@@ -169,7 +169,7 @@
 
   <script>
     function getAuthToken() {
-      return localStorage.getItem('authToken');
+      return localStorage.getItem('userToken') || localStorage.getItem('authToken');
     }
 
     let currentFilter = 'all';

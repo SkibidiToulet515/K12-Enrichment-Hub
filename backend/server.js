@@ -180,7 +180,7 @@ app.get(['/private/auth', '/private/auth.html'], (req, res) => {
 });
 
 // Page content endpoints for SPA - returns just the page content
-const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog'];
+const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog', 'tasks'];
 
 privatePages.forEach(page => {
   app.get(`/pages/${page}`, verifyPageAccess, (req, res) => {
