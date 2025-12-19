@@ -196,10 +196,10 @@ app.use(express.static(path.join(__dirname, '../frontend'), {
   index: false // Don't auto-serve index.html
 }));
 
-// Root - Show the fake Staff Portal login as the first page (stealth mode)
-// This is the cover page that looks like a school staff login
+// Root - Show public K-12 Learning Portal landing page
+// "Access Portal" buttons lead to the fake Staff Portal login at /classlink
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/private/fake-login.html'));
+  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
 // Logout endpoint - clears the auth cookie
