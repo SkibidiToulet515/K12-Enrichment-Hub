@@ -738,8 +738,8 @@
   
   <!-- System Tray -->
   <div class="system-tray">
-    <div class="tray-item">
-      <div class="tray-icons">🔊 📶 🔋</div>
+    <div class="tray-item" onclick="toggleVolumePanel()" style="cursor:pointer" title="Volume">
+      <div class="tray-icons">🔊 📶</div>
     </div>
     <div class="tray-item">
       <div class="tray-time">
@@ -748,6 +748,42 @@
       </div>
     </div>
     <div class="tray-avatar" id="trayAvatar">👤</div>
+  </div>
+  
+  <!-- Volume Control Panel -->
+  <div id="volumePanel" style="display:none; position:fixed; bottom:50px; right:120px; background:rgba(20,20,35,0.95); backdrop-filter:blur(20px); border-radius:12px; padding:20px; min-width:280px; z-index:99998; border:1px solid rgba(255,255,255,0.1); box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+    <div style="font-weight:600; margin-bottom:15px; color:var(--text,#fff);">🔊 Volume Control</div>
+    
+    <div style="margin-bottom:15px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:13px; color:rgba(255,255,255,0.7);">🎵 Music</span>
+        <span id="musicVolVal" style="font-size:12px; color:var(--accent,#00d4ff);">100%</span>
+      </div>
+      <input type="range" id="musicVolume" min="0" max="100" value="100" style="width:100%; accent-color:var(--accent,#00d4ff);" oninput="updateVolume('music', this.value)">
+    </div>
+    
+    <div style="margin-bottom:15px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:13px; color:rgba(255,255,255,0.7);">🎬 Videos</span>
+        <span id="videoVolVal" style="font-size:12px; color:var(--accent,#00d4ff);">100%</span>
+      </div>
+      <input type="range" id="videoVolume" min="0" max="100" value="100" style="width:100%; accent-color:var(--accent,#00d4ff);" oninput="updateVolume('video', this.value)">
+    </div>
+    
+    <div style="margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:13px; color:rgba(255,255,255,0.7);">🔔 Notifications</span>
+        <span id="notifVolVal" style="font-size:12px; color:var(--accent,#00d4ff);">100%</span>
+      </div>
+      <input type="range" id="notifVolume" min="0" max="100" value="100" style="width:100%; accent-color:var(--accent,#00d4ff);" oninput="updateVolume('notif', this.value)">
+    </div>
+    
+    <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px; margin-top:12px;">
+      <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13px; color:rgba(255,255,255,0.7);">
+        <input type="checkbox" id="muteAll" onchange="toggleMuteAll()" style="accent-color:var(--accent,#00d4ff);">
+        Mute All
+      </label>
+    </div>
   </div>
   
   <!-- App Launcher -->
@@ -1201,6 +1237,61 @@
     setTimeout(() => {
       showNotification('Welcome to NebulaCore', 'Your digital workspace is ready.', '✨', 4000);
     }, 1000);
+    
+    // Volume Control Functions
+    let volumePanelOpen = false;
+    const volumeSettings = {
+      music: parseInt(localStorage.getItem('vol_music') || '100'),
+      video: parseInt(localStorage.getItem('vol_video') || '100'),
+      notif: parseInt(localStorage.getItem('vol_notif') || '100'),
+      muted: localStorage.getItem('vol_muted') === 'true'
+    };
+    
+    function toggleVolumePanel() {
+      volumePanelOpen = !volumePanelOpen;
+      const panel = document.getElementById('volumePanel');
+      panel.style.display = volumePanelOpen ? 'block' : 'none';
+      
+      if (volumePanelOpen) {
+        document.getElementById('musicVolume').value = volumeSettings.music;
+        document.getElementById('videoVolume').value = volumeSettings.video;
+        document.getElementById('notifVolume').value = volumeSettings.notif;
+        document.getElementById('musicVolVal').textContent = volumeSettings.music + '%';
+        document.getElementById('videoVolVal').textContent = volumeSettings.video + '%';
+        document.getElementById('notifVolVal').textContent = volumeSettings.notif + '%';
+        document.getElementById('muteAll').checked = volumeSettings.muted;
+      }
+    }
+    
+    function updateVolume(type, value) {
+      volumeSettings[type] = parseInt(value);
+      localStorage.setItem('vol_' + type, value);
+      document.getElementById(type + 'VolVal').textContent = value + '%';
+      
+      // Broadcast volume change to iframe apps
+      const frame = document.getElementById('appFrame');
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({ type: 'volumeChange', channel: type, value: parseInt(value) }, '*');
+      }
+    }
+    
+    function toggleMuteAll() {
+      volumeSettings.muted = document.getElementById('muteAll').checked;
+      localStorage.setItem('vol_muted', volumeSettings.muted);
+      
+      const frame = document.getElementById('appFrame');
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({ type: 'muteAll', muted: volumeSettings.muted }, '*');
+      }
+    }
+    
+    // Close volume panel when clicking outside
+    document.addEventListener('click', e => {
+      if (volumePanelOpen && !e.target.closest('#volumePanel') && !e.target.closest('.tray-item')) {
+        volumePanelOpen = false;
+        document.getElementById('volumePanel').style.display = 'none';
+      }
+    });
   </script>
   <script src="/js/security.js"></script>
   <script src="/js/stealth-mode.js"></script>
