@@ -667,6 +667,44 @@
           </label>
         </div>
       </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Tab Cloaking</h4>
+          <p>Change tab icon and title to "My Apps"</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="tabCloakToggle" onchange="toggleTabCloak(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Auto-Cloak Mode</h4>
+          <p>Automatically open site in cloaked window</p>
+        </div>
+        <div class="setting-control">
+          <select class="setting-select" id="autoCloakSelect" onchange="setAutoCloak(this.value)">
+            <option value="none">Disabled</option>
+            <option value="aboutblank">about:blank</option>
+            <option value="blob">blob: URL</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Open in Cloaked Window</h4>
+          <p>Manually open site in hidden window now</p>
+        </div>
+        <div class="setting-control">
+          <button class="setting-btn" onclick="openAboutBlank()">about:blank</button>
+          <button class="setting-btn" onclick="openBlob()">blob: URL</button>
+        </div>
+      </div>
     </div>
     
     <div class="settings-section">
@@ -730,6 +768,7 @@
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
   <script src="/js/quick-switcher.js"></script>
+  <script src="/js/cloak.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       loadSettings();
@@ -756,6 +795,40 @@
       document.getElementById('showPanicBtnToggle').checked = localStorage.getItem('showPanicButton') !== 'false';
       document.getElementById('panicTargetSelect').value = localStorage.getItem('panicTarget') || 'ClassLink Launchpad';
       document.getElementById('tabDisguiseSelect').value = localStorage.getItem('stealthDisguise') || 'None';
+      
+      // Load cloaking settings
+      const cloakSettings = JSON.parse(localStorage.getItem('cloakSettings') || '{}');
+      document.getElementById('tabCloakToggle').checked = cloakSettings.tabCloak === true;
+      document.getElementById('autoCloakSelect').value = cloakSettings.autoCloak || 'none';
+    }
+    
+    function toggleTabCloak(enabled) {
+      const settings = JSON.parse(localStorage.getItem('cloakSettings') || '{}');
+      settings.tabCloak = enabled;
+      localStorage.setItem('cloakSettings', JSON.stringify(settings));
+      if (enabled && typeof CloakManager !== 'undefined') {
+        CloakManager.applyTabCloak();
+      } else {
+        location.reload();
+      }
+    }
+    
+    function setAutoCloak(mode) {
+      const settings = JSON.parse(localStorage.getItem('cloakSettings') || '{}');
+      settings.autoCloak = mode;
+      localStorage.setItem('cloakSettings', JSON.stringify(settings));
+    }
+    
+    function openAboutBlank() {
+      if (typeof CloakManager !== 'undefined') {
+        CloakManager.openInAboutBlank();
+      }
+    }
+    
+    function openBlob() {
+      if (typeof CloakManager !== 'undefined') {
+        CloakManager.openInBlob();
+      }
     }
     
     function setLayoutMode(mode) {

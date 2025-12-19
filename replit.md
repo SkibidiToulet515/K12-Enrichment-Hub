@@ -56,6 +56,7 @@ Do not make changes to the file `Y`.
 - **Music App (New)**: YouTube-based music streaming with search, genre filters, play queue, and currently playing display using youtube-nocookie.com embeds.
 - **Bug Report System (New)**: User submission form with category/priority selection, screenshot upload, admin review queue with status management (pending/investigating/resolved/closed), filtering, and statistics dashboard.
 - **OS-Style Notifications (New)**: Toast notification system with info/success/warning/error types, auto-dismiss, action buttons, slide-in animations, and max 3 concurrent notifications.
+- **Advanced Tab Cloaking**: Tab disguise with custom icon (My Apps) and title, about:blank wrapper, blob: URL wrapper, and auto-cloak on site open. Settings to enable/disable each cloaking method.
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.
