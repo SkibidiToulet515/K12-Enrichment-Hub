@@ -38,7 +38,10 @@ router.get('/fetch', async (req, res) => {
       res.set({
         'Content-Type': contentType,
         'X-Proxy-Status': proxyRes.statusCode,
-        'X-Final-URL': parsedUrl.href
+        'X-Final-URL': parsedUrl.href,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': '*'
       });
       
       proxyRes.on('error', (err) => {
@@ -56,8 +59,25 @@ router.get('/fetch', async (req, res) => {
         proxyRes.on('end', () => {
           const buffer = Buffer.concat(data);
           let html = buffer.toString('utf-8');
-          const baseTag = `<base href="${parsedUrl.origin}/">`;
+          const origin = parsedUrl.origin;
+          const proxyBase = '/api/proxy/fetch?url=';
+          
+          const baseTag = `<base href="${origin}/">`;
           html = html.replace(/<head>/i, `<head>${baseTag}`);
+          
+          html = html.replace(/href="(https?:\/\/[^"]+)"/g, (match, url) => {
+            return `href="${proxyBase}${encodeURIComponent(url)}"`;
+          });
+          html = html.replace(/src="(https?:\/\/[^"]+)"/g, (match, url) => {
+            return `src="${proxyBase}${encodeURIComponent(url)}"`;
+          });
+          html = html.replace(/href='(https?:\/\/[^']+)'/g, (match, url) => {
+            return `href='${proxyBase}${encodeURIComponent(url)}'`;
+          });
+          html = html.replace(/src='(https?:\/\/[^']+)'/g, (match, url) => {
+            return `src='${proxyBase}${encodeURIComponent(url)}'`;
+          });
+          
           res.send(html);
         });
       } else {
