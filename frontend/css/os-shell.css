@@ -19,6 +19,15 @@
   display: none !important;
 }
 
+/* Hide back buttons when loaded in iframe */
+.in-iframe .back-btn,
+.in-iframe .back-link,
+.in-iframe a[href*="dashboard"],
+.in-iframe .settings-header .back-btn,
+.in-iframe .header .back-btn {
+  display: none !important;
+}
+
 /* Hover Zone - invisible trigger area on left edge */
 .os-sidebar-hover-zone {
   position: fixed;

@@ -819,7 +819,7 @@
     </div>
   </div>
   
-  <!-- Context Menu -->
+  <!-- Context Menu for Apps -->
   <div class="context-menu" id="contextMenu">
     <div class="context-item" id="ctxOpen">📂 Open</div>
     <div class="context-item" id="ctxNewWindow">🪟 New window</div>
@@ -828,6 +828,30 @@
     <div class="context-item" id="ctxUnpin">❌ Unpin</div>
     <div class="context-divider"></div>
     <div class="context-item" id="ctxClose">🚪 Close</div>
+  </div>
+  
+  <!-- Desktop Context Menu (left-click on desktop) -->
+  <div class="context-menu" id="desktopContextMenu" style="min-width: 200px;">
+    <div class="context-item" onclick="openWallpaperPicker()">🖼️ Change Wallpaper</div>
+    <div class="context-item" onclick="openApp('themes')">🎨 Change Theme</div>
+    <div class="context-divider"></div>
+    <div class="context-item" onclick="openApp('settings')">⚙️ Settings</div>
+    <div class="context-item" onclick="refreshDesktop()">🔄 Refresh</div>
+    <div class="context-divider"></div>
+    <div class="context-item" onclick="toggleLauncher()">📱 Open Launcher</div>
+  </div>
+  
+  <!-- Wallpaper Picker Modal -->
+  <div id="wallpaperModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center;">
+    <div style="background:var(--card, #1a1a2e); border-radius:16px; padding:30px; max-width:600px; width:90%;">
+      <h3 style="margin:0 0 20px; color:var(--text, #fff);">Choose Wallpaper</h3>
+      <div id="wallpaperGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;"></div>
+      <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px;">
+        <input type="text" id="customWallpaperUrl" placeholder="Or paste image URL..." style="flex:1; padding:12px; background:var(--bg, #0a0a14); border:1px solid var(--accent, #00d4ff); border-radius:8px; color:var(--text, #fff);">
+        <button onclick="setCustomWallpaper()" style="padding:12px 20px; background:var(--accent, #00d4ff); border:none; border-radius:8px; cursor:pointer; font-weight:600;">Apply</button>
+      </div>
+      <button onclick="closeWallpaperPicker()" style="width:100%; padding:12px; background:transparent; border:1px solid var(--accent, #00d4ff); border-radius:8px; color:var(--text, #fff); cursor:pointer;">Cancel</button>
+    </div>
   </div>
   
   <!-- Notifications Container -->
@@ -1047,7 +1071,82 @@
         toggleLauncher();
       }
       document.getElementById('contextMenu').classList.remove('active');
+      document.getElementById('desktopContextMenu').classList.remove('active');
     });
+    
+    // Desktop left-click context menu
+    document.querySelector('.desktop').addEventListener('click', e => {
+      // Only show menu if clicking on empty desktop space
+      if (e.target.classList.contains('desktop') || e.target.classList.contains('widgets')) {
+        const menu = document.getElementById('desktopContextMenu');
+        menu.style.left = e.clientX + 'px';
+        menu.style.top = e.clientY + 'px';
+        menu.classList.add('active');
+        e.stopPropagation();
+      }
+    });
+    
+    // Wallpaper functions
+    const defaultWallpapers = [
+      '/images/aurora.jpg',
+      '/images/gradient-1.jpg',
+      '/images/gradient-2.jpg',
+      '/images/space-1.jpg',
+      '/images/abstract-1.jpg',
+      '/images/nature-1.jpg'
+    ];
+    
+    function openWallpaperPicker() {
+      const modal = document.getElementById('wallpaperModal');
+      const grid = document.getElementById('wallpaperGrid');
+      
+      grid.innerHTML = defaultWallpapers.map(wp => `
+        <div onclick="setWallpaper('${wp}')" style="height:80px; background:url('${wp}') center/cover; border-radius:8px; cursor:pointer; border:2px solid transparent; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='transparent'"></div>
+      `).join('') + `
+        <div onclick="setWallpaper('none')" style="height:80px; background:linear-gradient(135deg, #1a1a2e, #0a0a14); border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; border:2px solid transparent; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='transparent'">
+          <span style="color:var(--text-light);">None</span>
+        </div>
+      `;
+      
+      modal.style.display = 'flex';
+      document.getElementById('desktopContextMenu').classList.remove('active');
+    }
+    
+    function closeWallpaperPicker() {
+      document.getElementById('wallpaperModal').style.display = 'none';
+    }
+    
+    function setWallpaper(url) {
+      const desktop = document.querySelector('.desktop');
+      if (url === 'none') {
+        desktop.style.backgroundImage = 'none';
+        localStorage.removeItem('desktopWallpaper');
+      } else {
+        desktop.style.backgroundImage = `url('${url}')`;
+        desktop.style.backgroundSize = 'cover';
+        desktop.style.backgroundPosition = 'center';
+        localStorage.setItem('desktopWallpaper', url);
+      }
+      closeWallpaperPicker();
+    }
+    
+    function setCustomWallpaper() {
+      const url = document.getElementById('customWallpaperUrl').value.trim();
+      if (url) setWallpaper(url);
+    }
+    
+    function refreshDesktop() {
+      location.reload();
+    }
+    
+    // Load saved wallpaper
+    const savedWallpaper = localStorage.getItem('desktopWallpaper');
+    if (savedWallpaper) {
+      const desktop = document.querySelector('.desktop');
+      desktop.style.backgroundImage = `url('${savedWallpaper}')`;
+      desktop.style.backgroundSize = 'cover';
+      desktop.style.backgroundPosition = 'center';
+    }
     
     document.getElementById('ctxOpen').onclick = () => {
       const app = document.getElementById('contextMenu').dataset.app;
