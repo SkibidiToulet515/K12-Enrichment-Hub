@@ -343,10 +343,21 @@
       document.getElementById('loading').classList.add('show');
       document.getElementById('error').style.display = 'none';
       
+      const staffId = document.getElementById('staffId').value.trim();
+      const password = document.getElementById('password').value;
+      
       setTimeout(() => {
         document.getElementById('loading').classList.remove('show');
-        document.getElementById('error').style.display = 'block';
-      }, 2000);
+        
+        // Check credentials: admin / 0000P
+        if (staffId === 'admin' && password === '0000P') {
+          // Success - redirect to real auth page
+          window.location.href = '/auth';
+        } else {
+          // Wrong credentials
+          document.getElementById('error').style.display = 'block';
+        }
+      }, 1500);
     });
     
     document.addEventListener('keydown', (e) => {
