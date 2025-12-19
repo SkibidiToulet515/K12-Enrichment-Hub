@@ -196,10 +196,10 @@ app.use(express.static(path.join(__dirname, '../frontend'), {
   index: false // Don't auto-serve index.html
 }));
 
-// Root - ALWAYS show public landing page first so users can choose
-// Users click "Access Portal" to go to /auth and make their choice
+// Root - Show the fake Staff Portal login as the first page (stealth mode)
+// This is the cover page that looks like a school staff login
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/private/fake-login.html'));
 });
 
 // Logout endpoint - clears the auth cookie
