@@ -1062,6 +1062,48 @@
       }
     };
     
+    // Check if user is admin and show/hide admin app accordingly
+    let isAdmin = false;
+    async function checkAdminStatus() {
+      const token = localStorage.getItem('userToken');
+      if (!token) return;
+      
+      try {
+        const res = await fetch('/api/admin/check', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        isAdmin = data.isAdmin || false;
+        
+        // Re-render launcher if it's open
+        if (launcherOpen) renderLauncher(currentCat);
+      } catch (err) {
+        isAdmin = false;
+      }
+    }
+    
+    // Override renderLauncher to filter admin app for non-admins
+    const originalRenderLauncher = renderLauncher;
+    function renderLauncher(cat) {
+      const grid = document.getElementById('launcherGrid');
+      grid.innerHTML = Object.entries(apps)
+        .filter(([k, v]) => {
+          // Hide admin app from non-admins
+          if (k === 'admin' && !isAdmin) return false;
+          return cat === 'all' || v.cat === cat;
+        })
+        .map(([k, v]) => `
+          <div class="launcher-app" data-app="${k}">
+            <div class="launcher-app-icon">${v.icon}</div>
+            <div class="launcher-app-name">${v.title}</div>
+          </div>
+        `).join('');
+      
+      grid.querySelectorAll('.launcher-app').forEach(el => {
+        el.onclick = () => openApp(el.dataset.app);
+      });
+    }
+    
     // Init
     const savedUser = localStorage.getItem('username');
     const savedPic = localStorage.getItem('profilePicture');
@@ -1075,6 +1117,9 @@
     if (!localStorage.getItem('userToken')) {
       window.location.href = '/lock';
     }
+    
+    // Check admin status on load
+    checkAdminStatus();
     
     // Welcome notification
     setTimeout(() => {
