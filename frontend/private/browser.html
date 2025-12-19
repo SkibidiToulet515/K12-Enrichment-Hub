@@ -661,7 +661,7 @@
       const tab = tabs.find(t => t.id === id);
       
       if (tab && tab.url) {
-        document.getElementById('urlInput').value = tab.url;
+        document.getElementById('urlInput').value = tab.title || getTitle(tab.url);
         loadUrl(tab.url, false);
       } else {
         document.getElementById('urlInput').value = '';
@@ -763,7 +763,7 @@
           tab.url = url;
           tab.title = getTitle(url);
           tab.favicon = getFavicon(url);
-          document.getElementById('urlInput').value = url;
+          document.getElementById('urlInput').value = getTitle(url);
           renderTabs();
         }
       }
@@ -819,7 +819,7 @@
           tab.url = url;
           tab.title = getTitle(url);
           tab.favicon = getFavicon(url);
-          document.getElementById('urlInput').value = url;
+          document.getElementById('urlInput').value = getTitle(url);
           renderTabs();
         }
       }
