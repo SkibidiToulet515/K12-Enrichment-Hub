@@ -515,6 +515,92 @@
           </select>
         </div>
       </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Custom Cursor</h4>
+          <p>Choose a fun cursor style</p>
+        </div>
+        <div class="setting-control">
+          <select class="setting-select" id="cursorSelect" onchange="setCursor(this.value)">
+            <option value="default">Default</option>
+            <option value="crosshair">Crosshair</option>
+            <option value="pointer">Pointer</option>
+            <option value="cell">Cell</option>
+            <option value="text">Text</option>
+            <option value="wait">Wait</option>
+            <option value="help">Help</option>
+            <option value="grab">Grab</option>
+            <option value="neon">Neon Glow</option>
+            <option value="retro">Retro Pixel</option>
+            <option value="minimal">Minimal Dot</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>🔊</span> Sound Effects
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Enable Sounds</h4>
+          <p>Play sounds for notifications and actions</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="soundsEnabledToggle" onchange="toggleSounds(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Notification Sound</h4>
+          <p>Sound for new messages and alerts</p>
+        </div>
+        <div class="setting-control" style="gap:8px;">
+          <select class="setting-select" id="notifSoundSelect" onchange="setNotifSound(this.value)">
+            <option value="chime">Chime</option>
+            <option value="pop">Pop</option>
+            <option value="ding">Ding</option>
+            <option value="swoosh">Swoosh</option>
+            <option value="bubble">Bubble</option>
+            <option value="bell">Bell</option>
+          </select>
+          <button class="setting-btn" onclick="previewSound('notif')">Preview</button>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Click Sound</h4>
+          <p>Sound for button clicks</p>
+        </div>
+        <div class="setting-control" style="gap:8px;">
+          <select class="setting-select" id="clickSoundSelect" onchange="setClickSound(this.value)">
+            <option value="none">None</option>
+            <option value="click">Click</option>
+            <option value="tap">Tap</option>
+            <option value="soft">Soft</option>
+          </select>
+          <button class="setting-btn" onclick="previewSound('click')">Preview</button>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Volume</h4>
+          <p>Adjust sound effect volume</p>
+        </div>
+        <div class="setting-control">
+          <input type="range" id="soundVolume" min="0" max="100" value="50" style="width:120px;" onchange="setSoundVolume(this.value)">
+          <span id="volumeValue" style="width:40px;text-align:right;">50%</span>
+        </div>
+      </div>
     </div>
     
     <div class="settings-section">
@@ -1117,7 +1203,127 @@
       localStorage.setItem(key, JSON.stringify(mutedIds));
       loadMutedItems();
     }
+    
+    // Custom Cursors
+    const customCursors = {
+      neon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="8" fill="none" stroke="%2300ffff" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="%2300ffff"/></svg>',
+      retro: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="4" height="4" fill="%23000"/><rect x="4" y="4" width="4" height="4" fill="%23000"/><rect x="8" y="8" width="4" height="4" fill="%23000"/><rect x="12" y="12" width="4" height="4" fill="%23000"/></svg>',
+      minimal: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><circle cx="6" cy="6" r="5" fill="%23fff" stroke="%23000" stroke-width="1"/></svg>'
+    };
+    
+    function setCursor(style) {
+      localStorage.setItem('cursorStyle', style);
+      applyCursor(style);
+    }
+    
+    function applyCursor(style) {
+      if (customCursors[style]) {
+        document.body.style.cursor = `url("${customCursors[style]}") 12 12, auto`;
+      } else if (style === 'default') {
+        document.body.style.cursor = '';
+      } else {
+        document.body.style.cursor = style;
+      }
+    }
+    
+    // Load saved cursor
+    (function loadCursor() {
+      const saved = localStorage.getItem('cursorStyle') || 'default';
+      document.getElementById('cursorSelect').value = saved;
+      applyCursor(saved);
+    })();
+    
+    // Sound Effects
+    const soundEffects = {
+      chime: [523.25, 659.25, 783.99],
+      pop: [880],
+      ding: [1046.5],
+      swoosh: [200, 400, 600],
+      bubble: [300, 450],
+      bell: [440, 554.37, 659.25],
+      click: [1000],
+      tap: [800],
+      soft: [400]
+    };
+    
+    let audioContext = null;
+    
+    function getAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioContext;
+    }
+    
+    function playTone(frequencies, duration = 0.1) {
+      const ctx = getAudioContext();
+      const volume = (parseInt(localStorage.getItem('soundVolume') || '50')) / 100;
+      
+      frequencies.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.value = volume * 0.3;
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.start(ctx.currentTime + (i * 0.05));
+        osc.stop(ctx.currentTime + duration + (i * 0.05));
+      });
+    }
+    
+    function toggleSounds(enabled) {
+      localStorage.setItem('soundsEnabled', enabled.toString());
+    }
+    
+    function setNotifSound(sound) {
+      localStorage.setItem('notifSound', sound);
+    }
+    
+    function setClickSound(sound) {
+      localStorage.setItem('clickSound', sound);
+    }
+    
+    function setSoundVolume(value) {
+      localStorage.setItem('soundVolume', value);
+      document.getElementById('volumeValue').textContent = value + '%';
+    }
+    
+    function previewSound(type) {
+      const soundsEnabled = localStorage.getItem('soundsEnabled') !== 'false';
+      if (!soundsEnabled) {
+        alert('Enable sounds first to preview');
+        return;
+      }
+      
+      let soundName;
+      if (type === 'notif') {
+        soundName = document.getElementById('notifSoundSelect').value;
+      } else {
+        soundName = document.getElementById('clickSoundSelect').value;
+      }
+      
+      if (soundName && soundName !== 'none' && soundEffects[soundName]) {
+        playTone(soundEffects[soundName]);
+      }
+    }
+    
+    // Load sound settings
+    (function loadSoundSettings() {
+      const enabled = localStorage.getItem('soundsEnabled') !== 'false';
+      const notif = localStorage.getItem('notifSound') || 'chime';
+      const click = localStorage.getItem('clickSound') || 'none';
+      const volume = localStorage.getItem('soundVolume') || '50';
+      
+      document.getElementById('soundsEnabledToggle').checked = enabled;
+      document.getElementById('notifSoundSelect').value = notif;
+      document.getElementById('clickSoundSelect').value = click;
+      document.getElementById('soundVolume').value = volume;
+      document.getElementById('volumeValue').textContent = volume + '%';
+    })();
   </script>
+  <script src="/js/customization.js"></script>
   <script src="/js/os-shell.js"></script>
   <script src="/js/security.js"></script>
 </body>

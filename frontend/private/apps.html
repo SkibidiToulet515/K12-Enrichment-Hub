@@ -495,6 +495,219 @@
       font-weight: 600;
       margin-top: 20px;
     }
+
+    /* Pomodoro Timer Styles */
+    .pomodoro-app {
+      text-align: center;
+    }
+
+    .pomo-mode-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .pomo-tab {
+      padding: 10px 20px;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .pomo-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .pomo-timer-display {
+      font-size: 72px;
+      font-weight: 700;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    .pomo-session-info {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .pomo-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .pomo-btn {
+      padding: 14px 32px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    .pomo-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .pomo-btn.start {
+      background: #22c55e;
+      color: white;
+    }
+
+    .pomo-btn.pause {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .pomo-btn.reset {
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      color: var(--text);
+    }
+
+    .pomo-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+
+    .pomo-stat {
+      text-align: center;
+    }
+
+    .pomo-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .pomo-stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .pomo-settings {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .pomo-setting label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .pomo-setting input {
+      width: 50px;
+      padding: 6px;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--text);
+      text-align: center;
+    }
+
+    /* Bookmarks App Styles */
+    .bookmarks-app {
+      min-height: 300px;
+    }
+
+    .bookmark-add {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .bookmarks-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .bookmark-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+
+    .bookmark-item:hover {
+      transform: translateX(5px);
+    }
+
+    .bookmark-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .bookmark-info {
+      flex: 1;
+    }
+
+    .bookmark-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .bookmark-url {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .bookmark-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .bookmark-action {
+      padding: 6px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .bookmark-action.open {
+      background: var(--primary);
+      color: white;
+    }
+
+    .bookmark-action.delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .no-bookmarks {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 40px;
+    }
   </style>
 
 </head>
@@ -553,6 +766,18 @@
         <div class="app-icon">🐛</div>
         <div class="app-name">Bug Report</div>
         <div class="app-desc">Report issues and bugs</div>
+      </div>
+
+      <div class="app-card" onclick="openApp('pomodoro')">
+        <div class="app-icon">🍅</div>
+        <div class="app-name">Pomodoro Timer</div>
+        <div class="app-desc">Study timer with breaks</div>
+      </div>
+
+      <div class="app-card" onclick="openApp('bookmarks')">
+        <div class="app-icon">🔖</div>
+        <div class="app-name">Bookmarks</div>
+        <div class="app-desc">Save your favorite sites</div>
       </div>
     </div>
   </div>
@@ -741,6 +966,76 @@
         </div>
         <div class="dice-total" id="diceTotal">Total: -</div>
         <button class="roll-btn" onclick="rollDice()">Roll Dice</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pomodoro Timer Modal -->
+  <div class="modal-overlay" id="pomodoroModal">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2>🍅 Pomodoro Timer</h2>
+        <button class="close-modal" onclick="closeApp('pomodoro')">&times;</button>
+      </div>
+      <div class="pomodoro-app">
+        <div class="pomo-mode-tabs">
+          <button class="pomo-tab active" data-mode="work" onclick="setPomoMode('work')">Work</button>
+          <button class="pomo-tab" data-mode="short" onclick="setPomoMode('short')">Short Break</button>
+          <button class="pomo-tab" data-mode="long" onclick="setPomoMode('long')">Long Break</button>
+        </div>
+        <div class="pomo-timer-display" id="pomoDisplay">25:00</div>
+        <div class="pomo-session-info">
+          Session <span id="pomoSession">1</span> of 4
+        </div>
+        <div class="pomo-controls">
+          <button class="pomo-btn start" id="pomoStartBtn" onclick="togglePomodoro()">Start</button>
+          <button class="pomo-btn reset" onclick="resetPomodoro()">Reset</button>
+        </div>
+        <div class="pomo-stats">
+          <div class="pomo-stat">
+            <div class="pomo-stat-value" id="pomoTodaySessions">0</div>
+            <div class="pomo-stat-label">Today</div>
+          </div>
+          <div class="pomo-stat">
+            <div class="pomo-stat-value" id="pomoTotalMinutes">0</div>
+            <div class="pomo-stat-label">Total Min</div>
+          </div>
+          <div class="pomo-stat">
+            <div class="pomo-stat-value" id="pomoStreak">0</div>
+            <div class="pomo-stat-label">Streak</div>
+          </div>
+        </div>
+        <div class="pomo-settings">
+          <div class="pomo-setting">
+            <label>Work: <input type="number" id="pomoWorkTime" value="25" min="1" max="60" onchange="updatePomoSettings()"> min</label>
+          </div>
+          <div class="pomo-setting">
+            <label>Short: <input type="number" id="pomoShortTime" value="5" min="1" max="30" onchange="updatePomoSettings()"> min</label>
+          </div>
+          <div class="pomo-setting">
+            <label>Long: <input type="number" id="pomoLongTime" value="15" min="1" max="60" onchange="updatePomoSettings()"> min</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal -->
+  <div class="modal-overlay" id="bookmarksModal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>🔖 Bookmarks</h2>
+        <button class="close-modal" onclick="closeApp('bookmarks')">&times;</button>
+      </div>
+      <div class="bookmarks-app">
+        <div class="bookmark-add">
+          <input type="text" id="bookmarkName" placeholder="Bookmark name" style="flex: 1; padding: 10px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text);">
+          <input type="text" id="bookmarkUrl" placeholder="URL (e.g., google.com)" style="flex: 2; padding: 10px; background: var(--bg); border: 1px solid var(--accent); border-radius: 8px; color: var(--text);">
+          <button onclick="addBookmark()" style="padding: 10px 16px; background: var(--primary); border: none; border-radius: 8px; color: white; cursor: pointer;">Add</button>
+        </div>
+        <div class="bookmarks-list" id="bookmarksList">
+          <div class="no-bookmarks">No bookmarks yet. Add one above!</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1087,11 +1382,200 @@
       }
     }
 
+    // Pomodoro Timer
+    let pomoInterval = null;
+    let pomoRunning = false;
+    let pomoRemaining = 25 * 60;
+    let pomoMode = 'work';
+    let pomoSession = 1;
+    let pomoSettings = {
+      work: 25,
+      short: 5,
+      long: 15
+    };
+    let pomoStats = JSON.parse(localStorage.getItem('pomoStats') || '{"today":0,"total":0,"streak":0,"lastDate":""}');
+
+    function pomoFormatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updatePomoDisplay() {
+      document.getElementById('pomoDisplay').textContent = pomoFormatTime(pomoRemaining);
+      document.getElementById('pomoSession').textContent = pomoSession;
+      document.getElementById('pomoTodaySessions').textContent = pomoStats.today;
+      document.getElementById('pomoTotalMinutes').textContent = pomoStats.total;
+      document.getElementById('pomoStreak').textContent = pomoStats.streak;
+    }
+
+    function setPomoMode(mode, autoStart = false) {
+      pomoMode = mode;
+      pomoRemaining = pomoSettings[mode] * 60;
+      document.querySelectorAll('.pomo-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.pomo-tab[data-mode="${mode}"]`).classList.add('active');
+      updatePomoDisplay();
+      if (autoStart) {
+        setTimeout(() => togglePomodoro(), 500);
+      }
+    }
+
+    function togglePomodoro() {
+      const btn = document.getElementById('pomoStartBtn');
+      if (pomoRunning) {
+        clearInterval(pomoInterval);
+        pomoRunning = false;
+        btn.textContent = 'Resume';
+        btn.classList.remove('pause');
+        btn.classList.add('start');
+      } else {
+        pomoRunning = true;
+        btn.textContent = 'Pause';
+        btn.classList.remove('start');
+        btn.classList.add('pause');
+        pomoInterval = setInterval(() => {
+          pomoRemaining--;
+          updatePomoDisplay();
+          if (pomoRemaining <= 0) {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            btn.textContent = 'Start';
+            btn.classList.remove('pause');
+            btn.classList.add('start');
+            pomoCompleted();
+          }
+        }, 1000);
+      }
+    }
+
+    function pomoCompleted() {
+      if (pomoMode === 'work') {
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        
+        if (pomoStats.lastDate !== today) {
+          if (pomoStats.lastDate === yesterday) {
+            pomoStats.streak++;
+          } else if (pomoStats.lastDate !== '') {
+            pomoStats.streak = 1;
+          } else {
+            pomoStats.streak = 1;
+          }
+          pomoStats.today = 0;
+          pomoStats.lastDate = today;
+        }
+        
+        pomoStats.today++;
+        pomoStats.total += pomoSettings.work;
+        localStorage.setItem('pomoStats', JSON.stringify(pomoStats));
+        
+        const nextMode = pomoSession < 4 ? 'short' : 'long';
+        if (pomoSession < 4) {
+          pomoSession++;
+        } else {
+          pomoSession = 1;
+        }
+        
+        if (confirm('Great job! Start your break automatically?')) {
+          setPomoMode(nextMode, true);
+        } else {
+          setPomoMode(nextMode, false);
+        }
+      } else {
+        if (confirm('Break over! Start focusing automatically?')) {
+          setPomoMode('work', true);
+        } else {
+          setPomoMode('work', false);
+        }
+      }
+      updatePomoDisplay();
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoInterval);
+      pomoRunning = false;
+      document.getElementById('pomoStartBtn').textContent = 'Start';
+      document.getElementById('pomoStartBtn').classList.remove('pause');
+      document.getElementById('pomoStartBtn').classList.add('start');
+      pomoRemaining = pomoSettings[pomoMode] * 60;
+      updatePomoDisplay();
+    }
+
+    function updatePomoSettings() {
+      pomoSettings.work = parseInt(document.getElementById('pomoWorkTime').value) || 25;
+      pomoSettings.short = parseInt(document.getElementById('pomoShortTime').value) || 5;
+      pomoSettings.long = parseInt(document.getElementById('pomoLongTime').value) || 15;
+      if (!pomoRunning) {
+        pomoRemaining = pomoSettings[pomoMode] * 60;
+        updatePomoDisplay();
+      }
+    }
+
+    // Bookmarks Manager
+    let bookmarks = JSON.parse(localStorage.getItem('siteBookmarks') || '[]');
+
+    function renderBookmarks() {
+      const list = document.getElementById('bookmarksList');
+      if (bookmarks.length === 0) {
+        list.innerHTML = '<div class="no-bookmarks">No bookmarks yet. Add one above!</div>';
+        return;
+      }
+      list.innerHTML = bookmarks.map((bm, i) => `
+        <div class="bookmark-item">
+          <div class="bookmark-icon">🔗</div>
+          <div class="bookmark-info">
+            <div class="bookmark-name">${bm.name}</div>
+            <div class="bookmark-url">${bm.url}</div>
+          </div>
+          <div class="bookmark-actions">
+            <button class="bookmark-action open" onclick="openBookmark(${i})">Open</button>
+            <button class="bookmark-action delete" onclick="deleteBookmark(${i})">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addBookmark() {
+      const name = document.getElementById('bookmarkName').value.trim();
+      let url = document.getElementById('bookmarkUrl').value.trim();
+      
+      if (!name || !url) {
+        alert('Please enter both name and URL');
+        return;
+      }
+      
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      
+      bookmarks.push({ name, url });
+      localStorage.setItem('siteBookmarks', JSON.stringify(bookmarks));
+      document.getElementById('bookmarkName').value = '';
+      document.getElementById('bookmarkUrl').value = '';
+      renderBookmarks();
+    }
+
+    function openBookmark(index) {
+      const bm = bookmarks[index];
+      window.location.href = `/private/proxy.html?url=${encodeURIComponent(bm.url)}`;
+    }
+
+    function deleteBookmark(index) {
+      if (confirm('Delete this bookmark?')) {
+        bookmarks.splice(index, 1);
+        localStorage.setItem('siteBookmarks', JSON.stringify(bookmarks));
+        renderBookmarks();
+      }
+    }
+
     // Init
     loadNotes();
     timerUpdateDisplay();
     updateDiceDisplay();
+    updatePomoDisplay();
+    renderBookmarks();
   </script>
+  <script src="/js/customization.js"></script>
   <script src="/js/os-shell.js"></script>
   <script src="/js/security.js"></script>
 </body>
