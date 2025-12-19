@@ -255,13 +255,13 @@
     <div class="login-error" id="loginError"></div>
     
     <div class="login-options">
-      <div class="login-option" onclick="window.location.href='/auth'">
+      <div class="login-option" onclick="switchUser()">
         <div class="login-option-icon">&#128100;</div>
         <div class="login-option-label">Other user</div>
       </div>
-      <div class="login-option" onclick="window.location.href='/auth'">
-        <div class="login-option-icon">&#10133;</div>
-        <div class="login-option-label">Sign up</div>
+      <div class="login-option" onclick="continueAsGuest()">
+        <div class="login-option-icon">&#128683;</div>
+        <div class="login-option-label">Guest mode</div>
       </div>
     </div>
   </div>
@@ -334,7 +334,7 @@
           if (data.user.profile_picture) {
             localStorage.setItem('profilePicture', data.user.profile_picture);
           }
-          window.location.href = '/';
+          window.location.href = '/private/desktop.html';
         } else {
           errorEl.textContent = data.error || 'Invalid password';
         }
@@ -347,11 +347,75 @@
       if (e.key === 'Enter') attemptLogin();
     });
     
+    function switchUser() {
+      // Clear stored user and show username input
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('username');
+      localStorage.removeItem('profilePicture');
+      document.getElementById('loginUsername').textContent = 'Enter username';
+      document.getElementById('loginAvatar').innerHTML = '&#128100;';
+      
+      // Replace password input with username input
+      const container = document.querySelector('.login-password-container');
+      container.innerHTML = `
+        <input type="text" class="login-password" id="usernameInput" placeholder="Username" autocomplete="username">
+        <button class="login-submit" onclick="setUsername()">&#8594;</button>
+      `;
+      document.getElementById('usernameInput').focus();
+      document.getElementById('usernameInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') setUsername();
+      });
+    }
+    
+    function setUsername() {
+      const usernameInput = document.getElementById('usernameInput');
+      const username = usernameInput.value.trim();
+      if (!username) {
+        document.getElementById('loginError').textContent = 'Please enter a username';
+        return;
+      }
+      localStorage.setItem('username', username);
+      document.getElementById('loginUsername').textContent = username;
+      
+      // Switch back to password input
+      const container = document.querySelector('.login-password-container');
+      container.innerHTML = `
+        <input type="password" class="login-password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+        <button class="login-submit" onclick="attemptLogin()">&#8594;</button>
+      `;
+      document.getElementById('loginPassword').focus();
+      document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') attemptLogin();
+      });
+      document.getElementById('loginError').textContent = '';
+    }
+    
+    async function continueAsGuest() {
+      try {
+        const res = await fetch('/api/auth/guest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.token) {
+          localStorage.setItem('userToken', data.token);
+          localStorage.setItem('userId', data.user.id);
+          localStorage.setItem('username', data.user.username);
+          localStorage.setItem('isGuest', 'true');
+          window.location.href = '/private/desktop.html';
+        }
+      } catch (err) {
+        document.getElementById('loginError').textContent = 'Could not start guest session';
+      }
+    }
+    
     const token = localStorage.getItem('userToken');
     const username = localStorage.getItem('username');
     
     if (token && username) {
-      window.location.href = '/';
+      window.location.href = '/private/desktop.html';
     } else if (username) {
       showLoginScreen();
     }

@@ -351,8 +351,8 @@
         
         // Check credentials: admin / 0000P
         if (staffId === 'admin' && password === '0000P') {
-          // Success - redirect to real auth page
-          window.location.href = '/auth';
+          // Success - redirect to lock screen
+          window.location.href = '/lock';
         } else {
           // Wrong credentials
           document.getElementById('error').style.display = 'block';
