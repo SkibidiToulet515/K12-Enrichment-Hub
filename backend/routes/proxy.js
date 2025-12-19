@@ -38,10 +38,7 @@ router.get('/fetch', async (req, res) => {
       res.set({
         'Content-Type': contentType,
         'X-Proxy-Status': proxyRes.statusCode,
-        'X-Final-URL': parsedUrl.href,
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': '*'
+        'X-Final-URL': parsedUrl.href
       });
       
       proxyRes.on('error', (err) => {
