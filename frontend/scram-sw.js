@@ -1,13 +1,3 @@
-const xorDecode = function(str, key = 2) {
-  if (!str) return str;
-  try {
-    str = decodeURIComponent(str);
-  } catch (e) {}
-  return str.split('').map((char, index) => {
-    return index % key ? String.fromCharCode(char.charCodeAt(0) ^ key) : char;
-  }).join('');
-};
-
 self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
@@ -26,23 +16,14 @@ self.addEventListener("fetch", (event) => {
   
   event.respondWith((async () => {
     try {
-      let encodedPath = url.pathname.slice(prefix.length);
-      
-      let decodedUrl;
-      
-      if (encodedPath.startsWith('http://') || encodedPath.startsWith('https://')) {
-        decodedUrl = encodedPath;
-      } else if (encodedPath.startsWith('http%3A') || encodedPath.startsWith('https%3A')) {
-        decodedUrl = decodeURIComponent(encodedPath);
-      } else {
-        decodedUrl = xorDecode(encodedPath);
-      }
-      
-      if (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://')) {
-        decodedUrl = 'https://' + decodedUrl.replace(/^[a-z]+:\/\//, '');
-      }
+      const encodedPath = url.pathname.slice(prefix.length);
+      const decodedUrl = decodeURIComponent(encodedPath);
       
       console.log('Scramjet SW - decoded URL:', decodedUrl);
+      
+      if (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://')) {
+        throw new Error('Invalid URL: ' + decodedUrl);
+      }
       
       const proxyUrl = `/api/proxy/fetch?url=${encodeURIComponent(decodedUrl)}`;
       const response = await fetch(proxyUrl);
