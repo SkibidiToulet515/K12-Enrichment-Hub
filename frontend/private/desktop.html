@@ -727,10 +727,10 @@
     
     <!-- Right Panel -->
     <div class="right-panel">
-      <div class="widget">
+      <div class="widget" style="cursor:pointer" onclick="openApp('tasks')">
         <div class="widget-header">
           <span class="widget-title">My Tasks</span>
-          <span class="widget-more">+ Add</span>
+          <span class="widget-more">Open →</span>
         </div>
         <div class="task-item"><div class="task-check"></div><div class="task-text">Complete daily login</div></div>
         <div class="task-item"><div class="task-check done"></div><div class="task-text">Check announcements</div></div>
@@ -972,9 +972,18 @@
       const frame = document.getElementById('appFrame');
       const app = apps[appName] || { title: appName, icon: '📁' };
       
+      // Map app names to correct URLs
+      const urlMap = {
+        themes: '/private/theme-creator.html',
+        tasks: '/private/tasks.html',
+        bugs: '/private/bug-report.html',
+        profile: '/private/stats.html',
+        leaderboard: '/private/stats.html#leaderboard'
+      };
+      
       document.getElementById('windowTitle').textContent = app.title;
       document.getElementById('windowIcon').textContent = app.icon;
-      frame.src = `/pages/${appName}`;
+      frame.src = urlMap[appName] || `/pages/${appName}`;
       win.classList.add('active');
       
       if (!openApps.includes(appName)) openApps.push(appName);
