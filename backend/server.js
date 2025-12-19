@@ -123,6 +123,8 @@ app.use('/uv', (req, res, next) => {
 // Serve bare-mux worker and transport
 app.use('/baremux', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-mux/dist')));
 app.use('/bareasmodule', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
+// Serve Scramjet proxy files
+app.use('/scram', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/scramjet/dist')));
 
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';
