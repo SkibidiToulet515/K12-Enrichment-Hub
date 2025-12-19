@@ -374,7 +374,8 @@
     <div class="engine-section">
       <div class="engine-label">Proxy Engine</div>
       <select class="engine-select" id="engineSelect" onchange="switchEngine()">
-        <option value="uv">Ultraviolet (Recommended)</option>
+        <option value="uv">Ultraviolet</option>
+        <option value="scramjet">Scramjet</option>
         <option value="server">Server Proxy</option>
       </select>
     </div>
@@ -440,9 +441,12 @@
     let tabs = [];
     let activeTabId = null;
     let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
-    let swStatus = { uv: false };
+    let swStatus = { uv: false, scramjet: false };
     let uvLoaded = false;
     let uvLoading = false;
+    let scramjetLoaded = false;
+    let scramjetLoading = false;
+    let scramjetController = null;
 
     async function loadScript(src) {
       return new Promise((resolve, reject) => {
@@ -484,6 +488,62 @@
       }
     }
 
+    async function loadScramjetBundle() {
+      if (scramjetLoaded || scramjetLoading) return scramjetLoaded;
+      scramjetLoading = true;
+      
+      try {
+        await loadScript('/baremux/index.js');
+        
+        if (typeof BareMux !== 'undefined' && BareMux.BareMuxConnection) {
+          const conn = new BareMux.BareMuxConnection('/baremux/worker.js');
+          const bareUrl = new URL('/bare/', location.origin).href;
+          await conn.setTransport('/bareasmodule/index.mjs', [bareUrl]);
+          console.log('BareMux transport configured for Scramjet');
+        }
+        
+        await loadScript('/scram/scramjet.codecs.js');
+        await loadScript('/scram/scramjet.config.js');
+        await loadScript('/scram/scramjet.bundle.js');
+        
+        scramjetLoaded = true;
+        scramjetLoading = false;
+        return true;
+      } catch (err) {
+        console.error('Failed to load Scramjet bundle:', err);
+        scramjetLoading = false;
+        return false;
+      }
+    }
+
+    async function registerScramjetSW() {
+      const status = document.getElementById('swStatus');
+      
+      if (!('serviceWorker' in navigator)) {
+        return false;
+      }
+
+      status.textContent = 'Loading Scramjet...';
+      status.className = 'status-indicator loading';
+
+      const loaded = await loadScramjetBundle();
+      if (!loaded) {
+        return false;
+      }
+
+      try {
+        const scramReg = await navigator.serviceWorker.register('/scram-sw.js', { scope: '/scram-service/' });
+        console.log('Scramjet service worker registered:', scramReg.scope);
+        swStatus.scramjet = true;
+        status.textContent = 'Scramjet Ready';
+        status.className = 'status-indicator ready';
+        return true;
+      } catch (err) {
+        console.error('Scramjet SW registration failed:', err);
+        return false;
+      }
+    }
+
     async function registerServiceWorkers() {
       const status = document.getElementById('swStatus');
       
@@ -492,6 +552,16 @@
         status.className = 'status-indicator ready';
         currentEngine = 'server';
         document.getElementById('engineSelect').value = 'server';
+        return;
+      }
+
+      if (currentEngine === 'scramjet') {
+        const success = await registerScramjetSW();
+        if (!success) {
+          status.textContent = 'Using Server';
+          status.className = 'status-indicator ready';
+          currentEngine = 'server';
+        }
         return;
       }
 
@@ -531,6 +601,14 @@
           status.textContent = 'Loading...';
           status.className = 'status-indicator loading';
         }
+      } else if (currentEngine === 'scramjet') {
+        if (swStatus.scramjet) {
+          status.textContent = 'Scramjet Ready';
+          status.className = 'status-indicator ready';
+        } else {
+          status.textContent = 'Loading...';
+          status.className = 'status-indicator loading';
+        }
       } else {
         status.textContent = 'Server Ready';
         status.className = 'status-indicator ready';
@@ -544,6 +622,8 @@
       
       if (currentEngine === 'uv' && !swStatus.uv) {
         registerServiceWorkers();
+      } else if (currentEngine === 'scramjet' && !swStatus.scramjet) {
+        registerScramjetSW();
       } else {
         updateStatus();
       }
@@ -584,11 +664,43 @@
       return true;
     }
 
+    async function ensureScramjetReady() {
+      if (currentEngine !== 'scramjet') return true;
+      if (swStatus.scramjet) return true;
+      
+      const status = document.getElementById('swStatus');
+      status.textContent = 'Loading Scramjet...';
+      status.className = 'status-indicator loading';
+      
+      await loadScramjetBundle();
+      
+      if (!swStatus.scramjet) {
+        try {
+          const scramReg = await navigator.serviceWorker.register('/scram-sw.js', { scope: '/scram-service/' });
+          console.log('Scramjet service worker registered:', scramReg.scope);
+          swStatus.scramjet = true;
+        } catch (err) {
+          console.error('Scramjet SW registration failed:', err);
+          return false;
+        }
+      }
+      
+      status.textContent = 'Scramjet Ready';
+      status.className = 'status-indicator ready';
+      return true;
+    }
+
     function getProxyUrl(url) {
       if (currentEngine === 'uv' && swStatus.uv && typeof self.__uv$config !== 'undefined') {
         const encoded = self.__uv$config.encodeUrl(url);
         console.log('UV encoding:', url, '->', self.__uv$config.prefix + encoded);
         return self.__uv$config.prefix + encoded;
+      }
+      if (currentEngine === 'scramjet' && swStatus.scramjet && typeof self.$scramjet !== 'undefined') {
+        const codec = self.$scramjet.codecs.xor;
+        const encoded = codec.encode(url);
+        console.log('Scramjet encoding:', url, '->', '/scram-service/' + encoded);
+        return '/scram-service/' + encoded;
       }
       console.log('Using server proxy for:', url);
       return '/api/proxy/fetch?url=' + encodeURIComponent(url);
@@ -707,6 +819,8 @@
       // Ensure UV is ready if using UV engine
       if (currentEngine === 'uv') {
         await ensureUVReady();
+      } else if (currentEngine === 'scramjet') {
+        await ensureScramjetReady();
       }
 
       let iframe = frame.querySelector('iframe');
@@ -802,6 +916,11 @@
 
       if (currentEngine === 'uv') {
         await registerServiceWorkers();
+        if (initialUrl) {
+          loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
+        }
+      } else if (currentEngine === 'scramjet') {
+        await registerScramjetSW();
         if (initialUrl) {
           loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
         }
