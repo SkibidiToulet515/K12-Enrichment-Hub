@@ -144,14 +144,6 @@ app.use('/uv', (req, res, next) => {
   next();
 }, express.static(path.join(__dirname, '../frontend/uv')));
 
-// Scramjet service worker headers
-app.get('/scram-sw.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript');
-  res.setHeader('Service-Worker-Allowed', '/');
-  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-  res.sendFile(path.join(__dirname, '../frontend/scram-sw.js'));
-});
-
 // Serve bare-mux worker and transport with caching
 app.use('/baremux', (req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
@@ -162,12 +154,6 @@ app.use('/bareasmodule', (req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
   next();
 }, express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
-
-// Serve Scramjet proxy files with caching
-app.use('/scram', (req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-  next();
-}, express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/scramjet/dist')));
 
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';

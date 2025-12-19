@@ -441,11 +441,9 @@
     let tabs = [];
     let activeTabId = null;
     let currentEngine = localStorage.getItem('proxyEngine') || 'uv';
-    let swStatus = { uv: false, scramjet: false };
+    let swStatus = { uv: false };
     let uvLoadPromise = null;
-    let scramjetLoadPromise = null;
     let bareMuxPromise = null;
-    let scramjetController = null;
     const scriptPromises = {};
 
     async function loadScript(src) {
@@ -507,54 +505,6 @@
       return uvLoadPromise;
     }
 
-    async function loadScramjetBundle() {
-      if (scramjetLoadPromise) return scramjetLoadPromise;
-      
-      scramjetLoadPromise = (async () => {
-        try {
-          await initBareMux();
-          await loadScript('/scram/scramjet.codecs.js');
-          await loadScript('/js/scramjet.config.js');
-          await loadScript('/scram/scramjet.bundle.js');
-          return true;
-        } catch (err) {
-          console.error('Failed to load Scramjet bundle:', err);
-          scramjetLoadPromise = null;
-          return false;
-        }
-      })();
-      
-      return scramjetLoadPromise;
-    }
-
-    async function registerScramjetSW() {
-      const status = document.getElementById('swStatus');
-      
-      if (!('serviceWorker' in navigator)) {
-        return false;
-      }
-
-      status.textContent = 'Loading Scramjet...';
-      status.className = 'status-indicator loading';
-
-      const loaded = await loadScramjetBundle();
-      if (!loaded) {
-        return false;
-      }
-
-      try {
-        const scramReg = await navigator.serviceWorker.register('/scram-sw.js', { scope: '/scram-service/' });
-        console.log('Scramjet service worker registered:', scramReg.scope);
-        swStatus.scramjet = true;
-        status.textContent = 'Scramjet Ready';
-        status.className = 'status-indicator ready';
-        return true;
-      } catch (err) {
-        console.error('Scramjet SW registration failed:', err);
-        return false;
-      }
-    }
-
     async function registerServiceWorkers() {
       const status = document.getElementById('swStatus');
       
@@ -566,13 +516,9 @@
         return;
       }
 
-      if (currentEngine === 'scramjet') {
-        const success = await registerScramjetSW();
-        if (!success) {
-          status.textContent = 'Using Server';
-          status.className = 'status-indicator ready';
-          currentEngine = 'server';
-        }
+      if (currentEngine === 'rammerhead') {
+        status.textContent = 'Rammerhead Ready';
+        status.className = 'status-indicator ready';
         return;
       }
 
@@ -664,32 +610,6 @@
       }
       
       status.textContent = 'UV Ready';
-      status.className = 'status-indicator ready';
-      return true;
-    }
-
-    async function ensureScramjetReady() {
-      if (currentEngine !== 'scramjet') return true;
-      if (swStatus.scramjet) return true;
-      
-      const status = document.getElementById('swStatus');
-      status.textContent = 'Loading Scramjet...';
-      status.className = 'status-indicator loading';
-      
-      await loadScramjetBundle();
-      
-      if (!swStatus.scramjet) {
-        try {
-          const scramReg = await navigator.serviceWorker.register('/scram-sw.js', { scope: '/scram-service/' });
-          console.log('Scramjet service worker registered:', scramReg.scope);
-          swStatus.scramjet = true;
-        } catch (err) {
-          console.error('Scramjet SW registration failed:', err);
-          return false;
-        }
-      }
-      
-      status.textContent = 'Scramjet Ready';
       status.className = 'status-indicator ready';
       return true;
     }
@@ -908,10 +828,7 @@
     }
 
     async function preloadAllProxies() {
-      await Promise.all([
-        loadUVBundle().catch(e => console.log('UV preload failed:', e)),
-        loadScramjetBundle().catch(e => console.log('Scramjet preload failed:', e))
-      ]);
+      await loadUVBundle().catch(e => console.log('UV preload failed:', e));
     }
 
     async function init() {
@@ -944,8 +861,9 @@
 
       if (currentEngine === 'uv') {
         await ensureUVReady();
-      } else if (currentEngine === 'scramjet') {
-        await ensureScramjetReady();
+      } else if (currentEngine === 'rammerhead') {
+        status.textContent = 'Rammerhead Ready';
+        status.className = 'status-indicator ready';
       } else {
         status.textContent = 'Server Ready';
         status.className = 'status-indicator ready';
