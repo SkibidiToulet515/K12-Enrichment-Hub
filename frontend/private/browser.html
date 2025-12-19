@@ -888,6 +888,27 @@
       window.location.href = '/private/proxy.html';
     }
 
+    async function preloadAllProxies() {
+      const promises = [];
+      promises.push(loadUVBundle().catch(e => console.log('UV preload failed:', e)));
+      promises.push(loadScramjetBundle().catch(e => console.log('Scramjet preload failed:', e)));
+      
+      if ('serviceWorker' in navigator) {
+        promises.push(
+          navigator.serviceWorker.register('/uv/sw.js', { scope: '/service/' })
+            .then(() => { swStatus.uv = true; })
+            .catch(e => console.log('UV SW preload failed:', e))
+        );
+        promises.push(
+          navigator.serviceWorker.register('/scram-sw.js', { scope: '/scram-service/' })
+            .then(() => { swStatus.scramjet = true; })
+            .catch(e => console.log('Scramjet SW preload failed:', e))
+        );
+      }
+      
+      await Promise.all(promises);
+    }
+
     async function init() {
       document.getElementById('engineSelect').value = currentEngine;
       
@@ -914,22 +935,19 @@
         }
       }
 
+      preloadAllProxies();
+
       if (currentEngine === 'uv') {
-        await registerServiceWorkers();
-        if (initialUrl) {
-          loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
-        }
+        await ensureUVReady();
       } else if (currentEngine === 'scramjet') {
-        await registerScramjetSW();
-        if (initialUrl) {
-          loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
-        }
+        await ensureScramjetReady();
       } else {
         status.textContent = 'Server Ready';
         status.className = 'status-indicator ready';
-        if (initialUrl) {
-          loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
-        }
+      }
+      
+      if (initialUrl) {
+        loadUrl(initialUrl.startsWith('http') ? initialUrl : 'https://' + initialUrl, false);
       }
     }
 
