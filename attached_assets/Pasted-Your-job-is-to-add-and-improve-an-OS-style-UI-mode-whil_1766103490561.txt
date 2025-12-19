@@ -1,0 +1,367 @@
+Your job is to add and improve an OS-style UI mode while keeping all existing systems, logic, and features fully intact.
+
+This project must feel human-built, realistic, polished, and production-quality — not AI-generated or template-like.
+
+1️⃣ ABSOLUTE RULE (READ FIRST)
+
+EVERYTHING THAT WORKS NOW MUST CONTINUE TO WORK EXACTLY THE SAME.
+
+This includes:
+
+Login system
+
+Guest access
+
+Permissions
+
+Admin panel
+
+Chat
+
+Forums
+
+Games
+
+Media
+
+Profiles
+
+Themes
+
+Tools
+
+Backend logic
+
+Routes
+
+Database structure
+
+You are primarily changing HOW IT LOOKS, not HOW IT WORKS.
+
+2️⃣ LOGIN SYSTEM (EXTREMELY IMPORTANT)
+✅ KEEP THE CURRENT REAL LOGIN SYSTEM
+
+A real login system already exists.
+
+You MUST:
+
+Keep the same authentication logic
+
+Keep the same validation
+
+Keep the same database structure
+
+Keep the same permissions
+
+Keep guest mode behavior exactly the same
+
+✅ You MAY improve:
+
+Login UI
+
+Styling
+
+Layout
+
+Animations
+
+Error message clarity
+
+OS-style presentation
+
+❌ You must NOT:
+
+Rewrite auth logic
+
+Replace login systems
+
+Add new auth providers
+
+Change how accounts work
+
+Merge guest and user logic
+
+Break existing accounts
+
+Same engine. Better dashboard.
+
+3️⃣ CORE GOAL — OS MODE (VISUAL MODE ONLY)
+
+Add a toggleable OS-style interface mode.
+
+OS Mode = visual/layout layer
+
+Classic Mode = current layout, unchanged
+
+Switchable instantly from Settings
+
+No page reload required
+
+This OS mode should feel like a browser-based desktop workspace, not a homepage.
+
+4️⃣ TASKBAR (MANDATORY)
+
+Add a persistent taskbar (bottom by default).
+
+Includes:
+
+App launcher
+
+Pinned apps
+
+Active app indicators
+
+Notifications
+
+Clock/date
+
+User avatar
+
+Settings shortcut
+
+Behavior:
+
+Always visible
+
+Reflects open apps
+
+Supports minimize / focus
+
+Feels native and responsive
+
+5️⃣ WINDOWED APPS
+
+All existing features open in draggable, resizable windows in OS Mode.
+
+Windows must support:
+
+Open / close / minimize
+
+Focus state
+
+Subtle animations
+
+Snap / resize (optional)
+
+No fake macOS or Windows clones — keep it web-native.
+
+6️⃣ SETTINGS APP (GLOBAL CONTROL CENTER)
+
+Create ONE universal Settings app.
+
+Includes:
+
+Layout mode toggle (Classic / OS)
+
+Theme selector
+
+Theme creator (keep existing)
+
+Font changer (global)
+
+Notification settings
+
+Accessibility options
+
+Layout mode selector must include:
+
+Two preview cards (illustrations, not screenshots)
+
+Instant apply
+
+Saved preference
+
+7️⃣ CHAT & COMMUNITY (KEEP + IMPROVE UI)
+KEEP ALL EXISTING LOGIC
+
+Do NOT change permissions or backend rules unless explicitly stated.
+
+REQUIRED FIXES & UI IMPROVEMENTS:
+
+Fix forums so posting works
+
+Chat input bar must stay fixed (like Discord)
+
+Remove requirement for admin permission to create servers
+
+Server & Group Features:
+
+Rename server
+
+Delete server
+
+Invite via generated code
+
+Kick / remove / timeout members
+
+Roles & permissions
+
+Subchannels
+
+Mentions & Notifications:
+
+Typing @ shows user list
+
+Mentions trigger OS-style notifications
+
+Click notification → opens correct app/message
+
+Per-user notification preferences
+
+8️⃣ ADMIN PANEL (MUST BE REAL)
+
+Admin panel must:
+
+Show real data, not placeholders
+
+Show user stats, activity, reports
+
+Allow moderation (ban, timeout, remove)
+
+View bug reports
+
+No fake metrics.
+
+9️⃣ BUG REPORT SYSTEM
+
+Add a Report a Bug feature:
+
+Accessible to users
+
+Sends description + context
+
+Appears in Admin Panel
+
+Status tracking (open/resolved)
+
+🔟 PERFORMANCE (MANDATORY)
+
+Implement:
+
+Skeleton loading for UI content
+
+Lazy loading only for heavy media
+
+Zero layout shift
+
+Smooth transitions
+
+No lag spikes
+
+1️⃣1️⃣ MUSIC APP
+
+Add a Music app inside OS Mode.
+
+Technical rules:
+
+Use YouTube Data API
+
+NO embeds
+
+NO iframes
+
+API used only for:
+
+Search
+
+Metadata
+
+Thumbnails
+
+Filter results to music-only
+
+Behavior:
+
+Native-feeling music app UI
+
+Opens in window
+
+Mini-player integrates with taskbar
+
+Graceful fallback if playback blocked
+
+Guests can browse, not save
+
+1️⃣2️⃣ KEEP ALL FEATURES (NON-NEGOTIABLE)
+
+All existing features MUST remain:
+
+Games
+
+Media
+
+Chat
+
+Forums
+
+Profiles
+
+Themes
+
+Tools
+
+Admin controls
+
+Guest mode
+
+Fake/demo access where applicable
+
+Nothing removed. Nothing downgraded.
+
+1️⃣3️⃣ ZERO-ERROR REQUIREMENT (VERY SERIOUS)
+
+You MUST:
+
+Check EVERY file
+
+Debug EVERY feature
+
+Validate logic and UI
+
+Check each file at least 19 times
+
+Fix:
+
+Console errors
+
+Broken UI
+
+Broken routes
+
+Permission issues
+
+If something cannot be completed, you MUST explain why.
+
+1️⃣4️⃣ HUMAN QUALITY REQUIREMENT
+
+Final result must:
+
+Look intentionally designed
+
+Avoid generic AI UI patterns
+
+Use realistic spacing and motion
+
+No placeholder text
+
+No fake content
+
+No demo-style layouts
+
+This should feel like:
+
+“A real web OS someone actually uses.”
+
+1️⃣5️⃣ REQUIRED FINAL CONFIRMATION
+
+At completion, you MUST explicitly list:
+
+Confirmation that login/auth logic was unchanged
+
+Confirmation that guest mode behavior is unchanged
+
+Confirmation that all features were preserved
+
+Any environment variables or API keys I must add
+
+Any manual steps I must take on Render/Replit
