@@ -375,7 +375,6 @@
       <div class="engine-label">Proxy Engine</div>
       <select class="engine-select" id="engineSelect" onchange="switchEngine()">
         <option value="uv">Ultraviolet</option>
-        <option value="rammerhead">Rammerhead</option>
         <option value="server">Server Proxy</option>
       </select>
     </div>
@@ -516,12 +515,6 @@
         return;
       }
 
-      if (currentEngine === 'rammerhead') {
-        status.textContent = 'Rammerhead Ready';
-        status.className = 'status-indicator ready';
-        return;
-      }
-
       status.textContent = 'Loading UV...';
       status.className = 'status-indicator loading';
 
@@ -558,9 +551,6 @@
           status.textContent = 'Loading...';
           status.className = 'status-indicator loading';
         }
-      } else if (currentEngine === 'rammerhead') {
-        status.textContent = 'Rammerhead Ready';
-        status.className = 'status-indicator ready';
       } else {
         status.textContent = 'Server Ready';
         status.className = 'status-indicator ready';
@@ -614,34 +604,11 @@
       return true;
     }
 
-    let rhSession = null;
-    
-    async function getRammerheadSession() {
-      if (rhSession) return rhSession;
-      try {
-        const res = await fetch('/newsession', { method: 'GET' });
-        rhSession = await res.text();
-        console.log('Created Rammerhead session:', rhSession);
-        return rhSession;
-      } catch (err) {
-        console.error('Failed to create Rammerhead session:', err);
-        return null;
-      }
-    }
-    
     async function getProxyUrl(url) {
       if (currentEngine === 'uv' && swStatus.uv && typeof self.__uv$config !== 'undefined') {
         const encoded = self.__uv$config.encodeUrl(url);
         console.log('UV encoding:', url, '->', self.__uv$config.prefix + encoded);
         return self.__uv$config.prefix + encoded;
-      }
-      if (currentEngine === 'rammerhead') {
-        const session = await getRammerheadSession();
-        if (session) {
-          const proxyUrl = '/' + session + '/' + url;
-          console.log('Rammerhead encoding:', url, '->', proxyUrl);
-          return proxyUrl;
-        }
       }
       console.log('Using server proxy for:', url);
       return '/api/proxy/fetch?url=' + encodeURIComponent(url);
@@ -861,9 +828,6 @@
 
       if (currentEngine === 'uv') {
         await ensureUVReady();
-      } else if (currentEngine === 'rammerhead') {
-        status.textContent = 'Rammerhead Ready';
-        status.className = 'status-indicator ready';
       } else {
         status.textContent = 'Server Ready';
         status.className = 'status-indicator ready';

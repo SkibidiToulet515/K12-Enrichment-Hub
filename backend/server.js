@@ -6,23 +6,6 @@ const compression = require('compression');
 const path = require('path');
 const multer = require('multer');
 const { createBareServer } = require('@nebula-services/bare-server-node');
-let rammerhead = null;
-let rhInstance = null;
-
-(async () => {
-  try {
-    rammerhead = await import('@rubynetwork/rammerhead');
-    rhInstance = rammerhead.createRammerhead({
-      logLevel: 'warn',
-      reverseProxy: true,
-      disableLocalStorageSync: false,
-      disableHttp2: false
-    });
-    console.log('Rammerhead proxy initialized');
-  } catch (err) {
-    console.error('Failed to initialize Rammerhead:', err.message);
-  }
-})();
 
 const db = require('./db');
 const authRoutes = require('./routes/auth');
@@ -97,8 +80,6 @@ const server = http.createServer((req, res) => {
       res.writeHead(502, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Proxy error', details: err.message }));
     }
-  } else if (rammerhead && rhInstance && rammerhead.shouldRouteRh(req)) {
-    rammerhead.routeRhRequest(rhInstance, req, res);
   } else {
     app(req, res);
   }
@@ -107,8 +88,6 @@ const server = http.createServer((req, res) => {
 server.on('upgrade', (req, socket, head) => {
   if (bareServer.shouldRoute(req)) {
     bareServer.routeUpgrade(req, socket, head);
-  } else if (rammerhead && rhInstance && rammerhead.shouldRouteRh(req)) {
-    rammerhead.routeRhUpgrade(rhInstance, req, socket, head);
   } else {
     socket.end();
   }
