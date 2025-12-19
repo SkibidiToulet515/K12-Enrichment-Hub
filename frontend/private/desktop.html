@@ -1076,15 +1076,17 @@
     
     // Desktop right-click context menu
     document.querySelector('.desktop').addEventListener('contextmenu', e => {
-      // Only show menu if clicking on empty desktop space
-      if (e.target.classList.contains('desktop') || e.target.classList.contains('widgets')) {
-        e.preventDefault();
-        const menu = document.getElementById('desktopContextMenu');
-        menu.style.left = e.clientX + 'px';
-        menu.style.top = e.clientY + 'px';
-        menu.classList.add('active');
-        e.stopPropagation();
-      }
+      // Prevent browser default context menu
+      e.preventDefault();
+      
+      // Don't show on specific interactive elements
+      const noMenu = e.target.closest('.app-window, .taskbar, .launcher, .context-menu, button, a, input');
+      if (noMenu) return;
+      
+      const menu = document.getElementById('desktopContextMenu');
+      menu.style.left = e.clientX + 'px';
+      menu.style.top = e.clientY + 'px';
+      menu.classList.add('active');
     });
     
     // Wallpaper functions
