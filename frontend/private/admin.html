@@ -792,7 +792,7 @@
       const data = await res.json();
       if (!data.isAdmin) {
         alert('Access denied. Admin only.');
-        window.location.href = '/private/dashboard.html';
+        window.location.href = '/dashboard';
       }
     }
     checkAdmin();

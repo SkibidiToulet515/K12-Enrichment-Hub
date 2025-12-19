@@ -703,7 +703,7 @@
   <canvas id="stars-canvas"></canvas>
   <canvas id="fluid-canvas"></canvas>
 
-  <a href="/private/dashboard.html" class="back-link">
+  <a href="/dashboard" class="back-link">
     <span>←</span>
     <span>Back to Hub</span>
   </a>
@@ -1205,7 +1205,7 @@
 
     function navigateToUrl(encodedUrl) {
       const url = decodeURIComponent(encodedUrl);
-      window.location.href = '/private/browser.html?url=' + encodeURIComponent(url);
+      window.location.href = '/browser?url=' + encodeURIComponent(url);
     }
 
     function toggleEditMode() {
@@ -1339,7 +1339,7 @@
         url = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
       }
       
-      window.location.href = '/private/browser.html?url=' + encodeURIComponent(url);
+      window.location.href = '/browser?url=' + encodeURIComponent(url);
     }
 
     document.getElementById('searchInput').addEventListener('keydown', (e) => {

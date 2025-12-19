@@ -190,10 +190,17 @@ app.get(['/private/auth', '/private/auth.html'], (req, res) => {
 });
 
 // Page content endpoints for SPA - returns just the page content
-const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog', 'tasks'];
+const privatePages = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'profile', 'admin', 'videos', 'music', 'apps', 'forums', 'shop', 'leaderboard', 'achievements', 'bugs', 'themes', 'changelog', 'tasks', 'browser', 'movies', 'stats', 'shortcuts', 'youtube', 'theme-creator'];
 
 privatePages.forEach(page => {
   app.get(`/pages/${page}`, verifyPageAccess, (req, res) => {
+    res.sendFile(path.join(__dirname, `../frontend/private/${page}.html`));
+  });
+});
+
+// Clean URL routes for private pages (without /private prefix)
+privatePages.forEach(page => {
+  app.get(`/${page}`, verifyPageAccess, (req, res) => {
     res.sendFile(path.join(__dirname, `../frontend/private/${page}.html`));
   });
 });

@@ -15,7 +15,7 @@
 .layout-os .back-link,
 .layout-os .logout-btn[href*="dashboard"],
 .layout-os .video-modal-back,
-.layout-os a[href="/private/dashboard.html"] {
+.layout-os a[href="/dashboard"] {
   display: none !important;
 }
 
