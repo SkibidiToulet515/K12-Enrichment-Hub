@@ -1,7 +1,20 @@
 // Security measures to prevent dev tools access
 (function() {
+  function isAdmin() {
+    try {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        return user.role === 'admin' || user.is_admin === true || user.username === 'admin' || user.username === 'Yusoff(ADMIN)';
+      }
+    } catch (e) {}
+    return false;
+  }
+  
   // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
   document.addEventListener('keydown', function(e) {
+    if (isAdmin()) return;
+    
     // F12
     if (e.key === 'F12' || e.keyCode === 123) {
       e.preventDefault();
