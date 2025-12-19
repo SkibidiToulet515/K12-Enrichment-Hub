@@ -323,7 +323,7 @@
     </div>
   </div>
   
-  <div class="exit-hint">Press ` or ESC to exit</div>
+  <div class="exit-hint">Press ` or ESC twice to exit</div>
 
   <script>
     // Hide URL path from address bar
@@ -363,9 +363,17 @@
       }, 1500);
     });
     
+    let exitCount = 0;
+    let exitTimer = null;
     document.addEventListener('keydown', (e) => {
       if (e.key === '`' || e.key === 'Escape') {
-        window.location.href = '/';
+        exitCount++;
+        if (exitCount >= 2) {
+          window.location.href = '/';
+          exitCount = 0;
+        }
+        clearTimeout(exitTimer);
+        exitTimer = setTimeout(() => exitCount = 0, 500);
       }
     });
   </script>

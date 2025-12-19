@@ -57,42 +57,25 @@ const StealthMode = {
   },
   
   createPanicButton() {
-    const btn = document.createElement('button');
-    btn.id = 'panicButton';
-    btn.innerHTML = '🛡️';
-    btn.title = 'Panic Button (` or ESC twice) - Right-click for settings';
-    btn.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #e74c3c, #c0392b);
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      z-index: 99999;
-      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-    btn.onmouseenter = () => btn.style.transform = 'scale(1.1)';
-    btn.onmouseleave = () => btn.style.transform = 'scale(1)';
-    btn.onclick = () => this.panic();
-    document.body.appendChild(btn);
+    // Panic button removed - use keyboard shortcuts only (ESC twice or ` twice)
   },
   
   setupKeyboardShortcut() {
     let escCount = 0;
+    let backtickCount = 0;
     let escTimer = null;
+    let backtickTimer = null;
     
     document.addEventListener('keydown', (e) => {
       if (e.key === '`' && !e.target.matches('input, textarea, [contenteditable]')) {
         e.preventDefault();
-        this.panic();
+        backtickCount++;
+        if (backtickCount >= 2) {
+          this.panic();
+          backtickCount = 0;
+        }
+        clearTimeout(backtickTimer);
+        backtickTimer = setTimeout(() => backtickCount = 0, 500);
       }
       
       if (e.key === 'Escape') {
