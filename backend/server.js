@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const multer = require('multer');
 const { createBareServer } = require('@nebula-services/bare-server-node');
@@ -101,6 +102,7 @@ const io = socketIo(server, {
 adminRoutes.setIo(io);
 
 // Middleware
+app.use(compression({ level: 6 }));
 app.use(cors({ origin: true, credentials: true }));
 app.use(require('cookie-parser')());
 app.use(express.json({ limit: '50mb' }));
@@ -120,11 +122,30 @@ app.use('/uv', (req, res, next) => {
   next();
 }, express.static(path.join(__dirname, '../frontend/uv')));
 
-// Serve bare-mux worker and transport
-app.use('/baremux', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-mux/dist')));
-app.use('/bareasmodule', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
-// Serve Scramjet proxy files
-app.use('/scram', express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/scramjet/dist')));
+// Scramjet service worker headers
+app.get('/scram-sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  res.sendFile(path.join(__dirname, '../frontend/scram-sw.js'));
+});
+
+// Serve bare-mux worker and transport with caching
+app.use('/baremux', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  next();
+}, express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-mux/dist')));
+
+app.use('/bareasmodule', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  next();
+}, express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
+
+// Serve Scramjet proxy files with caching
+app.use('/scram', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  next();
+}, express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/scramjet/dist')));
 
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';

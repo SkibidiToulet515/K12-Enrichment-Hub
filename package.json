@@ -21,6 +21,7 @@
     "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^9.0.0",
+    "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
