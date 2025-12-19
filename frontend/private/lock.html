@@ -411,22 +411,14 @@
       }
     }
     
-    // Check if coming from fake Staff Portal - require fresh login
-    const fromStaffPortal = document.referrer.includes('/classlink');
-    
-    if (fromStaffPortal) {
-      // Clear any existing session to require fresh login
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      // Keep username for convenience but require password
-    }
-    
     const token = localStorage.getItem('userToken');
     const username = localStorage.getItem('username');
     
-    if (token && username && !fromStaffPortal) {
+    // Auto-login if already logged in
+    if (token && username) {
       window.location.href = '/private/desktop.html';
     } else if (username) {
+      // Show login screen with saved username
       showLoginScreen();
     }
     
