@@ -846,6 +846,20 @@
     <div style="background:var(--card, #1a1a2e); border-radius:16px; padding:30px; max-width:600px; width:90%;">
       <h3 style="margin:0 0 20px; color:var(--text, #fff);">Choose Wallpaper</h3>
       <div id="wallpaperGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;"></div>
+      
+      <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+        <input type="file" id="wallpaperFileInput" accept="image/*" style="display:none;">
+        <button onclick="document.getElementById('wallpaperFileInput').click()" style="flex:1; padding:12px; background:var(--primary, #6c5ce7); border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600;">📁 Upload from Files</button>
+      </div>
+      <div id="uploadPreview" style="display:none; margin-bottom:15px; text-align:center;">
+        <img id="uploadPreviewImg" style="max-height:100px; border-radius:8px; margin-bottom:8px;">
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <button onclick="applyUploadedWallpaper()" style="padding:10px 20px; background:var(--accent, #00d4ff); border:none; border-radius:8px; cursor:pointer; font-weight:600;">Apply Upload</button>
+          <button onclick="cancelUpload()" style="padding:10px 20px; background:#ff4444; border:none; border-radius:8px; color:#fff; cursor:pointer;">Cancel</button>
+        </div>
+        <div id="uploadStatus" style="margin-top:8px; font-size:12px; color:var(--text-secondary, #888);"></div>
+      </div>
+      
       <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px;">
         <input type="text" id="customWallpaperUrl" placeholder="Or paste image URL..." style="flex:1; padding:12px; background:var(--bg, #0a0a14); border:1px solid var(--accent, #00d4ff); border-radius:8px; color:var(--text, #fff);">
         <button onclick="setCustomWallpaper()" style="padding:12px 20px; background:var(--accent, #00d4ff); border:none; border-radius:8px; cursor:pointer; font-weight:600;">Apply</button>
@@ -1145,6 +1159,72 @@
     function setCustomWallpaper() {
       const url = document.getElementById('customWallpaperUrl').value.trim();
       if (url) setWallpaper(url);
+    }
+    
+    // File upload handling
+    let uploadedFileData = null;
+    
+    document.getElementById('wallpaperFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedFileData = { file: document.getElementById('wallpaperFileInput').files[0], dataUrl: e.target.result };
+          document.getElementById('uploadPreviewImg').src = e.target.result;
+          document.getElementById('uploadPreview').style.display = 'block';
+          document.getElementById('uploadStatus').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    async function applyUploadedWallpaper() {
+      if (!uploadedFileData) return;
+      
+      const token = localStorage.getItem('userToken') || localStorage.getItem('authToken');
+      const status = document.getElementById('uploadStatus');
+      
+      if (!token) {
+        // Guest mode - just use the data URL locally
+        setWallpaper(uploadedFileData.dataUrl);
+        cancelUpload();
+        return;
+      }
+      
+      // Upload to server for persistence
+      const formData = new FormData();
+      formData.append('wallpaper', uploadedFileData.file);
+      
+      try {
+        status.textContent = 'Uploading...';
+        const response = await fetch('/api/customization/wallpaper', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem('customWallpaper', data.wallpaper_url);
+          setWallpaper(data.wallpaper_url);
+          cancelUpload();
+        } else {
+          status.textContent = data.error || 'Upload failed';
+          status.style.color = '#ff4444';
+        }
+      } catch (err) {
+        console.error('Wallpaper upload error:', err);
+        status.textContent = 'Upload failed';
+        status.style.color = '#ff4444';
+      }
+    }
+    
+    function cancelUpload() {
+      uploadedFileData = null;
+      document.getElementById('wallpaperFileInput').value = '';
+      document.getElementById('uploadPreview').style.display = 'none';
+      document.getElementById('uploadStatus').textContent = '';
+      document.getElementById('uploadStatus').style.color = 'var(--text-secondary, #888)';
     }
     
     function refreshDesktop() {
