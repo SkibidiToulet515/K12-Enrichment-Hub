@@ -824,11 +824,13 @@ async function initDatabase() {
       ('prev_channel', 'alt+up', 'Previous channel', 'chat')
       ON CONFLICT (action) DO NOTHING`);
 
-    await client.query(`INSERT INTO changelogs (version, title, content, change_type, author_id) VALUES
-      ('1.0.0', 'Welcome to Enrichment Hub!', 'Initial release of our K-12 learning portal featuring chat system, educational games, and social features.', 'feature', 1),
-      ('1.1.0', 'Cosmetic Shop Added', 'New shop system with themes, profile frames, badges, chat bubbles, and more! Earn coins daily.', 'feature', 1),
-      ('1.1.1', 'Server Invite System', 'Create custom invite links with expiry options and usage limits. Preview servers before joining.', 'feature', 1)
-      ON CONFLICT DO NOTHING`);
+    const existingChangelogs = await client.query('SELECT COUNT(*) FROM changelogs');
+    if (parseInt(existingChangelogs.rows[0].count) === 0) {
+      await client.query(`INSERT INTO changelogs (version, title, content, change_type, author_id) VALUES
+        ('1.0.0', 'Welcome to Enrichment Hub!', 'Initial release of our K-12 learning portal featuring chat system, educational games, and social features.', 'feature', 1),
+        ('1.1.0', 'Cosmetic Shop Added', 'New shop system with themes, profile frames, badges, chat bubbles, and more! Earn coins daily.', 'feature', 1),
+        ('1.1.1', 'Server Invite System', 'Create custom invite links with expiry options and usage limits. Preview servers before joining.', 'feature', 1)`);
+    }
 
     console.log('PostgreSQL database initialized successfully');
   } catch (err) {
