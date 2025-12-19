@@ -27,7 +27,7 @@ Do not make changes to the file `Y`.
 - **Real-time Communication**: Socket.io for chat, online/offline status, typing indicators, reactions, editing, deletion, @mentions, and read receipts.
 - **Gamification**: XP and leveling system, 22 achievements across 5 categories, global leaderboards, activity status, and a personal task system.
 - **Permission System**: Discord-style channel-level permissions with overrides, hierarchy (user > channel role > server role > defaults), and deny-over-allow precedence.
-- **Web Proxy**: Ultraviolet proxy system with server-side fallback for reliable browsing within the Replit environment.
+- **Web Proxy**: Multi-engine proxy system with three options - Ultraviolet (UV), Scramjet, and Server-side fallback. Users can switch between engines via dropdown selector. Each engine has its own service worker and URL encoding approach.
 - **Authentication**: JWT for secure user authentication.
 - **File Uploads**: Multer middleware for handling file uploads (max 10MB).
 - **Cosmetic Shop**: Virtual currency, 10 categories of items, daily rewards, purchase/equip functionality, and rarity system.
