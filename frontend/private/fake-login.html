@@ -326,6 +326,9 @@
   <div class="exit-hint">Press ` or ESC to exit</div>
 
   <script>
+    // Hide URL path from address bar
+    history.replaceState(null, '', '/');
+    
     function togglePassword() {
       const input = document.getElementById('password');
       const icon = document.getElementById('eyeIcon');
