@@ -375,6 +375,7 @@
       <div class="engine-label">Proxy Engine</div>
       <select class="engine-select" id="engineSelect" onchange="switchEngine()">
         <option value="uv">Ultraviolet</option>
+        <option value="scramjet">Scramjet</option>
         <option value="server">Server Proxy</option>
       </select>
     </div>
@@ -566,11 +567,6 @@
       }
 
       if (currentEngine === 'scramjet') {
-        currentEngine = 'uv';
-        document.getElementById('engineSelect').value = 'uv';
-      }
-
-      if (false) {
         const success = await registerScramjetSW();
         if (!success) {
           status.textContent = 'Using Server';
