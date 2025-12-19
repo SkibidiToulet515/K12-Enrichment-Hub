@@ -234,35 +234,58 @@
     
     const redirectUrl = '/lock';
     
-    // Auto-login: Check if already logged in or has saved credentials
-    (async function checkExistingLogin() {
-      const token = localStorage.getItem('userToken');
-      if (token) {
-        try {
-          const res = await fetch('/api/auth/me', {
-            headers: { 'Authorization': 'Bearer ' + token }
-          });
-          if (res.ok) {
-            clearRedirectCookie();
-            window.location.href = redirectUrl;
-            return;
-          }
-        } catch (e) {}
+    // Clear any stale guest sessions when visiting auth page
+    // This ensures users always get a fresh choice on visiting /auth
+    function clearGuestSession() {
+      localStorage.removeItem('isGuest');
+      localStorage.removeItem('guestSessionStart');
+      if (localStorage.getItem('userToken') === 'guest') {
         localStorage.removeItem('userToken');
       }
-      
-      // Check for saved auto-login credentials
-      const savedCreds = localStorage.getItem('autoLoginCreds');
-      if (savedCreds) {
-        try {
-          const decoded = JSON.parse(atob(savedCreds));
-          if (decoded.u && decoded.p) {
-            await performAutoLogin(decoded.u, decoded.p);
-          }
-        } catch (e) {
-          localStorage.removeItem('autoLoginCreds');
-        }
+      if (localStorage.getItem('authToken') === 'guest') {
+        localStorage.removeItem('authToken');
       }
+      if (localStorage.getItem('username') === 'Guest') {
+        localStorage.removeItem('username');
+      }
+    }
+    
+    // Always clear guest session when visiting auth - user should choose fresh
+    clearGuestSession();
+    
+    // Auto-login: Check if already logged in with REAL account (not guest)
+    (async function checkExistingLogin() {
+      const token = localStorage.getItem('userToken');
+      
+      // Skip if no token or if it's a guest token
+      if (!token || token === 'guest') {
+        // Check for saved auto-login credentials (real accounts only)
+        const savedCreds = localStorage.getItem('autoLoginCreds');
+        if (savedCreds) {
+          try {
+            const decoded = JSON.parse(atob(savedCreds));
+            if (decoded.u && decoded.p) {
+              await performAutoLogin(decoded.u, decoded.p);
+            }
+          } catch (e) {
+            localStorage.removeItem('autoLoginCreds');
+          }
+        }
+        return;
+      }
+      
+      // Verify real token with server
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          clearRedirectCookie();
+          window.location.href = redirectUrl;
+          return;
+        }
+      } catch (e) {}
+      localStorage.removeItem('userToken');
     })();
     
     async function performAutoLogin(username, password) {

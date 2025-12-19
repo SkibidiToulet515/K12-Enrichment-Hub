@@ -6,10 +6,40 @@ function checkPrivateAuth() {
   const authToken = localStorage.getItem('authToken');
   const isGuest = localStorage.getItem('isGuest') === 'true';
   
-  if (!userToken && !authToken && !isGuest) {
+  // Check for valid guest session (must have been set within last 24 hours)
+  if (isGuest) {
+    const guestStart = parseInt(localStorage.getItem('guestSessionStart') || '0');
+    const sessionAge = Date.now() - guestStart;
+    const maxGuestAge = 24 * 60 * 60 * 1000; // 24 hours
+    
+    if (sessionAge > maxGuestAge) {
+      // Guest session expired, clear it and redirect to auth
+      localStorage.removeItem('isGuest');
+      localStorage.removeItem('guestSessionStart');
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('username');
+      window.location.href = '/auth';
+      return false;
+    }
+    return true;
+  }
+  
+  // No valid token and not a valid guest session
+  if (!userToken && !authToken) {
     window.location.href = '/auth';
     return false;
   }
+  
+  // Guest token should also be treated as needing validation
+  if (userToken === 'guest' || authToken === 'guest') {
+    // If there's a guest token but no isGuest flag, clear and redirect
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('authToken');
+    window.location.href = '/auth';
+    return false;
+  }
+  
   return true;
 }
 
