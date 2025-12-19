@@ -5,17 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NebulaCore Desktop</title>
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
-      font-family: 'Segoe UI', 'Inter', -apple-system, sans-serif;
-      background: #000;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0f;
       color: #fff;
       min-height: 100vh;
       overflow: hidden;
@@ -27,90 +23,229 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 48px;
-      background-image: url('/images/aurora.jpg');
-      background-size: cover;
-      background-position: center;
+      bottom: 52px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+      display: flex;
+      padding: 16px;
+      gap: 16px;
     }
     
-    .desktop-icons {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: grid;
-      grid-template-columns: repeat(1, 80px);
-      gap: 5px;
-    }
-    
-    .desktop-icon {
+    /* Left Panel - Quick Access */
+    .left-panel {
+      width: 280px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.1s;
+      gap: 12px;
     }
     
-    .desktop-icon:hover {
-      background: rgba(255,255,255,0.1);
+    .widget {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 16px;
+      backdrop-filter: blur(20px);
     }
     
-    .desktop-icon.selected {
-      background: rgba(255,255,255,0.15);
-      outline: 1px solid rgba(255,255,255,0.3);
-    }
-    
-    .desktop-icon-img {
-      width: 48px;
-      height: 48px;
+    .widget-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    
+    .widget-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+    }
+    
+    .widget-more {
+      font-size: 11px;
+      color: #60a5fa;
+      cursor: pointer;
+    }
+    
+    /* Clock Widget */
+    .clock-widget .time {
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: -2px;
       margin-bottom: 4px;
     }
     
-    .desktop-icon-label {
-      font-size: 11px;
-      text-align: center;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-      line-height: 1.3;
-      max-width: 70px;
-      word-wrap: break-word;
+    .clock-widget .date {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
     }
     
-    /* Windows 11 Taskbar */
-    .taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 48px;
-      background: rgba(32, 32, 32, 0.85);
-      backdrop-filter: blur(30px) saturate(125%);
+    /* Quick Access */
+    .quick-access-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    
+    .quick-app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .quick-app:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    
+    .quick-app-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    
+    .quick-app-name {
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+    }
+    
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    /* Recent Activity */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .activity-item:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    
+    .activity-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(96,165,250,0.15);
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 18px;
     }
     
-    .taskbar-center {
+    .activity-info {
+      flex: 1;
+    }
+    
+    .activity-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .activity-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    /* Right Panel - Widgets */
+    .right-panel {
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    /* Tasks Widget */
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .task-item:last-child {
+      border-bottom: none;
+    }
+    
+    .task-check {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .task-check.done {
+      background: #22c55e;
+      border-color: #22c55e;
+    }
+    
+    .task-text {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+    }
+    
+    /* Taskbar */
+    .taskbar {
+      position: fixed;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 52px;
+      background: rgba(24, 24, 27, 0.85);
+      backdrop-filter: blur(30px) saturate(150%);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      gap: 4px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    
+    .taskbar-section {
       display: flex;
       align-items: center;
       gap: 4px;
     }
     
+    .taskbar-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.1);
+      margin: 0 8px;
+    }
+    
     .taskbar-btn {
       width: 44px;
-      height: 40px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.1s;
-      font-size: 22px;
+      transition: all 0.15s;
+      font-size: 20px;
       position: relative;
     }
     
@@ -119,324 +254,307 @@
     }
     
     .taskbar-btn.active {
-      background: rgba(255,255,255,0.15);
-    }
-    
-    .taskbar-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 3px;
-      background: #60cdff;
-      border-radius: 2px;
+      background: rgba(96,165,250,0.2);
     }
     
     .taskbar-btn.open::after {
       content: '';
       position: absolute;
-      bottom: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 6px;
-      height: 3px;
-      background: rgba(255,255,255,0.6);
-      border-radius: 2px;
+      bottom: 4px;
+      width: 5px;
+      height: 5px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
     }
     
     .taskbar-btn.open.focused::after {
-      width: 20px;
-      background: #60cdff;
+      width: 16px;
+      height: 3px;
+      background: #60a5fa;
+      border-radius: 2px;
     }
     
-    .taskbar-apps {
+    .pinned-apps {
       display: flex;
-      align-items: center;
       gap: 4px;
     }
     
-    .start-btn {
-      background: transparent;
-    }
-    
-    .start-btn:hover {
-      background: rgba(255,255,255,0.1);
+    .open-apps {
+      display: flex;
+      gap: 4px;
     }
     
     /* System Tray */
     .system-tray {
       position: fixed;
-      bottom: 0;
-      right: 0;
-      height: 48px;
+      bottom: 8px;
+      right: 16px;
+      height: 44px;
+      background: rgba(24, 24, 27, 0.85);
+      backdrop-filter: blur(30px);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
       display: flex;
       align-items: center;
       padding: 0 12px;
-      gap: 4px;
+      gap: 12px;
     }
     
-    .tray-icons {
+    .tray-item {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 8px;
       padding: 6px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    .tray-icons:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .tray-icon {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-    
-    .clock-area {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      padding: 4px 12px;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
     }
     
-    .clock-area:hover {
+    .tray-item:hover {
       background: rgba(255,255,255,0.1);
     }
     
-    .clock-time {
-      font-weight: 400;
-    }
-    
-    .clock-date {
-      font-size: 11px;
+    .tray-icons {
+      display: flex;
+      gap: 4px;
+      font-size: 14px;
       opacity: 0.8;
     }
     
-    /* Start Menu */
-    .start-menu {
-      position: fixed;
-      bottom: 60px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.95);
-      width: 600px;
-      background: rgba(32, 32, 32, 0.95);
-      backdrop-filter: blur(30px);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.2s ease;
-      overflow: hidden;
+    .tray-time {
+      text-align: right;
     }
     
-    .start-menu.active {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) scale(1);
+    .tray-clock {
+      font-weight: 500;
     }
     
-    .start-search {
-      padding: 32px 40px 20px;
+    .tray-date {
+      font-size: 10px;
+      opacity: 0.7;
     }
     
-    .start-search input {
-      width: 100%;
-      padding: 10px 16px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 4px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
-    
-    .start-search input:focus {
-      border-color: #60cdff;
-    }
-    
-    .start-search input::placeholder {
-      color: rgba(255,255,255,0.5);
-    }
-    
-    .start-section {
-      padding: 0 40px 20px;
-    }
-    
-    .start-section-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    
-    .start-apps {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 4px;
-    }
-    
-    .start-app {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 12px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-    
-    .start-app:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .start-app-icon {
-      font-size: 28px;
-      margin-bottom: 6px;
-    }
-    
-    .start-app-name {
-      font-size: 11px;
-      text-align: center;
-    }
-    
-    .start-user {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 40px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.2);
-    }
-    
-    .start-user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    .start-user-info:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .start-user-avatar {
-      width: 32px;
-      height: 32px;
+    .tray-avatar {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
       border-radius: 50%;
-      background: linear-gradient(135deg, #0078d4, #00bcf2);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 12px;
       overflow: hidden;
     }
     
-    .start-user-avatar img {
+    .tray-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
     
-    .start-user-name {
-      font-size: 13px;
+    /* App Launcher */
+    .launcher {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      width: 680px;
+      background: rgba(24, 24, 27, 0.95);
+      backdrop-filter: blur(40px);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 16px 64px rgba(0,0,0,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
     }
     
-    .start-power {
-      padding: 8px;
-      border-radius: 4px;
+    .launcher.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) scale(1);
+    }
+    
+    .launcher-search {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .launcher-search input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .launcher-search input:focus {
+      border-color: #60a5fa;
+    }
+    
+    .launcher-search input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+    
+    .launcher-tabs {
+      display: flex;
+      padding: 0 16px;
+      gap: 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .launcher-tab {
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
       cursor: pointer;
-      font-size: 18px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
     }
     
-    .start-power:hover {
-      background: rgba(255,255,255,0.1);
+    .launcher-tab:hover {
+      color: rgba(255,255,255,0.8);
     }
     
-    /* App Windows */
+    .launcher-tab.active {
+      color: #60a5fa;
+      border-bottom-color: #60a5fa;
+    }
+    
+    .launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      padding: 16px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    
+    .launcher-app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .launcher-app:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    
+    .launcher-app-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    
+    .launcher-app-name {
+      font-size: 11px;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+    }
+    
+    /* App Window */
     .app-window {
       position: fixed;
-      top: 50px;
-      left: 100px;
-      width: 900px;
-      height: calc(100vh - 150px);
-      background: #202020;
-      border-radius: 8px;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      max-width: 1100px;
+      height: calc(100vh - 120px);
+      background: #18181b;
+      border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.1);
       display: none;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5);
     }
     
     .app-window.active {
       display: flex;
+      animation: windowOpen 0.2s ease;
+    }
+    
+    .app-window.focused {
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 2px rgba(96,165,250,0.3);
     }
     
     .app-window.maximized {
       top: 0;
       left: 0;
+      right: 0;
+      bottom: 60px;
       width: 100%;
-      height: calc(100vh - 48px);
+      max-width: 100%;
+      height: calc(100vh - 60px);
       border-radius: 0;
+      transform: none;
     }
     
-    .window-titlebar {
+    @keyframes windowOpen {
+      from { opacity: 0; transform: translateX(-50%) scale(0.95); }
+      to { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    
+    .window-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 32px;
-      background: #1f1f1f;
-      padding-left: 12px;
+      height: 40px;
+      background: #1f1f23;
+      padding: 0 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     
     .window-title {
-      font-size: 12px;
-      opacity: 0.9;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
     }
     
-    .window-title-icon {
-      font-size: 14px;
+    .window-icon {
+      font-size: 16px;
     }
     
     .window-controls {
       display: flex;
-      height: 100%;
+      gap: 8px;
     }
     
-    .window-ctrl-btn {
-      width: 46px;
-      height: 100%;
+    .window-btn {
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 10px;
+      font-size: 12px;
       transition: background 0.1s;
     }
     
-    .window-ctrl-btn:hover {
+    .window-btn:hover {
       background: rgba(255,255,255,0.1);
     }
     
-    .window-ctrl-btn.close:hover {
-      background: #c42b1c;
+    .window-btn.close:hover {
+      background: #ef4444;
     }
     
     .window-content {
       flex: 1;
-      overflow: auto;
-      background: #1a1a1a;
+      overflow: hidden;
+      background: #0f0f12;
     }
     
     .window-content iframe {
@@ -444,250 +562,409 @@
       height: 100%;
       border: none;
     }
+    
+    /* Context Menu */
+    .context-menu {
+      position: fixed;
+      background: rgba(30, 30, 35, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 6px;
+      min-width: 180px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 10000;
+      display: none;
+    }
+    
+    .context-menu.active {
+      display: block;
+    }
+    
+    .context-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    
+    .context-item:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .context-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 4px 0;
+    }
+    
+    /* Notifications */
+    .notification-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10000;
+    }
+    
+    .notification {
+      background: rgba(30, 30, 35, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-width: 300px;
+      max-width: 380px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .notification-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .notification-icon {
+      font-size: 16px;
+    }
+    
+    .notification-app {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .notification-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .notification-body {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
   </style>
 </head>
 <body>
-  <div class="desktop" id="desktop">
-    <div class="desktop-icons">
-      <div class="desktop-icon" data-app="proxy">
-        <div class="desktop-icon-img">&#127760;</div>
-        <div class="desktop-icon-label">Browser</div>
+  <div class="desktop">
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="widget clock-widget">
+        <div class="time" id="widgetTime">12:00</div>
+        <div class="date" id="widgetDate">Wednesday, December 18</div>
       </div>
-      <div class="desktop-icon" data-app="games">
-        <div class="desktop-icon-img">&#127918;</div>
-        <div class="desktop-icon-label">Games</div>
+      
+      <div class="widget">
+        <div class="widget-header">
+          <span class="widget-title">Quick Access</span>
+        </div>
+        <div class="quick-access-grid">
+          <div class="quick-app" data-app="games"><div class="quick-app-icon">🎮</div><div class="quick-app-name">Games</div></div>
+          <div class="quick-app" data-app="chat"><div class="quick-app-icon">💬</div><div class="quick-app-name">Chat</div></div>
+          <div class="quick-app" data-app="videos"><div class="quick-app-icon">🎬</div><div class="quick-app-name">Videos</div></div>
+          <div class="quick-app" data-app="music"><div class="quick-app-icon">🎵</div><div class="quick-app-name">Music</div></div>
+          <div class="quick-app" data-app="proxy"><div class="quick-app-icon">🌐</div><div class="quick-app-name">Browser</div></div>
+          <div class="quick-app" data-app="apps"><div class="quick-app-icon">🔢</div><div class="quick-app-name">Apps</div></div>
+          <div class="quick-app" data-app="forums"><div class="quick-app-icon">📝</div><div class="quick-app-name">Forums</div></div>
+          <div class="quick-app" data-app="settings"><div class="quick-app-icon">⚙️</div><div class="quick-app-name">Settings</div></div>
+        </div>
       </div>
-      <div class="desktop-icon" data-app="settings">
-        <div class="desktop-icon-img">&#9881;</div>
-        <div class="desktop-icon-label">Settings</div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="widget" style="flex:1">
+        <div class="widget-header">
+          <span class="widget-title">Continue where you left off</span>
+          <span class="widget-more">View all</span>
+        </div>
+        <div class="activity-list" id="activityList">
+          <div class="activity-item" data-app="games">
+            <div class="activity-icon">🎮</div>
+            <div class="activity-info">
+              <div class="activity-title">Games Library</div>
+              <div class="activity-meta">1,810+ games available</div>
+            </div>
+          </div>
+          <div class="activity-item" data-app="chat">
+            <div class="activity-icon">💬</div>
+            <div class="activity-info">
+              <div class="activity-title">Chat</div>
+              <div class="activity-meta">Connect with friends</div>
+            </div>
+          </div>
+          <div class="activity-item" data-app="videos">
+            <div class="activity-icon">🎬</div>
+            <div class="activity-info">
+              <div class="activity-title">Video Library</div>
+              <div class="activity-meta">Educational content</div>
+            </div>
+          </div>
+          <div class="activity-item" data-app="shop">
+            <div class="activity-icon">🛒</div>
+            <div class="activity-info">
+              <div class="activity-title">Cosmetic Shop</div>
+              <div class="activity-meta">Customize your profile</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="desktop-icon" data-app="chat">
-        <div class="desktop-icon-img">&#128172;</div>
-        <div class="desktop-icon-label">Chat</div>
+    </div>
+    
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="widget">
+        <div class="widget-header">
+          <span class="widget-title">My Tasks</span>
+          <span class="widget-more">+ Add</span>
+        </div>
+        <div class="task-item"><div class="task-check"></div><div class="task-text">Complete daily login</div></div>
+        <div class="task-item"><div class="task-check done"></div><div class="task-text">Check announcements</div></div>
+        <div class="task-item"><div class="task-check"></div><div class="task-text">Reach level 10</div></div>
       </div>
-      <div class="desktop-icon" data-app="shop">
-        <div class="desktop-icon-img">&#128722;</div>
-        <div class="desktop-icon-label">Store</div>
-      </div>
-      <div class="desktop-icon" data-app="bugs">
-        <div class="desktop-icon-img">&#128221;</div>
-        <div class="desktop-icon-label">Feedback Hub</div>
+      
+      <div class="widget">
+        <div class="widget-header">
+          <span class="widget-title">Announcements</span>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.5">
+          Welcome to NebulaCore! Explore games, chat with friends, and earn XP.
+        </div>
       </div>
     </div>
   </div>
   
   <!-- Taskbar -->
   <div class="taskbar">
-    <div class="taskbar-center">
-      <div class="taskbar-btn start-btn" id="startBtn" onclick="toggleStartMenu()">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-          <rect x="1" y="1" width="8" height="8" rx="1"/>
-          <rect x="11" y="1" width="8" height="8" rx="1"/>
-          <rect x="1" y="11" width="8" height="8" rx="1"/>
-          <rect x="11" y="11" width="8" height="8" rx="1"/>
+    <div class="taskbar-section">
+      <div class="taskbar-btn" id="launcherBtn" onclick="toggleLauncher()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <rect x="1" y="1" width="7" height="7" rx="1.5"/>
+          <rect x="10" y="1" width="7" height="7" rx="1.5"/>
+          <rect x="1" y="10" width="7" height="7" rx="1.5"/>
+          <rect x="10" y="10" width="7" height="7" rx="1.5"/>
         </svg>
       </div>
-      <div class="taskbar-apps" id="taskbarApps"></div>
     </div>
-    
-    <div class="system-tray">
-      <div class="tray-icons">
-        <span class="tray-icon">&#128266;</span>
-        <span class="tray-icon">&#128246;</span>
-        <span class="tray-icon">&#128267;</span>
-      </div>
-      <div class="clock-area" id="clockArea">
-        <div class="clock-time" id="clockTime">12:00 PM</div>
-        <div class="clock-date" id="clockDate">12/17/2025</div>
-      </div>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-section pinned-apps">
+      <div class="taskbar-btn" data-app="games" title="Games">🎮</div>
+      <div class="taskbar-btn" data-app="chat" title="Chat">💬</div>
+      <div class="taskbar-btn" data-app="proxy" title="Browser">🌐</div>
+      <div class="taskbar-btn" data-app="videos" title="Videos">🎬</div>
+      <div class="taskbar-btn" data-app="music" title="Music">🎵</div>
     </div>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-section open-apps" id="openApps"></div>
   </div>
   
-  <!-- Start Menu -->
-  <div class="start-menu" id="startMenu">
-    <div class="start-search">
-      <input type="text" placeholder="Type here to search" id="startSearch">
+  <!-- System Tray -->
+  <div class="system-tray">
+    <div class="tray-item">
+      <div class="tray-icons">🔊 📶 🔋</div>
     </div>
-    
-    <div class="start-section">
-      <div class="start-section-title">Pinned</div>
-      <div class="start-apps">
-        <div class="start-app" data-app="proxy">
-          <div class="start-app-icon">&#127760;</div>
-          <div class="start-app-name">Browser</div>
-        </div>
-        <div class="start-app" data-app="games">
-          <div class="start-app-icon">&#127918;</div>
-          <div class="start-app-name">Games</div>
-        </div>
-        <div class="start-app" data-app="chat">
-          <div class="start-app-icon">&#128172;</div>
-          <div class="start-app-name">Chat</div>
-        </div>
-        <div class="start-app" data-app="settings">
-          <div class="start-app-icon">&#9881;</div>
-          <div class="start-app-name">Settings</div>
-        </div>
-        <div class="start-app" data-app="videos">
-          <div class="start-app-icon">&#127910;</div>
-          <div class="start-app-name">Videos</div>
-        </div>
-        <div class="start-app" data-app="music">
-          <div class="start-app-icon">&#127925;</div>
-          <div class="start-app-name">Music</div>
-        </div>
-        <div class="start-app" data-app="apps">
-          <div class="start-app-icon">&#128290;</div>
-          <div class="start-app-name">Calculator</div>
-        </div>
-        <div class="start-app" data-app="shop">
-          <div class="start-app-icon">&#128722;</div>
-          <div class="start-app-name">Store</div>
-        </div>
-        <div class="start-app" data-app="forums">
-          <div class="start-app-icon">&#128221;</div>
-          <div class="start-app-name">Notepad</div>
-        </div>
-        <div class="start-app" data-app="bugs">
-          <div class="start-app-icon">&#128172;</div>
-          <div class="start-app-name">Feedback</div>
-        </div>
-        <div class="start-app" data-app="admin">
-          <div class="start-app-icon">&#128187;</div>
-          <div class="start-app-name">Task Manager</div>
-        </div>
-        <div class="start-app" data-app="themes">
-          <div class="start-app-icon">&#127912;</div>
-          <div class="start-app-name">Themes</div>
-        </div>
+    <div class="tray-item">
+      <div class="tray-time">
+        <div class="tray-clock" id="trayClock">12:00 PM</div>
+        <div class="tray-date" id="trayDate">12/18/2025</div>
       </div>
     </div>
-    
-    <div class="start-user">
-      <div class="start-user-info" data-app="profile">
-        <div class="start-user-avatar" id="userAvatar">&#128100;</div>
-        <div class="start-user-name" id="userName">User</div>
-      </div>
-      <div class="start-power" onclick="logout()">&#9211;</div>
+    <div class="tray-avatar" id="trayAvatar">👤</div>
+  </div>
+  
+  <!-- App Launcher -->
+  <div class="launcher" id="launcher">
+    <div class="launcher-search">
+      <input type="text" placeholder="Search apps, games, and more..." id="launcherSearch">
     </div>
+    <div class="launcher-tabs">
+      <div class="launcher-tab active" data-cat="all">All</div>
+      <div class="launcher-tab" data-cat="productivity">Productivity</div>
+      <div class="launcher-tab" data-cat="media">Media</div>
+      <div class="launcher-tab" data-cat="social">Social</div>
+      <div class="launcher-tab" data-cat="tools">Tools</div>
+    </div>
+    <div class="launcher-grid" id="launcherGrid"></div>
   </div>
   
   <!-- App Window -->
-  <div class="app-window" id="appWindow">
-    <div class="window-titlebar">
+  <div class="app-window focused" id="appWindow">
+    <div class="window-header">
       <div class="window-title">
-        <span class="window-title-icon" id="windowIcon">&#128193;</span>
+        <span class="window-icon" id="windowIcon">📁</span>
         <span id="windowTitle">App</span>
       </div>
       <div class="window-controls">
-        <div class="window-ctrl-btn minimize" onclick="minimizeWindow()">&#8211;</div>
-        <div class="window-ctrl-btn maximize" onclick="toggleMaximize()">&#9633;</div>
-        <div class="window-ctrl-btn close" onclick="closeWindow()">&#10005;</div>
+        <div class="window-btn" onclick="minimizeWindow()">−</div>
+        <div class="window-btn" onclick="toggleMaximize()">□</div>
+        <div class="window-btn close" onclick="closeWindow()">×</div>
       </div>
     </div>
     <div class="window-content">
       <iframe id="appFrame" src=""></iframe>
     </div>
   </div>
+  
+  <!-- Context Menu -->
+  <div class="context-menu" id="contextMenu">
+    <div class="context-item" id="ctxOpen">📂 Open</div>
+    <div class="context-item" id="ctxNewWindow">🪟 New window</div>
+    <div class="context-divider"></div>
+    <div class="context-item" id="ctxPin">📌 Pin to taskbar</div>
+    <div class="context-item" id="ctxUnpin">❌ Unpin</div>
+    <div class="context-divider"></div>
+    <div class="context-item" id="ctxClose">🚪 Close</div>
+  </div>
+  
+  <!-- Notifications Container -->
+  <div class="notification-container" id="notifications"></div>
 
   <script>
-    let startMenuOpen = false;
+    let launcherOpen = false;
     let openApps = [];
     let currentApp = null;
+    let pinnedApps = ['games', 'chat', 'proxy', 'videos', 'music'];
+    let currentCat = 'all';
     
-    const appInfo = {
-      dashboard: { title: 'Dashboard', icon: '&#127968;' },
-      chat: { title: 'Chat', icon: '&#128172;' },
-      games: { title: 'Games', icon: '&#127918;' },
-      proxy: { title: 'Browser', icon: '&#127760;' },
-      settings: { title: 'Settings', icon: '&#9881;' },
-      videos: { title: 'Videos', icon: '&#127910;' },
-      music: { title: 'Music', icon: '&#127925;' },
-      apps: { title: 'Calculator', icon: '&#128290;' },
-      forums: { title: 'Notepad', icon: '&#128221;' },
-      shop: { title: 'Microsoft Store', icon: '&#128722;' },
-      admin: { title: 'Task Manager', icon: '&#128187;' },
-      bugs: { title: 'Feedback Hub', icon: '&#128172;' },
-      profile: { title: 'Your Profile', icon: '&#128100;' },
-      themes: { title: 'Personalization', icon: '&#127912;' },
-      leaderboard: { title: 'Leaderboard', icon: '&#127942;' }
+    const apps = {
+      games: { title: 'Games', icon: '🎮', cat: 'media' },
+      chat: { title: 'Chat', icon: '💬', cat: 'social' },
+      proxy: { title: 'Browser', icon: '🌐', cat: 'productivity' },
+      videos: { title: 'Videos', icon: '🎬', cat: 'media' },
+      music: { title: 'Music', icon: '🎵', cat: 'media' },
+      apps: { title: 'Apps', icon: '🔢', cat: 'tools' },
+      forums: { title: 'Forums', icon: '📝', cat: 'social' },
+      settings: { title: 'Settings', icon: '⚙️', cat: 'tools' },
+      shop: { title: 'Store', icon: '🛒', cat: 'productivity' },
+      admin: { title: 'Admin', icon: '🔧', cat: 'tools' },
+      bugs: { title: 'Feedback', icon: '📋', cat: 'tools' },
+      themes: { title: 'Themes', icon: '🎨', cat: 'tools' },
+      profile: { title: 'Profile', icon: '👤', cat: 'social' },
+      leaderboard: { title: 'Leaderboard', icon: '🏆', cat: 'social' }
     };
     
     function updateClock() {
       const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const hour12 = hours % 12 || 12;
+      const h = now.getHours();
+      const m = now.getMinutes().toString().padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
       
-      document.getElementById('clockTime').textContent = `${hour12}:${minutes} ${ampm}`;
-      document.getElementById('clockDate').textContent = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+      document.getElementById('widgetTime').textContent = `${h12}:${m}`;
+      document.getElementById('trayClock').textContent = `${h12}:${m} ${ampm}`;
+      
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('widgetDate').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+      document.getElementById('trayDate').textContent = `${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()}`;
     }
     
-    function toggleStartMenu() {
-      startMenuOpen = !startMenuOpen;
-      document.getElementById('startMenu').classList.toggle('active', startMenuOpen);
-      document.getElementById('startBtn').classList.toggle('active', startMenuOpen);
+    function toggleLauncher() {
+      launcherOpen = !launcherOpen;
+      document.getElementById('launcher').classList.toggle('active', launcherOpen);
+      document.getElementById('launcherBtn').classList.toggle('active', launcherOpen);
+      if (launcherOpen) renderLauncher('all');
     }
+    
+    function renderLauncher(cat) {
+      const grid = document.getElementById('launcherGrid');
+      grid.innerHTML = Object.entries(apps)
+        .filter(([k, v]) => cat === 'all' || v.cat === cat)
+        .map(([k, v]) => `
+          <div class="launcher-app" data-app="${k}">
+            <div class="launcher-app-icon">${v.icon}</div>
+            <div class="launcher-app-name">${v.title}</div>
+          </div>
+        `).join('');
+      
+      grid.querySelectorAll('.launcher-app').forEach(el => {
+        el.onclick = () => openApp(el.dataset.app);
+      });
+    }
+    
+    document.querySelectorAll('.launcher-tab').forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll('.launcher-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCat = tab.dataset.cat;
+        document.getElementById('launcherSearch').value = '';
+        renderLauncher(currentCat);
+      };
+    });
     
     function updateTaskbar() {
-      const container = document.getElementById('taskbarApps');
+      const container = document.getElementById('openApps');
       container.innerHTML = '';
       
-      openApps.forEach(appName => {
-        const app = appInfo[appName] || { icon: '&#128193;' };
+      openApps.filter(a => !pinnedApps.includes(a)).forEach(appName => {
+        const app = apps[appName] || { icon: '📁' };
         const btn = document.createElement('div');
         btn.className = 'taskbar-btn open';
-        btn.setAttribute('data-taskbar-app', appName);
-        btn.innerHTML = app.icon;
+        btn.dataset.app = appName;
+        btn.textContent = app.icon;
+        btn.title = app.title || appName;
         
         if (appName === currentApp && document.getElementById('appWindow').classList.contains('active')) {
           btn.classList.add('focused');
         }
         
-        btn.onclick = () => {
-          const win = document.getElementById('appWindow');
-          if (appName === currentApp && win.classList.contains('active')) {
-            minimizeWindow();
-          } else {
-            openApp(appName);
-          }
-        };
-        
+        btn.onclick = () => toggleApp(appName);
         container.appendChild(btn);
       });
+      
+      document.querySelectorAll('.pinned-apps .taskbar-btn').forEach(btn => {
+        const app = btn.dataset.app;
+        btn.classList.toggle('open', openApps.includes(app));
+        btn.classList.toggle('focused', app === currentApp && document.getElementById('appWindow').classList.contains('active'));
+      });
+    }
+    
+    function toggleApp(appName) {
+      const win = document.getElementById('appWindow');
+      if (appName === currentApp && win.classList.contains('active')) {
+        minimizeWindow();
+      } else {
+        openApp(appName);
+      }
     }
     
     function openApp(appName) {
       const win = document.getElementById('appWindow');
       const frame = document.getElementById('appFrame');
-      const title = document.getElementById('windowTitle');
-      const icon = document.getElementById('windowIcon');
+      const app = apps[appName] || { title: appName, icon: '📁' };
       
-      const app = appInfo[appName] || { title: appName, icon: '&#128193;' };
-      title.textContent = app.title;
-      icon.innerHTML = app.icon;
+      document.getElementById('windowTitle').textContent = app.title;
+      document.getElementById('windowIcon').textContent = app.icon;
       frame.src = `/pages/${appName}`;
       win.classList.add('active');
       
-      if (!openApps.includes(appName)) {
-        openApps.push(appName);
-      }
+      if (!openApps.includes(appName)) openApps.push(appName);
       currentApp = appName;
       
       updateTaskbar();
-      if (startMenuOpen) toggleStartMenu();
+      if (launcherOpen) toggleLauncher();
     }
     
     function closeWindow() {
-      document.getElementById('appWindow').classList.remove('active');
-      document.getElementById('appWindow').classList.remove('maximized');
+      const win = document.getElementById('appWindow');
+      win.classList.remove('active', 'maximized');
       document.getElementById('appFrame').src = '';
-      
-      if (currentApp) {
-        openApps = openApps.filter(a => a !== currentApp);
-        currentApp = null;
-      }
+      if (currentApp) openApps = openApps.filter(a => a !== currentApp);
+      currentApp = null;
       updateTaskbar();
     }
     
@@ -700,58 +977,112 @@
       document.getElementById('appWindow').classList.toggle('maximized');
     }
     
-    function logout() {
-      fetch('/api/auth/logout', { method: 'POST' });
-      localStorage.clear();
-      window.location.href = '/lock';
+    // Notification system
+    let notifications = [];
+    function showNotification(title, body, icon = '🔔', duration = 5000) {
+      const container = document.getElementById('notifications');
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.innerHTML = `
+        <div class="notification-header">
+          <span class="notification-icon">${icon}</span>
+          <span class="notification-app">NebulaCore</span>
+        </div>
+        <div class="notification-title">${title}</div>
+        <div class="notification-body">${body}</div>
+      `;
+      container.appendChild(notif);
+      notifications.push(notif);
+      if (notifications.length > 3) {
+        const oldest = notifications.shift();
+        oldest.remove();
+      }
+      setTimeout(() => {
+        notif.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => notif.remove(), 300);
+        notifications = notifications.filter(n => n !== notif);
+      }, duration);
     }
     
-    document.querySelectorAll('[data-app]').forEach(el => {
-      el.addEventListener('click', () => openApp(el.dataset.app));
-      el.addEventListener('dblclick', () => openApp(el.dataset.app));
+    // Search filtering
+    document.getElementById('launcherSearch').addEventListener('input', e => {
+      const query = e.target.value.toLowerCase().trim();
+      const grid = document.getElementById('launcherGrid');
+      grid.innerHTML = Object.entries(apps)
+        .filter(([k, v]) => (currentCat === 'all' || v.cat === currentCat) && 
+          (v.title.toLowerCase().includes(query) || k.includes(query)))
+        .map(([k, v]) => `
+          <div class="launcher-app" data-app="${k}">
+            <div class="launcher-app-icon">${v.icon}</div>
+            <div class="launcher-app-name">${v.title}</div>
+          </div>
+        `).join('');
+      grid.querySelectorAll('.launcher-app').forEach(el => {
+        el.onclick = () => openApp(el.dataset.app);
+      });
     });
     
-    document.getElementById('startSearch').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const query = e.target.value.toLowerCase().trim();
-        const apps = ['dashboard', 'chat', 'games', 'proxy', 'settings', 'videos', 'music', 'apps', 'forums', 'shop', 'admin', 'bugs', 'themes', 'profile'];
-        const match = apps.find(a => a.includes(query));
-        if (match) {
-          openApp(match);
-          e.target.value = '';
-        }
+    // Event listeners - Quick access and activity items
+    document.querySelectorAll('.quick-app, .activity-item').forEach(el => {
+      el.onclick = () => openApp(el.dataset.app);
+    });
+    
+    // Pinned taskbar apps use toggleApp
+    document.querySelectorAll('.pinned-apps .taskbar-btn').forEach(btn => {
+      btn.onclick = () => toggleApp(btn.dataset.app);
+      btn.oncontextmenu = e => {
+        e.preventDefault();
+        const menu = document.getElementById('contextMenu');
+        menu.style.left = e.clientX + 'px';
+        menu.style.bottom = '60px';
+        menu.style.top = 'auto';
+        menu.classList.add('active');
+        menu.dataset.app = btn.dataset.app;
+      };
+    });
+    
+    document.addEventListener('click', e => {
+      if (launcherOpen && !e.target.closest('.launcher') && !e.target.closest('#launcherBtn')) {
+        toggleLauncher();
       }
+      document.getElementById('contextMenu').classList.remove('active');
     });
     
-    document.addEventListener('click', (e) => {
-      if (startMenuOpen && !e.target.closest('.start-menu') && !e.target.closest('#startBtn')) {
-        toggleStartMenu();
+    document.getElementById('ctxOpen').onclick = () => {
+      const app = document.getElementById('contextMenu').dataset.app;
+      if (app) openApp(app);
+    };
+    
+    document.getElementById('ctxClose').onclick = () => {
+      const app = document.getElementById('contextMenu').dataset.app;
+      if (app && openApps.includes(app)) {
+        openApps = openApps.filter(a => a !== app);
+        if (currentApp === app) closeWindow();
+        updateTaskbar();
       }
-    });
+    };
     
+    // Init
     const savedUser = localStorage.getItem('username');
     const savedPic = localStorage.getItem('profilePicture');
-    if (savedUser) {
-      document.getElementById('userName').textContent = savedUser;
-    }
     if (savedPic) {
-      document.getElementById('userAvatar').innerHTML = `<img src="${savedPic}" alt="">`;
+      document.getElementById('trayAvatar').innerHTML = `<img src="${savedPic}" alt="">`;
     }
     
     updateClock();
     setInterval(updateClock, 1000);
     
-    const token = localStorage.getItem('userToken');
-    if (!token) {
+    if (!localStorage.getItem('userToken')) {
       window.location.href = '/lock';
     }
+    
+    // Welcome notification
+    setTimeout(() => {
+      showNotification('Welcome to NebulaCore', 'Your digital workspace is ready.', '✨', 4000);
+    }, 1000);
   </script>
   <script src="/js/security.js"></script>
   <script src="/js/stealth-mode.js"></script>
-  <script>
-    if (typeof StealthMode !== 'undefined') {
-      StealthMode.init();
-    }
-  </script>
+  <script>if (typeof StealthMode !== 'undefined') StealthMode.init();</script>
 </body>
 </html>

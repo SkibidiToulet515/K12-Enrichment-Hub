@@ -1,0 +1,339 @@
+🧠 DESIGN PHILOSOPHY (IMPORTANT)
+
+This UI should feel like:
+
+A digital workspace, not a homepage
+
+Built for daily use, not just looks
+
+Purposeful, dense (but not cluttered)
+
+Designed by a human who understands UX
+
+Key words:
+Intentional • Functional • Calm • Modular • Native-feeling
+
+🎨 VISUAL IDENTITY
+Color & Surface
+
+Use soft gradients or subtle noise textures (never flat emptiness)
+
+Backgrounds slightly darker than content surfaces
+
+Cards and windows slightly lighter than background
+
+Gentle blur only where it improves clarity (taskbar, launcher)
+
+Typography
+
+Clean sans-serif by default
+
+Font-weight hierarchy:
+
+Bold for app titles
+
+Medium for section headers
+
+Regular for content
+
+Global font switcher supported (no layout breakage)
+
+Motion
+
+Micro-animations only:
+
+Window open/close
+
+Hover states
+
+Notifications
+
+No bouncy or “demo-style” animations
+
+🖥️ DESKTOP / WORKSPACE (NOT EMPTY)
+
+The desktop is not blank space.
+
+Default View Includes:
+
+App launcher panel OR home dashboard
+
+Recent activity section
+
+Quick access to:
+
+Games
+
+Chat
+
+Media
+
+Tasks
+
+Optional widgets (toggleable):
+
+Clock
+
+Weather
+
+Daily reminder
+
+Everything can be disabled in settings.
+
+🧱 TASKBAR (MAJOR IMPROVEMENT)
+Position
+
+Bottom by default
+
+Optional left/right (settings toggle)
+
+Design
+
+Frosted-glass look
+
+Rounded corners
+
+Subtle shadow separation
+
+Slight transparency
+
+Contents
+
+Left:
+
+Launcher button (grid icon)
+
+Pinned apps
+
+Center:
+
+Active app indicators
+
+App grouping (multiple windows per app)
+
+Right:
+
+Notifications
+
+Music mini-player (when active)
+
+Clock + date
+
+User avatar
+
+Behavior
+
+Right-click on apps:
+
+Open new window
+
+Close
+
+Pin / unpin
+
+Hover previews for open windows
+
+Keyboard shortcuts supported
+
+🪟 WINDOWS (CORE OS FEEL)
+Window Frame
+
+Rounded edges
+
+Clear header bar
+
+Minimal controls:
+
+Minimize
+
+Maximize
+
+Close
+
+Behavior
+
+Drag to move
+
+Resize from edges
+
+Snap positioning (optional)
+
+Focus glow on active window
+
+Inactive windows slightly dimmed
+
+Important:
+
+No fake OS chrome
+
+Must feel web-native, not emulating macOS or Windows
+
+🚀 APP LAUNCHER / HOME
+
+Instead of a giant search bar floating alone:
+
+Launcher Panel
+
+Grid of app icons inside a card
+
+Category tabs:
+
+Productivity
+
+Media
+
+Social
+
+Tools
+
+Search bar at top (apps + content)
+
+Home Dashboard (Optional)
+
+Recently used apps
+
+Resume last activity
+
+Notifications preview
+
+“Continue where you left off”
+
+⚙️ SETTINGS APP (SYSTEM-LEVEL)
+
+Settings must feel like control center, not a normal page.
+
+Layout
+
+Left navigation rail
+
+Right content panel
+
+Breadcrumb-style headers
+
+Appearance Section
+
+Theme selector
+
+Theme creator
+
+Font changer
+
+Motion toggle
+
+Contrast toggle
+
+Layout Section
+
+OS layout vs Classic layout
+
+Preview cards:
+
+Illustrated previews (not screenshots)
+
+Instant apply
+
+Remember preference
+
+💬 CHAT SYSTEM (REFINED)
+Structure
+
+Server list (icons only)
+
+Channel list
+
+Chat feed
+
+Optional member list
+
+Message Input
+
+Always fixed to bottom
+
+Never moves
+
+Expands upward only
+
+Attachment + emoji buttons
+
+Mentions & Notifications
+
+Typing @ opens user list
+
+Highlight mentions in chat
+
+OS-style toast notification (top-right)
+
+Click notification → opens app + message
+
+🎵 MUSIC APP (NATIVE PLAYER FEEL)
+Layout
+
+Left: playlists / search
+
+Center: track list
+
+Bottom: playback controls
+
+Design
+
+Minimal branding
+
+Album art optional
+
+Progress bar always visible
+
+Mini-player integrates with taskbar
+
+Behavior
+
+Graceful fallback if playback blocked
+
+No errors shown to user
+
+Clear “Unavailable on this network” message
+
+🧩 NOTIFICATIONS SYSTEM
+
+Toast-style popups
+
+Stack intelligently
+
+Auto-dismiss
+
+Clickable
+
+Per-app notification settings
+
+⚡ PERFORMANCE & POLISH
+
+Skeleton loaders everywhere content loads
+
+No jank
+
+No layout shift
+
+Instant feedback on actions
+
+Optimistic UI where possible
+
+🚫 WHAT THIS UI IS NOT
+
+❌ Not a browser homepage clone
+
+❌ Not macOS / Windows imitation
+
+❌ Not empty gradients
+
+❌ Not centered logo + nothing else
+
+❌ Not flashy or over-animated
+
+🧠 FINAL VIBE
+
+This should feel like:
+
+“A real, usable web OS someone actually spends time in.”
+
+Not a demo.
+Not a template.
+Not an AI experiment.
