@@ -196,17 +196,9 @@ app.use(express.static(path.join(__dirname, '../frontend'), {
   index: false // Don't auto-serve index.html
 }));
 
-// Root - serve desktop when logged in, otherwise public landing
+// Root - ALWAYS show public landing page first so users can choose
+// Users click "Access Portal" to go to /auth and make their choice
 app.get('/', (req, res) => {
-  const token = req.cookies?.authToken;
-  if (token) {
-    try {
-      jwt.verify(token, JWT_SECRET);
-      return res.sendFile(path.join(__dirname, '../frontend/private/desktop.html'));
-    } catch {
-      res.clearCookie('authToken');
-    }
-  }
   res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
@@ -510,11 +502,6 @@ app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {
     size: req.file.size,
     type: req.file.mimetype
   });
-});
-
-// Serve public index as root
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
 });
 
 // Cover login page
