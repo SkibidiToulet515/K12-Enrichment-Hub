@@ -1,8 +1,14 @@
-importScripts("/js/scramjet.config.js");
-importScripts("/scram/scramjet.codecs.js");
-importScripts("/scram/scramjet.bundle.js");
-
-let scramjet = null;
+const xorDecode = function(str) {
+  if (!str) return str;
+  try {
+    str = decodeURIComponent(str);
+  } catch (e) {}
+  let result = '';
+  for (let i = 0; i < str.length; i++) {
+    result += String.fromCharCode(str.charCodeAt(i) ^ 2);
+  }
+  return result;
+};
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -14,25 +20,27 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
+  const prefix = "/scram-service/";
   
-  if (!url.pathname.startsWith(self.__scramjet$config.prefix)) {
+  if (!url.pathname.startsWith(prefix)) {
     return;
   }
   
   event.respondWith((async () => {
     try {
-      if (!scramjet && typeof ScramjetServiceWorker !== 'undefined') {
-        scramjet = new ScramjetServiceWorker();
-      }
+      const encodedPath = url.pathname.slice(prefix.length);
+      console.log('Scramjet SW - encoded path:', encodedPath);
       
-      if (scramjet && scramjet.route && scramjet.route(event)) {
-        return await scramjet.fetch(event);
-      }
+      const decodedUrl = xorDecode(encodedPath);
+      console.log('Scramjet SW - decoded URL:', decodedUrl);
       
-      const encodedPath = url.pathname.slice(self.__scramjet$config.prefix.length);
-      const decodedUrl = self.__scramjet$config.codec.decode(encodedPath);
+      if (!decodedUrl || (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://'))) {
+        throw new Error('Invalid decoded URL: ' + decodedUrl);
+      }
       
       const proxyUrl = `/api/proxy/fetch?url=${encodeURIComponent(decodedUrl)}`;
+      console.log('Scramjet SW - proxy URL:', proxyUrl);
+      
       const response = await fetch(proxyUrl);
       
       if (!response.ok) {
