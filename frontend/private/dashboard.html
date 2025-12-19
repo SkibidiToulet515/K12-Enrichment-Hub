@@ -370,6 +370,41 @@
       window.location.href = '/auth';
     }
 
+    // Apply custom wallpaper if set
+    (async function applyWallpaper() {
+      let wallpaperUrl = localStorage.getItem('customWallpaper');
+      
+      // Also fetch from server to sync across devices
+      const token = localStorage.getItem('userToken') || localStorage.getItem('authToken');
+      if (token) {
+        try {
+          const res = await fetch('/api/customization/settings', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const settings = await res.json();
+            if (settings.wallpaper_url) {
+              wallpaperUrl = settings.wallpaper_url;
+              localStorage.setItem('customWallpaper', wallpaperUrl);
+            } else {
+              localStorage.removeItem('customWallpaper');
+              wallpaperUrl = null;
+            }
+          }
+        } catch (e) {
+          console.log('Could not fetch wallpaper settings');
+        }
+      }
+      
+      if (wallpaperUrl) {
+        document.body.style.backgroundImage = `url('${wallpaperUrl}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundRepeat = 'no-repeat';
+      }
+    })();
+
     // Set random welcome greeting
     const greetings = [
       "Welcome back",

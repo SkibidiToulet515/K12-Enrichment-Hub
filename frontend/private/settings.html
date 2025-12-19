@@ -480,6 +480,26 @@
       
       <div class="setting-item">
         <div class="setting-info">
+          <h4>Custom Wallpaper</h4>
+          <p>Upload a background image for your dashboard</p>
+        </div>
+        <div class="setting-control" style="flex-direction:column;align-items:flex-end;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="file" id="wallpaperInput" accept="image/*" style="display:none;">
+            <button class="setting-btn" onclick="document.getElementById('wallpaperInput').click()">Choose File</button>
+            <button class="setting-btn" onclick="uploadWallpaper()">Upload</button>
+            <button class="setting-btn" style="background:#ff4444;" onclick="removeWallpaper()">Remove</button>
+          </div>
+          <div id="wallpaperFileName" style="font-size:12px;color:var(--text-secondary);"></div>
+          <div id="wallpaperPreview" style="width:120px;height:68px;border-radius:6px;overflow:hidden;border:1px solid var(--bg-secondary);display:none;">
+            <img id="wallpaperPreviewImg" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div id="wallpaperStatus" style="font-size:12px;color:var(--accent);display:none;"></div>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
           <h4>Font Family</h4>
           <p>Change the global font</p>
         </div>
@@ -891,6 +911,113 @@
     function toggleSounds(enabled) {
       localStorage.setItem('sounds', enabled.toString());
     }
+    
+    // Wallpaper functions
+    document.getElementById('wallpaperInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('wallpaperFileName').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('wallpaperPreviewImg').src = e.target.result;
+          document.getElementById('wallpaperPreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    async function uploadWallpaper() {
+      const fileInput = document.getElementById('wallpaperInput');
+      const status = document.getElementById('wallpaperStatus');
+      
+      if (!fileInput.files.length) {
+        status.textContent = 'Please select an image first';
+        status.style.color = '#ff4444';
+        status.style.display = 'block';
+        return;
+      }
+      
+      const token = localStorage.getItem('userToken') || localStorage.getItem('authToken');
+      if (!token) {
+        status.textContent = 'Please log in to upload wallpaper';
+        status.style.color = '#ff4444';
+        status.style.display = 'block';
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('wallpaper', fileInput.files[0]);
+      
+      try {
+        status.textContent = 'Uploading...';
+        status.style.color = 'var(--text-secondary)';
+        status.style.display = 'block';
+        
+        const response = await fetch('/api/customization/wallpaper', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem('customWallpaper', data.wallpaper_url);
+          status.textContent = 'Wallpaper saved! It will appear on your dashboard.';
+          status.style.color = 'var(--accent)';
+          fileInput.value = '';
+        } else {
+          status.textContent = data.error || 'Upload failed';
+          status.style.color = '#ff4444';
+        }
+      } catch (err) {
+        console.error('Wallpaper upload error:', err);
+        status.textContent = 'Upload failed - please try again';
+        status.style.color = '#ff4444';
+      }
+    }
+    
+    async function removeWallpaper() {
+      const status = document.getElementById('wallpaperStatus');
+      const token = localStorage.getItem('userToken') || localStorage.getItem('authToken');
+      
+      if (!token) {
+        status.textContent = 'Please log in';
+        status.style.color = '#ff4444';
+        status.style.display = 'block';
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/customization/wallpaper', {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          localStorage.removeItem('customWallpaper');
+          document.getElementById('wallpaperPreview').style.display = 'none';
+          document.getElementById('wallpaperFileName').textContent = '';
+          status.textContent = 'Wallpaper removed';
+          status.style.color = 'var(--text-secondary)';
+          status.style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Wallpaper remove error:', err);
+        status.textContent = 'Failed to remove wallpaper';
+        status.style.color = '#ff4444';
+        status.style.display = 'block';
+      }
+    }
+    
+    // Load current wallpaper preview on page load
+    (function loadWallpaperPreview() {
+      const savedWallpaper = localStorage.getItem('customWallpaper');
+      if (savedWallpaper) {
+        document.getElementById('wallpaperPreviewImg').src = savedWallpaper;
+        document.getElementById('wallpaperPreview').style.display = 'block';
+        document.getElementById('wallpaperFileName').textContent = 'Current wallpaper';
+      }
+    })();
     
     function signOut() {
       localStorage.removeItem('authToken');
