@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/css/transitions.css">
   <link rel="stylesheet" href="/css/private-theme.css">
   <link rel="stylesheet" href="/css/os-shell.css">
+  <link rel="stylesheet" href="/css/polish.css">
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -42,6 +43,10 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .back-btn {
@@ -63,10 +68,12 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: var(--card);
-      border: 2px solid var(--accent);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
       overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .messages-container {
@@ -93,23 +100,35 @@
 
     .message.user {
       align-self: flex-end;
-      background: var(--primary);
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 
     .message.ai {
       align-self: flex-start;
-      background: var(--bg);
-      border: 1px solid var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-bottom-left-radius: 4px;
     }
 
     .message.ai .sender {
       font-weight: 600;
-      color: var(--primary);
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 6px;
       font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .message.ai .sender::before {
+      content: '🤖';
+      font-size: 14px;
     }
 
     .typing-indicator {
@@ -181,7 +200,7 @@
 
     #sendBtn {
       padding: 14px 28px;
-      background: var(--primary);
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
       border-radius: 12px;
@@ -189,27 +208,82 @@
       font-size: 15px;
       cursor: pointer;
       transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 
     #sendBtn:hover:not(:disabled) {
-      transform: scale(1.02);
-      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    #sendBtn:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     #sendBtn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      transform: none;
     }
 
     .welcome-message {
       text-align: center;
-      padding: 40px 20px;
+      padding: 60px 20px;
       color: var(--text-secondary, #888);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .welcome-message .avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
     }
 
     .welcome-message h2 {
-      color: var(--primary);
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .welcome-message p {
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .quick-prompt {
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-prompt:hover {
+      background: rgba(102, 126, 234, 0.2);
+      border-color: rgba(102, 126, 234, 0.5);
+      transform: translateY(-2px);
     }
 
     .error-message {
@@ -233,8 +307,14 @@
     <div class="chat-container">
       <div class="messages-container" id="messagesContainer">
         <div class="welcome-message">
-          <h2>Hey there! I'm Nova 👋</h2>
+          <div class="avatar">🤖</div>
+          <h2>Hey there! I'm Nova</h2>
           <p>Your friendly AI study buddy. Ask me anything about homework, get study tips, or just chat!</p>
+          <div class="quick-prompts">
+            <button class="quick-prompt" onclick="sendQuickPrompt('Help me study for a test')">📚 Study help</button>
+            <button class="quick-prompt" onclick="sendQuickPrompt('Explain this concept to me')">💡 Explain something</button>
+            <button class="quick-prompt" onclick="sendQuickPrompt('Give me some motivation')">✨ Motivate me</button>
+          </div>
         </div>
       </div>
       <div class="typing-indicator" id="typingIndicator">
@@ -355,6 +435,11 @@
         sendBtn.disabled = false;
         messageInput.focus();
       }
+    }
+
+    function sendQuickPrompt(prompt) {
+      messageInput.value = prompt;
+      sendMessage();
     }
 
     sendBtn.addEventListener('click', sendMessage);

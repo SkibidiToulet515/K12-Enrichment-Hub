@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('profileName').textContent = user.username;
   document.getElementById('usernameInfo').textContent = user.username;
   document.getElementById('joinedInfo').textContent = new Date().toLocaleDateString();
-  document.getElementById('profilePic').src = user.profilePicture || 'https://via.placeholder.com/100';
+  document.getElementById('profilePic').src = user.profilePicture || (typeof getDefaultAvatar === 'function' ? getDefaultAvatar(user.username) : DEFAULT_AVATAR);
 
   // Check if user is admin and show admin section
   checkAdminAndShowUsers();
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok) {
         user.profilePicture = null;
         localStorage.setItem('user', JSON.stringify(user));
-        document.getElementById('profilePic').src = 'https://via.placeholder.com/100';
+        document.getElementById('profilePic').src = typeof getDefaultAvatar === 'function' ? getDefaultAvatar(user.username) : DEFAULT_AVATAR;
         alert('Avatar removed!');
       } else {
         alert(`Remove failed: ${data.error || 'Unknown error'}`);
