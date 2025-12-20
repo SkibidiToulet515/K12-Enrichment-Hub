@@ -62,6 +62,10 @@ Do not make changes to the file `Y`.
 - **Custom Cursors**: Selectable cursor styles including custom SVG cursors (neon glow, retro pixel, minimal dot) with persistence.
 - **Sound Effects**: Configurable notification and click sounds using Web Audio API with volume control.
 - **Bookmark Manager**: Save and organize proxy site URLs for quick access.
+- **Animated Particle Background**: Canvas-based floating particle system with theme color integration, pulsing glow effects, and configurable density (low/medium/high). Persists user preferences across sessions.
+- **Visual Effects System**: Comprehensive CSS utility library with floating animations, glow effects (including neon borders), gradient backgrounds, shimmer text, stagger animations, 3D tilt effects, and backdrop blur variants. All effects can be toggled in Settings.
+- **Dynamic Default Avatars**: Colorful gradient avatars with user initials generated automatically when no profile picture is set. Deterministic colors based on username hash.
+- **Polish CSS Utilities**: Loading spinners, skeleton screens, empty states with icons, toast notifications, smooth page transitions, card hover effects, and status indicators.
 
 ### System Design Choices
 - **Port**: Server runs on port 5000 for Replit compatibility.
