@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="/css/private-theme.css">
   <link rel="stylesheet" href="/css/private.css">
   <link rel="stylesheet" href="/css/os-shell.css">
+  <link rel="stylesheet" href="/css/polish.css">
+  <script src="/js/default-avatar.js"></script>
   <script src="/js/private-auth.js"></script>
   <style>
     .settings-container {
@@ -643,6 +645,52 @@
         <div class="setting-control">
           <label class="toggle-switch">
             <input type="checkbox" id="highContrastToggle" onchange="toggleHighContrast(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span>✨</span> Visual Effects
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Particle Background</h4>
+          <p>Animated floating particles in the background</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="particlesToggle" checked onchange="toggleParticles(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Particle Density</h4>
+          <p>Number of particles on screen</p>
+        </div>
+        <div class="setting-control">
+          <select class="setting-select" id="particleDensitySelect" onchange="setParticleDensity(this.value)">
+            <option value="low">Low (20)</option>
+            <option value="medium" selected>Medium (40)</option>
+            <option value="high">High (60)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Glow Effects</h4>
+          <p>Neon glow on buttons and elements</p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="glowToggle" checked onchange="toggleGlowEffects(this.checked)">
             <span class="toggle-slider"></span>
           </label>
         </div>
@@ -1316,14 +1364,59 @@
       const click = localStorage.getItem('clickSound') || 'none';
       const volume = localStorage.getItem('soundVolume') || '50';
       
-      document.getElementById('soundsEnabledToggle').checked = enabled;
+      document.getElementById('soundsToggle').checked = enabled;
       document.getElementById('notifSoundSelect').value = notif;
       document.getElementById('clickSoundSelect').value = click;
       document.getElementById('soundVolume').value = volume;
       document.getElementById('volumeValue').textContent = volume + '%';
     })();
+    
+    // Visual Effects Settings
+    function toggleParticles(enabled) {
+      localStorage.setItem('particlesEnabled', enabled.toString());
+      if (window.particleBackground) {
+        if (enabled) {
+          window.particleBackground.init();
+        } else {
+          window.particleBackground.destroy();
+        }
+      }
+    }
+    
+    function setParticleDensity(density) {
+      localStorage.setItem('particleDensity', density);
+      const counts = { low: 20, medium: 40, high: 60 };
+      if (window.particleBackground) {
+        window.particleBackground.setParticleCount(counts[density] || 40);
+      }
+    }
+    
+    function toggleGlowEffects(enabled) {
+      localStorage.setItem('glowEffectsEnabled', enabled.toString());
+      if (enabled) {
+        document.body.classList.remove('no-glow');
+      } else {
+        document.body.classList.add('no-glow');
+      }
+    }
+    
+    // Load visual effects settings
+    (function loadVisualSettings() {
+      const particlesEnabled = localStorage.getItem('particlesEnabled') !== 'false';
+      const density = localStorage.getItem('particleDensity') || 'medium';
+      const glowEnabled = localStorage.getItem('glowEffectsEnabled') !== 'false';
+      
+      document.getElementById('particlesToggle').checked = particlesEnabled;
+      document.getElementById('particleDensitySelect').value = density;
+      document.getElementById('glowToggle').checked = glowEnabled;
+      
+      if (!glowEnabled) {
+        document.body.classList.add('no-glow');
+      }
+    })();
   </script>
   <script src="/js/customization.js"></script>
+  <script src="/js/particles.js"></script>
   <script src="/js/os-shell.js"></script>
   <script src="/js/security.js"></script>
 </body>
