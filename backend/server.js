@@ -802,6 +802,14 @@ io.on('connection', (socket) => {
               message.createdAt = new Date(message.created_at).toISOString();
               const roomId = `dm-${Math.min(userId, dmPartnerId)}-${Math.max(userId, dmPartnerId)}`;
               io.to(roomId).emit('new_message', message);
+              
+              // Also send direct notification to recipient for real-time alerts on any page
+              if (userSockets[dmPartnerId]) {
+                io.to(userSockets[dmPartnerId]).emit('dm_notification', {
+                  ...message,
+                  fromUserId: userId
+                });
+              }
             }
             
             // Check for @mentions and notify
