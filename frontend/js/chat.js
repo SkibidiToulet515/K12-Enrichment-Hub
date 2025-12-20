@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setupGlobalChat();
   checkAdminStatus();
   
+  // Initialize notifications for incoming messages
+  if (typeof OSNotifications !== 'undefined') {
+    OSNotifications.init();
+  }
+  
   // Add scroll listener for infinite load of older messages
   const container = document.getElementById('messagesContainer');
   container.addEventListener('scroll', () => {
@@ -627,20 +632,32 @@ function initSocket() {
       const userMuted = mutedUsers.includes(message.user_id);
       
       if (notificationsEnabled && !serverMuted && !userMuted) {
-        // Send notification to parent (desktop)
-        const notifData = {
-          type: 'chatNotification',
-          title: message.username || 'New Message',
-          body: message.content ? (message.content.length > 50 ? message.content.substring(0, 50) + '...' : message.content) : 'Sent an attachment',
-          icon: '💬',
-          serverId: message.server_id,
-          channelId: message.channel_id,
-          userId: message.user_id
-        };
+        const msgPreview = message.content 
+          ? (message.content.length > 50 ? message.content.substring(0, 50) + '...' : message.content) 
+          : 'Sent an attachment';
         
-        // Post to parent window (desktop)
+        // Show corner notification using OSNotifications if available
+        if (typeof OSNotifications !== 'undefined') {
+          OSNotifications.show({
+            title: message.username || 'New Message',
+            message: msgPreview,
+            type: 'message',
+            icon: '💬',
+            duration: 4000
+          });
+        }
+        
+        // Post to parent window (desktop mode)
         if (window.parent && window.parent !== window) {
-          window.parent.postMessage(notifData, '*');
+          window.parent.postMessage({
+            type: 'chatNotification',
+            title: message.username || 'New Message',
+            body: msgPreview,
+            icon: '💬',
+            serverId: message.server_id,
+            channelId: message.channel_id,
+            userId: message.user_id
+          }, '*');
         }
       }
     }
