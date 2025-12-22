@@ -1067,8 +1067,12 @@
       document.getElementById('layoutOS').classList.toggle('active', mode === 'os');
       document.getElementById('layoutOSWave').classList.toggle('active', mode === 'os-wave');
       
-      // Always redirect to dashboard to ensure clean switch between modes
-      window.location.href = '/dashboard';
+      // Always redirect to dashboard - use top window to escape any iframe/OS shell
+      if (window.top !== window.self) {
+        window.top.location.href = '/dashboard';
+      } else {
+        window.location.href = '/dashboard';
+      }
     }
     
     function setFont(font) {
