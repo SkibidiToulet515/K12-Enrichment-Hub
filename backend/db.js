@@ -843,3 +843,4 @@ async function initDatabase() {
 initDatabase();
 
 module.exports = db;
+module.exports.pool = pool;
