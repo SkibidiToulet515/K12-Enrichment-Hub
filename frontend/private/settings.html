@@ -309,6 +309,66 @@
       border-radius: 2px;
     }
     
+    /* Wave OS Preview */
+    .layout-preview-wave {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .wave-preview-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #1a1a24 0%, #252535 50%, #1e1e2a 100%);
+    }
+    
+    .wave-preview-bg::before {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 10%;
+      width: 60%;
+      height: 40%;
+      background: radial-gradient(ellipse, rgba(124, 158, 178, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .wave-preview-window {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 30px;
+      background: rgba(30, 30, 42, 0.85);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .wave-preview-dock {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 18px;
+      background: rgba(35, 35, 48, 0.8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      gap: 4px;
+    }
+    
+    .wave-preview-dock-item {
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+    }
+    
     .layout-preview-label {
       padding: 12px;
       text-align: center;
@@ -406,7 +466,7 @@
         <span>🖥️</span> Layout Mode
       </div>
       <p style="color: var(--text-secondary); margin-bottom: 20px;">
-        Choose between the classic web layout or the new OS-style desktop interface.
+        Choose your preferred interface style.
       </p>
       <div class="layout-preview-grid">
         <div class="layout-preview" id="layoutClassic" onclick="setLayoutMode('classic')">
@@ -423,7 +483,7 @@
               </div>
             </div>
           </div>
-          <div class="layout-preview-label">Classic Layout</div>
+          <div class="layout-preview-label">Classic</div>
         </div>
         <div class="layout-preview" id="layoutOS" onclick="setLayoutMode('os')">
           <div class="layout-preview-image">
@@ -449,7 +509,23 @@
               </div>
             </div>
           </div>
-          <div class="layout-preview-label">OS Layout</div>
+          <div class="layout-preview-label">OS Mode</div>
+        </div>
+        <div class="layout-preview" id="layoutOSWave" onclick="setLayoutMode('os-wave')">
+          <div class="layout-preview-image">
+            <div class="layout-preview-wave">
+              <div class="wave-preview-bg"></div>
+              <div class="wave-preview-window"></div>
+              <div class="wave-preview-dock">
+                <div class="wave-preview-dock-item"></div>
+                <div class="wave-preview-dock-item"></div>
+                <div class="wave-preview-dock-item"></div>
+                <div class="wave-preview-dock-item"></div>
+                <div class="wave-preview-dock-item"></div>
+              </div>
+            </div>
+          </div>
+          <div class="layout-preview-label">Wave OS</div>
         </div>
       </div>
     </div>
@@ -931,6 +1007,7 @@
       const layoutMode = localStorage.getItem('layoutMode') || 'classic';
       document.getElementById('layoutClassic').classList.toggle('active', layoutMode === 'classic');
       document.getElementById('layoutOS').classList.toggle('active', layoutMode === 'os');
+      document.getElementById('layoutOSWave').classList.toggle('active', layoutMode === 'os-wave');
       
       const font = localStorage.getItem('globalFont') || 'Inter';
       document.getElementById('fontSelect').value = font;
@@ -988,15 +1065,16 @@
       localStorage.setItem('layoutMode', mode);
       document.getElementById('layoutClassic').classList.toggle('active', mode === 'classic');
       document.getElementById('layoutOS').classList.toggle('active', mode === 'os');
+      document.getElementById('layoutOSWave').classList.toggle('active', mode === 'os-wave');
       
       if (typeof OSShell !== 'undefined') {
         OSShell.setLayoutMode(mode);
       } else {
-        document.body.classList.remove('layout-classic', 'layout-os');
+        document.body.classList.remove('layout-classic', 'layout-os', 'layout-os-wave');
         document.body.classList.add(`layout-${mode}`);
       }
       
-      if (mode === 'os') {
+      if (mode === 'os' || mode === 'os-wave') {
         window.location.href = '/dashboard';
       }
     }

@@ -15,7 +15,9 @@
 }
 
 /* Hide classic content in OS Wave mode */
-.layout-os-wave .classic-content {
+.layout-os-wave .classic-content,
+.layout-os-wave .app-container:not(.wave-window),
+.layout-os-wave > .app-container {
   display: none !important;
 }
 
@@ -23,6 +25,14 @@
 .layout-os-wave .back-link,
 .layout-os-wave a[href="/dashboard"] {
   display: none !important;
+}
+
+/* Ensure Wave elements are visible */
+.layout-os-wave .wave-background,
+.layout-os-wave .wave-main-content,
+.layout-os-wave .wave-dock,
+.layout-os-wave .wave-system-tray {
+  display: block !important;
 }
 
 /* ===== Animated Background ===== */
@@ -394,6 +404,14 @@
 @keyframes waveDots {
   0%, 80%, 100% { opacity: 0.3; transform: scale(1); }
   40% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ===== Floating Window Mode (default) ===== */
+.wave-window:not(.fullscreen) {
+  top: var(--float-top, 10%);
+  left: var(--float-left, 10%);
+  width: var(--float-width, 80%);
+  height: var(--float-height, 75%);
 }
 
 /* ===== Fullscreen Window Mode ===== */
