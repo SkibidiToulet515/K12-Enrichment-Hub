@@ -1,0 +1,204 @@
+.presence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--bg-secondary, rgba(0,0,0,0.3));
+  font-size: 12px;
+  color: var(--text-secondary, #aaa);
+}
+
+.presence-badge.playing {
+  background: rgba(67, 181, 129, 0.15);
+  color: #43b581;
+}
+
+.presence-badge.watching {
+  background: rgba(240, 71, 71, 0.15);
+  color: #f04747;
+}
+
+.presence-badge.listening {
+  background: rgba(29, 185, 84, 0.15);
+  color: #1db954;
+}
+
+.presence-badge.studying {
+  background: rgba(250, 166, 26, 0.15);
+  color: #faa61a;
+}
+
+.presence-badge.afk {
+  background: rgba(116, 127, 141, 0.15);
+  color: #747f8d;
+}
+
+.presence-badge.browsing {
+  background: rgba(114, 137, 218, 0.15);
+  color: #7289da;
+}
+
+.presence-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.presence-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.presence-duration {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+.user-card-presence {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary, rgba(0,0,0,0.2));
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-color, #7c3aed);
+}
+
+.user-card-presence .activity-type {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #888);
+  margin-bottom: 4px;
+}
+
+.user-card-presence .activity-name {
+  font-size: 13px;
+  color: var(--text-primary, #fff);
+  font-weight: 500;
+}
+
+.user-card-presence .activity-duration {
+  font-size: 11px;
+  color: var(--text-muted, #888);
+  margin-top: 4px;
+}
+
+.friend-item .presence-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary, #aaa);
+  margin-top: 2px;
+}
+
+.friend-item .presence-indicator svg {
+  width: 12px;
+  height: 12px;
+}
+
+.friend-item .presence-indicator.playing { color: #43b581; }
+.friend-item .presence-indicator.watching { color: #f04747; }
+.friend-item .presence-indicator.listening { color: #1db954; }
+.friend-item .presence-indicator.studying { color: #faa61a; }
+.friend-item .presence-indicator.afk { color: #747f8d; }
+.friend-item .presence-indicator.browsing { color: #7289da; }
+
+.hover-card {
+  position: absolute;
+  z-index: 9999;
+  background: var(--bg-primary, #1e1e2e);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  padding: 16px;
+  min-width: 280px;
+  max-width: 320px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s, transform 0.2s;
+  border: 1px solid var(--border-color, #333);
+}
+
+.hover-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.hover-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.hover-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hover-card-info {
+  flex: 1;
+}
+
+.hover-card-username {
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  font-size: 15px;
+}
+
+.hover-card-status {
+  font-size: 12px;
+  color: var(--text-secondary, #aaa);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hover-card-status .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #747f8d;
+}
+
+.hover-card-status .status-dot.online { background: #43b581; }
+.hover-card-status .status-dot.idle { background: #faa61a; }
+.hover-card-status .status-dot.dnd { background: #f04747; }
+.hover-card-status .status-dot.offline { background: #747f8d; }
+
+.hover-card-presence {
+  background: var(--bg-secondary, rgba(0,0,0,0.2));
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+.hover-card-presence-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #666);
+  margin-bottom: 4px;
+}
+
+.hover-card-presence-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hover-card-presence-icon {
+  font-size: 18px;
+}
+
+.hover-card-presence-text {
+  font-size: 13px;
+  color: var(--text-primary, #fff);
+}

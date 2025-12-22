@@ -49,6 +49,7 @@ const themesRoutes = require('./routes/themes');
 const forumsRoutes = require('./routes/forums');
 const bugReportsRoutes = require('./routes/bug-reports');
 const aiChatRoutes = require('./routes/ai-chat');
+const versionHistoryRoutes = require('./routes/version-history');
 const logger = require('./logger');
 
 const storage = multer.diskStorage({
@@ -343,6 +344,7 @@ app.use('/api/themes', themesRoutes);
 app.use('/api/forums', forumsRoutes);
 app.use('/api/bug-reports', bugReportsRoutes);
 app.use('/api/chat', authMiddleware, aiChatRoutes);
+app.use('/api/version-history', versionHistoryRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {
@@ -601,9 +603,59 @@ io.on('connection', (socket) => {
     userSockets[data.userId] = socket.id;
     socket.userId = data.userId;
     socket.join('global-chat');
+    socket.join(`presence-${data.userId}`);
     db.run('UPDATE users SET is_online = TRUE WHERE id = ?', [data.userId], (err) => {
       if (!err) {
         io.emit('user_online', { userId: data.userId });
+        db.get('SELECT * FROM activity_status WHERE user_id = ?', [data.userId], (err, status) => {
+          if (!err && status) {
+            io.emit('presence_update', { userId: data.userId, presence: status });
+          }
+        });
+      }
+    });
+  });
+
+  // Rich Presence Updates - Verify socket.userId matches to prevent spoofing
+  socket.on('update_presence', (data) => {
+    const { userId, activityType, activityName, activityData } = data;
+    if (!userId || !socket.userId || socket.userId !== userId) return;
+    
+    db.run(`
+      INSERT INTO activity_status (user_id, activity_type, activity_name, activity_data, started_at, updated_at)
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      ON CONFLICT(user_id) DO UPDATE SET
+        activity_type = ?,
+        activity_name = ?,
+        activity_data = ?,
+        started_at = CASE WHEN activity_status.activity_type != ? THEN CURRENT_TIMESTAMP ELSE activity_status.started_at END,
+        updated_at = CURRENT_TIMESTAMP
+    `, [userId, activityType, activityName, JSON.stringify(activityData || {}), 
+        activityType, activityName, JSON.stringify(activityData || {}), activityType], (err) => {
+      if (!err) {
+        io.emit('presence_update', { 
+          userId, 
+          presence: { 
+            activity_type: activityType, 
+            activity_name: activityName, 
+            activity_data: activityData,
+            started_at: new Date().toISOString()
+          } 
+        });
+      }
+    });
+  });
+
+  socket.on('clear_presence', (data) => {
+    const { userId } = data;
+    if (!userId || !socket.userId || socket.userId !== userId) return;
+    
+    db.run(`
+      UPDATE activity_status SET activity_type = NULL, activity_name = NULL, activity_data = '{}', updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = ?
+    `, [userId], (err) => {
+      if (!err) {
+        io.emit('presence_update', { userId, presence: { activity_type: null, activity_name: null } });
       }
     });
   });

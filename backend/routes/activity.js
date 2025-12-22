@@ -57,13 +57,14 @@ router.post('/playing', (req, res) => {
   const { game_name } = req.body;
 
   db.run(`
-    INSERT INTO activity_status (user_id, activity_type, activity_name)
-    VALUES (?, 'playing', ?)
+    INSERT INTO activity_status (user_id, activity_type, activity_name, started_at, updated_at)
+    VALUES (?, 'playing', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ON CONFLICT(user_id) DO UPDATE SET
       activity_type = 'playing',
       activity_name = ?,
+      started_at = CASE WHEN activity_status.activity_type != 'playing' OR activity_status.activity_name != ? THEN CURRENT_TIMESTAMP ELSE activity_status.started_at END,
       updated_at = CURRENT_TIMESTAMP
-  `, [userId, game_name, game_name], function(err) {
+  `, [userId, game_name, game_name, game_name], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true });
   });
@@ -76,13 +77,14 @@ router.post('/watching', (req, res) => {
   const { title } = req.body;
 
   db.run(`
-    INSERT INTO activity_status (user_id, activity_type, activity_name)
-    VALUES (?, 'watching', ?)
+    INSERT INTO activity_status (user_id, activity_type, activity_name, started_at, updated_at)
+    VALUES (?, 'watching', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ON CONFLICT(user_id) DO UPDATE SET
       activity_type = 'watching',
       activity_name = ?,
+      started_at = CASE WHEN activity_status.activity_type != 'watching' OR activity_status.activity_name != ? THEN CURRENT_TIMESTAMP ELSE activity_status.started_at END,
       updated_at = CURRENT_TIMESTAMP
-  `, [userId, title, title], function(err) {
+  `, [userId, title, title, title], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true });
   });
@@ -95,13 +97,77 @@ router.post('/browsing', (req, res) => {
   const { site } = req.body;
 
   db.run(`
-    INSERT INTO activity_status (user_id, activity_type, activity_name)
-    VALUES (?, 'browsing', ?)
+    INSERT INTO activity_status (user_id, activity_type, activity_name, started_at, updated_at)
+    VALUES (?, 'browsing', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ON CONFLICT(user_id) DO UPDATE SET
       activity_type = 'browsing',
       activity_name = ?,
+      started_at = CASE WHEN activity_status.activity_type != 'browsing' THEN CURRENT_TIMESTAMP ELSE activity_status.started_at END,
       updated_at = CURRENT_TIMESTAMP
   `, [userId, site, site], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
+router.post('/listening', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { song_name, artist } = req.body;
+  const activityName = artist ? `${song_name} by ${artist}` : song_name;
+
+  db.run(`
+    INSERT INTO activity_status (user_id, activity_type, activity_name, activity_data)
+    VALUES (?, 'listening', ?, ?)
+    ON CONFLICT(user_id) DO UPDATE SET
+      activity_type = 'listening',
+      activity_name = ?,
+      activity_data = ?,
+      started_at = CURRENT_TIMESTAMP,
+      updated_at = CURRENT_TIMESTAMP
+  `, [userId, activityName, JSON.stringify({ song: song_name, artist }), activityName, JSON.stringify({ song: song_name, artist })], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
+router.post('/studying', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { subject } = req.body;
+  const activityName = subject || 'Studying';
+
+  db.run(`
+    INSERT INTO activity_status (user_id, activity_type, activity_name)
+    VALUES (?, 'studying', ?)
+    ON CONFLICT(user_id) DO UPDATE SET
+      activity_type = 'studying',
+      activity_name = ?,
+      started_at = CURRENT_TIMESTAMP,
+      updated_at = CURRENT_TIMESTAMP
+  `, [userId, activityName, activityName], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
+router.post('/afk', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { reason } = req.body;
+
+  db.run(`
+    INSERT INTO activity_status (user_id, activity_type, activity_name)
+    VALUES (?, 'afk', ?)
+    ON CONFLICT(user_id) DO UPDATE SET
+      activity_type = 'afk',
+      activity_name = ?,
+      started_at = CURRENT_TIMESTAMP,
+      updated_at = CURRENT_TIMESTAMP
+  `, [userId, reason || 'Away', reason || 'Away'], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true });
   });

@@ -531,6 +531,19 @@
       document.getElementById('currentArtist').textContent = currentTrack.artist;
 
       addToPlaylist(currentTrack);
+      
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
+      if (token) {
+        fetch('/api/activity/listening', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ song_name: currentTrack.title, artist: currentTrack.artist })
+        }).catch(() => {});
+        
+        if (typeof Presence !== 'undefined') {
+          Presence.setListening(currentTrack.title, currentTrack.artist);
+        }
+      }
     }
 
     function addToPlaylist(track) {
@@ -584,5 +597,7 @@
   <script src="/js/global-notifications.js"></script>
   <script src="/js/os-shell.js"></script>
   <script src="/js/security.js"></script>
+  <script src="/js/presence.js"></script>
+  <script src="/js/spotlight-search.js"></script>
 </body>
 </html>

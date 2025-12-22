@@ -1227,10 +1227,10 @@
       
       const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (token) {
-        fetch('/api/activity/update', {
+        fetch('/api/activity/playing', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ activity_type: 'playing_game', activity_data: gameName })
+          body: JSON.stringify({ game_name: gameName })
         }).catch(() => {});
         
         fetch('/api/xp/activity/game', {
@@ -1238,6 +1238,10 @@
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ game_name: gameName })
         }).catch(() => {});
+        
+        if (typeof Presence !== 'undefined') {
+          Presence.setPlaying(gameName);
+        }
       }
     }
 
@@ -1252,6 +1256,19 @@
       // Exit fullscreen if active
       if (document.fullscreenElement) {
         document.exitFullscreen().catch(() => {});
+      }
+      
+      // Clear presence
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
+      if (token) {
+        fetch('/api/activity/clear', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        }).catch(() => {});
+        
+        if (typeof Presence !== 'undefined') {
+          Presence.clear();
+        }
       }
     }
 
@@ -1659,5 +1676,7 @@
   <script src="/js/os-shell.js"></script>
   <script src="/js/os-notifications.js"></script>
   <script src="/js/security.js"></script>
+  <script src="/js/presence.js"></script>
+  <script src="/js/spotlight-search.js"></script>
 </body>
 </html>

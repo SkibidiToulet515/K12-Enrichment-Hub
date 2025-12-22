@@ -108,4 +108,173 @@ router.get('/servers', (req, res) => {
   });
 });
 
+router.get('/unified', async (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { q, types } = req.query;
+  if (!q || q.length < 2) return res.json({ results: [], grouped: {} });
+
+  const searchTerm = `%${q.toLowerCase()}%`;
+  const searchTypes = types ? types.split(',') : ['games', 'users', 'forums', 'tasks', 'messages', 'channels', 'servers'];
+  const results = { games: [], users: [], forums: [], tasks: [], messages: [], channels: [], servers: [] };
+
+  const searches = [];
+
+  if (searchTypes.includes('games')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT id, title, description, category, 'game' as type
+        FROM games 
+        WHERE LOWER(title) LIKE ? OR LOWER(description) LIKE ?
+        LIMIT 8
+      `, [searchTerm, searchTerm], (err, rows) => {
+        if (!err && rows) results.games = rows;
+        resolve();
+      });
+    }));
+  }
+
+  if (searchTypes.includes('users')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT id, username, profile_picture, bio, is_online, 'user' as type
+        FROM users 
+        WHERE LOWER(username) LIKE ? OR LOWER(bio) LIKE ?
+        LIMIT 8
+      `, [searchTerm, searchTerm], (err, rows) => {
+        if (!err && rows) results.users = rows;
+        resolve();
+      });
+    }));
+  }
+
+  if (searchTypes.includes('forums')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT fp.id, fp.title, fp.content, fc.name as category_name, 'forum' as type
+        FROM forum_posts fp
+        LEFT JOIN forum_categories fc ON fp.category_id = fc.id
+        WHERE LOWER(fp.title) LIKE ? OR LOWER(fp.content) LIKE ?
+        ORDER BY fp.created_at DESC
+        LIMIT 8
+      `, [searchTerm, searchTerm], (err, rows) => {
+        if (!err && rows) results.forums = rows;
+        resolve();
+      });
+    }));
+  }
+
+  if (searchTypes.includes('tasks')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT id, title, description, priority, completed, 'task' as type
+        FROM user_tasks 
+        WHERE user_id = ? AND (LOWER(title) LIKE ? OR LOWER(description) LIKE ?)
+        ORDER BY created_at DESC
+        LIMIT 8
+      `, [userId, searchTerm, searchTerm], (err, rows) => {
+        if (!err && rows) results.tasks = rows;
+        resolve();
+      });
+    }));
+  }
+
+  if (searchTypes.includes('messages')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT m.id, m.content, m.created_at, c.name as channel_name, u.username as sender, 'message' as type
+        FROM messages m
+        LEFT JOIN channels c ON m.channel_id = c.id
+        LEFT JOIN users u ON m.user_id = u.id
+        WHERE LOWER(m.content) LIKE ?
+        ORDER BY m.created_at DESC
+        LIMIT 8
+      `, [searchTerm], (err, rows) => {
+        if (!err && rows) results.messages = rows;
+        resolve();
+      });
+    }));
+  }
+
+  if (searchTypes.includes('channels')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT c.id, c.name, c.description, s.name as server_name, 'channel' as type
+        FROM channels c
+        LEFT JOIN servers s ON c.server_id = s.id
+        WHERE LOWER(c.name) LIKE ? OR LOWER(c.description) LIKE ?
+        LIMIT 8
+      `, [searchTerm, searchTerm], (err, rows) => {
+        if (!err && rows) results.channels = rows;
+        resolve();
+      });
+    }));
+  }
+
+  if (searchTypes.includes('servers')) {
+    searches.push(new Promise((resolve) => {
+      db.all(`
+        SELECT id, name, description, icon, 'server' as type
+        FROM servers 
+        WHERE LOWER(name) LIKE ? OR LOWER(description) LIKE ?
+        LIMIT 8
+      `, [searchTerm, searchTerm], (err, rows) => {
+        if (!err && rows) results.servers = rows;
+        resolve();
+      });
+    }));
+  }
+
+  await Promise.all(searches);
+
+  const allResults = [
+    ...results.games,
+    ...results.users,
+    ...results.forums,
+    ...results.tasks,
+    ...results.messages,
+    ...results.channels,
+    ...results.servers
+  ];
+
+  db.run(`
+    INSERT INTO search_history (user_id, query, result_type, result_id)
+    VALUES (?, ?, 'mixed', ?)
+  `, [userId, q, allResults.length.toString()]);
+
+  res.json({ 
+    results: allResults,
+    grouped: results,
+    total: allResults.length
+  });
+});
+
+router.get('/recent', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  db.all(`
+    SELECT DISTINCT query, MAX(searched_at) as last_searched, COUNT(*) as search_count
+    FROM search_history 
+    WHERE user_id = ?
+    GROUP BY query
+    ORDER BY search_count DESC, last_searched DESC
+    LIMIT 10
+  `, [userId], (err, searches) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(searches || []);
+  });
+});
+
+router.delete('/recent', (req, res) => {
+  const userId = getUserId(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  db.run('DELETE FROM search_history WHERE user_id = ?', [userId], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
 module.exports = router;
