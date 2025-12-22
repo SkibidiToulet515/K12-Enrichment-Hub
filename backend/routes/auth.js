@@ -24,10 +24,15 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
   let profilePicture = null;
 
   if (req.file) {
-    const ext = path.extname(req.file.originalname);
-    const newPath = `uploads/${Date.now()}${ext}`;
-    fs.renameSync(req.file.path, path.join(__dirname, '../../frontend', newPath));
-    profilePicture = `/${newPath}`;
+    try {
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      const newPath = `uploads/${Date.now()}${ext}`;
+      fs.renameSync(req.file.path, path.join(__dirname, '../../frontend', newPath));
+      profilePicture = `/${newPath}`;
+    } catch (fileErr) {
+      console.error('File upload error:', fileErr);
+      // Continue without profile picture if file operation fails
+    }
   }
 
   db.run(
