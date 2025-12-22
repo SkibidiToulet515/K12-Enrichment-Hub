@@ -441,7 +441,7 @@
 
     let currentAnnouncementId = null;
     async function loadAnnouncements() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) return;
       
       try {
@@ -477,7 +477,7 @@
     loadAnnouncements();
     
     async function checkAdminAccess() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) return;
       
       try {

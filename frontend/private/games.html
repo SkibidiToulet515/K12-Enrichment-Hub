@@ -905,7 +905,7 @@
   <script src="/js/transitions.js"></script>
   <script>
     function checkAuth() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) {
         window.location.href = '/auth';
         return false;
@@ -1225,7 +1225,7 @@
       // Load game rating
       loadGameRating(gameName);
       
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (token) {
         fetch('/api/activity/update', {
           method: 'POST',
@@ -1426,7 +1426,7 @@
       document.getElementById('avgRating').textContent = '';
 
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
         const response = await fetch(`/api/games/ratings/${encodeURIComponent(gameName)}`, {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
         });
@@ -1446,7 +1446,7 @@
     }
 
     async function submitRating(rating) {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) {
         alert('Please log in to rate games');
         return;
@@ -1540,7 +1540,7 @@
     }
 
     async function submitSpeedrun() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) {
         alert('Please log in to submit speedruns');
         return;

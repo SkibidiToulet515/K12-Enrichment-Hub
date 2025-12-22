@@ -217,7 +217,7 @@
   <script src="/js/transitions.js"></script>
   <script>
     function checkAuth() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) {
         window.location.href = '/auth';
         return false;

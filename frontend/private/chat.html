@@ -623,7 +623,7 @@
   <script src="/js/permissions.js"></script>
   <script>
     function getAuthToken() {
-      return localStorage.getItem('authToken');
+      return localStorage.getItem('authToken') || localStorage.getItem('userToken');
     }
 
     function getCurrentUser() {
@@ -632,7 +632,7 @@
     }
 
     function checkAuth() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       if (!token) {
         window.location.href = '/auth';
         return null;

@@ -16,10 +16,24 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
+    if (req.file) fs.unlinkSync(req.file.path);
     return res.status(400).json({ error: 'Username and password required' });
   }
 
-  if (username === 'admin') {
+  // Validate username format (alphanumeric, 3-20 chars)
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.status(400).json({ error: 'Username must be 3-20 alphanumeric characters' });
+  }
+
+  // Validate password strength (min 6 chars)
+  if (password.length < 6) {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  if (username.toLowerCase() === 'admin') {
+    if (req.file) fs.unlinkSync(req.file.path);
     return res.status(400).json({ error: 'Username not available' });
   }
 
@@ -27,7 +41,21 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
   let profilePicture = null;
 
   if (req.file) {
-    const ext = path.extname(req.file.originalname);
+    // Validate file type (only allow images)
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+    const ext = path.extname(req.file.originalname).toLowerCase();
+    
+    if (!allowedMimes.includes(req.file.mimetype) || !allowedExts.includes(ext)) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ error: 'Invalid file type. Only images allowed.' });
+    }
+    
+    if (req.file.size > 5 * 1024 * 1024) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ error: 'File too large. Maximum 5MB allowed.' });
+    }
+    
     const newPath = `uploads/${Date.now()}${ext}`;
     fs.renameSync(req.file.path, path.join(__dirname, '../../frontend', newPath));
     profilePicture = `/${newPath}`;
@@ -187,18 +215,56 @@ router.get('/:userId', (req, res) => {
   });
 });
 
-// Update profile picture
+// Update profile picture - requires authentication and ownership
 router.post('/:userId/avatar', upload.single('profilePicture'), (req, res) => {
+  // Verify authentication
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    if (req.file) fs.unlinkSync(req.file.path); // Clean up uploaded file
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  let requesterId;
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    requesterId = decoded.userId;
+  } catch {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+  
+  // Verify ownership (user can only update their own avatar)
+  if (requesterId !== parseInt(req.params.userId)) {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.status(403).json({ error: 'Can only update your own avatar' });
+  }
+  
   if (!req.file) {
     return res.status(400).json({ error: 'No file provided' });
   }
 
-  const ext = path.extname(req.file.originalname);
+  // Validate file type (only allow images)
+  const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+  const ext = path.extname(req.file.originalname).toLowerCase();
+  
+  if (!allowedMimes.includes(req.file.mimetype) || !allowedExts.includes(ext)) {
+    fs.unlinkSync(req.file.path);
+    return res.status(400).json({ error: 'Invalid file type. Only images allowed.' });
+  }
+  
+  // Validate file size (max 5MB)
+  if (req.file.size > 5 * 1024 * 1024) {
+    fs.unlinkSync(req.file.path);
+    return res.status(400).json({ error: 'File too large. Maximum 5MB allowed.' });
+  }
+
   const newPath = `uploads/${Date.now()}${ext}`;
   fs.renameSync(req.file.path, path.join(__dirname, '../../frontend', newPath));
   const profilePicture = `/${newPath}`;
 
-  db.run('UPDATE users SET profile_picture = ? WHERE id = ?', [profilePicture, req.params.userId], () => {
+  db.run('UPDATE users SET profile_picture = ? WHERE id = ?', [profilePicture, req.params.userId], (err) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
     res.json({ success: true, profilePicture });
   });
 });

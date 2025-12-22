@@ -208,7 +208,7 @@
   <script src="/js/default-avatar.js"></script>
   <script>
     function checkAuth() {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       const userStr = localStorage.getItem('user');
       
       if (!token || !userStr) {
@@ -225,7 +225,7 @@
     }
 
     function getAuthToken() {
-      return localStorage.getItem('authToken');
+      return localStorage.getItem('authToken') || localStorage.getItem('userToken');
     }
 
     function getCurrentUser() {

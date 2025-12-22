@@ -1355,7 +1355,7 @@
         return;
       }
 
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('userToken');
       const isGuest = localStorage.getItem('isGuest') === 'true';
       
       if (isGuest) {
