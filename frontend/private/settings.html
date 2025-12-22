@@ -1067,16 +1067,8 @@
       document.getElementById('layoutOS').classList.toggle('active', mode === 'os');
       document.getElementById('layoutOSWave').classList.toggle('active', mode === 'os-wave');
       
-      if (typeof OSShell !== 'undefined') {
-        OSShell.setLayoutMode(mode);
-      } else {
-        document.body.classList.remove('layout-classic', 'layout-os', 'layout-os-wave');
-        document.body.classList.add(`layout-${mode}`);
-      }
-      
-      if (mode === 'os' || mode === 'os-wave') {
-        window.location.href = '/dashboard';
-      }
+      // Always redirect to dashboard to ensure clean switch between modes
+      window.location.href = '/dashboard';
     }
     
     function setFont(font) {
