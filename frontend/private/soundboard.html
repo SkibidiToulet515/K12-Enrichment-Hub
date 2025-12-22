@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soundboard - NebulaCore</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/transitions.css">
+  <link rel="stylesheet" href="/css/private-theme.css">
+  <link rel="stylesheet" href="/css/os-shell.css">
+  <link rel="stylesheet" href="/css/soundboard.css">
+</head>
+<body>
+  <div class="page-container">
+    <header class="page-header">
+      <h1>🔊 Soundboard</h1>
+      <div class="header-controls">
+        <div class="volume-control">
+          <span class="volume-icon">🔊</span>
+          <input type="range" id="masterVolume" min="0" max="100" value="50">
+          <span id="volumeValue">50%</span>
+        </div>
+        <a href="/dashboard.html" class="back-btn">← Back</a>
+      </div>
+    </header>
+
+    <div class="soundboard-controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search sounds...">
+        <button id="clearSearch" class="clear-btn">✕</button>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-category="all">All</button>
+        <button class="filter-tab" data-category="favorites">❤️ Favorites</button>
+        <button class="filter-tab" data-category="memes">😂 Memes</button>
+        <button class="filter-tab" data-category="games">🎮 Games</button>
+        <button class="filter-tab" data-category="animals">🐾 Animals</button>
+        <button class="filter-tab" data-category="music">🎵 Music</button>
+        <button class="filter-tab" data-category="effects">✨ Effects</button>
+        <button class="filter-tab" data-category="custom">📁 Custom</button>
+      </div>
+    </div>
+
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+      <h3>Admin: Add Custom Sound</h3>
+      <form id="uploadSoundForm" enctype="multipart/form-data">
+        <input type="text" id="soundName" placeholder="Sound name" required>
+        <select id="soundCategory" required>
+          <option value="memes">Memes</option>
+          <option value="games">Games</option>
+          <option value="animals">Animals</option>
+          <option value="music">Music</option>
+          <option value="effects">Effects</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input type="file" id="soundFile" accept="audio/*" required>
+        <button type="submit" class="upload-btn">Upload Sound</button>
+      </form>
+    </div>
+
+    <div class="sounds-grid" id="soundsGrid">
+    </div>
+
+    <div id="noResults" class="no-results" style="display: none;">
+      <span class="no-results-icon">🔇</span>
+      <p>No sounds found</p>
+    </div>
+  </div>
+
+  <div id="nowPlaying" class="now-playing" style="display: none;">
+    <span class="now-playing-icon">🔊</span>
+    <span id="nowPlayingText">Playing...</span>
+    <button id="stopSound" class="stop-btn">⏹</button>
+  </div>
+
+  <script src="/js/transitions.js"></script>
+  <script src="/js/theme-loader.js"></script>
+  <script src="/js/soundboard.js"></script>
+</body>
+</html>
