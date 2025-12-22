@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 
 const router = express.Router();
-const SECRET_KEY = 'real_user_auth_secret_2025';
+const { JWT_SECRET } = require('../config');
+const SECRET_KEY = JWT_SECRET;
 
 // Helper to extract userId from token
 function getUserIdFromToken(req) {

@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const logger = require('../logger');
 
 const router = express.Router();
-const SECRET_KEY = 'real_user_auth_secret_2025';
+const { JWT_SECRET } = require('../config');
+const SECRET_KEY = JWT_SECRET;
 
 // Socket.io instance (set from server.js)
 let io = null;

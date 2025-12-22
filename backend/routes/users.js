@@ -8,7 +8,8 @@ const db = require('../db');
 
 const router = express.Router();
 const upload = multer({ dest: 'frontend/uploads/' });
-const SECRET_KEY = 'real_user_auth_secret_2025';
+const { JWT_SECRET } = require('../config');
+const SECRET_KEY = JWT_SECRET;
 
 // REAL USER SIGNUP (NOT connected to cover login)
 router.post('/signup', upload.single('profilePicture'), (req, res) => {
@@ -70,6 +71,10 @@ router.post('/signup', upload.single('profilePicture'), (req, res) => {
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password required' });
+  }
+
   // Prevent using cover credentials
   if (username === 'admin') {
     return res.status(401).json({ error: 'Invalid credentials' });
@@ -77,11 +82,25 @@ router.post('/login', (req, res) => {
 
   // Allow both regular users and admin accounts to login
   db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
-    if (!user || !bcrypt.compareSync(password, user.password)) {
+    if (err) {
+      console.error('Database error during login:', err);
+      return res.status(500).json({ error: 'Connection error. Please try again.' });
+    }
+    
+    if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    
+    try {
+      if (!bcrypt.compareSync(password, user.password)) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+    } catch (e) {
+      console.error('Password compare error:', e);
+      return res.status(500).json({ error: 'Authentication error. Please try again.' });
+    }
 
-    const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY);
+    const token = jwt.sign({ userId: user.id, username: user.username, role: user.role }, SECRET_KEY);
     
     // Set HTTP-only cookie for server-side auth
     res.cookie('authToken', token, {
@@ -96,6 +115,7 @@ router.post('/login', (req, res) => {
       userId: user.id,
       username: user.username,
       profilePicture: user.profile_picture,
+      role: user.role,
       token
     });
   });

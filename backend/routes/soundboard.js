@@ -5,8 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const pool = require('../db');
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'nebulacore-secret-key';
+const { JWT_SECRET } = require('../config');
 
 const soundsDir = path.join(__dirname, '../../frontend/uploads/sounds');
 if (!fs.existsSync(soundsDir)) {

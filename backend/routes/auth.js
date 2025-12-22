@@ -9,7 +9,8 @@ const logger = require('../logger');
 
 const router = express.Router();
 const upload = multer({ dest: 'frontend/uploads/' });
-const SECRET_KEY = 'real_user_auth_secret_2025';
+const { JWT_SECRET } = require('../config');
+const SECRET_KEY = JWT_SECRET;
 
 // Sign up
 router.post('/signup', upload.single('profilePicture'), (req, res) => {

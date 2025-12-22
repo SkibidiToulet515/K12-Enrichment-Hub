@@ -137,7 +137,7 @@ app.use('/bareasmodule', (req, res, next) => {
 }, express.static(path.join(__dirname, '../node_modules/@mercuryworkshop/bare-as-module3/dist')));
 
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';
+const { JWT_SECRET } = require('./config');
 
 // Server-side authentication check for private pages
 function verifyPageAccess(req, res, next) {
@@ -237,6 +237,58 @@ app.use('/api/users', usersRoutes);
 
 // Auth routes - NO middleware (users need to login first to get a token)
 app.use('/api/auth', authRoutes);
+
+// /api/me endpoint - verify token and return user info
+app.get('/api/me', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1] || req.cookies?.authToken;
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    db.get('SELECT id, username, profile_picture, role, coins FROM users WHERE id = ?', [decoded.userId], (err, user) => {
+      if (err || !user) {
+        return res.status(401).json({ error: 'User not found' });
+      }
+      res.json({
+        id: user.id,
+        username: user.username,
+        profilePicture: user.profile_picture,
+        role: user.role,
+        coins: user.coins
+      });
+    });
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+});
+
+// /api/auth/me alias for compatibility
+app.get('/api/auth/me', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1] || req.cookies?.authToken;
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    db.get('SELECT id, username, profile_picture, role, coins FROM users WHERE id = ?', [decoded.userId], (err, user) => {
+      if (err || !user) {
+        return res.status(401).json({ error: 'User not found' });
+      }
+      res.json({
+        id: user.id,
+        username: user.username,
+        profilePicture: user.profile_picture,
+        role: user.role,
+        coins: user.coins
+      });
+    });
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+});
 
 // Auth middleware for protected API routes (checks both header and cookie)
 const authMiddleware = (req, res, next) => {

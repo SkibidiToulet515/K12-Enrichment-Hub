@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 
-const SECRET_KEY = 'real_user_auth_secret_2025';
+const { JWT_SECRET } = require('../config');
+const SECRET_KEY = JWT_SECRET;
 
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
