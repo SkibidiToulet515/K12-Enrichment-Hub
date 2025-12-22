@@ -1,74 +1,74 @@
 const SOUNDS = [
-  { id: 'airhorn', name: 'Airhorn', category: 'memes', icon: '📢', url: 'https://cdn.freesound.org/previews/159/159341_2723206-lq.mp3' },
-  { id: 'bruh', name: 'Bruh', category: 'memes', icon: '😐', url: 'https://cdn.freesound.org/previews/536/536421_10697247-lq.mp3' },
-  { id: 'sad-trombone', name: 'Sad Trombone', category: 'memes', icon: '🎺', url: 'https://cdn.freesound.org/previews/350/350986_1480854-lq.mp3' },
-  { id: 'wow', name: 'WOW', category: 'memes', icon: '😮', url: 'https://cdn.freesound.org/previews/234/234524_4019029-lq.mp3' },
-  { id: 'oof', name: 'Oof', category: 'memes', icon: '💀', url: 'https://cdn.freesound.org/previews/456/456966_9159316-lq.mp3' },
-  { id: 'vineboom', name: 'Boom', category: 'memes', icon: '💥', url: 'https://cdn.freesound.org/previews/514/514859_6890885-lq.mp3' },
-  { id: 'nope', name: 'Nope', category: 'memes', icon: '🙅', url: 'https://cdn.freesound.org/previews/362/362205_1016145-lq.mp3' },
-  { id: 'what', name: 'What?!', category: 'memes', icon: '❓', url: 'https://cdn.freesound.org/previews/514/514244_4397472-lq.mp3' },
-  { id: 'fail', name: 'Fail', category: 'memes', icon: '❌', url: 'https://cdn.freesound.org/previews/254/254819_4486188-lq.mp3' },
-  { id: 'dramatic', name: 'Dramatic', category: 'memes', icon: '🎭', url: 'https://cdn.freesound.org/previews/327/327479_5123851-lq.mp3' },
-  { id: 'surprised', name: 'Surprised', category: 'memes', icon: '😲', url: 'https://cdn.freesound.org/previews/560/560457_12517458-lq.mp3' },
-  { id: 'bell-ding', name: 'Bell Ding', category: 'memes', icon: '🔔', url: 'https://cdn.freesound.org/previews/411/411089_5121236-lq.mp3' },
-  { id: 'error', name: 'Error', category: 'memes', icon: '💻', url: 'https://cdn.freesound.org/previews/445/445958_8079617-lq.mp3' },
-  { id: 'metal-clang', name: 'Metal Clang', category: 'memes', icon: '🔧', url: 'https://cdn.freesound.org/previews/413/413750_4397472-lq.mp3' },
+  { id: 'airhorn', name: 'Airhorn', category: 'memes', icon: '📢', url: '/sounds/airhorn.mp3' },
+  { id: 'bruh', name: 'Bruh', category: 'memes', icon: '😐', url: '/sounds/bruh.mp3' },
+  { id: 'sad-trombone', name: 'Sad Trombone', category: 'memes', icon: '🎺', url: '/sounds/sad-trombone.mp3' },
+  { id: 'wow', name: 'WOW', category: 'memes', icon: '😮', url: '/sounds/wow.mp3' },
+  { id: 'oof', name: 'Oof', category: 'memes', icon: '💀', url: '/sounds/oof.mp3' },
+  { id: 'vineboom', name: 'Boom', category: 'memes', icon: '💥', url: '/sounds/boom.mp3' },
+  { id: 'nope', name: 'Nope', category: 'memes', icon: '🙅', url: '/sounds/nope.mp3' },
+  { id: 'what', name: 'What?!', category: 'memes', icon: '❓', url: '/sounds/what.mp3' },
+  { id: 'fail', name: 'Fail', category: 'memes', icon: '❌', url: '/sounds/fail.mp3' },
+  { id: 'dramatic', name: 'Dramatic', category: 'memes', icon: '🎭', url: '/sounds/dramatic.mp3' },
+  { id: 'surprised', name: 'Surprised', category: 'memes', icon: '😲', url: '/sounds/surprised.mp3' },
+  { id: 'bell-ding', name: 'Bell Ding', category: 'memes', icon: '🔔', url: '/sounds/bell.mp3' },
+  { id: 'error', name: 'Error', category: 'memes', icon: '💻', url: '/sounds/error.mp3' },
+  { id: 'metal-clang', name: 'Metal Clang', category: 'memes', icon: '🔧', url: '/sounds/clang.mp3' },
   
-  { id: 'levelup', name: 'Level Up', category: 'games', icon: '⬆️', url: 'https://cdn.freesound.org/previews/270/270303_5123851-lq.mp3' },
-  { id: 'coin', name: 'Coin', category: 'games', icon: '🪙', url: 'https://cdn.freesound.org/previews/341/341695_5858296-lq.mp3' },
-  { id: '1up', name: '1-Up', category: 'games', icon: '🍄', url: 'https://cdn.freesound.org/previews/270/270329_5123851-lq.mp3' },
-  { id: 'powerup', name: 'Power Up', category: 'games', icon: '⭐', url: 'https://cdn.freesound.org/previews/270/270319_5123851-lq.mp3' },
-  { id: 'gameover', name: 'Game Over', category: 'games', icon: '☠️', url: 'https://cdn.freesound.org/previews/76/76376_877451-lq.mp3' },
-  { id: 'victory', name: 'Victory', category: 'games', icon: '🏆', url: 'https://cdn.freesound.org/previews/270/270402_5123851-lq.mp3' },
-  { id: 'explosion', name: 'Explosion', category: 'games', icon: '💣', url: 'https://cdn.freesound.org/previews/235/235968_4019029-lq.mp3' },
-  { id: 'collect', name: 'Collect', category: 'games', icon: '✨', url: 'https://cdn.freesound.org/previews/511/511484_6890885-lq.mp3' },
-  { id: 'hit', name: 'Hit', category: 'games', icon: '💔', url: 'https://cdn.freesound.org/previews/511/511485_6890885-lq.mp3' },
-  { id: 'secret', name: 'Secret Found', category: 'games', icon: '🗝️', url: 'https://cdn.freesound.org/previews/250/250712_4486188-lq.mp3' },
-  { id: 'ring', name: 'Ring', category: 'games', icon: '💍', url: 'https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3' },
-  { id: 'success', name: 'Success', category: 'games', icon: '🧱', url: 'https://cdn.freesound.org/previews/270/270324_5123851-lq.mp3' },
+  { id: 'levelup', name: 'Level Up', category: 'games', icon: '⬆️', url: '/sounds/levelup.mp3' },
+  { id: 'coin', name: 'Coin', category: 'games', icon: '🪙', url: '/sounds/coin.mp3' },
+  { id: '1up', name: '1-Up', category: 'games', icon: '🍄', url: '/sounds/1up.mp3' },
+  { id: 'powerup', name: 'Power Up', category: 'games', icon: '⭐', url: '/sounds/powerup.mp3' },
+  { id: 'gameover', name: 'Game Over', category: 'games', icon: '☠️', url: '/sounds/gameover.mp3' },
+  { id: 'victory', name: 'Victory', category: 'games', icon: '🏆', url: '/sounds/victory.mp3' },
+  { id: 'explosion', name: 'Explosion', category: 'games', icon: '💣', url: '/sounds/explosion.mp3' },
+  { id: 'collect', name: 'Collect', category: 'games', icon: '✨', url: '/sounds/collect.mp3' },
+  { id: 'hit', name: 'Hit', category: 'games', icon: '💔', url: '/sounds/hit.mp3' },
+  { id: 'secret', name: 'Secret Found', category: 'games', icon: '🗝️', url: '/sounds/secret.mp3' },
+  { id: 'ring', name: 'Ring', category: 'games', icon: '💍', url: '/sounds/ring.mp3' },
+  { id: 'success', name: 'Success', category: 'games', icon: '🧱', url: '/sounds/success.mp3' },
   
-  { id: 'dog-bark', name: 'Dog Bark', category: 'animals', icon: '🐕', url: 'https://cdn.freesound.org/previews/351/351518_5121236-lq.mp3' },
-  { id: 'cat-meow', name: 'Cat Meow', category: 'animals', icon: '🐱', url: 'https://cdn.freesound.org/previews/412/412017_5121236-lq.mp3' },
-  { id: 'duck-quack', name: 'Duck Quack', category: 'animals', icon: '🦆', url: 'https://cdn.freesound.org/previews/102/102375_724107-lq.mp3' },
-  { id: 'cow-moo', name: 'Cow Moo', category: 'animals', icon: '🐄', url: 'https://cdn.freesound.org/previews/399/399632_7596951-lq.mp3' },
-  { id: 'chicken', name: 'Chicken', category: 'animals', icon: '🐔', url: 'https://cdn.freesound.org/previews/316/316920_5123851-lq.mp3' },
-  { id: 'rooster', name: 'Rooster', category: 'animals', icon: '🐓', url: 'https://cdn.freesound.org/previews/221/221099_1676145-lq.mp3' },
-  { id: 'frog', name: 'Frog Ribbit', category: 'animals', icon: '🐸', url: 'https://cdn.freesound.org/previews/256/256742_4772965-lq.mp3' },
-  { id: 'horse', name: 'Horse Neigh', category: 'animals', icon: '🐴', url: 'https://cdn.freesound.org/previews/352/352098_6228693-lq.mp3' },
-  { id: 'elephant', name: 'Elephant', category: 'animals', icon: '🐘', url: 'https://cdn.freesound.org/previews/322/322912_5414703-lq.mp3' },
-  { id: 'lion-roar', name: 'Lion Roar', category: 'animals', icon: '🦁', url: 'https://cdn.freesound.org/previews/347/347330_6228693-lq.mp3' },
-  { id: 'owl', name: 'Owl Hoot', category: 'animals', icon: '🦉', url: 'https://cdn.freesound.org/previews/243/243627_4366646-lq.mp3' },
-  { id: 'wolf', name: 'Wolf Howl', category: 'animals', icon: '🐺', url: 'https://cdn.freesound.org/previews/398/398032_4284968-lq.mp3' },
+  { id: 'dog-bark', name: 'Dog Bark', category: 'animals', icon: '🐕', url: '/sounds/dog.mp3' },
+  { id: 'cat-meow', name: 'Cat Meow', category: 'animals', icon: '🐱', url: '/sounds/cat.mp3' },
+  { id: 'duck-quack', name: 'Duck Quack', category: 'animals', icon: '🦆', url: '/sounds/duck.mp3' },
+  { id: 'cow-moo', name: 'Cow Moo', category: 'animals', icon: '🐄', url: '/sounds/cow.mp3' },
+  { id: 'chicken', name: 'Chicken', category: 'animals', icon: '🐔', url: '/sounds/chicken.mp3' },
+  { id: 'rooster', name: 'Rooster', category: 'animals', icon: '🐓', url: '/sounds/rooster.mp3' },
+  { id: 'frog', name: 'Frog Ribbit', category: 'animals', icon: '🐸', url: '/sounds/frog.mp3' },
+  { id: 'horse', name: 'Horse Neigh', category: 'animals', icon: '🐴', url: '/sounds/horse.mp3' },
+  { id: 'elephant', name: 'Elephant', category: 'animals', icon: '🐘', url: '/sounds/elephant.mp3' },
+  { id: 'lion-roar', name: 'Lion Roar', category: 'animals', icon: '🦁', url: '/sounds/lion.mp3' },
+  { id: 'owl', name: 'Owl Hoot', category: 'animals', icon: '🦉', url: '/sounds/owl.mp3' },
+  { id: 'wolf', name: 'Wolf Howl', category: 'animals', icon: '🐺', url: '/sounds/wolf.mp3' },
   
-  { id: 'drum-roll', name: 'Drum Roll', category: 'music', icon: '🥁', url: 'https://cdn.freesound.org/previews/181/181511_2401977-lq.mp3' },
-  { id: 'rimshot', name: 'Rimshot', category: 'music', icon: '🎭', url: 'https://cdn.freesound.org/previews/209/209890_3797507-lq.mp3' },
-  { id: 'cymbal', name: 'Cymbal Crash', category: 'music', icon: '🎵', url: 'https://cdn.freesound.org/previews/87/87622_1023862-lq.mp3' },
-  { id: 'guitar-riff', name: 'Guitar Riff', category: 'music', icon: '🎸', url: 'https://cdn.freesound.org/previews/252/252316_3797507-lq.mp3' },
-  { id: 'piano-chord', name: 'Piano Chord', category: 'music', icon: '🎹', url: 'https://cdn.freesound.org/previews/62/62479_634166-lq.mp3' },
-  { id: 'violin', name: 'Violin', category: 'music', icon: '🎻', url: 'https://cdn.freesound.org/previews/137/137058_634166-lq.mp3' },
-  { id: 'trumpet', name: 'Trumpet', category: 'music', icon: '🎺', url: 'https://cdn.freesound.org/previews/172/172867_1015240-lq.mp3' },
-  { id: 'dj-scratch', name: 'DJ Scratch', category: 'music', icon: '🎧', url: 'https://cdn.freesound.org/previews/85/85195_1015240-lq.mp3' },
-  { id: 'horn', name: 'Air Horn', category: 'music', icon: '🎉', url: 'https://cdn.freesound.org/previews/463/463067_5917306-lq.mp3' },
-  { id: 'beat-drop', name: 'Beat Drop', category: 'music', icon: '🔊', url: 'https://cdn.freesound.org/previews/131/131660_1015240-lq.mp3' },
-  { id: 'bass', name: 'Bass Hit', category: 'music', icon: '🎸', url: 'https://cdn.freesound.org/previews/109/109134_1068389-lq.mp3' },
-  { id: 'snare', name: 'Snare Drum', category: 'music', icon: '🥁', url: 'https://cdn.freesound.org/previews/270/270156_5123851-lq.mp3' },
+  { id: 'drum-roll', name: 'Drum Roll', category: 'music', icon: '🥁', url: '/sounds/drumroll.mp3' },
+  { id: 'rimshot', name: 'Rimshot', category: 'music', icon: '🎭', url: '/sounds/rimshot.mp3' },
+  { id: 'cymbal', name: 'Cymbal Crash', category: 'music', icon: '🎵', url: '/sounds/cymbal.mp3' },
+  { id: 'guitar-riff', name: 'Guitar Riff', category: 'music', icon: '🎸', url: '/sounds/guitar.mp3' },
+  { id: 'piano-chord', name: 'Piano Chord', category: 'music', icon: '🎹', url: '/sounds/piano.mp3' },
+  { id: 'violin', name: 'Violin', category: 'music', icon: '🎻', url: '/sounds/violin.mp3' },
+  { id: 'trumpet', name: 'Trumpet', category: 'music', icon: '🎺', url: '/sounds/trumpet.mp3' },
+  { id: 'dj-scratch', name: 'DJ Scratch', category: 'music', icon: '🎧', url: '/sounds/scratch.mp3' },
+  { id: 'horn', name: 'Air Horn', category: 'music', icon: '🎉', url: '/sounds/horn.mp3' },
+  { id: 'beat-drop', name: 'Beat Drop', category: 'music', icon: '🔊', url: '/sounds/beatdrop.mp3' },
+  { id: 'bass', name: 'Bass Hit', category: 'music', icon: '🎸', url: '/sounds/bass.mp3' },
+  { id: 'snare', name: 'Snare Drum', category: 'music', icon: '🥁', url: '/sounds/snare.mp3' },
   
-  { id: 'whoosh', name: 'Whoosh', category: 'effects', icon: '💨', url: 'https://cdn.freesound.org/previews/60/60013_718045-lq.mp3' },
-  { id: 'boing', name: 'Boing', category: 'effects', icon: '🔄', url: 'https://cdn.freesound.org/previews/145/145215_318224-lq.mp3' },
-  { id: 'pop', name: 'Pop', category: 'effects', icon: '💫', url: 'https://cdn.freesound.org/previews/255/255220_4486188-lq.mp3' },
-  { id: 'ding', name: 'Ding', category: 'effects', icon: '🔔', url: 'https://cdn.freesound.org/previews/352/352661_4397472-lq.mp3' },
-  { id: 'buzzer', name: 'Buzzer', category: 'effects', icon: '🚨', url: 'https://cdn.freesound.org/previews/369/369869_6828295-lq.mp3' },
-  { id: 'correct', name: 'Correct', category: 'effects', icon: '✅', url: 'https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3' },
-  { id: 'applause', name: 'Applause', category: 'effects', icon: '👏', url: 'https://cdn.freesound.org/previews/277/277021_4486188-lq.mp3' },
-  { id: 'laugh-track', name: 'Laugh Track', category: 'effects', icon: '😂', url: 'https://cdn.freesound.org/previews/242/242912_4397472-lq.mp3' },
-  { id: 'gasp', name: 'Gasp', category: 'effects', icon: '😱', url: 'https://cdn.freesound.org/previews/56/56242_95370-lq.mp3' },
-  { id: 'suspense', name: 'Suspense', category: 'effects', icon: '🎬', url: 'https://cdn.freesound.org/previews/389/389442_7169931-lq.mp3' },
-  { id: 'magic', name: 'Magic', category: 'effects', icon: '🪄', url: 'https://cdn.freesound.org/previews/220/220173_4058676-lq.mp3' },
-  { id: 'thunder', name: 'Thunder', category: 'effects', icon: '⛈️', url: 'https://cdn.freesound.org/previews/275/275127_4486188-lq.mp3' },
-  { id: 'laser', name: 'Laser', category: 'effects', icon: '⚡', url: 'https://cdn.freesound.org/previews/151/151022_1838523-lq.mp3' },
-  { id: 'alarm', name: 'Alarm', category: 'effects', icon: '🚨', url: 'https://cdn.freesound.org/previews/198/198841_285997-lq.mp3' },
-  { id: 'click', name: 'Click', category: 'effects', icon: '👆', url: 'https://cdn.freesound.org/previews/256/256116_3263906-lq.mp3' },
-  { id: 'swoosh', name: 'Swoosh', category: 'effects', icon: '🌀', url: 'https://cdn.freesound.org/previews/336/336947_4486188-lq.mp3' }
+  { id: 'whoosh', name: 'Whoosh', category: 'effects', icon: '💨', url: '/sounds/whoosh.mp3' },
+  { id: 'boing', name: 'Boing', category: 'effects', icon: '🔄', url: '/sounds/boing.mp3' },
+  { id: 'pop', name: 'Pop', category: 'effects', icon: '💫', url: '/sounds/pop.mp3' },
+  { id: 'ding', name: 'Ding', category: 'effects', icon: '🔔', url: '/sounds/ding.mp3' },
+  { id: 'buzzer', name: 'Buzzer', category: 'effects', icon: '🚨', url: '/sounds/buzzer.mp3' },
+  { id: 'correct', name: 'Correct', category: 'effects', icon: '✅', url: '/sounds/correct.mp3' },
+  { id: 'applause', name: 'Applause', category: 'effects', icon: '👏', url: '/sounds/applause.mp3' },
+  { id: 'laugh-track', name: 'Laugh Track', category: 'effects', icon: '😂', url: '/sounds/laugh.mp3' },
+  { id: 'gasp', name: 'Gasp', category: 'effects', icon: '😱', url: '/sounds/gasp.mp3' },
+  { id: 'suspense', name: 'Suspense', category: 'effects', icon: '🎬', url: '/sounds/suspense.mp3' },
+  { id: 'magic', name: 'Magic', category: 'effects', icon: '🪄', url: '/sounds/magic.mp3' },
+  { id: 'thunder', name: 'Thunder', category: 'effects', icon: '⛈️', url: '/sounds/thunder.mp3' },
+  { id: 'laser', name: 'Laser', category: 'effects', icon: '⚡', url: '/sounds/laser.mp3' },
+  { id: 'alarm', name: 'Alarm', category: 'effects', icon: '🚨', url: '/sounds/alarm.mp3' },
+  { id: 'click', name: 'Click', category: 'effects', icon: '👆', url: '/sounds/click.mp3' },
+  { id: 'swoosh', name: 'Swoosh', category: 'effects', icon: '🌀', url: '/sounds/swoosh.mp3' }
 ];
 
 let currentAudio = null;
@@ -93,12 +93,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   initMyInstantsSearch();
 });
 
+function getAuthToken() {
+  return localStorage.getItem('userToken') || localStorage.getItem('authToken');
+}
+
 async function checkAuth() {
-  const token = localStorage.getItem('token');
+  const token = getAuthToken();
   if (!token) return;
   
   try {
-    const res = await fetch('/api/me', {
+    const res = await fetch('/api/users/me', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
@@ -145,7 +149,7 @@ function updateVolumeIcon() {
 }
 
 async function loadCustomSounds() {
-  const token = localStorage.getItem('token');
+  const token = getAuthToken();
   if (!token) return;
   
   try {
@@ -266,9 +270,14 @@ function playSound(soundId) {
     card.classList.remove('playing');
   });
   
-  const audio = new Audio(sound.url);
+  // Always use proxy for external URLs to avoid CORS issues
+  let audioUrl = sound.url;
+  if (sound.url.startsWith('http')) {
+    audioUrl = `/api/soundboard/proxy?url=${encodeURIComponent(sound.url)}`;
+  }
+  
+  const audio = new Audio(audioUrl);
   audio.volume = masterVolume;
-  audio.crossOrigin = 'anonymous';
   currentAudio = audio;
   currentSoundId = soundId;
   
@@ -282,8 +291,8 @@ function playSound(soundId) {
   
   audio.play().catch(e => {
     console.error('Playback failed:', e);
-    nowPlayingText.textContent = 'Trying backup...';
-    tryBackupSound(sound);
+    nowPlayingText.textContent = 'Failed to play';
+    setTimeout(hideNowPlaying, 1500);
   });
   
   audio.onended = () => {
@@ -343,7 +352,7 @@ function toggleFavorite(soundId) {
 }
 
 async function saveFavoritesToServer() {
-  const token = localStorage.getItem('token');
+  const token = getAuthToken();
   if (!token) return;
   
   try {
@@ -361,7 +370,7 @@ async function saveFavoritesToServer() {
 }
 
 async function loadFavoritesFromServer() {
-  const token = localStorage.getItem('token');
+  const token = getAuthToken();
   if (!token) return;
   
   try {

@@ -174,17 +174,28 @@ router.post('/favorites', authMiddleware, async (req, res) => {
 async function fetchFromMyInstants(endpoint) {
   return new Promise((resolve, reject) => {
     const url = `${MYINSTANTS_API}${endpoint}`;
-    https.get(url, (res) => {
+    const req = https.get(url, { timeout: 5000 }, (res) => {
+      if (res.statusCode !== 200) {
+        reject(new Error(`API returned status ${res.statusCode}`));
+        return;
+      }
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
         try {
-          resolve(JSON.parse(data));
+          const parsed = JSON.parse(data);
+          resolve(parsed);
         } catch (e) {
-          reject(e);
+          console.error('Invalid JSON from MyInstants API:', data.substring(0, 100));
+          reject(new Error('Invalid response from sound API'));
         }
       });
-    }).on('error', reject);
+    });
+    req.on('error', reject);
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Request timed out'));
+    });
   });
 }
 
