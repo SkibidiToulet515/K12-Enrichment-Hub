@@ -161,9 +161,15 @@ const WaveOS = {
     windowEl.innerHTML = `
       <div class="wave-window-titlebar">
         <div class="wave-window-controls">
-          <button class="wave-window-btn close" title="Close"></button>
-          <button class="wave-window-btn minimize" title="Minimize"></button>
-          <button class="wave-window-btn fullscreen-btn" title="Fullscreen"></button>
+          <button class="wave-window-btn close" title="Close">
+            <svg viewBox="0 0 12 12"><path d="M3.5 3.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="wave-window-btn minimize" title="Minimize">
+            <svg viewBox="0 0 12 12"><path d="M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="wave-window-btn fullscreen-btn" title="Fullscreen">
+            <svg viewBox="0 0 12 12"><path d="M2 4V2h2M8 2h2v2M2 8v2h2M8 10h2V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </button>
         </div>
         <div class="wave-window-title">
           <div class="wave-window-title-icon">${this.icons[app.id] || ''}</div>

@@ -398,33 +398,34 @@
   letter-spacing: 0.3px;
 }
 
-/* Window controls - macOS style */
+/* Window controls - macOS style with icons */
 .wave-window-controls {
   display: flex;
   gap: 8px;
 }
 
 .wave-window-btn {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
-.wave-window-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.15s ease;
+.wave-window-btn svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0.9;
+  color: rgba(0, 0, 0, 0.7);
 }
 
-.wave-window-btn:hover::before {
+.wave-window-btn:hover svg {
   opacity: 1;
 }
 
@@ -435,6 +436,7 @@
 
 .wave-window-btn.close:hover {
   background: #ff4136;
+  transform: scale(1.1);
 }
 
 .wave-window-btn.minimize {
@@ -444,6 +446,7 @@
 
 .wave-window-btn.minimize:hover {
   background: #f5a623;
+  transform: scale(1.1);
 }
 
 .wave-window-btn.fullscreen-btn {
@@ -453,6 +456,7 @@
 
 .wave-window-btn.fullscreen-btn:hover {
   background: #1db954;
+  transform: scale(1.1);
 }
 
 /* Window content */
