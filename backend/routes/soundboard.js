@@ -308,6 +308,56 @@ router.post('/cache', async (req, res) => {
   }
 });
 
+router.get('/proxy', async (req, res) => {
+  try {
+    const { url } = req.query;
+    if (!url) {
+      return res.status(400).json({ error: 'URL required' });
+    }
+    
+    const allowedDomains = [
+      'cdn.freesound.org',
+      'freesound.org',
+      'www.myinstants.com',
+      'myinstants.com',
+      'www.soundjay.com',
+      'soundjay.com'
+    ];
+    
+    const urlObj = new URL(url);
+    const isAllowed = allowedDomains.some(d => urlObj.hostname.includes(d));
+    
+    if (!isAllowed) {
+      return res.status(403).json({ error: 'Domain not allowed' });
+    }
+    
+    const protocol = url.startsWith('https') ? https : http;
+    
+    protocol.get(url, { 
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'audio/*,*/*'
+      }
+    }, (proxyRes) => {
+      if (proxyRes.statusCode === 301 || proxyRes.statusCode === 302) {
+        return res.redirect(proxyRes.headers.location);
+      }
+      
+      res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'audio/mpeg');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      
+      proxyRes.pipe(res);
+    }).on('error', (err) => {
+      console.error('Proxy error:', err);
+      res.status(500).json({ error: 'Proxy failed' });
+    });
+  } catch (e) {
+    console.error('Proxy error:', e);
+    res.status(500).json({ error: 'Proxy failed' });
+  }
+});
+
 router.post('/batch-cache', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { sounds } = req.body;
