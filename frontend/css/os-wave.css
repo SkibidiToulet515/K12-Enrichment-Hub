@@ -1,23 +1,27 @@
-/* Wave-Style Browser OS - Calm, Fluid, Human */
+/* Wave OS - Calm, Fluid, Premium macOS-inspired Design */
 
 :root {
-  --wave-sidebar-width: 72px;
-  --wave-dock-height: 64px;
-  --wave-transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --wave-bg: #1a1a24;
-  --wave-surface: rgba(255, 255, 255, 0.04);
-  --wave-surface-hover: rgba(255, 255, 255, 0.08);
-  --wave-border: rgba(255, 255, 255, 0.06);
-  --wave-text: rgba(255, 255, 255, 0.87);
+  --wave-dock-height: 72px;
+  --wave-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --wave-bg-1: #0f0f1a;
+  --wave-bg-2: #1a1a2e;
+  --wave-surface: rgba(255, 255, 255, 0.03);
+  --wave-surface-hover: rgba(255, 255, 255, 0.07);
+  --wave-glass: rgba(30, 30, 50, 0.75);
+  --wave-glass-border: rgba(255, 255, 255, 0.08);
+  --wave-text: #e8e8f0;
   --wave-text-muted: rgba(255, 255, 255, 0.5);
-  --wave-accent: #7c9eb2;
-  --wave-accent-soft: rgba(124, 158, 178, 0.15);
+  --wave-accent: #6b8afd;
+  --wave-accent-glow: rgba(107, 138, 253, 0.3);
+  --wave-window-radius: 16px;
 }
 
 /* Hide classic content in OS Wave mode */
 .layout-os-wave .classic-content,
 .layout-os-wave .app-container:not(.wave-window),
-.layout-os-wave > .app-container {
+.layout-os-wave > .app-container,
+.layout-os-wave .navbar,
+.layout-os-wave .dashboard {
   display: none !important;
 }
 
@@ -25,14 +29,6 @@
 .layout-os-wave .back-link,
 .layout-os-wave a[href="/dashboard"] {
   display: none !important;
-}
-
-/* Ensure Wave elements are visible */
-.layout-os-wave .wave-background,
-.layout-os-wave .wave-main-content,
-.layout-os-wave .wave-dock,
-.layout-os-wave .wave-system-tray {
-  display: block !important;
 }
 
 /* ===== Animated Background ===== */
@@ -43,7 +39,7 @@
   right: 0;
   bottom: 0;
   z-index: 0;
-  background: var(--wave-bg);
+  background: linear-gradient(135deg, var(--wave-bg-1) 0%, var(--wave-bg-2) 50%, #1e1e3f 100%);
   overflow: hidden;
 }
 
@@ -55,61 +51,84 @@
   width: 200%;
   height: 200%;
   background: 
-    radial-gradient(ellipse at 20% 30%, rgba(124, 158, 178, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(147, 128, 166, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(100, 120, 140, 0.04) 0%, transparent 60%);
-  animation: waveGradient 30s ease-in-out infinite;
+    radial-gradient(ellipse at 20% 20%, rgba(107, 138, 253, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 80%, rgba(167, 139, 250, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 60% 30%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+  animation: waveGradient 25s ease-in-out infinite;
 }
 
 @keyframes waveGradient {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(2%, 1%) rotate(1deg); }
-  50% { transform: translate(0%, 2%) rotate(0deg); }
-  75% { transform: translate(-1%, 1%) rotate(-1deg); }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(3%, 2%) scale(1.02); }
+  66% { transform: translate(-2%, 3%) scale(0.98); }
 }
 
-/* Subtle noise texture overlay */
+/* Floating orbs for visual interest */
 .wave-background::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.015;
-  pointer-events: none;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(107, 138, 253, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 10%;
+  right: 10%;
+  animation: floatOrb 20s ease-in-out infinite;
 }
 
-/* ===== Bottom Dock ===== */
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-30px, 20px); }
+}
+
+/* ===== Main Content Area ===== */
+.wave-main-content {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  bottom: calc(var(--wave-dock-height) + 40px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Bottom Dock - macOS Style ===== */
 .wave-dock {
   position: fixed;
-  bottom: 16px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   height: var(--wave-dock-height);
-  background: rgba(30, 30, 40, 0.7);
-  backdrop-filter: blur(20px);
-  border-radius: 18px;
-  border: 1px solid var(--wave-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--wave-glass);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  border-radius: 22px;
+  border: 1px solid var(--wave-glass-border);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  gap: 4px;
+  padding: 0 16px;
+  gap: 6px;
   z-index: 9999;
   transition: var(--wave-transition);
 }
 
 .wave-dock:hover {
-  background: rgba(35, 35, 48, 0.8);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 
+    0 24px 70px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
 /* Dock app icons */
 .wave-dock-item {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -117,336 +136,402 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .wave-dock-item:hover {
-  transform: translateY(-8px) scale(1.1);
+  transform: translateY(-12px) scale(1.15);
 }
 
 .wave-dock-item:active {
-  transform: translateY(-4px) scale(1.05);
+  transform: translateY(-6px) scale(1.1);
 }
 
+/* Active indicator dot */
 .wave-dock-item.active::after {
   content: '';
   position: absolute;
-  bottom: -6px;
+  bottom: -4px;
   left: 50%;
   transform: translateX(-50%);
   width: 5px;
   height: 5px;
   background: var(--wave-accent);
   border-radius: 50%;
-  opacity: 0.8;
+  box-shadow: 0 0 8px var(--wave-accent-glow);
 }
 
+/* Icon container with gradient backgrounds */
 .wave-dock-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--wave-surface);
-  border: 1px solid var(--wave-border);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Individual app icon colors */
+.wave-dock-item[data-app="games"] .wave-dock-icon {
+  background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.wave-dock-item[data-app="chat"] .wave-dock-icon {
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.wave-dock-item[data-app="forums"] .wave-dock-icon {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.wave-dock-item[data-app="youtube"] .wave-dock-icon {
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.wave-dock-item[data-app="apps"] .wave-dock-icon {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.wave-dock-item[data-app="music"] .wave-dock-icon {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.wave-dock-item[data-app="proxy"] .wave-dock-icon {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.wave-dock-item[data-app="profile"] .wave-dock-icon {
+  background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+.wave-dock-item[data-app="settings"] .wave-dock-icon {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+}
+
+.wave-dock-item[data-app="shop"] .wave-dock-icon {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+#waveLogoutBtn .wave-dock-icon {
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .wave-dock-item:hover .wave-dock-icon {
-  background: var(--wave-surface-hover);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
 }
 
 .wave-dock-icon svg {
-  width: 18px;
-  height: 18px;
-  stroke: var(--wave-text-muted);
-  stroke-width: 1.5;
-  transition: stroke 0.2s ease;
+  width: 22px;
+  height: 22px;
+  stroke: white;
+  stroke-width: 2;
+  fill: none;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
-.wave-dock-item:hover .wave-dock-icon svg {
-  stroke: var(--wave-text);
+/* Dock divider */
+.wave-dock-divider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  margin: 0 8px;
 }
 
 /* Dock tooltip */
 .wave-dock-tooltip {
   position: absolute;
-  bottom: 100%;
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(8px);
-  background: rgba(40, 40, 50, 0.95);
-  color: var(--wave-text);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
   opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
   pointer-events: none;
-  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .wave-dock-item:hover .wave-dock-tooltip {
   opacity: 1;
-  visibility: visible;
   transform: translateX(-50%) translateY(0);
 }
 
-/* Dock divider */
-.wave-dock-divider {
-  width: 1px;
-  height: 32px;
-  background: var(--wave-border);
-  margin: 0 8px;
-}
-
-/* ===== Main Content Area ===== */
-.wave-main-content {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: calc(var(--wave-dock-height) + 32px);
-  z-index: 1;
-  overflow: hidden;
-}
-
-/* ===== Window System ===== */
-.wave-window {
-  position: absolute;
-  background: rgba(25, 25, 35, 0.85);
-  backdrop-filter: blur(30px);
-  border-radius: 16px;
-  border: 1px solid var(--wave-border);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(20px) scale(0.96);
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.wave-window.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.wave-window.closing {
-  opacity: 0;
-  transform: translateY(10px) scale(0.98);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.wave-window.focused {
-  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
-}
-
-/* Window title bar - minimal */
-.wave-window-titlebar {
-  height: 40px;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid var(--wave-border);
-  cursor: default;
-  user-select: none;
-  flex-shrink: 0;
-}
-
-.wave-window-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--wave-text-muted);
-}
-
-.wave-window-title svg {
-  width: 14px;
-  height: 14px;
-  stroke: var(--wave-text-muted);
-  opacity: 0.7;
-}
-
-.wave-window-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.wave-window-control {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  opacity: 0.6;
-}
-
-.wave-window-control:hover {
-  opacity: 1;
-}
-
-.wave-window-control.close {
-  background: #ff6059;
-}
-
-.wave-window-control.minimize {
-  background: #ffbd2e;
-}
-
-.wave-window-control.maximize {
-  background: #28c840;
-}
-
-/* Window content */
-.wave-window-content {
-  flex: 1;
-  overflow: hidden;
-}
-
-.wave-window-content iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: var(--wave-bg);
-}
-
-/* ===== System Indicators ===== */
+/* ===== System Tray ===== */
 .wave-system-tray {
   position: fixed;
   top: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  right: 24px;
   z-index: 9998;
-}
-
-.wave-clock {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--wave-text-muted);
-  background: rgba(30, 30, 40, 0.6);
-  backdrop-filter: blur(16px);
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--wave-border);
-}
-
-.wave-settings-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--wave-border);
-  background: rgba(30, 30, 40, 0.6);
-  backdrop-filter: blur(16px);
-  cursor: pointer;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.wave-settings-btn:hover {
-  background: rgba(40, 40, 55, 0.8);
-}
-
-.wave-settings-btn svg {
-  width: 16px;
-  height: 16px;
-  stroke: var(--wave-text-muted);
-  transition: stroke 0.2s ease;
-}
-
-.wave-settings-btn:hover svg {
-  stroke: var(--wave-text);
-}
-
-/* ===== Loading State ===== */
-.wave-loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 16px;
 }
 
-.wave-loading-dots {
+.wave-clock {
+  background: var(--wave-glass);
+  backdrop-filter: blur(20px);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--wave-text);
+  border: 1px solid var(--wave-glass-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Windows ===== */
+.wave-window {
+  position: absolute;
+  background: var(--wave-glass);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  border-radius: var(--wave-window-radius);
+  border: 1px solid var(--wave-glass-border);
+  box-shadow: 
+    0 25px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  overflow: hidden;
   display: flex;
-  gap: 6px;
+  flex-direction: column;
+  animation: windowOpen 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.wave-loading-dots span {
-  width: 8px;
-  height: 8px;
-  background: var(--wave-accent);
-  border-radius: 50%;
-  opacity: 0.3;
-  animation: waveDots 1.4s ease-in-out infinite;
+@keyframes windowOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.wave-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-.wave-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes waveDots {
-  0%, 80%, 100% { opacity: 0.3; transform: scale(1); }
-  40% { opacity: 1; transform: scale(1.2); }
+.wave-window.closing {
+  animation: windowClose 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
-/* ===== Floating Window Mode (default) ===== */
+@keyframes windowClose {
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Floating Window Mode */
 .wave-window:not(.fullscreen) {
-  top: var(--float-top, 10%);
-  left: var(--float-left, 10%);
-  width: var(--float-width, 80%);
-  height: var(--float-height, 75%);
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 85%;
 }
 
-/* ===== Fullscreen Window Mode ===== */
+/* Fullscreen Window Mode */
 .wave-window.fullscreen {
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
-  bottom: calc(var(--wave-dock-height) + 32px) !important;
+  bottom: calc(var(--wave-dock-height) + 24px) !important;
   width: auto !important;
   height: auto !important;
   border-radius: 0;
   border: none;
 }
 
+/* Window titlebar */
+.wave-window-titlebar {
+  height: 44px;
+  min-height: 44px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  cursor: default;
+  user-select: none;
+}
+
 .wave-window.fullscreen .wave-window-titlebar {
   border-radius: 0;
+}
+
+.wave-window-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--wave-text);
+}
+
+.wave-window-title-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.wave-window-title-text {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.9;
+  letter-spacing: 0.3px;
+}
+
+/* Window controls - macOS style */
+.wave-window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.wave-window-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.wave-window-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.wave-window-btn:hover::before {
+  opacity: 1;
+}
+
+.wave-window-btn.close {
+  background: #ff5f57;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+.wave-window-btn.close:hover {
+  background: #ff4136;
+}
+
+.wave-window-btn.minimize {
+  background: #febc2e;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+.wave-window-btn.minimize:hover {
+  background: #f5a623;
+}
+
+.wave-window-btn.fullscreen-btn {
+  background: #28c840;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+.wave-window-btn.fullscreen-btn:hover {
+  background: #1db954;
+}
+
+/* Window content */
+.wave-window-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(15, 15, 26, 0.95) 0%, rgba(15, 15, 26, 0.98) 100%);
+}
+
+.wave-window-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+
+/* Loading overlay */
+.wave-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(15, 15, 26, 0.98) 0%, rgba(26, 26, 46, 0.98) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.wave-loading.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.wave-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--wave-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.wave-loading-text {
+  margin-top: 16px;
+  color: var(--wave-text-muted);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 /* ===== Hide in other modes ===== */
 .layout-classic .wave-background,
 .layout-classic .wave-dock,
-.layout-classic .wave-main-content,
 .layout-classic .wave-system-tray,
+.layout-classic .wave-main-content,
 .layout-os .wave-background,
 .layout-os .wave-dock,
-.layout-os .wave-main-content,
-.layout-os .wave-system-tray {
+.layout-os .wave-system-tray,
+.layout-os .wave-main-content {
   display: none !important;
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .wave-dock {
-    bottom: 8px;
-    padding: 0 8px;
+    padding: 0 10px;
+    gap: 4px;
+    height: 60px;
+    border-radius: 18px;
   }
   
   .wave-dock-item {
@@ -455,20 +540,52 @@
   }
   
   .wave-dock-icon {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
   }
   
   .wave-dock-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
   
   .wave-main-content {
-    bottom: calc(var(--wave-dock-height) + 16px);
+    top: 16px;
+    left: 8px;
+    right: 8px;
+    bottom: calc(60px + 24px);
   }
   
-  .wave-window.fullscreen {
-    bottom: calc(var(--wave-dock-height) + 16px) !important;
+  .wave-window:not(.fullscreen) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
   }
+}
+
+/* ===== Empty state when no window is open ===== */
+.wave-empty-state {
+  text-align: center;
+  color: var(--wave-text-muted);
+}
+
+.wave-empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.wave-empty-text {
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.wave-empty-hint {
+  font-size: 14px;
+  margin-top: 8px;
+  opacity: 0.4;
 }

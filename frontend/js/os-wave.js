@@ -1,4 +1,4 @@
-/* Wave-Style Browser OS - Calm, Fluid, Human */
+/* Wave OS - Calm, Fluid, Premium macOS-inspired Design */
 
 const WaveOS = {
   currentApp: null,
@@ -9,22 +9,22 @@ const WaveOS = {
   apps: [
     { id: 'games', name: 'Games', url: '/private/games.html' },
     { id: 'chat', name: 'Chat', url: '/private/chat.html' },
-    { id: 'forums', name: 'Forums', url: '/private/forums.html' },
-    { id: 'youtube', name: 'Videos', url: '/private/youtube.html' },
-    { id: 'apps', name: 'Apps', url: '/private/apps.html' },
-    { id: 'music', name: 'Music', url: '/private/music.html' },
     { id: 'proxy', name: 'Browse', url: '/private/proxy.html' },
-    { id: 'profile', name: 'Profile', url: '/private/profile.html' },
+    { id: 'apps', name: 'Apps', url: '/private/apps.html' },
+    { id: 'youtube', name: 'Videos', url: '/private/youtube.html' },
+    { id: 'music', name: 'Music', url: '/private/music.html' },
+    { id: 'forums', name: 'Forums', url: '/private/forums.html' },
+    { id: 'shop', name: 'Shop', url: '/private/shop.html' },
     { id: 'settings', name: 'Settings', url: '/private/settings.html' },
-    { id: 'shop', name: 'Shop', url: '/private/shop.html' }
+    { id: 'profile', name: 'Profile', url: '/private/profile.html' }
   ],
   
   icons: {
-    games: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="17" cy="10" r="1"/><circle cx="15" cy="13" r="1"/></svg>',
+    games: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="17" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1.5" fill="currentColor" stroke="none"/></svg>',
     chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
     forums: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    youtube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10,8 16,12 10,16"/></svg>',
-    apps: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    youtube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>',
+    apps: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
     music: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="15.5" r="3.5"/><path d="M9 17.5V5l12-2v12.5"/></svg>',
     proxy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
     profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>',
@@ -37,6 +37,7 @@ const WaveOS = {
     if (this.isInitialized) return;
     
     const layoutMode = localStorage.getItem('layoutMode') || 'classic';
+    document.body.classList.remove('layout-classic', 'layout-os', 'layout-os-wave');
     document.body.classList.add(`layout-${layoutMode}`);
     
     if (layoutMode === 'os-wave') {
@@ -44,7 +45,7 @@ const WaveOS = {
       this.render();
       this.setupEventListeners();
       this.startClock();
-      setTimeout(() => this.openApp('proxy'), 200);
+      setTimeout(() => this.openApp('games'), 300);
     }
   },
   
@@ -113,9 +114,9 @@ const WaveOS = {
     
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.currentApp) {
-        const window = document.querySelector(`.wave-window[data-app="${this.currentApp}"]`);
-        if (window && window.classList.contains('fullscreen')) {
-          window.classList.remove('fullscreen');
+        const win = document.querySelector(`.wave-window[data-app="${this.currentApp}"]`);
+        if (win && win.classList.contains('fullscreen')) {
+          win.classList.remove('fullscreen');
         }
       }
     });
@@ -125,14 +126,24 @@ const WaveOS = {
     const app = this.apps.find(a => a.id === appId);
     if (!app) return;
     
+    // Update dock active states
     document.querySelectorAll('.wave-dock-item').forEach(item => {
       item.classList.toggle('active', item.dataset.app === appId);
     });
     
-    if (this.windows[appId]) {
-      this.focusWindow(appId);
+    // Check if window already exists
+    let existingWindow = document.querySelector(`.wave-window[data-app="${appId}"]`);
+    if (existingWindow) {
+      existingWindow.style.zIndex = ++this.windowZIndex;
+      this.currentApp = appId;
       return;
     }
+    
+    // Close other windows
+    document.querySelectorAll('.wave-window').forEach(win => {
+      win.classList.add('closing');
+      setTimeout(() => win.remove(), 250);
+    });
     
     this.createWindow(app);
     this.currentApp = appId;
@@ -147,90 +158,89 @@ const WaveOS = {
     windowEl.dataset.app = app.id;
     windowEl.style.zIndex = ++this.windowZIndex;
     
-    // Set default floating dimensions for when user exits fullscreen
-    windowEl.style.setProperty('--float-width', '80%');
-    windowEl.style.setProperty('--float-height', '80%');
-    windowEl.style.setProperty('--float-top', '5%');
-    windowEl.style.setProperty('--float-left', '10%');
-    
     windowEl.innerHTML = `
       <div class="wave-window-titlebar">
-        <div class="wave-window-title">
-          ${this.icons[app.id] || ''}
-          <span>${app.name}</span>
-        </div>
         <div class="wave-window-controls">
-          <button class="wave-window-control minimize" title="Minimize"></button>
-          <button class="wave-window-control maximize" title="Fullscreen"></button>
-          <button class="wave-window-control close" title="Close"></button>
+          <button class="wave-window-btn close" title="Close"></button>
+          <button class="wave-window-btn minimize" title="Minimize"></button>
+          <button class="wave-window-btn fullscreen-btn" title="Fullscreen"></button>
         </div>
+        <div class="wave-window-title">
+          <div class="wave-window-title-icon">${this.icons[app.id] || ''}</div>
+          <span class="wave-window-title-text">${app.name}</span>
+        </div>
+        <div style="width: 60px;"></div>
       </div>
       <div class="wave-window-content">
-        <iframe src="${app.url}" title="${app.name}"></iframe>
+        <div class="wave-loading visible" id="waveLoading-${app.id}">
+          <div class="wave-loading-spinner"></div>
+          <div class="wave-loading-text">Loading ${app.name}...</div>
+        </div>
+        <iframe src="${app.url}" id="waveFrame-${app.id}"></iframe>
       </div>
     `;
     
     mainContent.appendChild(windowEl);
     
-    const controls = windowEl.querySelector('.wave-window-controls');
-    controls.querySelector('.close').addEventListener('click', () => this.closeWindow(app.id));
-    controls.querySelector('.maximize').addEventListener('click', () => {
-      windowEl.classList.toggle('fullscreen');
-    });
-    controls.querySelector('.minimize').addEventListener('click', () => {
-      windowEl.classList.remove('visible');
+    // Setup window controls
+    const closeBtn = windowEl.querySelector('.wave-window-btn.close');
+    const minimizeBtn = windowEl.querySelector('.wave-window-btn.minimize');
+    const fullscreenBtn = windowEl.querySelector('.wave-window-btn.fullscreen-btn');
+    
+    closeBtn.addEventListener('click', () => this.closeWindow(app.id));
+    minimizeBtn.addEventListener('click', () => this.minimizeWindow(app.id));
+    fullscreenBtn.addEventListener('click', () => this.toggleFullscreen(app.id));
+    
+    // Hide loading when iframe loads
+    const iframe = windowEl.querySelector('iframe');
+    const loading = windowEl.querySelector('.wave-loading');
+    
+    iframe.addEventListener('load', () => {
       setTimeout(() => {
-        windowEl.style.display = 'none';
+        loading.classList.remove('visible');
       }, 300);
     });
     
-    windowEl.addEventListener('mousedown', () => this.focusWindow(app.id));
-    
     this.windows[app.id] = windowEl;
-    
-    requestAnimationFrame(() => {
-      windowEl.classList.add('visible', 'focused');
-    });
-  },
-  
-  focusWindow(appId) {
-    document.querySelectorAll('.wave-window').forEach(w => {
-      w.classList.remove('focused');
-    });
-    
-    const window = this.windows[appId];
-    if (window) {
-      window.style.zIndex = ++this.windowZIndex;
-      window.style.display = '';
-      window.classList.add('visible', 'focused');
-      this.currentApp = appId;
-    }
   },
   
   closeWindow(appId) {
-    const window = this.windows[appId];
-    if (!window) return;
+    const win = document.querySelector(`.wave-window[data-app="${appId}"]`);
+    if (win) {
+      win.classList.add('closing');
+      setTimeout(() => {
+        win.remove();
+        delete this.windows[appId];
+      }, 250);
+    }
     
-    window.classList.add('closing');
-    window.classList.remove('visible');
+    // Deactivate dock item
+    const dockItem = document.querySelector(`.wave-dock-item[data-app="${appId}"]`);
+    if (dockItem) {
+      dockItem.classList.remove('active');
+    }
     
-    setTimeout(() => {
-      window.remove();
-      delete this.windows[appId];
-      
-      const remainingApps = Object.keys(this.windows);
-      if (remainingApps.length > 0) {
-        this.focusWindow(remainingApps[remainingApps.length - 1]);
-      } else {
-        this.currentApp = null;
-      }
-      
-      document.querySelectorAll('.wave-dock-item').forEach(item => {
-        if (item.dataset.app === appId) {
-          item.classList.remove('active');
-        }
-      });
-    }, 300);
+    if (this.currentApp === appId) {
+      this.currentApp = null;
+    }
+  },
+  
+  minimizeWindow(appId) {
+    const win = document.querySelector(`.wave-window[data-app="${appId}"]`);
+    if (win) {
+      win.classList.add('closing');
+      setTimeout(() => {
+        win.style.display = 'none';
+        win.classList.remove('closing');
+      }, 250);
+    }
+  },
+  
+  toggleFullscreen(appId) {
+    const win = document.querySelector(`.wave-window[data-app="${appId}"]`);
+    if (win) {
+      win.classList.toggle('fullscreen');
+    }
   },
   
   startClock() {
@@ -238,7 +248,11 @@ const WaveOS = {
       const clock = document.getElementById('waveClock');
       if (clock) {
         const now = new Date();
-        clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const h = hours % 12 || 12;
+        clock.textContent = `${h}:${minutes} ${ampm}`;
       }
     };
     updateClock();
@@ -246,8 +260,10 @@ const WaveOS = {
   },
   
   logout() {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('user');
     window.location.href = '/auth';
   }
 };
