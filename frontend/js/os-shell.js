@@ -14,8 +14,8 @@ const OSShell = {
     { id: 'proxy', name: 'Web Proxy', icon: 'proxy', color: '#14b8a6', url: '/private/proxy.html' },
     { id: 'profile', name: 'Profile', icon: 'profile', color: '#f59e0b', url: '/private/profile.html' },
     { id: 'settings', name: 'Settings', icon: 'settings', color: '#6b7280', url: '/private/settings.html' },
-    { id: 'themes', name: 'Themes', icon: 'themes', color: '#8b5cf6', url: '/private/themes.html' },
-    { id: 'leaderboard', name: 'Leaderboard', icon: 'leaderboard', color: '#eab308', url: '/private/leaderboard.html' },
+    { id: 'themes', name: 'Themes', icon: 'themes', color: '#8b5cf6', url: '/private/theme-creator.html' },
+    { id: 'leaderboard', name: 'Stats', icon: 'leaderboard', color: '#eab308', url: '/private/stats.html' },
     { id: 'shop', name: 'Shop', icon: 'shop', color: '#06b6d4', url: '/private/shop.html' },
     { id: 'admin', name: 'Admin', icon: 'admin', color: '#dc2626', url: '/private/admin.html', adminOnly: true }
   ],
