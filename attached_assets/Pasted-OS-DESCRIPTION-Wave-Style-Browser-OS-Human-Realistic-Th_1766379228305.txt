@@ -1,0 +1,147 @@
+OS DESCRIPTION — Wave-Style Browser OS (Human, Realistic)
+
+This OS feels soft, fluid, and calm, like everything is gently in motion without being distracting. Nothing snaps aggressively; transitions glide and ease in naturally. The UI doesn’t scream for attention — it feels confident and quiet.
+
+Overall Feel
+
+Modern but not flashy
+
+Calm, slightly experimental
+
+Built for long sessions without visual fatigue
+
+More “workspace” than “website”
+
+It feels like something you’d discover, not something marketed to you.
+
+Layout & Structure
+Desktop / Workspace
+
+Instead of a literal wallpaper desktop, the background is a subtle animated gradient or noise texture — slow-moving, almost unnoticeable. It gives depth without distraction.
+
+Apps don’t float randomly — they feel anchored to an invisible grid, but not rigidly aligned.
+
+Taskbar / Dock
+
+Usually positioned at the bottom
+
+Semi-translucent but NOT glassy
+
+Slight blur with soft shadow
+
+Icons are evenly spaced but not perfectly centered
+
+The taskbar feels more like a control strip than a toolbar:
+
+App launcher
+
+Running apps
+
+System indicators (time, settings, notifications)
+
+When an app is active, its icon glows very subtly — no harsh highlights.
+
+App Windows
+
+Windows are:
+
+Rounded, but not excessively
+
+Light shadows, no neon outlines
+
+Slight depth separation from the background
+
+They slide and fade in, never pop.
+
+Instead of heavy title bars:
+
+Minimal top bar
+
+App icon + title
+
+Small, understated controls
+
+Windows feel more like panels than boxes.
+
+Motion & Animation
+
+Motion is a defining feature, but it’s restrained:
+
+Opening an app → gentle rise + fade
+
+Switching focus → soft shadow change
+
+Closing → slight downward drift
+
+Nothing bounces. Nothing spins.
+Animations are there to explain space, not show off.
+
+Color & Visual Language
+
+Muted color palette
+
+Off-whites, soft blues, dusty purples, warm grays
+
+Accent colors used sparingly
+
+No harsh contrast.
+No neon gradients.
+No default Tailwind-looking colors.
+
+Text is readable but not bold everywhere — hierarchy is created through spacing, not size.
+
+Icons & Visual Elements
+
+No emojis
+
+Icons feel custom or curated
+
+Slightly imperfect shapes
+
+Some areas intentionally have no icon at all
+
+Icons don’t dominate — they support.
+
+Navigation Philosophy
+
+There’s no traditional “menu bar.”
+
+Navigation happens through:
+
+App launcher
+
+Contextual panels
+
+Right-click or long-press menus (optional)
+
+The OS assumes users will learn it, not be spoon-fed.
+
+Settings Experience
+
+Settings feel like:
+
+A real system settings app
+
+Categorized but not bloated
+
+Toggles are calm, slow, and deliberate
+
+Visual previews are used instead of text when possible.
+
+Why It Feels Human (Not AI)
+
+Not everything is symmetrical
+
+Not everything is labeled
+
+Some spacing feels intentional, not mathematical
+
+Visual hierarchy is uneven but logical
+
+It feels like a product that:
+
+“Started simple, then got refined over time.”
+
+One-sentence summary
+
+A calm, wave-inspired browser OS that prioritizes flow, subtle motion, and functional clarity over flash — more like a real workspace than a tech demo.
