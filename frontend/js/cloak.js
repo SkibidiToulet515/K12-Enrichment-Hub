@@ -23,7 +23,9 @@ const CloakManager = {
   },
   
   openInAboutBlank() {
-    const currentUrl = window.location.href;
+    localStorage.setItem('layoutMode', 'os');
+    const baseUrl = window.location.origin;
+    const targetUrl = baseUrl + '/private/desktop.html';
     const newWindow = window.open('about:blank', '_blank');
     if (newWindow) {
       newWindow.document.write(`
@@ -38,7 +40,7 @@ const CloakManager = {
           </style>
         </head>
         <body>
-          <iframe src="${currentUrl}" allowfullscreen></iframe>
+          <iframe src="${targetUrl}" allowfullscreen></iframe>
         </body>
         </html>
       `);
@@ -48,7 +50,9 @@ const CloakManager = {
   },
   
   openInBlob() {
-    const currentUrl = window.location.href;
+    localStorage.setItem('layoutMode', 'os');
+    const baseUrl = window.location.origin;
+    const targetUrl = baseUrl + '/private/desktop.html';
     const html = `
       <!DOCTYPE html>
       <html>
@@ -61,7 +65,7 @@ const CloakManager = {
         </style>
       </head>
       <body>
-        <iframe src="${currentUrl}" allowfullscreen></iframe>
+        <iframe src="${targetUrl}" allowfullscreen></iframe>
       </body>
       </html>
     `;
