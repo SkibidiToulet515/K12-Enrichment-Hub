@@ -764,12 +764,11 @@ async function initDatabase() {
       ('Profile Frames', 'frames', '🖼️', 'Stylish borders for your avatar', 2),
       ('Badges', 'badges', '🏅', 'Flair badges next to your name', 3),
       ('Chat Bubbles', 'bubbles', '💬', 'Customize how your messages look', 4),
-      ('Sound Packs', 'sounds', '🔊', 'Custom notification sounds', 5),
-      ('Animated Avatars', 'avatars', '✨', 'Pre-made animated profile pictures', 6),
-      ('Server Cosmetics', 'server', '🏠', 'Icons and banners for your servers', 7),
-      ('Status Effects', 'status', '🔴', 'Custom status indicators', 8),
-      ('Bio Upgrades', 'bio', '📝', 'Enhance your profile bio', 9),
-      ('Boosts', 'boosts', '🚀', 'Cosmetic boosts and effects', 10)
+      ('Animated Avatars', 'avatars', '✨', 'Pre-made animated profile pictures', 5),
+      ('Server Cosmetics', 'server', '🏠', 'Icons and banners for your servers', 6),
+      ('Status Effects', 'status', '🔴', 'Custom status indicators', 7),
+      ('Bio Upgrades', 'bio', '📝', 'Enhance your profile bio', 8),
+      ('Boosts', 'boosts', '🚀', 'Cosmetic boosts and effects', 9)
       ON CONFLICT (slug) DO NOTHING`);
 
     await client.query(`INSERT INTO shop_items (category_id, name, slug, description, price, rarity, item_type, css_class, css_vars, is_animated) VALUES
