@@ -1,0 +1,720 @@
+/* Global Responsive Styles for K-12 Learning Portal */
+
+/* Mobile-first base styles */
+:root {
+  --mobile-nav-height: 60px;
+  --sidebar-width: 250px;
+}
+
+/* Responsive breakpoints:
+   - Mobile: < 768px
+   - Tablet: 768px - 1024px
+   - Desktop: > 1024px
+*/
+
+/* Mobile Navigation Toggle */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 10001;
+  background: var(--primary, #00d4ff);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #fff;
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Responsive Grid System */
+.responsive-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-cols-1 { grid-template-columns: 1fr; }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-cols-5 { grid-template-columns: repeat(5, 1fr); }
+.grid-cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+/* Responsive utilities */
+.hide-mobile { display: block; }
+.show-mobile { display: none; }
+.hide-tablet { display: block; }
+.show-tablet { display: none; }
+
+/* Touch-friendly button sizing */
+@media (hover: none) and (pointer: coarse) {
+  button, .btn, a.btn, .nav-item, .menu-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ===================
+   TABLET STYLES
+   =================== */
+@media screen and (max-width: 1024px) {
+  .hide-tablet { display: none !important; }
+  .show-tablet { display: block !important; }
+  
+  .grid-cols-5, .grid-cols-6 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  /* Sidebar adjustments */
+  .sidebar {
+    width: 200px !important;
+  }
+  
+  .main-content {
+    margin-left: 200px !important;
+  }
+}
+
+/* ===================
+   MOBILE STYLES
+   =================== */
+@media screen and (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: block !important; }
+  
+  /* Mobile menu toggle visible */
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  /* Sidebar becomes full overlay */
+  .sidebar, 
+  nav.sidebar,
+  .nav-sidebar,
+  aside.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 280px !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    transition: left 0.3s ease !important;
+    overflow-y: auto !important;
+    padding-top: 70px !important;
+  }
+  
+  .sidebar.mobile-open,
+  nav.sidebar.mobile-open,
+  .nav-sidebar.mobile-open,
+  aside.sidebar.mobile-open {
+    left: 0 !important;
+  }
+  
+  /* Main content full width */
+  .main-content,
+  main,
+  .content-area,
+  .page-content {
+    margin-left: 0 !important;
+    padding: 15px !important;
+    padding-top: 80px !important;
+    width: 100% !important;
+  }
+  
+  /* Grid adjustments */
+  .grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-5, .grid-cols-6 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .grid-cols-1-mobile {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Card adjustments */
+  .card, .game-card, .widget, .panel {
+    padding: 15px !important;
+  }
+  
+  /* Font size adjustments */
+  h1 { font-size: 1.75rem !important; }
+  h2 { font-size: 1.5rem !important; }
+  h3 { font-size: 1.25rem !important; }
+  
+  /* Form inputs full width */
+  input, select, textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Modal adjustments */
+  .modal-content, .modal-dialog {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 10px auto !important;
+  }
+  
+  /* Table responsive */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  /* Flex direction column on mobile */
+  .flex-mobile-column {
+    flex-direction: column !important;
+  }
+  
+  /* Button full width on mobile */
+  .btn-mobile-full {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+  }
+  
+  /* Quick switcher adjustments */
+  .quick-switcher {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+  
+  /* Header adjustments */
+  .page-header, .dashboard-header {
+    flex-direction: column !important;
+    gap: 15px !important;
+    text-align: center !important;
+  }
+  
+  /* Stats grid */
+  .stats-grid, .stat-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+
+/* ===================
+   SMALL MOBILE STYLES
+   =================== */
+@media screen and (max-width: 480px) {
+  .grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-5, .grid-cols-6 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .stats-grid, .stat-cards {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Even smaller fonts */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  
+  /* Smaller padding */
+  .card, .game-card, .widget, .panel {
+    padding: 12px !important;
+  }
+  
+  .main-content, main, .content-area, .page-content {
+    padding: 10px !important;
+    padding-top: 75px !important;
+  }
+}
+
+/* ===================
+   LANDSCAPE MOBILE
+   =================== */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  .sidebar.mobile-open {
+    width: 250px !important;
+  }
+  
+  .main-content {
+    padding-top: 70px !important;
+  }
+}
+
+/* ===================
+   OS MODE RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  /* OS Mode sidebar */
+  .os-sidebar {
+    position: fixed !important;
+    left: -100% !important;
+    width: 280px !important;
+    z-index: 9999 !important;
+    transition: left 0.3s ease !important;
+  }
+  
+  .os-sidebar.mobile-open {
+    left: 0 !important;
+  }
+  
+  .os-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .os-taskbar {
+    height: auto !important;
+    flex-wrap: wrap !important;
+    padding: 5px !important;
+  }
+  
+  .os-start-menu {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 50px !important;
+    max-height: 70vh !important;
+  }
+  
+  /* Wave OS dock */
+  .wave-dock {
+    padding: 8px 15px !important;
+    gap: 10px !important;
+    max-width: 95% !important;
+    overflow-x: auto !important;
+    justify-content: flex-start !important;
+  }
+  
+  .wave-dock-item {
+    width: 45px !important;
+    height: 45px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .wave-dock-item i {
+    font-size: 20px !important;
+  }
+  
+  /* Wave OS windows */
+  .wave-window {
+    width: 100% !important;
+    height: calc(100% - 80px) !important;
+    left: 0 !important;
+    top: 0 !important;
+    border-radius: 0 !important;
+  }
+  
+  .wave-window.maximized {
+    height: calc(100% - 70px) !important;
+  }
+}
+
+/* ===================
+   CHAT RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .chat-container {
+    flex-direction: column !important;
+  }
+  
+  .chat-sidebar, .server-list, .channel-list {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 200px !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  .chat-main, .message-area {
+    width: 100% !important;
+    height: calc(100vh - 350px) !important;
+  }
+  
+  .member-list {
+    display: none !important;
+  }
+  
+  .member-list.mobile-open {
+    display: block !important;
+    position: fixed !important;
+    right: 0 !important;
+    top: 0 !important;
+    width: 250px !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+  }
+  
+  .message-input-container {
+    padding: 10px !important;
+  }
+  
+  .message-input {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* ===================
+   GAMES PAGE RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .games-grid, .game-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+  }
+  
+  .game-card {
+    aspect-ratio: 1 !important;
+  }
+  
+  .game-card img {
+    height: 100px !important;
+  }
+  
+  .game-filters, .category-filters {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  
+  .filter-btn {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+  
+  .game-modal .modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
+  
+  .game-iframe {
+    width: 100% !important;
+    height: calc(100vh - 60px) !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .games-grid, .game-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===================
+   SHOP RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .shop-categories {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .shop-category-btn {
+    flex: 1 1 calc(50% - 8px) !important;
+    padding: 12px !important;
+    text-align: center !important;
+  }
+  
+  .shop-items-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .shop-item-card {
+    padding: 12px !important;
+  }
+  
+  .shop-header {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+  
+  .currency-display {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .shop-items-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .shop-category-btn {
+    flex: 1 1 100% !important;
+  }
+}
+
+/* ===================
+   FORUMS RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .forum-post {
+    padding: 15px !important;
+  }
+  
+  .forum-post-header {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .forum-categories-list {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .post-actions {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+}
+
+/* ===================
+   YOUTUBE/MUSIC RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .video-player-container {
+    padding: 10px !important;
+  }
+  
+  .video-player {
+    height: 200px !important;
+  }
+  
+  .music-player {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+  
+  .queue-list {
+    max-height: 200px !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .video-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===================
+   PROFILE RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .profile-header {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 20px !important;
+  }
+  
+  .profile-avatar {
+    margin: 0 auto !important;
+  }
+  
+  .profile-stats {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .profile-tabs {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .profile-tab {
+    flex-shrink: 0 !important;
+    padding: 10px 15px !important;
+  }
+}
+
+/* ===================
+   ADMIN PANEL RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .admin-sidebar {
+    position: fixed !important;
+    left: -100% !important;
+    width: 250px !important;
+    z-index: 9999 !important;
+    transition: left 0.3s ease !important;
+  }
+  
+  .admin-sidebar.mobile-open {
+    left: 0 !important;
+  }
+  
+  .admin-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .admin-table-container {
+    overflow-x: auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===================
+   SETTINGS RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .settings-container {
+    flex-direction: column !important;
+  }
+  
+  .settings-sidebar {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 10px !important;
+  }
+  
+  .settings-nav-item {
+    flex-shrink: 0 !important;
+    padding: 10px 15px !important;
+  }
+  
+  .settings-content {
+    padding: 20px 15px !important;
+  }
+  
+  .theme-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .theme-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===================
+   APPS PAGE RESPONSIVE
+   =================== */
+@media screen and (max-width: 768px) {
+  .apps-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .app-card {
+    padding: 20px 15px !important;
+  }
+  
+  .calculator-display {
+    font-size: 2rem !important;
+  }
+  
+  .calculator-buttons {
+    gap: 8px !important;
+  }
+  
+  .calc-btn {
+    padding: 15px !important;
+    font-size: 1.2rem !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .apps-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===================
+   UTILITY CLASSES
+   =================== */
+.text-center-mobile {
+  text-align: left;
+}
+
+@media screen and (max-width: 768px) {
+  .text-center-mobile {
+    text-align: center !important;
+  }
+  
+  .p-mobile-0 { padding: 0 !important; }
+  .p-mobile-1 { padding: 0.5rem !important; }
+  .p-mobile-2 { padding: 1rem !important; }
+  
+  .m-mobile-0 { margin: 0 !important; }
+  .m-mobile-1 { margin: 0.5rem !important; }
+  .m-mobile-2 { margin: 1rem !important; }
+  
+  .gap-mobile-1 { gap: 0.5rem !important; }
+  .gap-mobile-2 { gap: 1rem !important; }
+}
+
+/* Scroll behavior */
+@media screen and (max-width: 768px) {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Prevent body scroll when modal/sidebar open */
+  body.modal-open,
+  body.sidebar-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+  }
+}
+
+/* Safe area for notched devices (iPhone X, etc.) */
+@supports (padding: max(0px)) {
+  .main-content, main, .content-area {
+    padding-left: max(15px, env(safe-area-inset-left));
+    padding-right: max(15px, env(safe-area-inset-right));
+    padding-bottom: max(15px, env(safe-area-inset-bottom));
+  }
+  
+  .sidebar, .os-taskbar, .wave-dock {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+}
