@@ -49,7 +49,6 @@ const themesRoutes = require('./routes/themes');
 const forumsRoutes = require('./routes/forums');
 const bugReportsRoutes = require('./routes/bug-reports');
 const aiChatRoutes = require('./routes/ai-chat');
-const soundboardRoutes = require('./routes/soundboard');
 const logger = require('./logger');
 
 const storage = multer.diskStorage({
@@ -344,7 +343,6 @@ app.use('/api/themes', themesRoutes);
 app.use('/api/forums', forumsRoutes);
 app.use('/api/bug-reports', bugReportsRoutes);
 app.use('/api/chat', authMiddleware, aiChatRoutes);
-app.use('/api/soundboard', soundboardRoutes);
 
 // XOR encode/decode functions for proxy URLs
 function xorDecode(encoded) {
