@@ -147,7 +147,22 @@ router.get('/inventory', authenticateToken, (req, res) => {
     ORDER BY up.purchased_at DESC
   `, [req.user.userId], (err, items) => {
     if (err) return res.status(500).json({ error: 'Database error' });
-    res.json(items || []);
+    
+    db.all(`
+      SELECT item_id FROM user_equipped 
+      WHERE user_id = ? AND (server_id IS NULL OR server_id = 0)
+    `, [req.user.userId], (err, equipped) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      
+      const equippedIds = (equipped || []).map(e => e.item_id);
+      const itemIds = (items || []).map(i => i.id);
+      
+      res.json({
+        items: itemIds,
+        equipped: equippedIds,
+        fullItems: items || []
+      });
+    });
   });
 });
 

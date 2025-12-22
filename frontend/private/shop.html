@@ -384,6 +384,7 @@
   </div>
 
   <script src="/js/themes.js"></script>
+  <script src="/js/cosmetics-loader.js"></script>
   <script src="/js/transitions.js"></script>
   <script src="/js/stealth-mode.js"></script>
   <script src="/js/quick-switcher.js"></script>
@@ -568,24 +569,45 @@
     }
 
     async function toggleEquip(itemId, isEquipped) {
-      const endpoint = isEquipped ? 'unequip' : 'equip';
+      const item = allItems.find(i => i.id === itemId);
+      if (!item) return;
+      
+      const slot = item.item_type || item.category_slug || 'general';
+      
       try {
-        const res = await fetch(`/api/shop/${endpoint}/${itemId}`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
-        });
-        const data = await res.json();
-        if (data.success) {
-          if (isEquipped) {
+        if (isEquipped) {
+          const res = await fetch(`/api/shop/unequip`, {
+            method: 'POST',
+            headers: { 
+              'Authorization': `Bearer ${getAuthToken()}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ itemId, slot })
+          });
+          const data = await res.json();
+          if (data.success) {
             userEquipped = userEquipped.filter(id => id !== itemId);
-          } else {
-            userEquipped.push(itemId);
+            renderItems();
           }
-          renderItems();
-          
-          const item = allItems.find(i => i.id === itemId);
-          if (item && item.category_id === 1) {
-            applyTheme(item);
+        } else {
+          const res = await fetch(`/api/shop/equip`, {
+            method: 'POST',
+            headers: { 
+              'Authorization': `Bearer ${getAuthToken()}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ itemId, slot })
+          });
+          const data = await res.json();
+          if (data.success) {
+            userEquipped.push(itemId);
+            renderItems();
+            
+            if (item.category_id === 1) {
+              applyTheme(item);
+            }
+          } else {
+            console.error('Equip failed:', data.error);
           }
         }
       } catch (e) {
