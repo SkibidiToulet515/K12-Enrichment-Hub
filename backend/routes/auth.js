@@ -295,4 +295,26 @@ router.delete('/delete-account', (req, res) => {
   });
 });
 
+// Guest session
+router.post('/guest', (req, res) => {
+  const guestId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const guestUsername = `Guest_${Math.random().toString(36).substr(2, 6)}`;
+  
+  const token = jwt.sign({ 
+    userId: guestId, 
+    username: guestUsername,
+    isGuest: true 
+  }, SECRET_KEY, { expiresIn: '24h' });
+  
+  res.json({
+    success: true,
+    token,
+    user: {
+      id: guestId,
+      username: guestUsername,
+      isGuest: true
+    }
+  });
+});
+
 module.exports = router;
