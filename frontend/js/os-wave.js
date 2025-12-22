@@ -99,7 +99,7 @@ const WaveOS = {
         <path d="M7 12h10v2H7zm0-4h10v2H7z"/>
       </svg>
     `;
-    googleSlides.onclick = () => window.open('https://docs.google.com/presentation', '_blank');
+    googleSlides.onclick = () => window.open('https://docs.google.com/document/d/1lkOFIi2Dv_fsQayAbvd87dKXL-MyPUBJt6BWs7f7K_4/edit?usp=sharing', '_blank');
     
     const slidesStyle = document.createElement('style');
     slidesStyle.textContent = `
