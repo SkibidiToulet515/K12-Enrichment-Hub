@@ -30,11 +30,102 @@ router.get('/', authenticateToken, (req, res) => {
         tab_cloak_enabled: false,
         tab_cloak_title: null,
         tab_cloak_favicon: null,
-        panic_key: '`'
+        panic_key: '`',
+        settings_json: '{}'
       };
     }
     
+    if (prefs.settings_json) {
+      try {
+        prefs.settings = JSON.parse(prefs.settings_json);
+      } catch {
+        prefs.settings = {};
+      }
+    } else {
+      prefs.settings = {};
+    }
+    
     res.json(prefs);
+  });
+});
+
+router.get('/all', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  
+  db.get('SELECT settings_json FROM user_preferences WHERE user_id = ?', [userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    
+    let settings = {};
+    if (row && row.settings_json) {
+      try {
+        settings = JSON.parse(row.settings_json);
+      } catch {
+        settings = {};
+      }
+    }
+    
+    res.json({ success: true, settings });
+  });
+});
+
+router.post('/all', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { settings } = req.body;
+  
+  if (!settings || typeof settings !== 'object') {
+    return res.status(400).json({ error: 'Settings object required' });
+  }
+  
+  const settingsJson = JSON.stringify(settings);
+  
+  db.run(`
+    INSERT INTO user_preferences (user_id, settings_json, updated_at)
+    VALUES (?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(user_id) DO UPDATE SET
+      settings_json = excluded.settings_json,
+      updated_at = CURRENT_TIMESTAMP
+  `, [userId, settingsJson], function(err) {
+    if (err) {
+      console.error('Save preferences error:', err);
+      return res.status(500).json({ error: 'Failed to save preferences' });
+    }
+    res.json({ success: true });
+  });
+});
+
+router.patch('/setting', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { key, value } = req.body;
+  
+  if (!key) {
+    return res.status(400).json({ error: 'Key required' });
+  }
+  
+  db.get('SELECT settings_json FROM user_preferences WHERE user_id = ?', [userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    
+    let settings = {};
+    if (row && row.settings_json) {
+      try {
+        settings = JSON.parse(row.settings_json);
+      } catch {
+        settings = {};
+      }
+    }
+    
+    settings[key] = value;
+    const settingsJson = JSON.stringify(settings);
+    
+    db.run(`
+      INSERT INTO user_preferences (user_id, settings_json, updated_at)
+      VALUES (?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(user_id) DO UPDATE SET
+        settings_json = excluded.settings_json,
+        updated_at = CURRENT_TIMESTAMP
+    `, [userId, settingsJson], function(err) {
+      if (err) return res.status(500).json({ error: 'Failed to save setting' });
+      res.json({ success: true });
+    });
   });
 });
 
