@@ -28,11 +28,12 @@
 
     <div class="soundboard-controls">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search sounds...">
+        <input type="text" id="searchInput" placeholder="Search local sounds...">
         <button id="clearSearch" class="clear-btn">✕</button>
       </div>
       <div class="filter-tabs">
         <button class="filter-tab active" data-category="all">All</button>
+        <button class="filter-tab" data-category="cached">💾 Cached</button>
         <button class="filter-tab" data-category="favorites">❤️ Favorites</button>
         <button class="filter-tab" data-category="memes">😂 Memes</button>
         <button class="filter-tab" data-category="games">🎮 Games</button>
@@ -41,6 +42,20 @@
         <button class="filter-tab" data-category="effects">✨ Effects</button>
         <button class="filter-tab" data-category="custom">📁 Custom</button>
       </div>
+    </div>
+
+    <div class="myinstants-search">
+      <h3>🌐 Search MyInstants Library</h3>
+      <div class="myinstants-search-box">
+        <input type="text" id="myinstantsSearch" placeholder="Search millions of sounds online...">
+        <button id="myinstantsSearchBtn" class="search-btn">Search</button>
+        <button id="loadTrending" class="trending-btn">🔥 Trending</button>
+      </div>
+      <div id="myinstantsResults" class="myinstants-results"></div>
+      <div id="myinstantsLoading" class="loading-indicator" style="display: none;">
+        <span class="spinner"></span> Searching...
+      </div>
+      <button id="loadMoreResults" class="load-more-btn" style="display: none;">Load More</button>
     </div>
 
     <div id="adminPanel" class="admin-panel" style="display: none;">

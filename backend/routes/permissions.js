@@ -3,8 +3,7 @@ const router = express.Router();
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 const permissions = require('../permissions');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const { JWT_SECRET } = require('../config');
 
 function verifyToken(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];

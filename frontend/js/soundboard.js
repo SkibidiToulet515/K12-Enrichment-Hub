@@ -69,16 +69,22 @@ let currentAudio = null;
 let currentSoundId = null;
 let favorites = JSON.parse(localStorage.getItem('soundboard_favorites') || '[]');
 let customSounds = [];
+let cachedSounds = [];
 let masterVolume = parseInt(localStorage.getItem('soundboard_volume') || '50') / 100;
 let isAdmin = false;
+let myinstantsPage = 1;
+let lastSearchQuery = '';
+let lastSearchType = '';
 
 document.addEventListener('DOMContentLoaded', async () => {
   checkAuth();
   initVolumeControl();
   loadCustomSounds();
+  loadCachedSounds();
   renderSounds();
   initFilters();
   initSearch();
+  initMyInstantsSearch();
 });
 
 async function checkAuth() {
@@ -149,12 +155,36 @@ async function loadCustomSounds() {
   }
 }
 
+async function loadCachedSounds() {
+  try {
+    const res = await fetch('/api/soundboard/cached');
+    if (res.ok) {
+      cachedSounds = await res.json();
+      renderSounds();
+    }
+  } catch (e) {
+    console.error('Failed to load cached sounds:', e);
+  }
+}
+
 function getAllSounds() {
-  const all = [...SOUNDS, ...customSounds.map(s => ({
-    ...s,
-    icon: getCategoryIcon(s.category),
-    isCustom: true
-  }))];
+  const all = [
+    ...SOUNDS,
+    ...cachedSounds.map(s => ({
+      id: `cached-${s.id}`,
+      name: s.name,
+      category: 'cached',
+      icon: '💾',
+      url: s.local_path,
+      isCached: true,
+      playCount: s.play_count
+    })),
+    ...customSounds.map(s => ({
+      ...s,
+      icon: getCategoryIcon(s.category),
+      isCustom: true
+    }))
+  ];
   return all;
 }
 
@@ -165,7 +195,8 @@ function getCategoryIcon(category) {
     animals: '🐾',
     music: '🎵',
     effects: '✨',
-    custom: '📁'
+    custom: '📁',
+    cached: '💾'
   };
   return icons[category] || '🔊';
 }
@@ -178,6 +209,8 @@ function renderSounds(filter = 'all', searchTerm = '') {
   
   if (filter === 'favorites') {
     sounds = sounds.filter(s => favorites.includes(s.id));
+  } else if (filter === 'cached') {
+    sounds = sounds.filter(s => s.isCached);
   } else if (filter !== 'all') {
     sounds = sounds.filter(s => s.category === filter);
   }
@@ -209,7 +242,7 @@ function renderSounds(filter = 'all', searchTerm = '') {
       </button>
       <span class="sound-icon">${sound.icon}</span>
       <div class="sound-name">${sound.name}</div>
-      <div class="sound-category">${sound.category}</div>
+      <div class="sound-category">${sound.category}${sound.playCount ? ` (${sound.playCount} plays)` : ''}</div>
     </div>
   `).join('');
 }
@@ -347,6 +380,209 @@ function initSearch() {
     const activeFilter = document.querySelector('.filter-tab.active').dataset.category;
     renderSounds(activeFilter, '');
   });
+}
+
+function initMyInstantsSearch() {
+  const searchBtn = document.getElementById('myinstantsSearchBtn');
+  const trendingBtn = document.getElementById('loadTrending');
+  const searchInput = document.getElementById('myinstantsSearch');
+  const loadMoreBtn = document.getElementById('loadMoreResults');
+  
+  searchBtn.addEventListener('click', () => {
+    const query = searchInput.value.trim();
+    if (query) {
+      myinstantsPage = 1;
+      lastSearchQuery = query;
+      lastSearchType = 'search';
+      searchMyInstants(query, 1);
+    }
+  });
+  
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      searchBtn.click();
+    }
+  });
+  
+  trendingBtn.addEventListener('click', () => {
+    myinstantsPage = 1;
+    lastSearchType = 'trending';
+    loadTrending(1);
+  });
+  
+  loadMoreBtn.addEventListener('click', () => {
+    myinstantsPage++;
+    if (lastSearchType === 'trending') {
+      loadTrending(myinstantsPage, true);
+    } else {
+      searchMyInstants(lastSearchQuery, myinstantsPage, true);
+    }
+  });
+}
+
+async function searchMyInstants(query, page = 1, append = false) {
+  const resultsDiv = document.getElementById('myinstantsResults');
+  const loading = document.getElementById('myinstantsLoading');
+  const loadMoreBtn = document.getElementById('loadMoreResults');
+  
+  if (!append) {
+    resultsDiv.innerHTML = '';
+  }
+  loading.style.display = 'flex';
+  loadMoreBtn.style.display = 'none';
+  
+  try {
+    const res = await fetch(`/api/soundboard/myinstants/search?q=${encodeURIComponent(query)}&page=${page}`);
+    if (res.ok) {
+      const sounds = await res.json();
+      renderMyInstantsResults(sounds, append);
+      if (sounds && sounds.length >= 20) {
+        loadMoreBtn.style.display = 'block';
+      }
+    } else {
+      resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">Search failed. Try again.</p>';
+    }
+  } catch (e) {
+    console.error('Search failed:', e);
+    resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">Search failed. Try again.</p>';
+  } finally {
+    loading.style.display = 'none';
+  }
+}
+
+async function loadTrending(page = 1, append = false) {
+  const resultsDiv = document.getElementById('myinstantsResults');
+  const loading = document.getElementById('myinstantsLoading');
+  const loadMoreBtn = document.getElementById('loadMoreResults');
+  
+  if (!append) {
+    resultsDiv.innerHTML = '';
+  }
+  loading.style.display = 'flex';
+  loadMoreBtn.style.display = 'none';
+  
+  try {
+    const res = await fetch(`/api/soundboard/myinstants/trending?page=${page}`);
+    if (res.ok) {
+      const sounds = await res.json();
+      renderMyInstantsResults(sounds, append);
+      if (sounds && sounds.length >= 20) {
+        loadMoreBtn.style.display = 'block';
+      }
+    } else {
+      resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">Failed to load trending sounds.</p>';
+    }
+  } catch (e) {
+    console.error('Failed to load trending:', e);
+    resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">Failed to load trending sounds.</p>';
+  } finally {
+    loading.style.display = 'none';
+  }
+}
+
+function renderMyInstantsResults(sounds, append = false) {
+  const resultsDiv = document.getElementById('myinstantsResults');
+  
+  if (!sounds || sounds.length === 0) {
+    if (!append) {
+      resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">No sounds found.</p>';
+    }
+    return;
+  }
+  
+  const html = sounds.map(sound => {
+    const isCached = cachedSounds.some(c => c.myinstants_id === sound.id || c.original_url === sound.mp3Url);
+    return `
+      <div class="myinstants-card" data-mp3="${sound.mp3Url}" data-title="${escapeHtml(sound.title)}" data-id="${sound.id || ''}">
+        <div class="sound-title" title="${escapeHtml(sound.title)}">${escapeHtml(sound.title)}</div>
+        <div class="sound-meta">
+          ${sound.favorites ? `<span>❤️ ${sound.favorites}</span>` : ''}
+          ${sound.views ? `<span>👁 ${sound.views}</span>` : ''}
+          ${isCached ? '<span class="cached-badge">Cached</span>' : ''}
+        </div>
+        <div class="myinstants-card-actions">
+          <button class="play-btn" onclick="playMyInstantsSound(this)">▶ Play</button>
+          <button class="cache-btn" onclick="cacheSound(this)" ${isCached ? 'disabled' : ''}>${isCached ? '✓ Saved' : '💾 Save'}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  if (append) {
+    resultsDiv.innerHTML += html;
+  } else {
+    resultsDiv.innerHTML = html;
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text || '';
+  return div.innerHTML;
+}
+
+function playMyInstantsSound(btn) {
+  const card = btn.closest('.myinstants-card');
+  const mp3Url = card.dataset.mp3;
+  const title = card.dataset.title;
+  
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  
+  const audio = new Audio(mp3Url);
+  audio.volume = masterVolume;
+  currentAudio = audio;
+  
+  const nowPlaying = document.getElementById('nowPlaying');
+  const nowPlayingText = document.getElementById('nowPlayingText');
+  nowPlayingText.textContent = title;
+  nowPlaying.style.display = 'flex';
+  
+  audio.play().catch(e => {
+    console.error('Playback failed:', e);
+    alert('Failed to play sound. It may be blocked on your network.');
+    hideNowPlaying();
+  });
+  
+  audio.onended = () => {
+    hideNowPlaying();
+  };
+}
+
+async function cacheSound(btn) {
+  const card = btn.closest('.myinstants-card');
+  const mp3Url = card.dataset.mp3;
+  const title = card.dataset.title;
+  const myinstantsId = card.dataset.id;
+  
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+  
+  try {
+    const res = await fetch('/api/soundboard/cache', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: title, mp3Url, myinstantsId })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      btn.textContent = '✓ Saved';
+      cachedSounds.push(data.sound);
+      renderSounds();
+    } else {
+      btn.disabled = false;
+      btn.textContent = '💾 Save';
+      alert('Failed to save sound');
+    }
+  } catch (e) {
+    console.error('Cache failed:', e);
+    btn.disabled = false;
+    btn.textContent = '💾 Save';
+    alert('Failed to save sound');
+  }
 }
 
 function initAdminUpload() {

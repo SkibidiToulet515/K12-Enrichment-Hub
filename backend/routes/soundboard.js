@@ -3,14 +3,22 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
+const http = require('http');
 const pool = require('../db');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 
 const soundsDir = path.join(__dirname, '../../frontend/uploads/sounds');
+const cachedSoundsDir = path.join(__dirname, '../../frontend/sounds/cached');
 if (!fs.existsSync(soundsDir)) {
   fs.mkdirSync(soundsDir, { recursive: true });
 }
+if (!fs.existsSync(cachedSoundsDir)) {
+  fs.mkdirSync(cachedSoundsDir, { recursive: true });
+}
+
+const MYINSTANTS_API = 'https://myinstants-api.vercel.app';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -160,6 +168,197 @@ router.post('/favorites', authMiddleware, async (req, res) => {
   } catch (e) {
     console.error('Failed to save favorites:', e);
     res.status(500).json({ error: 'Failed to save favorites' });
+  }
+});
+
+async function fetchFromMyInstants(endpoint) {
+  return new Promise((resolve, reject) => {
+    const url = `${MYINSTANTS_API}${endpoint}`;
+    https.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+function downloadFile(url, destPath) {
+  return new Promise((resolve, reject) => {
+    const protocol = url.startsWith('https') ? https : http;
+    const file = fs.createWriteStream(destPath);
+    
+    protocol.get(url, (response) => {
+      if (response.statusCode === 301 || response.statusCode === 302) {
+        downloadFile(response.headers.location, destPath).then(resolve).catch(reject);
+        return;
+      }
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        resolve(destPath);
+      });
+    }).on('error', (err) => {
+      fs.unlink(destPath, () => {});
+      reject(err);
+    });
+  });
+}
+
+router.get('/myinstants/trending', async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const data = await fetchFromMyInstants(`/trending?page=${page}`);
+    res.json(data);
+  } catch (e) {
+    console.error('Failed to fetch trending:', e);
+    res.status(500).json({ error: 'Failed to fetch trending sounds' });
+  }
+});
+
+router.get('/myinstants/search', async (req, res) => {
+  try {
+    const query = req.query.q;
+    if (!query) {
+      return res.status(400).json({ error: 'Search query required' });
+    }
+    const page = req.query.page || 1;
+    const data = await fetchFromMyInstants(`/search/${encodeURIComponent(query)}?page=${page}`);
+    res.json(data);
+  } catch (e) {
+    console.error('Failed to search:', e);
+    res.status(500).json({ error: 'Failed to search sounds' });
+  }
+});
+
+router.get('/cached', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM soundboard_cached WHERE is_cached = TRUE ORDER BY play_count DESC, cached_at DESC'
+    );
+    res.json(result.rows);
+  } catch (e) {
+    console.error('Failed to get cached sounds:', e);
+    res.status(500).json({ error: 'Failed to get cached sounds' });
+  }
+});
+
+router.post('/cache', async (req, res) => {
+  try {
+    const { name, mp3Url, myinstantsId } = req.body;
+    
+    if (!name || !mp3Url) {
+      return res.status(400).json({ error: 'Name and mp3Url required' });
+    }
+    
+    const existing = await pool.query(
+      'SELECT * FROM soundboard_cached WHERE myinstants_id = $1',
+      [myinstantsId || mp3Url]
+    );
+    
+    if (existing.rows.length > 0 && existing.rows[0].is_cached) {
+      await pool.query(
+        'UPDATE soundboard_cached SET play_count = play_count + 1 WHERE id = $1',
+        [existing.rows[0].id]
+      );
+      return res.json({ 
+        success: true, 
+        cached: true, 
+        localPath: existing.rows[0].local_path,
+        sound: existing.rows[0]
+      });
+    }
+    
+    const safeFilename = `${Date.now()}-${name.replace(/[^a-z0-9]/gi, '_').substring(0, 50)}.mp3`;
+    const localPath = `/sounds/cached/${safeFilename}`;
+    const fullPath = path.join(cachedSoundsDir, safeFilename);
+    
+    await downloadFile(mp3Url, fullPath);
+    
+    let result;
+    if (existing.rows.length > 0) {
+      result = await pool.query(
+        `UPDATE soundboard_cached 
+         SET is_cached = TRUE, local_path = $1, cached_at = CURRENT_TIMESTAMP, play_count = play_count + 1
+         WHERE id = $2 RETURNING *`,
+        [localPath, existing.rows[0].id]
+      );
+    } else {
+      result = await pool.query(
+        `INSERT INTO soundboard_cached (myinstants_id, name, original_url, local_path, is_cached, cached_at, play_count)
+         VALUES ($1, $2, $3, $4, TRUE, CURRENT_TIMESTAMP, 1) RETURNING *`,
+        [myinstantsId || mp3Url, name, mp3Url, localPath]
+      );
+    }
+    
+    res.json({ 
+      success: true, 
+      cached: true, 
+      localPath,
+      sound: result.rows[0]
+    });
+  } catch (e) {
+    console.error('Failed to cache sound:', e);
+    res.status(500).json({ error: 'Failed to cache sound' });
+  }
+});
+
+router.post('/batch-cache', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { sounds } = req.body;
+    if (!sounds || !Array.isArray(sounds)) {
+      return res.status(400).json({ error: 'Sounds array required' });
+    }
+    
+    const results = [];
+    for (const sound of sounds.slice(0, 50)) {
+      try {
+        const existing = await pool.query(
+          'SELECT * FROM soundboard_cached WHERE myinstants_id = $1',
+          [sound.id || sound.mp3Url]
+        );
+        
+        if (existing.rows.length > 0 && existing.rows[0].is_cached) {
+          results.push({ name: sound.title, status: 'already_cached' });
+          continue;
+        }
+        
+        const safeFilename = `${Date.now()}-${sound.title.replace(/[^a-z0-9]/gi, '_').substring(0, 50)}.mp3`;
+        const localPath = `/sounds/cached/${safeFilename}`;
+        const fullPath = path.join(cachedSoundsDir, safeFilename);
+        
+        await downloadFile(sound.mp3Url, fullPath);
+        
+        if (existing.rows.length > 0) {
+          await pool.query(
+            `UPDATE soundboard_cached 
+             SET is_cached = TRUE, local_path = $1, cached_at = CURRENT_TIMESTAMP
+             WHERE id = $2`,
+            [localPath, existing.rows[0].id]
+          );
+        } else {
+          await pool.query(
+            `INSERT INTO soundboard_cached (myinstants_id, name, original_url, local_path, is_cached, cached_at)
+             VALUES ($1, $2, $3, $4, TRUE, CURRENT_TIMESTAMP)`,
+            [sound.id || sound.mp3Url, sound.title, sound.mp3Url, localPath]
+          );
+        }
+        
+        results.push({ name: sound.title, status: 'cached' });
+      } catch (e) {
+        results.push({ name: sound.title, status: 'failed', error: e.message });
+      }
+    }
+    
+    res.json({ success: true, results });
+  } catch (e) {
+    console.error('Failed to batch cache:', e);
+    res.status(500).json({ error: 'Failed to batch cache sounds' });
   }
 });
 

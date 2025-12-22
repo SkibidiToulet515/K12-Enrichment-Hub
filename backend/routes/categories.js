@@ -1,10 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
+const { JWT_SECRET } = require('../config');
 
 const router = express.Router();
-
-const JWT_SECRET = 'real_user_auth_secret_2025';
 
 function getUserFromToken(req) {
   const token = req.headers.authorization?.split(' ')[1];

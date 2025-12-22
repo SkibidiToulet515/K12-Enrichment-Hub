@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+const { JWT_SECRET } = require('../config');
 
 function optionalAuth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];

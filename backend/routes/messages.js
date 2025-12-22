@@ -2,9 +2,9 @@ const express = require('express');
 const db = require('../db');
 const permissions = require('../permissions');
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'real_user_auth_secret_2025';
 
 // Get global chat messages with pagination (includes replies, reactions, attachments)
 router.get('/global', (req, res) => {

@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
+const { JWT_SECRET } = require('../config');
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];

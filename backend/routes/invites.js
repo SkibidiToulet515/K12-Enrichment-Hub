@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { JWT_SECRET } = require('../config');
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ function getUserId(req) {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return null;
   try {
-    const decoded = jwt.verify(token, 'real_user_auth_secret_2025');
+    const decoded = jwt.verify(token, JWT_SECRET);
     return decoded.userId;
   } catch {
     return null;
