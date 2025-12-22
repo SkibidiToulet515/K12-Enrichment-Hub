@@ -75,7 +75,7 @@ const OSShell = {
     
     sidebar.innerHTML = `
       <div class="os-sidebar-header">
-        <div class="os-sidebar-logo">NC</div>
+        <img src="/img/logo.svg" alt="NebulaCore" class="os-sidebar-logo-img">
         <span class="os-sidebar-title">NebulaCore</span>
       </div>
       <div class="os-sidebar-apps">
