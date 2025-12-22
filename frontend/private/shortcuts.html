@@ -228,7 +228,7 @@
   <script src="/js/quick-switcher.js"></script>
   <script src="/js/auto-theme.js"></script>
   <script>
-    if (!localStorage.getItem('userToken')) {
+    if (!localStorage.getItem('userToken') && !localStorage.getItem('authToken')) {
       window.location.href = '/auth';
     }
 

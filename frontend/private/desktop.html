@@ -1312,7 +1312,7 @@
     updateClock();
     setInterval(updateClock, 1000);
     
-    if (!localStorage.getItem('userToken')) {
+    if (!localStorage.getItem('userToken') && !localStorage.getItem('authToken')) {
       window.location.href = '/lock';
     }
     

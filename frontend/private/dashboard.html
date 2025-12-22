@@ -377,7 +377,7 @@
   <script src="/js/cloak.js"></script>
   <script>
     // Check if user is logged in
-    if (!localStorage.getItem('userToken')) {
+    if (!localStorage.getItem('userToken') && !localStorage.getItem('authToken')) {
       window.location.href = '/auth';
     }
 

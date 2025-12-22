@@ -329,11 +329,17 @@
         
         if (data.token) {
           localStorage.setItem('userToken', data.token);
+          localStorage.setItem('authToken', data.token);
           localStorage.setItem('userId', data.user.id);
           localStorage.setItem('username', data.user.username);
           if (data.user.profile_picture) {
             localStorage.setItem('profilePicture', data.user.profile_picture);
           }
+          localStorage.setItem('user', JSON.stringify({
+            id: data.user.id,
+            username: data.user.username,
+            profilePicture: data.user.profile_picture || ''
+          }));
           window.location.href = '/private/desktop.html';
         } else {
           errorEl.textContent = data.error || 'Invalid password';
@@ -401,9 +407,16 @@
         const data = await res.json();
         if (data.token) {
           localStorage.setItem('userToken', data.token);
+          localStorage.setItem('authToken', data.token);
           localStorage.setItem('userId', data.user.id);
           localStorage.setItem('username', data.user.username);
           localStorage.setItem('isGuest', 'true');
+          localStorage.setItem('user', JSON.stringify({
+            id: data.user.id,
+            username: data.user.username,
+            profilePicture: '',
+            isGuest: true
+          }));
           window.location.href = '/private/desktop.html';
         }
       } catch (err) {
