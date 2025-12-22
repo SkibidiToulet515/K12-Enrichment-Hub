@@ -131,10 +131,12 @@ const WaveOS = {
       item.classList.toggle('active', item.dataset.app === appId);
     });
     
-    // Check if window already exists
+    // Check if window already exists (might be minimized)
     let existingWindow = document.querySelector(`.wave-window[data-app="${appId}"]`);
     if (existingWindow) {
+      existingWindow.style.display = '';
       existingWindow.style.zIndex = ++this.windowZIndex;
+      existingWindow.classList.remove('minimized');
       this.currentApp = appId;
       return;
     }
@@ -234,12 +236,12 @@ const WaveOS = {
   minimizeWindow(appId) {
     const win = document.querySelector(`.wave-window[data-app="${appId}"]`);
     if (win) {
-      win.classList.add('closing');
+      win.classList.add('minimized');
       setTimeout(() => {
         win.style.display = 'none';
-        win.classList.remove('closing');
-      }, 250);
+      }, 300);
     }
+    this.currentApp = null;
   },
   
   toggleFullscreen(appId) {
