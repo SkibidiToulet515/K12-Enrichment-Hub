@@ -6,6 +6,94 @@
   --sidebar-width: 250px;
 }
 
+/* ===================
+   NAVBAR RESPONSIVE (Dashboard style pages)
+   =================== */
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column !important;
+    padding: 10px 15px !important;
+    gap: 10px !important;
+  }
+  
+  .navbar .nav-left h1 {
+    font-size: 1.25rem !important;
+  }
+  
+  .navbar .nav-right {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  
+  .navbar .theme-selector {
+    width: 100% !important;
+    max-width: 200px !important;
+  }
+  
+  .navbar .theme-btn,
+  .navbar .help-btn {
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  /* Dashboard specific */
+  .dashboard {
+    padding: 15px !important;
+    padding-top: 10px !important;
+  }
+  
+  .welcome-header {
+    text-align: center !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .welcome-header h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .dashboard-card {
+    padding: 20px 15px !important;
+  }
+  
+  .dashboard-card .card-icon {
+    font-size: 2rem !important;
+  }
+  
+  .dashboard-card h3 {
+    font-size: 1rem !important;
+  }
+  
+  .dashboard-card p {
+    font-size: 0.75rem !important;
+    display: none !important;
+  }
+  
+  .universal-search {
+    margin-bottom: 20px !important;
+  }
+  
+  .universal-search-input {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .dashboard-card p {
+    display: block !important;
+  }
+}
+
 /* Responsive breakpoints:
    - Mobile: < 768px
    - Tablet: 768px - 1024px
