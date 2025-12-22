@@ -564,6 +564,7 @@ async function initDatabase() {
       tab_cloak_title TEXT,
       tab_cloak_favicon TEXT,
       panic_key TEXT DEFAULT E'\`',
+      settings_json TEXT DEFAULT '{}',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`);
